@@ -11,7 +11,7 @@
   ],
   "contact": {
     "homepage": "https://github.com/TaiyitistMC/Taiyitist",
-    "sources": "https://github.com/Taiyitist/Taiyitist"
+    "sources": "https://github.com/TaiyitistMC/Taiyitist"
   },
   "depends": {
     "fabricloader": ">=0.16.9",
