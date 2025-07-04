@@ -56,9 +56,6 @@ so don't worried about the plugin files will be changed to unsafe
 - [**StackDeobfuscator**](https://github.com/booky10/StackDeobfuscator) - auto deobfuscate logger crash
 
 ## Special Thanks To:
-
-<a href="https://www.bisecthosting.com/mohistmc"><img src="https://www.bisecthosting.com/partners/custom-banners/118608b8-6e45-4301-b244-41934cdac6d1.png"></a>
-
 ![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
 
 [YourKit](http://www.yourkit.com/), makers of the outstanding java profiler, support open source projects of all kinds with their full-featured [Java](https://www.yourkit.com/java/profiler/index.jsp) and [.NET](https://www.yourkit.com/.net/profiler/index.jsp) application profilers. We thank them for granting Mohist an OSS license so that we can make our software the best it can be.
