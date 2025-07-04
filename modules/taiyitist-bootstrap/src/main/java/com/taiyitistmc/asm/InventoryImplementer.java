@@ -50,7 +50,7 @@ public class InventoryImplementer implements Implementer {
                 }
             }
 
-            FieldNode maxStack = new FieldNode(Opcodes.ACC_PRIVATE, "bannerF$maxStack", Type.getType(Integer.class).getDescriptor(), null, null);
+            FieldNode maxStack = new FieldNode(Opcodes.ACC_PRIVATE, "taiyitistF$maxStack", Type.getType(Integer.class).getDescriptor(), null, null);
             node.fields.add(maxStack);
             node.interfaces.add(BRIDGE_TYPE);
             InsnList list = new InsnList();
