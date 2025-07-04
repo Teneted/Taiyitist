@@ -39,6 +39,9 @@ so don't worried about the plugin files will be changed to unsafe
 - Download Taiyitst.
 - Launch with command java -jar taiyitst-launcher-version.jar
 
+## Discord
+- https://discord.gg/stTgbjkJ
+
 ## Developer Support
 - Download the dev lib jar from GitHub actions.
 - Use Fabric Official Template [**Fabric Example Mod**](https://github.com/FabricMC/fabric-example-mod.git).
