@@ -1,4 +1,4 @@
-package com.mohistmc.banner;
+package com.taiyitistmc;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,13 +11,13 @@ import net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider;
 import net.fabricmc.loader.impl.launch.FabricLauncher;
 import net.fabricmc.loader.impl.util.Arguments;
 
-public class BannerGameProvider extends MinecraftGameProvider {
+public class TaiyitistGameProvider extends MinecraftGameProvider {
 
     private Path modFile;
 
     @Override
     public void initialize(FabricLauncher launcher) {
-        System.setProperty("log4j.configurationFile", "log4j2_banner.xml");
+        System.setProperty("log4j.configurationFile", "log4j2_taiyitist.xml");
 
         try {
             this.modFile = this.extract();
@@ -25,14 +25,8 @@ public class BannerGameProvider extends MinecraftGameProvider {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        for (var lib : System.getProperty("banner.fabric.classpath").split(File.pathSeparator)) {
+        for (var lib : System.getProperty("taiyitist.fabric.classpath").split(File.pathSeparator)) {
             launcher.addToClassPath(Paths.get(lib));
-        }
-        try {
-            extractBootstrap();
-            extractPlugin();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         loadBootstrap(launcher);
         loadCustomLibs(launcher);
@@ -43,13 +37,14 @@ public class BannerGameProvider extends MinecraftGameProvider {
     public Arguments getArguments() {
         Arguments arguments = super.getArguments();
         String old = arguments.get(Arguments.ADD_MODS);
-        var builtinMods = System.getProperty("banner.fabric.builtinMods");
+        var builtinMods = System.getProperty("taiyitist.fabric.builtinMods");
         var path = this.modFile.toString() + File.pathSeparator + builtinMods;
         if (old != null) {
             path = old + File.pathSeparator + path;
         }
         arguments.put(Arguments.ADD_MODS, path);
         arguments.addExtraArg("nogui");
+        arguments.addExtraArg("chcp 65001");
         return arguments;
     }
 
@@ -61,14 +56,14 @@ public class BannerGameProvider extends MinecraftGameProvider {
             var field = launcher.getClass().getDeclaredField("unlocked");
             field.setAccessible(true);
             field.set(launcher, true);
-            var ctor = launcher.loadIntoTarget("com.mohistmc.banner.boot.FabricBootstrap").getConstructor();
+            var ctor = launcher.loadIntoTarget("com.taiyitistmc.boot.FabricBootstrap").getConstructor();
             ((Consumer<FabricLauncher>) ctor.newInstance()).accept(launcher);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String getBannerVersion() throws Exception {
+    private String getTaiyitistVersion() throws Exception {
         try (var stream = getClass().getResourceAsStream("/META-INF/MANIFEST.MF")) {
             var manifest = new Manifest(stream);
             var attributes = manifest.getMainAttributes();
@@ -77,15 +72,15 @@ public class BannerGameProvider extends MinecraftGameProvider {
     }
 
     private Path extract() throws Exception {
-        var version = getBannerVersion();
-        System.setProperty("banner.version", version);
-        var path = getClass().getModule().getResourceAsStream("/META-INF/jars/banner-" + getBannerVersion() + ".jar");
-        var dir = Paths.get(".banner", "mod_file");
+        var version = getTaiyitistVersion();
+        System.setProperty("taiyitist.version", version);
+        var path = getClass().getModule().getResourceAsStream("/META-INF/jars/taiyitist-" + getTaiyitistVersion() + ".jar");
+        var dir = Paths.get(".taiyitist", "mod_file");
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
         }
         var mod = dir.resolve(version + ".jar");
-        if (!Files.exists(mod) || Boolean.getBoolean("banner.alwaysExtract")) {
+        if (!Files.exists(mod) || Boolean.getBoolean("taiyitist.alwaysExtract")) {
             try (var files = Files.list(dir)) {
                 for (Path old : files.toList()) {
                     Files.delete(old);
@@ -96,42 +91,6 @@ public class BannerGameProvider extends MinecraftGameProvider {
         return mod;
     }
 
-    private Path extractPlugin() throws Exception {
-        var path = getClass().getModule().getResourceAsStream("/META-INF/jars/banner-plugin-" + getBannerVersion() + ".jar");
-        var dir = Paths.get(".banner", "plugin_file");
-        if (!Files.exists(dir)) {
-            Files.createDirectories(dir);
-        }
-        var plugin = dir.resolve("banner-plugin-" + getBannerVersion() + ".jar");
-        if (!Files.exists(plugin) || Boolean.getBoolean("banner.alwaysExtract")) {
-            try (var files = Files.list(dir)) {
-                for (Path old : files.toList()) {
-                    Files.delete(old);
-                }
-                Files.copy(path, plugin);
-            }
-        }
-        return plugin;
-    }
-
-    private Path extractBootstrap() throws Exception {
-        var path = getClass().getModule().getResourceAsStream("/META-INF/jars/banner-bootstrap-" + getBannerVersion() + ".jar");
-        var dir = Paths.get(".banner", "bootstrap");
-        if (!Files.exists(dir)) {
-            Files.createDirectories(dir);
-        }
-        var bootstrap = dir.resolve("banner-bootstrap-" + getBannerVersion() + ".jar");
-        if (!Files.exists(bootstrap) || Boolean.getBoolean("banner.alwaysExtract")) {
-            try (var files = Files.list(dir)) {
-                for (Path old : files.toList()) {
-                    Files.delete(old);
-                }
-                Files.copy(path, bootstrap);
-            }
-        }
-        return bootstrap;
-    }
-
     @Override
     public boolean isEnabled() {
         return true;
@@ -140,7 +99,7 @@ public class BannerGameProvider extends MinecraftGameProvider {
     @Override
     public String getRawGameVersion() {
         try {
-            return super.getRawGameVersion() + " Banner " + getBannerVersion();
+            return super.getRawGameVersion() + " Taiyitist " + getTaiyitistVersion();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -160,7 +119,7 @@ public class BannerGameProvider extends MinecraftGameProvider {
 
     private void loadBootstrap(FabricLauncher launcher) {
         try {
-            File bootstrap = new File(".banner", "bootstrap/" + "banner-bootstrap-" + getBannerVersion() + ".jar");
+            File bootstrap = new File(".taiyitist", "bootstrap/" + "taiyitist-bootstrap-" + getTaiyitistVersion() + ".jar");
             launcher.addToClassPath(Paths.get(bootstrap.toURI()));
         } catch (Exception e) {
             throw new RuntimeException(e);

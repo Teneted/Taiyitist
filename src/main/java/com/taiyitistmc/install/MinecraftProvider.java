@@ -1,8 +1,8 @@
-package com.mohistmc.banner.install;
+package com.taiyitistmc.install;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.mohistmc.banner.BannerMain;
+import com.taiyitistmc.TaiyitistMain;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,7 +33,7 @@ public class MinecraftProvider {
     }
 
     public static List<Path> modInstall(Consumer<String> logger) throws Throwable {
-        InputStream stream = BannerMain.class.getModule().getResourceAsStream("/installer.json");
+        InputStream stream = TaiyitistMain.class.getModule().getResourceAsStream("/installer.json");
         InstallInfo installInfo = new Gson().fromJson(new InputStreamReader(stream), InstallInfo.class);
         List<Supplier<Path>> suppliers = checkMavenNoSource(installInfo.libraries);
         if (!suppliers.isEmpty()) {

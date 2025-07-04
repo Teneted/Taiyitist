@@ -1,8 +1,8 @@
-package com.mohistmc.banner.install;
+package com.taiyitistmc.install;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.mohistmc.banner.BannerMain;
+import com.taiyitistmc.TaiyitistMain;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public class FabricInstaller {
 
     public static Map.Entry<String, List<Path>> applicationInstall() throws Exception {
-        InputStream stream = BannerMain.class.getResourceAsStream("/installer.json");
+        InputStream stream = TaiyitistMain.class.getResourceAsStream("/installer.json");
         InstallInfo installInfo = new Gson().fromJson(new InputStreamReader(stream), InstallInfo.class);
         List<Supplier<Path>> suppliers = MinecraftProvider.checkMavenNoSource(installInfo.fabricDeps());
         Path path = Paths.get("libraries/net/fabricmc/fabric-loader", installInfo.installer.fabricLoader, "fabric-loader-" + installInfo.installer.fabricLoader + ".jar");
@@ -62,11 +62,11 @@ public class FabricInstaller {
         var gameLibs = info.fabricDeps().keySet().stream()
                 .filter(it -> BOOTSTRAP_LIBS.stream().noneMatch(it::startsWith) && BUILTIN_MODS.stream().noneMatch(it::startsWith))
                 .map(it -> "libraries/" + Util.mavenToPath(it)).collect(Collectors.joining(File.pathSeparator));
-        System.setProperty("banner.fabric.classpath", gameLibs);
+        System.setProperty("taiyitist.fabric.classpath", gameLibs);
         var builtinMods = info.fabricDeps().keySet().stream()
                 .filter(it -> BUILTIN_MODS.stream().anyMatch(it::startsWith))
                 .map(it -> "libraries/" + Util.mavenToPath(it)).collect(Collectors.joining(File.pathSeparator));
-        System.setProperty("banner.fabric.builtinMods", builtinMods);
+        System.setProperty("taiyitist.fabric.builtinMods", builtinMods);
         var libs = new ArrayList<Path>();
         fabricDeps(path).keySet().stream().map(it -> Paths.get("libraries", Util.mavenToPath(it))).forEach(libs::add);
         info.fabricDeps().keySet().stream()

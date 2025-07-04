@@ -1,4 +1,4 @@
-package com.mohistmc.banner;
+package com.taiyitistmc;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class BannerMain {
+public class TaiyitistMain {
 
     public static void main(String[] args) throws Throwable {
         System.setProperty("fabric.skipMcProvider", "true");
-        System.setProperty("banner.alwaysExtract", "true");
+        System.setProperty("taiyitist.alwaysExtract", "true");
         try {
             var install = fabricInstall();
-            var ours = BannerMain.class.getProtectionDomain().getCodeSource().getLocation();
+            var ours = TaiyitistMain.class.getProtectionDomain().getCodeSource().getLocation();
             var classloader = new URLClassLoader(Stream.concat(Stream.of(ours), install.getValue().stream().map(it -> {
                 try {
                     return it.toUri().toURL();
@@ -34,20 +34,20 @@ public class BannerMain {
             handle.invoke((Object) args);
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Fail to launch Banner.");
+            System.err.println("Fail to launch Taiyitist.");
             System.exit(-1);
         }
     }
 
     @SuppressWarnings("unchecked")
     private static Map.Entry<String, List<Path>> fabricInstall() throws Throwable {
-        var path = Paths.get(".banner", "gson.jar");
+        var path = Paths.get(".taiyitist", "gson.jar");
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
-            Files.copy(Objects.requireNonNull(BannerMain.class.getResourceAsStream("/gson.jar")), path);
+            Files.copy(Objects.requireNonNull(TaiyitistMain.class.getResourceAsStream("/gson.jar")), path);
         }
-        try (var loader = new URLClassLoader(new URL[]{path.toUri().toURL(), BannerMain.class.getProtectionDomain().getCodeSource().getLocation()}, ClassLoader.getPlatformClassLoader())) {
-            var cl = loader.loadClass("com.mohistmc.banner.install.FabricInstaller");
+        try (var loader = new URLClassLoader(new URL[]{path.toUri().toURL(), TaiyitistMain.class.getProtectionDomain().getCodeSource().getLocation()}, ClassLoader.getPlatformClassLoader())) {
+            var cl = loader.loadClass("com.taiyitistmc.install.FabricInstaller");
             var handle = MethodHandles.lookup().findStatic(cl, "applicationInstall", MethodType.methodType(Map.Entry.class));
             return (Map.Entry<String, List<Path>>) handle.invoke();
         }

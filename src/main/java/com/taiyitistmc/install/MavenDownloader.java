@@ -1,4 +1,4 @@
-package com.mohistmc.banner.install;
+package com.taiyitistmc.install;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
