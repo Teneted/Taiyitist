@@ -2322,7 +2322,7 @@ public final class CraftServer implements Server {
         Preconditions.checkArgument(key != null, "NamespacedKey key cannot be null");
 
         AdvancementHolder advancement = this.console.getAdvancements().get(CraftNamespacedKey.toMinecraft(key));
-        return (advancement == null) ? null : advancement.bridge$bukkit();
+        return (advancement == null) ? null : advancement.toBukkit();
     }
 
     @Override
@@ -2330,7 +2330,7 @@ public final class CraftServer implements Server {
         return Iterators.unmodifiableIterator(Iterators.transform(this.console.getAdvancements().getAllAdvancements().iterator(), new Function<AdvancementHolder, org.bukkit.advancement.Advancement>() {
             @Override
             public org.bukkit.advancement.Advancement apply(AdvancementHolder advancement) {
-                return advancement.bridge$bukkit();
+                return advancement.toBukkit();
             }
         }));
     }

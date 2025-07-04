@@ -36,7 +36,7 @@ public abstract class MixinPlayerAdvancements {
     @Inject(method = "award",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerAdvancements;getOrStartProgress(Lnet/minecraft/advancements/AdvancementHolder;)Lnet/minecraft/advancements/AdvancementProgress;"))
     public void banner$callEvent(AdvancementHolder advancementHolder, String string, CallbackInfoReturnable<Boolean> cir) {
-        Bukkit.getPluginManager().callEvent(new org.bukkit.event.player.PlayerAdvancementDoneEvent(this.player.getBukkitEntity(), advancementHolder.bridge$bukkit()));
+        Bukkit.getPluginManager().callEvent(new org.bukkit.event.player.PlayerAdvancementDoneEvent(this.player.getBukkitEntity(), advancementHolder.toBukkit()));
     }
 
     @Inject(method = "method_48027",

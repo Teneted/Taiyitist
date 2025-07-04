@@ -13,12 +13,7 @@ public class MixinAdvancementHolder implements InjectionAdvancementHolder {
             new CraftAdvancement(((AdvancementHolder) (Object) this)); // CraftBukkit
 
     @Override
-    public org.bukkit.advancement.Advancement bridge$bukkit() {
-        return bukkit;
-    }
-
-    @Override
     public Advancement toBukkit() {
-        return bridge$bukkit();
+        return bukkit;
     }
 }
