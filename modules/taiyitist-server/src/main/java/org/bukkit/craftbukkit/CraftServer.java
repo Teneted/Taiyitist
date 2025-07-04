@@ -8,10 +8,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
-import com.mohistmc.banner.BannerMCStart;
-import com.mohistmc.banner.BannerMod;
-import com.mohistmc.banner.bukkit.BukkitFieldHooks;
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.TaiyitistMCStart;
+import com.taiyitistmc.TaiyitistMod;
+import com.taiyitistmc.bukkit.BukkitFieldHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.mohistmc.org.yaml.snakeyaml.LoaderOptions;
 import com.mohistmc.org.yaml.snakeyaml.Yaml;
 import com.mohistmc.org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -321,7 +321,7 @@ public final class CraftServer implements Server {
                 return player.getBukkitEntity();
             }
         }));
-        this.serverVersion = BannerMCStart.getVersion();
+        this.serverVersion = TaiyitistMCStart.getVersion();
         this.structureManager = new CraftStructureManager(console.getStructureManager(), console.registryAccess());
         this.dataPackManager = new CraftDataPackManager(this.getServer().getPackRepository());
         this.serverTickManager = new CraftServerTickManager(console.tickRateManager());
@@ -952,7 +952,7 @@ public final class CraftServer implements Server {
 
     @Override
     public void reload() {
-        BannerMod.LOGGER.warn("For your server security, Bukkit reloading is not supported by Banner.");
+        TaiyitistMod.LOGGER.warn("For your server security, Bukkit reloading is not supported by Banner.");
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.legacy;
 
 import com.google.common.base.Preconditions;
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.mojang.serialization.Dynamic;
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package org.spigotmc;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.io.File;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;

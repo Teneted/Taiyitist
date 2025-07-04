@@ -25,6 +25,11 @@ public class TaiyitistGameProvider extends MinecraftGameProvider {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        try {
+            extractBootstrap();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         for (var lib : System.getProperty("taiyitist.fabric.classpath").split(File.pathSeparator)) {
             launcher.addToClassPath(Paths.get(lib));
         }
@@ -90,6 +95,25 @@ public class TaiyitistGameProvider extends MinecraftGameProvider {
         }
         return mod;
     }
+
+    private Path extractBootstrap() throws Exception {
+        var path = getClass().getModule().getResourceAsStream("/META-INF/jars/taiyitist-bootstrap-" + getTaiyitistVersion() + ".jar");
+        var dir = Paths.get(".taiyitist", "bootstrap");
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+        }
+        var bootstrap = dir.resolve("taiyitist-bootstrap-" + getTaiyitistVersion() + ".jar");
+        if (!Files.exists(bootstrap) || Boolean.getBoolean("taiyitist.alwaysExtract")) {
+            try (var files = Files.list(dir)) {
+                for (Path old : files.toList()) {
+                    Files.delete(old);
+                }
+                Files.copy(path, bootstrap);
+            }
+        }
+        return bootstrap;
+    }
+
 
     @Override
     public boolean isEnabled() {

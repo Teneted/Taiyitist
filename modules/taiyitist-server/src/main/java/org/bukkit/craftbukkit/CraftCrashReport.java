@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;

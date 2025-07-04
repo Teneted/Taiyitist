@@ -10,8 +10,11 @@ base {
 	archivesName = project.archives_base_name
 }
 
+loom {
+	accessWidenerPath = file('src/main/resources/taiyitist-access-wideners.accesswidener')
+}
+
 dependencies {
-	include(rootProject.project("taiyitist-api"))
 	implementation "net.kyori:adventure-api:4.17.0"
 	implementation "net.kyori:adventure-key:4.17.0"
 	implementation "net.kyori:adventure-text-minimessage:4.17.0"
@@ -26,7 +29,3 @@ dependencies {
 	implementation "net.kyori:examination-string:1.3.0"
 	include(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${property("mixin_squared_version")}"))
 }
-
-moduleDependencies(project, [
-		"taiyitist-api"
-])

@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
-import com.mohistmc.banner.bukkit.DoubleChestInventory;
+import com.taiyitistmc.bukkit.DoubleChestInventory;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;

@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.Iterator;
 import java.util.Map;
 import net.minecraft.world.item.crafting.RecipeHolder;

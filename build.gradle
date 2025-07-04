@@ -180,8 +180,8 @@ jar {
     from("LICENSE")
     manifest {
         attributes(
-                'Main-Class': 'com.mohistmc.banner.BannerLauncher',
-                'Specification-Title'   : 'Banner',
+                'Main-Class': 'com.taiyitistmc.TaiyitistLauncher',
+                'Specification-Title'   : 'Taiyitist',
                 'Specification-Vendor'  : 'TaiyitistMC',
                 'Specification-Version' : gradleutils.gitInfo.abbreviatedId,
                 'Implementation-Title'  : 'Taiyitist',

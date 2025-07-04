@@ -1,8 +1,8 @@
 package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
-import com.mohistmc.banner.bukkit.BukkitFieldHooks;
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitFieldHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

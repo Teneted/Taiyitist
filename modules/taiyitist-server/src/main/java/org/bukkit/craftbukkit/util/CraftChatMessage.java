@@ -3,7 +3,7 @@ package org.bukkit.craftbukkit.util;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.JsonParseException;
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

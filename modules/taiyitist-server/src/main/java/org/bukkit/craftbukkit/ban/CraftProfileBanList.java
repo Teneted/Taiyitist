@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.ban;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.mojang.authlib.GameProfile;
 import java.time.Duration;
 import java.time.Instant;

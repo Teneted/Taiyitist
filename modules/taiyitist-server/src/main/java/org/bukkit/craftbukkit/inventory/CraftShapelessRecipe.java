@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.List;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;

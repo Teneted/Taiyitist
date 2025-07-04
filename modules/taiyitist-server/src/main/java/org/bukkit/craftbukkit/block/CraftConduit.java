@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.Collection;
 import net.minecraft.core.BlockPos;

@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.map;
 
-import com.mohistmc.banner.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
