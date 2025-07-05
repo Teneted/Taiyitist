@@ -12,8 +12,11 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Wolf.class)
@@ -25,6 +28,13 @@ public abstract class MixinWolf extends TamableAnimal {
 
     @Redirect(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;setOrderedToSit(Z)V"))
     private void banner$handledBy(Wolf wolfEntity, boolean fire) {
+    }
+
+    @Inject(method = "setTame", at = @At("RETURN"))
+    private void banner$healToMax(boolean tamed, CallbackInfo ci) {
+        if (tamed) {
+            this.setHealth(this.getMaxHealth());
+        }
     }
 
     // CraftBukkit - add overriden version
@@ -51,5 +61,10 @@ public abstract class MixinWolf extends TamableAnimal {
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
     private void banner$attackReason(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
+    }
+
+    @ModifyConstant(method = "setTame", constant = @Constant(floatValue = 20.0F))
+    private float banner$resetHealth(float constant) {
+        return this.getMaxHealth(); // CraftBukkit - 20.0 -> getMaxHealth()
     }
 }

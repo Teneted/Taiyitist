@@ -10,37 +10,30 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 //TODO fix inject methods
 @Mixin(Inventory.class)
 public abstract class MixinInventory implements Container, Nameable, InjectionInventory {
 
-    @Shadow
-    @Final
-    public NonNullList<ItemStack> items;
-    @Shadow
-    @Final
-    public NonNullList<ItemStack> armor;
-    @Shadow
-    @Final
-    public NonNullList<ItemStack> offhand;
-    @Shadow
-    @Final
-    public Player player;
-    public List<HumanEntity> transaction = new java.util.ArrayList<>();
-    @Shadow
-    @Final
-    private List<NonNullList<ItemStack>> compartments;
-    private int maxStack = MAX_STACK;
+    @Shadow @Final public NonNullList<ItemStack> items;
+    @Shadow @Final public NonNullList<ItemStack> armor;
+    @Shadow @Final public NonNullList<ItemStack> offhand;
+    @Shadow @Final private List<NonNullList<ItemStack>> compartments;
+    @Shadow @Final public Player player;
 
-    @Shadow
-    protected abstract boolean hasRemainingSpaceForItem(ItemStack destination, ItemStack origin);
+    @Shadow protected abstract boolean hasRemainingSpaceForItem(ItemStack destination, ItemStack origin);
+
+    @Unique
+    public List<HumanEntity> transaction = new java.util.ArrayList<>();
+    @Unique
+    private int maxStack = MAX_STACK;
 
     @Override
     public List<ItemStack> getContents() {

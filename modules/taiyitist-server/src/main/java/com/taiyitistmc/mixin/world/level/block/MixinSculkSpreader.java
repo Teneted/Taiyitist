@@ -4,10 +4,11 @@ import com.taiyitistmc.injection.world.level.block.InjectionSculkSpreader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SculkSpreader;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.event.block.SculkBloomEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SculkSpreader.class)
 public abstract class MixinSculkSpreader implements InjectionSculkSpreader {
 
-    private transient Level banner$level;
+    @Shadow public abstract boolean isWorldGeneration();
 
-    @Shadow
-    public abstract boolean isWorldGeneration();
+    @Unique
+    private transient Level banner$level;
 
     @Override
     public void banner$setLevel(Level level) {

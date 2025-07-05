@@ -10,8 +10,8 @@ import net.minecraft.world.entity.ai.behavior.OneShot;
 import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public class MixinBabyFollowAdult {
                         return false;
                     } else {
                         LivingEntity ageablemob = entity.get(memoryAccessor);
-                        if (ageableMob.closerThan(ageablemob, uniformInt.getMaxValue() + 1) && !ageableMob.closerThan(ageablemob, uniformInt.getMinValue())) {
+                        if (ageableMob.closerThan(ageablemob, (double) (uniformInt.getMaxValue() + 1)) && !ageableMob.closerThan(ageablemob, (double) uniformInt.getMinValue())) {
                             // CraftBukkit start
                             EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent(ageableMob, ageablemob, EntityTargetEvent.TargetReason.FOLLOW_LEADER);
                             if (event.isCancelled()) {

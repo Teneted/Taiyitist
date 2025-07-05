@@ -7,8 +7,6 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import org.bukkit.BanEntry;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
@@ -16,12 +14,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Server;
-import org.bukkit.ServerLinks;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.WeatherType;
@@ -46,8 +42,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageRecipient;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.ApiStatus;
@@ -167,45 +161,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      */
     @Nullable
     public InetSocketAddress getAddress();
-
-    /**
-     * Gets if this connection has been transferred from another server.
-     *
-     * @return true if the connection has been transferred
-     */
-    public boolean isTransferred();
-
-    /**
-     * Retrieves a cookie from this player.
-     *
-     * @param key the key identifying the cookie cookie
-     * @return a {@link CompletableFuture} that will be completed when the
-     * Cookie response is received or otherwise available. If the cookie is not
-     * set in the client, the {@link CompletableFuture} will complete with a
-     * null value.
-     */
-    @NotNull
-    CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey key);
-
-    /**
-     * Stores a cookie in this player's client.
-     *
-     * @param key the key identifying the cookie cookie
-     * @param value the data to store in the cookie
-     * @throws IllegalStateException if a cookie cannot be stored at this time
-     */
-    void storeCookie(@NotNull NamespacedKey key, @NotNull byte[] value);
-
-    /**
-     * Requests this player to connect to a different server specified by host
-     * and port.
-     *
-     * @param host the host of the server to transfer to
-     * @param port the port of the server to transfer to
-     * @throws IllegalStateException if a transfer cannot take place at this
-     * time
-     */
-    void transfer(@NotNull String host, int port);
 
     /**
      * Sends this sender a message raw
@@ -352,6 +307,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *
      * @return true if player is in sneak mode
      */
+    @Override // Paper
     public boolean isSneaking();
 
     /**
@@ -359,6 +315,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *
      * @param sneak true if player should appear sneaking
      */
+    @Override // Paper
     public void setSneaking(boolean sneak);
 
     /**
@@ -414,44 +371,17 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * they have not slept in one or their current bed spawn is invalid.
      *
      * @return Bed Spawn Location if bed exists, otherwise null.
-     *
-     * @see #getRespawnLocation()
-     * @deprecated Misleading name. This method also returns the location of
-     * respawn anchors.
      */
     @Nullable
     @Override
-    @Deprecated
     public Location getBedSpawnLocation();
-
-    /**
-     * Gets the Location where the player will spawn at, null if they
-     * don't have a valid respawn point.
-     *
-     * @return respawn location if exists, otherwise null.
-     */
-    @Nullable
-    @Override
-    public Location getRespawnLocation();
 
     /**
      * Sets the Location where the player will spawn at their bed.
      *
      * @param location where to set the respawn location
-     *
-     * @see #setRespawnLocation(Location)
-     * @deprecated Misleading name. This method sets the player's respawn
-     * location more generally and is not limited to beds.
      */
-    @Deprecated
     public void setBedSpawnLocation(@Nullable Location location);
-
-    /**
-     * Sets the Location where the player will respawn.
-     *
-     * @param location where to set the respawn location
-     */
-    public void setRespawnLocation(@Nullable Location location);
 
     /**
      * Sets the Location where the player will spawn at their bed.
@@ -459,28 +389,15 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * @param location where to set the respawn location
      * @param force whether to forcefully set the respawn location even if a
      *     valid bed is not present
-     *
-     * @see #setRespawnLocation(Location, boolean)
-     * @deprecated Misleading name. This method sets the player's respawn
-     * location more generally and is not limited to beds.
      */
-    @Deprecated
     public void setBedSpawnLocation(@Nullable Location location, boolean force);
 
     /**
-     * Sets the Location where the player will respawn.
+     * Play a note for a player at a location. This requires a note block
+     * at the particular location (as far as the client is concerned). This
+     * will not work without a note block. This will not work with cake.
      *
-     * @param location where to set the respawn location
-     * @param force whether to forcefully set the respawn location even if a
-     *     valid respawn point is not present
-     */
-    public void setRespawnLocation(@Nullable Location location, boolean force);
-
-    /**
-     * Play a note for the player at a location. <br>
-     * This <i>will</i> work with cake.
-     *
-     * @param loc The location to play the note
+     * @param loc The location of a note block.
      * @param instrument The instrument ID.
      * @param note The note ID.
      * @deprecated Magic value
@@ -489,11 +406,11 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
     public void playNote(@NotNull Location loc, byte instrument, byte note);
 
     /**
-     * Play a note for the player at a location. <br>
-     * This <i>will</i> work with cake.
-     * <p>
-     * This method will fail silently when called with {@link Instrument#CUSTOM_HEAD}.
-     * @param loc The location to play the note
+     * Play a note for a player at a location. This requires a note block
+     * at the particular location (as far as the client is concerned). This
+     * will not work without a note block. This will not work with cake.
+     *
+     * @param loc The location of a note block
      * @param instrument The instrument
      * @param note The note
      */
@@ -555,38 +472,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
     public void playSound(@NotNull Location location, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch);
 
     /**
-     * Play a sound for a player at the location. For sounds with multiple
-     * variations passing the same seed will always play the same variation.
-     * <p>
-     * This function will fail silently if Location or Sound are null.
-     *
-     * @param location The location to play the sound
-     * @param sound The sound to play
-     * @param category The category of the sound
-     * @param volume The volume of the sound
-     * @param pitch The pitch of the sound
-     * @param seed The seed for the sound
-     */
-    public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch, long seed);
-
-    /**
-     * Play a sound for a player at the location. For sounds with multiple
-     * variations passing the same seed will always play the same variation.
-     * <p>
-     * This function will fail silently if Location or Sound are null. No sound
-     * will be heard by the player if their client does not have the respective
-     * sound for the value passed.
-     *
-     * @param location The location to play the sound
-     * @param sound The internal sound name to play
-     * @param category The category of the sound
-     * @param volume The volume of the sound
-     * @param pitch The pitch of the sound
-     * @param seed The seed for the sound
-     */
-    public void playSound(@NotNull Location location, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch, long seed);
-
-    /**
      * Play a sound for a player at the location of the entity.
      * <p>
      * This function will fail silently if Entity or Sound are null.
@@ -635,36 +520,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * @param pitch The pitch of the sound
      */
     public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch);
-
-    /**
-     * Play a sound for a player at the location of the entity. For sounds with
-     * multiple variations passing the same seed will always play the same variation.
-     * <p>
-     * This function will fail silently if Entity or Sound are null.
-     *
-     * @param entity The entity to play the sound
-     * @param sound The sound to play
-     * @param category The category of the sound
-     * @param volume The volume of the sound
-     * @param pitch The pitch of the sound
-     * @param seed The seed for the sound
-     */
-    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch, long seed);
-
-    /**
-     * Play a sound for a player at the location of the entity. For sounds with
-     * multiple variations passing the same seed will always play the same variation.
-     * <p>
-     * This function will fail silently if Entity or Sound are null.
-     *
-     * @param entity The entity to play the sound
-     * @param sound The sound to play
-     * @param category The category of the sound
-     * @param volume The volume of the sound
-     * @param pitch The pitch of the sound
-     * @param seed The seed for the sound
-     */
-    public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch, long seed);
 
     /**
      * Stop the specified sound from playing.
@@ -931,13 +786,10 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * a certain location. This will not actually change the world in any way.
      * This method will use a sign at the location's block or a faked sign
      * sent via
-     * {@link #sendBlockChange(org.bukkit.Location, org.bukkit.block.data.BlockData)}.
+     * {@link #sendBlockChange(org.bukkit.Location, org.bukkit.Material, byte)}.
      * <p>
      * If the client does not have a sign at the given location it will
      * display an error message to the user.
-     * <p>
-     * To change all attributes of a sign, including the back Side, use
-     * {@link #sendBlockUpdate(org.bukkit.Location, org.bukkit.block.TileState)}.
      *
      * @param loc the location of the sign
      * @param lines the new text on the sign or null to clear it
@@ -970,38 +822,53 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
     public void sendBlockUpdate(@NotNull Location loc, @NotNull TileState tileState) throws IllegalArgumentException;
 
     /**
-     * Change a potion effect for the target entity. This will not actually
-     * change the entity's potion effects in any way.
-     * <p>
-     * <b>Note:</b> Sending an effect change to a player for themselves may
-     * cause unexpected behavior on the client. Effects sent this way will also
-     * not be removed when their timer reaches 0, they can be removed with
-     * {@link #sendPotionEffectChangeRemove(LivingEntity, PotionEffectType)}
-     *
-     * @param entity the entity whose potion effects to change
-     * @param effect the effect to change
-     */
-    public void sendPotionEffectChange(@NotNull LivingEntity entity, @NotNull PotionEffect effect);
-
-    /**
-     * Remove a potion effect for the target entity. This will not actually
-     * change the entity's potion effects in any way.
-     * <p>
-     * <b>Note:</b> Sending an effect change to a player for themselves may
-     * cause unexpected behavior on the client.
-     *
-     * @param entity the entity whose potion effects to change
-     * @param type the effect type to remove
-     */
-    public void sendPotionEffectChangeRemove(@NotNull LivingEntity entity, @NotNull PotionEffectType type);
-
-    /**
      * Render a map and send it to the player in its entirety. This may be
      * used when streaming the map in the normal manner is not desirable.
      *
      * @param map The map to be sent
      */
     public void sendMap(@NotNull MapView map);
+
+    // Paper start
+    /**
+     * Shows the player the win screen that normally is only displayed after one kills the ender dragon
+     * and exits the end for the first time.
+     * In vanilla, the win screen starts with a poem and then continues with the credits but its content can be
+     * changed by using a resource pack.
+     * <br>
+     * Calling this method does not change the value of {@link #hasSeenWinScreen()}.
+     * That means that the win screen is still displayed to a player if they leave the end for the first time, even though
+     * they have seen it before because this method was called.
+     * Note this method does not make the player invulnerable, which is normally expected when viewing credits.
+     *
+     * @see #hasSeenWinScreen()
+     * @see #setHasSeenWinScreen(boolean)
+     * @see <a href="https://minecraft.fandom.com/wiki/End_Poem#Technical_details">https://minecraft.fandom.com/wiki/End_Poem#Technical_details</a>
+     */
+    public void showWinScreen();
+
+    /**
+     * Returns whether this player has seen the win screen before.
+     * When a player leaves the end the win screen is shown to them if they have not seen it before.
+     *
+     * @return Whether this player has seen the win screen before
+     * @see #setHasSeenWinScreen(boolean)
+     * @see #showWinScreen()
+     * @see <a href="https://minecraft.fandom.com/wiki/End_Poem">https://minecraft.fandom.com/wiki/End_Poem</a>
+     */
+    public boolean hasSeenWinScreen();
+
+    /**
+     * Changes whether this player has seen the win screen before.
+     * When a player leaves the end the win screen is shown to them if they have not seen it before.
+     *
+     * @param hasSeenWinScreen Whether this player has seen the win screen before
+     * @see #hasSeenWinScreen()
+     * @see #showWinScreen()
+     * @see <a href="https://minecraft.fandom.com/wiki/End_Poem">https://minecraft.fandom.com/wiki/End_Poem</a>
+     */
+    public void setHasSeenWinScreen(boolean hasSeenWinScreen);
+    // Paper end
 
     /**
      * Send a hurt animation. This fakes incoming damage towards the player from
@@ -1012,13 +879,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * to the left
      */
     public void sendHurtAnimation(float yaw);
-
-    /**
-     * Sends the given server links to the player.
-     *
-     * @param links links to send
-     */
-    public void sendLinks(@NotNull ServerLinks links);
 
     /**
      * Add custom chat completion suggestions shown to the player while typing a
@@ -1053,7 +913,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
 
     /**
      * Forces an update of the player's entire inventory.
-     *
      * @apiNote It should not be necessary for plugins to use this method. If it
      * is required for some reason, it is probably a bug.
      */
@@ -1320,7 +1179,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *
      * @param plugin Plugin that wants to hide the entity
      * @param entity Entity to hide
+     * @apiNote draft API
      */
+    @ApiStatus.Experimental
     public void hideEntity(@NotNull Plugin plugin, @NotNull Entity entity);
 
     /**
@@ -1330,7 +1191,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *
      * @param plugin Plugin that wants to show the entity
      * @param entity Entity to show
+     * @apiNote draft API
      */
+    @ApiStatus.Experimental
     public void showEntity(@NotNull Plugin plugin, @NotNull Entity entity);
 
     /**
@@ -1339,7 +1202,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      * @param entity Entity to check
      * @return True if the provided entity is not being hidden from this
      *     player
+     * @apiNote draft API
      */
+    @ApiStatus.Experimental
     public boolean canSee(@NotNull Entity entity);
 
     /**
@@ -1524,8 +1389,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *     case this method will have no affect on them. Use the
      *     {@link PlayerResourcePackStatusEvent} to figure out whether or not
      *     the player loaded the pack!
-     * <li>To remove a resource pack you can use
-     *     {@link #removeResourcePack(UUID)} or {@link #removeResourcePacks()}.
+     * <li>There is no concept of resetting resource packs back to default
+     *     within Minecraft, so players will have to relog to do so or you
+     *     have to send an empty pack.
      * <li>The request is sent with empty string as the hash when the hash is
      *     not provided. This might result in newer versions not loading the
      *     pack correctly.
@@ -1567,8 +1433,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *     case this method will have no affect on them. Use the
      *     {@link PlayerResourcePackStatusEvent} to figure out whether or not
      *     the player loaded the pack!
-     * <li>To remove a resource pack you can use
-     *     {@link #removeResourcePack(UUID)} or {@link #removeResourcePacks()}.
+     * <li>There is no concept of resetting resource packs back to default
+     *     within Minecraft, so players will have to relog to do so or you
+     *     have to send an empty pack.
      * <li>The request is sent with empty string as the hash when the hash is
      *     not provided. This might result in newer versions not loading the
      *     pack correctly.
@@ -1611,8 +1478,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *     case this method will have no affect on them. Use the
      *     {@link PlayerResourcePackStatusEvent} to figure out whether or not
      *     the player loaded the pack!
-     * <li>To remove a resource pack you can use
-     *     {@link #removeResourcePack(UUID)} or {@link #removeResourcePacks()}.
+     * <li>There is no concept of resetting resource packs back to default
+     *     within Minecraft, so players will have to relog to do so or you
+     *     have to send an empty pack.
      * <li>The request is sent with empty string as the hash when the hash is
      *     not provided. This might result in newer versions not loading the
      *     pack correctly.
@@ -1634,113 +1502,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      *     long.
      */
     public void setResourcePack(@NotNull String url, @Nullable byte[] hash, @Nullable String prompt, boolean force);
-
-    /**
-     * Request that the player's client download and switch resource packs.
-     * <p>
-     * The player's client will download the new resource pack asynchronously
-     * in the background, and will automatically switch to it once the
-     * download is complete. If the client has downloaded and cached a
-     * resource pack with the same hash in the past it will not download but
-     * directly apply the cached pack. If the hash is null and the client has
-     * downloaded and cached the same resource pack in the past, it will
-     * perform a file size check against the response content to determine if
-     * the resource pack has changed and needs to be downloaded again. When
-     * this request is sent for the very first time from a given server, the
-     * client will first display a confirmation GUI to the player before
-     * proceeding with the download.
-     * <p>
-     * Notes:
-     * <ul>
-     * <li>Players can disable server resources on their client, in which
-     *     case this method will have no affect on them. Use the
-     *     {@link PlayerResourcePackStatusEvent} to figure out whether or not
-     *     the player loaded the pack!
-     * <li>To remove a resource pack you can use
-     *     {@link #removeResourcePack(UUID)} or {@link #removeResourcePacks()}.
-     * <li>The request is sent with empty string as the hash when the hash is
-     *     not provided. This might result in newer versions not loading the
-     *     pack correctly.
-     * </ul>
-     *
-     * @param id Unique resource pack ID.
-     * @param url The URL from which the client will download the resource
-     *     pack. The string must contain only US-ASCII characters and should
-     *     be encoded as per RFC 1738.
-     * @param hash The sha1 hash sum of the resource pack file which is used
-     *     to apply a cached version of the pack directly without downloading
-     *     if it is available. Hast to be 20 bytes long!
-     * @param prompt The optional custom prompt message to be shown to client.
-     * @param force If true, the client will be disconnected from the server
-     *     when it declines to use the resource pack.
-     * @throws IllegalArgumentException Thrown if the URL is null.
-     * @throws IllegalArgumentException Thrown if the URL is too long. The
-     *     length restriction is an implementation specific arbitrary value.
-     * @throws IllegalArgumentException Thrown if the hash is not 20 bytes
-     *     long.
-     */
-    public void setResourcePack(@NotNull UUID id, @NotNull String url, @Nullable byte[] hash, @Nullable String prompt, boolean force);
-
-    /**
-     * Request that the player's client download and include another resource pack.
-     * <p>
-     * The player's client will download the new resource pack asynchronously
-     * in the background, and will automatically add to it once the
-     * download is complete. If the client has downloaded and cached a
-     * resource pack with the same hash in the past it will not download but
-     * directly apply the cached pack. If the hash is null and the client has
-     * downloaded and cached the same resource pack in the past, it will
-     * perform a file size check against the response content to determine if
-     * the resource pack has changed and needs to be downloaded again. When
-     * this request is sent for the very first time from a given server, the
-     * client will first display a confirmation GUI to the player before
-     * proceeding with the download.
-     * <p>
-     * Notes:
-     * <ul>
-     * <li>Players can disable server resources on their client, in which
-     *     case this method will have no affect on them. Use the
-     *     {@link PlayerResourcePackStatusEvent} to figure out whether or not
-     *     the player loaded the pack!
-     * <li>To remove a resource pack you can use
-     *     {@link #removeResourcePack(UUID)} or {@link #removeResourcePacks()}.
-     * <li>The request is sent with empty string as the hash when the hash is
-     *     not provided. This might result in newer versions not loading the
-     *     pack correctly.
-     * </ul>
-     *
-     * @param id Unique resource pack ID.
-     * @param url The URL from which the client will download the resource
-     *     pack. The string must contain only US-ASCII characters and should
-     *     be encoded as per RFC 1738.
-     * @param hash The sha1 hash sum of the resource pack file which is used
-     *     to apply a cached version of the pack directly without downloading
-     *     if it is available. Hast to be 20 bytes long!
-     * @param prompt The optional custom prompt message to be shown to client.
-     * @param force If true, the client will be disconnected from the server
-     *     when it declines to use the resource pack.
-     * @throws IllegalArgumentException Thrown if the URL is null.
-     * @throws IllegalArgumentException Thrown if the URL is too long. The
-     *     length restriction is an implementation specific arbitrary value.
-     * @throws IllegalArgumentException Thrown if the hash is not 20 bytes
-     *     long.
-     */
-    public void addResourcePack(@NotNull UUID id, @NotNull String url, @Nullable byte[] hash, @Nullable String prompt, boolean force);
-
-    /**
-     * Request that the player's client remove a resource pack sent by the
-     * server.
-     *
-     * @param id the id of the resource pack.
-     * @throws IllegalArgumentException If the ID is null.
-     */
-    public void removeResourcePack(@NotNull UUID id);
-
-    /**
-     * Request that the player's client remove all loaded resource pack sent by
-     * the server.
-     */
-    public void removeResourcePacks();
 
     /**
      * Gets the Scoreboard displayed to this player
@@ -2104,54 +1865,6 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
     public <T> void spawnParticle(@NotNull Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, @Nullable T data);
 
     /**
-     * Spawns the particle (the number of times specified by count)
-     * at the target location. The position of each particle will be
-     * randomized positively and negatively by the offset parameters
-     * on each axis.
-     *
-     * @param <T> type of particle data (see {@link Particle#getDataType()}
-     * @param particle the particle to spawn
-     * @param location the location to spawn at
-     * @param count the number of particles
-     * @param offsetX the maximum random offset on the X axis
-     * @param offsetY the maximum random offset on the Y axis
-     * @param offsetZ the maximum random offset on the Z axis
-     * @param extra the extra data for this particle, depends on the
-     *              particle used (normally speed)
-     * @param data the data to use for the particle or null,
-     *             the type of this depends on {@link Particle#getDataType()}
-     * @param force whether to send the particle to the player in an extended
-     *              range and encourage their client to render it regardless of
-     *              settings
-     */
-    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, @Nullable T data, boolean force);
-
-    /**
-     * Spawns the particle (the number of times specified by count)
-     * at the target location. The position of each particle will be
-     * randomized positively and negatively by the offset parameters
-     * on each axis.
-     *
-     * @param <T> type of particle data (see {@link Particle#getDataType()}
-     * @param particle the particle to spawn
-     * @param x the position on the x axis to spawn at
-     * @param y the position on the y axis to spawn at
-     * @param z the position on the z axis to spawn at
-     * @param count the number of particles
-     * @param offsetX the maximum random offset on the X axis
-     * @param offsetY the maximum random offset on the Y axis
-     * @param offsetZ the maximum random offset on the Z axis
-     * @param extra the extra data for this particle, depends on the
-     *              particle used (normally speed)
-     * @param data the data to use for the particle or null,
-     *             the type of this depends on {@link Particle#getDataType()}
-     * @param force whether to send the particle to the player in an extended
-     *              range and encourage their client to render it regardless of
-     *              settings
-     */
-    public <T> void spawnParticle(@NotNull Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, @Nullable T data, boolean force);
-
-    /**
      * Return the player's progression on the specified advancement.
      *
      * @param advancement advancement
@@ -2198,6 +1911,22 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      */
     @NotNull
     public String getLocale();
+
+    // Paper start
+    /**
+     * Get whether the player can affect mob spawning
+     *
+     * @return if the player can affect mob spawning
+     */
+    public boolean getAffectsSpawning();
+
+    /**
+     * Set whether the player can affect mob spawning
+     *
+     * @param affects Whether the player can affect mob spawning
+     */
+    public void setAffectsSpawning(boolean affects);
+    // Paper end
 
     /**
      * Update the list of commands sent to the client.
@@ -2259,6 +1988,29 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
          */
         @NotNull
         public InetSocketAddress getRawAddress() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Gets whether the player collides with entities
+         *
+         * @return the player's collision toggle state
+         * @deprecated see {@link LivingEntity#isCollidable()}
+         */
+        @Deprecated
+        public boolean getCollidesWithEntities() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Sets whether the player collides with entities
+         *
+         * @param collides whether the player should collide with entities or
+         * not.
+         * @deprecated {@link LivingEntity#setCollidable(boolean)}
+         */
+        @Deprecated
+        public void setCollidesWithEntities(boolean collides) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

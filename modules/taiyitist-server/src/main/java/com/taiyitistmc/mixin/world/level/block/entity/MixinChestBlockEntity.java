@@ -9,18 +9,22 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class MixinChestBlockEntity extends RandomizableContainerBlockEntity {
 
-    public List<HumanEntity> transaction = new ArrayList<>();
-    // @formatter:on
     // @formatter:off
     @Shadow private NonNullList<ItemStack> items;
+    // @formatter:on
+
+    @Unique
+    public List<HumanEntity> transaction = new ArrayList<>();
+    @Unique
     private int maxStack = MAX_STACK;
 
     protected MixinChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {

@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 
 public class RestartCommand extends Command
 {

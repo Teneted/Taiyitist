@@ -6,13 +6,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,11 +22,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DispenserMenu.class)
 public abstract class MixinDispenserMenu extends AbstractContainerMenu {
 
-    @Shadow
-    @Final
-    public Container dispenser;
+    @Shadow @Final public Container dispenser;
     // CraftBukkit start
+    @Unique
     private CraftInventoryView bukkitEntity = null;
+    @Unique
     private Inventory player;
 
     protected MixinDispenserMenu(@Nullable MenuType<?> menuType, int i) {
@@ -39,7 +40,7 @@ public abstract class MixinDispenserMenu extends AbstractContainerMenu {
         this.player = inventory;
     }
 
-    @Inject(method = "stillValid", at = @At("HEAD"))
+    @Inject(method = "stillValid", at= @At("HEAD"))
     private void banner$checkValid(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (!this.bridge$checkReachable()) {
             cir.cancel();

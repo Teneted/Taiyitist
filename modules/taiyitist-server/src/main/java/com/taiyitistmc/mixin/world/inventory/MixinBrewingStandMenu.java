@@ -7,12 +7,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
-import org.bukkit.craftbukkit.inventory.CraftInventoryBrewer;
-import org.bukkit.craftbukkit.inventory.view.CraftBrewingStandView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryBrewer;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,10 +22,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BrewingStandMenu.class)
 public abstract class MixinBrewingStandMenu extends AbstractContainerMenu {
 
-    @Shadow
-    @Final
-    private Container brewingStand;
-    private CraftBrewingStandView bukkitEntity = null;
+    @Shadow @Final private Container brewingStand;
+    @Unique
+    private CraftInventoryView bukkitEntity = null;
+    @Unique
     private Inventory playerInventory;
 
     protected MixinBrewingStandMenu(@Nullable MenuType<?> menuType, int i) {
@@ -42,13 +43,13 @@ public abstract class MixinBrewingStandMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public CraftBrewingStandView getBukkitView() {
+    public CraftInventoryView getBukkitView() {
         if (bukkitEntity != null) {
             return bukkitEntity;
         }
 
         CraftInventoryBrewer inventory = new CraftInventoryBrewer(this.brewingStand);
-        bukkitEntity = new CraftBrewingStandView(this.playerInventory.player.getBukkitEntity(), inventory, (BrewingStandMenu) (Object) this);
+        bukkitEntity = new CraftInventoryView(this.playerInventory.player.getBukkitEntity(), inventory, (AbstractContainerMenu) (Object) this);
         return bukkitEntity;
     }
 }

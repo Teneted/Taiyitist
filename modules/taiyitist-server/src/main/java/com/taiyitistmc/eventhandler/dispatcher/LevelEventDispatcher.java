@@ -4,7 +4,7 @@ import java.util.Locale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 
 public class LevelEventDispatcher {
 

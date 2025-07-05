@@ -6,12 +6,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.map.CraftMapCursor;
-import org.bukkit.craftbukkit.map.RenderData;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.map.RenderData;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,55 +17,52 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MapItemSavedData.HoldingPlayer.class)
 public abstract class MixinMapItemSavedData_HoldingPlayer {
 
-    @Shadow
-    @Final
-    public Player player;
-    @Shadow
-    @Final
-    private MapItemSavedData field_132;
+    @Shadow @Final private MapItemSavedData field_132;
+    @Shadow @Final public Player player;
     @Unique
-    private final byte[] banner$colors = field_132.colors;
+    private byte[] banner$colors = field_132.colors;
     @Unique
-    private final java.util.Collection<MapDecoration> icons = new java.util.ArrayList<>();
+    private java.util.Collection<MapDecoration> icons = new java.util.ArrayList<>();
 
-    private final AtomicReference<RenderData> banner$render = new AtomicReference<>();
-    private final AtomicReference<Player> banner$player = new AtomicReference<>();
-
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$initRender(MapItemSavedData mapItemSavedData, Player player, CallbackInfo ci) {
-        banner$player.set(player);
-    }
+    private AtomicReference<RenderData> banner$render = new AtomicReference<>();
 
     @Inject(method = "nextUpdatePacket", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$HoldingPlayer;createPatch()Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$MapPatch;"))
-    private void banner$checkColors(MapId mapId, CallbackInfoReturnable<Packet<?>> cir) {
-        RenderData render = field_132.bridge$mapView().render((CraftPlayer) this.banner$player.getAndSet(null).getBukkitEntity()); // CraftBukkit
-        banner$render.set(render);
-        field_132.colors = render.buffer;
+    private void banner$checkColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
+        if (this.player != null) {
+            RenderData render = field_132.bridge$mapView().render((CraftPlayer) this.player.getBukkitEntity()); // CraftBukkit
+            banner$render.set(render);
+            field_132.colors = render.buffer;
+        }
     }
 
     @Inject(method = "nextUpdatePacket", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$HoldingPlayer;createPatch()Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$MapPatch;",
             shift = At.Shift.AFTER))
-    private void banner$setColors(MapId mapId, CallbackInfoReturnable<Packet<?>> cir) {
-        field_132.colors = banner$colors;
+    private void banner$setColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
+        if (banner$colors != null) {
+            field_132.colors = banner$colors;
+        }
     }
 
     @Redirect(method = "nextUpdatePacket", at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;"))
     private Collection<MapDecoration> banner$resetCollections(Map instance) {
-        // CraftBukkit start
-        for (org.bukkit.map.MapCursor cursor : banner$render.getAndSet(null).cursors) {
-            if (cursor.isVisible()) {
-                icons.add(new MapDecoration(CraftMapCursor.CraftType.bukkitToMinecraftHolder(cursor.getType()), cursor.getX(), cursor.getY(), cursor.getDirection(), CraftChatMessage.fromStringOrOptional(cursor.getCaption())));
+        if (this.player != null && banner$render.get() != null) {
+            // CraftBukkit start
+            for (org.bukkit.map.MapCursor cursor : banner$render.getAndSet(null).cursors) {
+                if (cursor.isVisible()) {
+                    icons.add(new MapDecoration(MapDecoration.Type.byIcon(cursor.getRawType()), cursor.getX(), cursor.getY(), cursor.getDirection(), CraftChatMessage.fromStringOrNull(cursor.getCaption())));
+                }
             }
+            return icons;
+            // CraftBukkit end
+        } else {
+            return field_132.decorations.values();
         }
-        return icons;
-        // CraftBukkit end
     }
 }

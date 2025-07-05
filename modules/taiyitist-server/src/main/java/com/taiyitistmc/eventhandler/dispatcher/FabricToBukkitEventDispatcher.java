@@ -2,8 +2,8 @@ package com.taiyitistmc.eventhandler.dispatcher;
 
 import com.taiyitistmc.fabric.FabricEventFactory;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class FabricToBukkitEventDispatcher {

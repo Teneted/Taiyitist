@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -29,9 +29,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(CaveVines.class)
 public interface MixinCaveVines {
 
-    @Shadow
-    @Final
-    BooleanProperty BERRIES = BlockStateProperties.BERRIES;
+    @Shadow @Final BooleanProperty BERRIES = BlockStateProperties.BERRIES;
 
     /**
      * @author wdog5
@@ -39,9 +37,9 @@ public interface MixinCaveVines {
      */
     @Overwrite
     static InteractionResult use(@Nullable Entity entity, BlockState blockState, Level level, BlockPos blockPos) {
-        if (blockState.getValue(BERRIES)) {
+        if ((Boolean)blockState.getValue(BERRIES)) {
             // CraftBukkit start
-            if (!CraftEventFactory.callEntityChangeBlockEvent(entity, blockPos, blockState.setValue(CaveVines.BERRIES, false))) {
+            if (!CraftEventFactory.callEntityChangeBlockEvent(entity, blockPos, (BlockState) blockState.setValue(CaveVines.BERRIES, false))) {
                 return InteractionResult.SUCCESS;
             }
 
@@ -58,8 +56,8 @@ public interface MixinCaveVines {
             }
             // CraftBukkit end
             float f = Mth.randomBetween(level.random, 0.8F, 1.2F);
-            level.playSound(null, blockPos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, f);
-            BlockState blockState2 = blockState.setValue(BERRIES, false);
+            level.playSound((Player)null, blockPos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, f);
+            BlockState blockState2 = (BlockState)blockState.setValue(BERRIES, false);
             level.setBlock(blockPos, blockState2, 2);
             level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(entity, blockState2));
             return InteractionResult.sidedSuccess(level.isClientSide);

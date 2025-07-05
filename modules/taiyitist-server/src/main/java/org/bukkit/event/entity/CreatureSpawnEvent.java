@@ -64,10 +64,6 @@ public class CreatureSpawnEvent extends EntitySpawnEvent {
          */
         SPAWNER,
         /**
-         * When a creature spawns from a trial spawner
-         */
-        TRIAL_SPAWNER,
-        /**
          * When a creature spawns from an egg
          */
         EGG,
@@ -201,15 +197,6 @@ public class CreatureSpawnEvent extends EntitySpawnEvent {
          * When a creature is spawned by the "/summon" command
          */
         COMMAND,
-        /**
-         * When a creature is spawned by an enchantment
-         */
-        ENCHANTMENT,
-        /**
-         * When a creature is spawned by a potion effect, for example:
-         * {@link org.bukkit.potion.PotionType#OOZING}, {@link org.bukkit.potion.PotionType#INFESTED}
-         */
-        POTION_EFFECT,
         /**
          * When a creature is spawned by plugins
          */

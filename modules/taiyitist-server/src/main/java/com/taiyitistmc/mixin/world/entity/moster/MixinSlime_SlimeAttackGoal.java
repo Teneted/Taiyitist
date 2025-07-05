@@ -12,12 +12,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(targets = "net.minecraft.world.entity.monster.Slime.SlimeAttackGoal")
 public class MixinSlime_SlimeAttackGoal extends Goal {
 
-    @Shadow
-    @Final
-    private Slime slime;
+    @Shadow @Final private Slime slime;
 
-    @Shadow
-    private int growTiredTimer;
+    @Shadow private int growTiredTimer;
 
     /**
      * @author wdog5

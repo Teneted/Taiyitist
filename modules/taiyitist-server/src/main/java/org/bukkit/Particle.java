@@ -3,176 +3,154 @@ package org.bukkit;
 import com.google.common.base.Preconditions;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 
-public enum Particle implements Keyed {
-    POOF("poof"),
-    EXPLOSION("explosion"),
-    EXPLOSION_EMITTER("explosion_emitter"),
-    FIREWORK("firework"),
-    BUBBLE("bubble"),
-    SPLASH("splash"),
-    FISHING("fishing"),
-    UNDERWATER("underwater"),
-    CRIT("crit"),
-    ENCHANTED_HIT("enchanted_hit"),
-    SMOKE("smoke"),
-    LARGE_SMOKE("large_smoke"),
-    EFFECT("effect"),
-    INSTANT_EFFECT("instant_effect"),
-    /**
-     * Uses {@link Color} as DataType
-     */
-    ENTITY_EFFECT("entity_effect", Color.class),
-    WITCH("witch"),
-    DRIPPING_WATER("dripping_water"),
-    DRIPPING_LAVA("dripping_lava"),
-    ANGRY_VILLAGER("angry_villager"),
-    HAPPY_VILLAGER("happy_villager"),
-    MYCELIUM("mycelium"),
-    NOTE("note"),
-    PORTAL("portal"),
-    ENCHANT("enchant"),
-    FLAME("flame"),
-    LAVA("lava"),
-    CLOUD("cloud"),
+public enum Particle {
+    EXPLOSION_NORMAL,
+    EXPLOSION_LARGE,
+    EXPLOSION_HUGE,
+    FIREWORKS_SPARK,
+    WATER_BUBBLE,
+    WATER_SPLASH,
+    WATER_WAKE,
+    SUSPENDED,
+    SUSPENDED_DEPTH,
+    CRIT,
+    CRIT_MAGIC,
+    SMOKE_NORMAL,
+    SMOKE_LARGE,
+    SPELL,
+    SPELL_INSTANT,
+    SPELL_MOB,
+    SPELL_MOB_AMBIENT,
+    SPELL_WITCH,
+    DRIP_WATER,
+    DRIP_LAVA,
+    VILLAGER_ANGRY,
+    VILLAGER_HAPPY,
+    TOWN_AURA,
+    NOTE,
+    PORTAL,
+    ENCHANTMENT_TABLE,
+    FLAME,
+    LAVA,
+    CLOUD,
     /**
      * Uses {@link Particle.DustOptions} as DataType
      */
-    DUST("dust", DustOptions.class),
-    ITEM_SNOWBALL("item_snowball"),
-    ITEM_SLIME("item_slime"),
-    HEART("heart"),
+    REDSTONE(DustOptions.class),
+    SNOWBALL,
+    SNOW_SHOVEL,
+    SLIME,
+    HEART,
     /**
      * Uses {@link ItemStack} as DataType
      */
-    ITEM("item", ItemStack.class),
+    ITEM_CRACK(ItemStack.class),
     /**
      * Uses {@link BlockData} as DataType
      */
-    BLOCK("block", BlockData.class),
-    RAIN("rain"),
-    ELDER_GUARDIAN("elder_guardian"),
-    DRAGON_BREATH("dragon_breath"),
-    END_ROD("end_rod"),
-    DAMAGE_INDICATOR("damage_indicator"),
-    SWEEP_ATTACK("sweep_attack"),
+    BLOCK_CRACK(BlockData.class),
     /**
      * Uses {@link BlockData} as DataType
      */
-    FALLING_DUST("falling_dust", BlockData.class),
-    TOTEM_OF_UNDYING("totem_of_undying"),
-    SPIT("spit"),
-    SQUID_INK("squid_ink"),
-    BUBBLE_POP("bubble_pop"),
-    CURRENT_DOWN("current_down"),
-    BUBBLE_COLUMN_UP("bubble_column_up"),
-    NAUTILUS("nautilus"),
-    DOLPHIN("dolphin"),
-    SNEEZE("sneeze"),
-    CAMPFIRE_COSY_SMOKE("campfire_cosy_smoke"),
-    CAMPFIRE_SIGNAL_SMOKE("campfire_signal_smoke"),
-    COMPOSTER("composter"),
-    FLASH("flash"),
-    FALLING_LAVA("falling_lava"),
-    LANDING_LAVA("landing_lava"),
-    FALLING_WATER("falling_water"),
-    DRIPPING_HONEY("dripping_honey"),
-    FALLING_HONEY("falling_honey"),
-    LANDING_HONEY("landing_honey"),
-    FALLING_NECTAR("falling_nectar"),
-    SOUL_FIRE_FLAME("soul_fire_flame"),
-    ASH("ash"),
-    CRIMSON_SPORE("crimson_spore"),
-    WARPED_SPORE("warped_spore"),
-    SOUL("soul"),
-    DRIPPING_OBSIDIAN_TEAR("dripping_obsidian_tear"),
-    FALLING_OBSIDIAN_TEAR("falling_obsidian_tear"),
-    LANDING_OBSIDIAN_TEAR("landing_obsidian_tear"),
-    REVERSE_PORTAL("reverse_portal"),
-    WHITE_ASH("white_ash"),
+    BLOCK_DUST(BlockData.class),
+    WATER_DROP,
+    MOB_APPEARANCE,
+    DRAGON_BREATH,
+    END_ROD,
+    DAMAGE_INDICATOR,
+    SWEEP_ATTACK,
+    /**
+     * Uses {@link BlockData} as DataType
+     */
+    FALLING_DUST(BlockData.class),
+    TOTEM,
+    SPIT,
+    SQUID_INK,
+    BUBBLE_POP,
+    CURRENT_DOWN,
+    BUBBLE_COLUMN_UP,
+    NAUTILUS,
+    DOLPHIN,
+    SNEEZE,
+    CAMPFIRE_COSY_SMOKE,
+    CAMPFIRE_SIGNAL_SMOKE,
+    COMPOSTER,
+    FLASH,
+    FALLING_LAVA,
+    LANDING_LAVA,
+    FALLING_WATER,
+    DRIPPING_HONEY,
+    FALLING_HONEY,
+    LANDING_HONEY,
+    FALLING_NECTAR,
+    SOUL_FIRE_FLAME,
+    ASH,
+    CRIMSON_SPORE,
+    WARPED_SPORE,
+    SOUL,
+    DRIPPING_OBSIDIAN_TEAR,
+    FALLING_OBSIDIAN_TEAR,
+    LANDING_OBSIDIAN_TEAR,
+    REVERSE_PORTAL,
+    WHITE_ASH,
     /**
      * Uses {@link DustTransition} as DataType
      */
-    DUST_COLOR_TRANSITION("dust_color_transition", DustTransition.class),
+    DUST_COLOR_TRANSITION(DustTransition.class),
     /**
      * Uses {@link Vibration} as DataType
      */
-    VIBRATION("vibration", Vibration.class),
-    FALLING_SPORE_BLOSSOM("falling_spore_blossom"),
-    SPORE_BLOSSOM_AIR("spore_blossom_air"),
-    SMALL_FLAME("small_flame"),
-    SNOWFLAKE("snowflake"),
-    DRIPPING_DRIPSTONE_LAVA("dripping_dripstone_lava"),
-    FALLING_DRIPSTONE_LAVA("falling_dripstone_lava"),
-    DRIPPING_DRIPSTONE_WATER("dripping_dripstone_water"),
-    FALLING_DRIPSTONE_WATER("falling_dripstone_water"),
-    GLOW_SQUID_INK("glow_squid_ink"),
-    GLOW("glow"),
-    WAX_ON("wax_on"),
-    WAX_OFF("wax_off"),
-    ELECTRIC_SPARK("electric_spark"),
-    SCRAPE("scrape"),
-    SONIC_BOOM("sonic_boom"),
-    SCULK_SOUL("sculk_soul"),
-    /**
-     * Use {@link Float} as DataType
-     */
-    SCULK_CHARGE("sculk_charge", Float.class),
-    SCULK_CHARGE_POP("sculk_charge_pop"),
-    /**
-     * Use {@link Integer} as DataType
-     */
-    SHRIEK("shriek", Integer.class),
-    CHERRY_LEAVES("cherry_leaves"),
-    EGG_CRACK("egg_crack"),
-    DUST_PLUME("dust_plume"),
-    WHITE_SMOKE("white_smoke"),
-    GUST("gust"),
-    SMALL_GUST("small_gust"),
-    GUST_EMITTER_LARGE("gust_emitter_large"),
-    GUST_EMITTER_SMALL("gust_emitter_small"),
-    TRIAL_SPAWNER_DETECTION("trial_spawner_detection"),
-    TRIAL_SPAWNER_DETECTION_OMINOUS("trial_spawner_detection_ominous"),
-    VAULT_CONNECTION("vault_connection"),
-    INFESTED("infested"),
-    ITEM_COBWEB("item_cobweb"),
+    VIBRATION(Vibration.class),
+    FALLING_SPORE_BLOSSOM,
+    SPORE_BLOSSOM_AIR,
+    SMALL_FLAME,
+    SNOWFLAKE,
+    DRIPPING_DRIPSTONE_LAVA,
+    FALLING_DRIPSTONE_LAVA,
+    DRIPPING_DRIPSTONE_WATER,
+    FALLING_DRIPSTONE_WATER,
+    GLOW_SQUID_INK,
+    GLOW,
+    WAX_ON,
+    WAX_OFF,
+    ELECTRIC_SPARK,
+    SCRAPE,
+    SONIC_BOOM,
+    SCULK_SOUL,
+    SCULK_CHARGE(Float.class),
+    SCULK_CHARGE_POP,
+    SHRIEK(Integer.class),
+    CHERRY_LEAVES,
+    EGG_CRACK,
     /**
      * Uses {@link BlockData} as DataType
      */
-    DUST_PILLAR("dust_pillar", BlockData.class),
-    OMINOUS_SPAWNING("ominous_spawning"),
-    RAID_OMEN("raid_omen"),
-    TRIAL_OMEN("trial_omen"),
+    BLOCK_MARKER(BlockData.class),
+    // ----- Legacy Separator -----
     /**
-     * Uses {@link BlockData} as DataType
+     * Uses {@link MaterialData} as DataType
      */
-    BLOCK_MARKER("block_marker", BlockData.class);
+    LEGACY_BLOCK_CRACK(MaterialData.class),
+    /**
+     * Uses {@link MaterialData} as DataType
+     */
+    LEGACY_BLOCK_DUST(MaterialData.class),
+    /**
+     * Uses {@link MaterialData} as DataType
+     */
+    LEGACY_FALLING_DUST(MaterialData.class);
 
-    public NamespacedKey key;
     private final Class<?> dataType;
-    final boolean register;
 
-    Particle(String key) {
-        this(key, Void.class);
+    Particle() {
+        dataType = Void.class;
     }
 
-    Particle(String key, boolean register) {
-        this(key, Void.class, register);
-    }
-
-    Particle(String key, /*@NotNull*/ Class<?> data) {
-        this(key, data, true);
-    }
-
-    Particle(String key, /*@NotNull*/ Class<?> data, boolean register) {
-        if (key != null) {
-            this.key = NamespacedKey.minecraft(key);
-        } else {
-            this.key = null;
-        }
+    Particle(/*@NotNull*/ Class<?> data) {
         dataType = data;
-        this.register = register;
     }
 
     /**
@@ -182,21 +160,6 @@ public enum Particle implements Keyed {
     @NotNull
     public Class<?> getDataType() {
         return dataType;
-    }
-
-    @NotNull
-    @Override
-    public NamespacedKey getKey() {
-        if (key == null) {
-            throw new UnsupportedOperationException("Cannot get key from legacy particle");
-        }
-
-        return key;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
     }
 
     /**

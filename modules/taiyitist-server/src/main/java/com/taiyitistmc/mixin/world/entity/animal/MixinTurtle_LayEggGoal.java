@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TurtleEggBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -18,9 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(targets = "net.minecraft.world.entity.animal.Turtle$TurtleLayEggGoal")
 public abstract class MixinTurtle_LayEggGoal extends MoveToBlockGoal {
 
-    @Shadow
-    @Final
-    private Turtle turtle;
+    @Shadow @Final private Turtle turtle;
 
     public MixinTurtle_LayEggGoal(PathfinderMob mob, double speedModifier, int searchRange) {
         super(mob, speedModifier, searchRange);

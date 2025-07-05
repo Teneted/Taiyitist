@@ -13,8 +13,7 @@ import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerStatusPacketListenerImpl;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -28,7 +27,7 @@ public class MixinServerStatusPacketListenerImpl {
         MinecraftServer server = BukkitMethodHooks.getServer();
 
         BannerServerListPingEvent event = new BannerServerListPingEvent(networkManager, server);
-        Bukkit.getPluginManager().callEvent(event);
+        server.bridge$server().getPluginManager().callEvent(event);
 
         final Object[] players = event.getPlayers();
 
@@ -45,13 +44,13 @@ public class MixinServerStatusPacketListenerImpl {
         }
 
         // Spigot Start
-        if (!server.hidesOnlinePlayers() && !profiles.isEmpty()) {
+        if ( !server.hidesOnlinePlayers() && !profiles.isEmpty() ) {
             java.util.Collections.shuffle(profiles); // This sucks, its inefficient but we have no simple way of doing it differently
             profiles = profiles.subList(0, Math.min(profiles.size(), org.spigotmc.SpigotConfig.playerSample)); // Cap the sample to n (or less) displayed players, ie: Vanilla behaviour
         }
         // Spigot End
 
-        ServerStatus.Players playerSample = new ServerStatus.Players(event.getMaxPlayers(), event.getNumPlayers(), (server.hidesOnlinePlayers()) ? Collections.emptyList() : profiles);
+        ServerStatus.Players playerSample = new ServerStatus.Players(event.getMaxPlayers(), profiles.size(), (server.hidesOnlinePlayers()) ? Collections.emptyList() : profiles);
 
         ServerStatus ping = new ServerStatus(
                 CraftChatMessage.fromString(event.getMotd(), true)[0],

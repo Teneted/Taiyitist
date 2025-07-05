@@ -12,9 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SitWhenOrderedToGoal.class)
 public abstract class MixinSitWhenOrderedToGoal extends Goal {
 
-    @Shadow
-    @Final
-    private TamableAnimal mob;
+    @Shadow @Final private TamableAnimal mob;
 
     /**
      * @author wdog5
@@ -33,7 +31,7 @@ public abstract class MixinSitWhenOrderedToGoal extends Goal {
             if (livingEntity == null) {
                 return true;
             } else {
-                return (!(this.mob.distanceToSqr(livingEntity) < 144.0) || livingEntity.getLastHurtByMob() == null) && this.mob.isOrderedToSit();
+                return this.mob.distanceToSqr(livingEntity) < 144.0 && livingEntity.getLastHurtByMob() != null ? false : this.mob.isOrderedToSit();
             }
         }
     }

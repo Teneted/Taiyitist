@@ -20,7 +20,7 @@ public class MixinEffectCommands {
     private static void banner$addReason(CommandSourceStack source, Collection<? extends Entity> targets, Holder<MobEffect> effect, Integer seconds, int amplifier, boolean showParticles, CallbackInfoReturnable<Integer> cir) {
         for (Entity entity : targets) {
             if (entity instanceof LivingEntity) {
-                ((LivingEntity) entity).pushEffectCause(EntityPotionEffectEvent.Cause.COMMAND);
+                 ((LivingEntity) entity).pushEffectCause(EntityPotionEffectEvent.Cause.COMMAND);
             }
         }
     }

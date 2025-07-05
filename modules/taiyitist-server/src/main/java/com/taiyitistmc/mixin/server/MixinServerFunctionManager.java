@@ -14,9 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerFunctionManager.class)
 public class MixinServerFunctionManager {
 
-    @Shadow
-    @Final
-    MinecraftServer server;
+    @Shadow @Final MinecraftServer server;
 
     @Inject(method = "getDispatcher", cancellable = true, at = @At("HEAD"))
     private void banner$useVanillaDispatcher(CallbackInfoReturnable<CommandDispatcher<CommandSourceStack>> cir) {

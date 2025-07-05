@@ -8,7 +8,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,7 +46,7 @@ public interface MixinContainer extends InjectionContainer {
         if (this instanceof BlockEntity entity) {
             BlockPos blockPos = entity.getBlockPos();
             return new Location(entity.getLevel().getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        } else {
+        }else {
             return null;
         }
     }

@@ -6,19 +6,19 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ResultContainer.class)
 public abstract class MixinResultContainer implements Container {
 
-    @Shadow
-    @Final
-    private NonNullList<ItemStack> itemStacks;
+    @Shadow @Final private NonNullList<ItemStack> itemStacks;
+    @Unique
     private int maxStack = MAX_STACK;
 
     @Override
@@ -28,12 +28,9 @@ public abstract class MixinResultContainer implements Container {
 
     // Don't need a transaction; the InventoryCrafting keeps track of it for us
     @Override
-    public void onOpen(CraftHumanEntity who) {
-    }
-
+    public void onOpen(CraftHumanEntity who) {}
     @Override
-    public void onClose(CraftHumanEntity who) {
-    }
+    public void onClose(CraftHumanEntity who) {}
 
 
     @Override

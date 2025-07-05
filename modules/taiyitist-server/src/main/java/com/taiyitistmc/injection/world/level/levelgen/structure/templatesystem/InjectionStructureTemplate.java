@@ -1,10 +1,10 @@
 package com.taiyitistmc.injection.world.level.levelgen.structure.templatesystem;
 
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer;
 
 public interface InjectionStructureTemplate {
 
     default CraftPersistentDataContainer bridge$persistentDataContainer() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

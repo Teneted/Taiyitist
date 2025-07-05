@@ -3,10 +3,8 @@ package org.bukkit.block;
 import org.bukkit.DyeColor;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
-import org.bukkit.entity.Player;
 import org.bukkit.material.Colorable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of either a SignPost or a WallSign.
@@ -53,37 +51,45 @@ public interface Sign extends TileState, Colorable {
 
     /**
      * Marks whether this sign can be edited by players.
+     * <br>
+     * This is a special value, which is not persisted. It should only be set if
+     * a placed sign is manipulated during the BlockPlaceEvent. Behaviour
+     * outside of this event is undefined.
      *
      * @return if this sign is currently editable
-     * @deprecated use {@link #isWaxed()} instead
+     * @deprecated use {@link #isWaxed()}
      */
-    @Deprecated
+    @Deprecated // Paper
     public boolean isEditable();
 
     /**
      * Marks whether this sign can be edited by players.
+     * <br>
+     * This is a special value, which is not persisted. It should only be set if
+     * a placed sign is manipulated during the BlockPlaceEvent. Behaviour
+     * outside of this event is undefined.
      *
      * @param editable if this sign is currently editable
-     * @deprecated use {@link #setWaxed(boolean)} instead
+     * @deprecated use {@link #setWaxed(boolean)}
      */
-    @Deprecated
+    @Deprecated // Paper
     public void setEditable(boolean editable);
 
+    // Paper start
     /**
-     * Gets whether or not this sign has been waxed. If a sign has been waxed, it
-     * cannot be edited by a player.
+     * Gets whether the sign has been waxed and therefore prevents editing.
      *
-     * @return if this sign is waxed
+     * @return true if waxed
      */
-    public boolean isWaxed();
+    boolean isWaxed();
 
     /**
-     * Sets whether or not this sign has been waxed. If a sign has been waxed, it
-     * cannot be edited by a player.
+     * Sets whether the sign is waxed.
      *
-     * @param waxed if this sign is waxed
+     * @param waxed true to wax and therefore prevent editing
      */
-    public void setWaxed(boolean waxed);
+    void setWaxed(boolean waxed);
+    // Paper end
 
     /**
      * Gets whether this sign has glowing text. Only affects the {@link Side#FRONT}.
@@ -130,22 +136,4 @@ public interface Sign extends TileState, Colorable {
      */
     @NotNull
     public SignSide getSide(@NotNull Side side);
-
-    /**
-     * Gets the side of this sign the given player is currently standing on.
-     *
-     * @param player the player
-     * @return the side the player is standing on
-     */
-    @NotNull
-    public SignSide getTargetSide(@NotNull Player player);
-
-    /**
-     * Gets the player that is currently allowed to edit this sign. <br>
-     * Edits from other players will be rejected if this value is not null.
-     *
-     * @return the player allowed to edit this sign, or null
-     */
-    @Nullable
-    public Player getAllowedEditor();
 }

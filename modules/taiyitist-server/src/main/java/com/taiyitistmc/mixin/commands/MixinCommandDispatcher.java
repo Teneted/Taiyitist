@@ -17,8 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(value = CommandDispatcher.class, remap = false)
 public class MixinCommandDispatcher<S> {
 
-    @Shadow
-    private ResultConsumer<S> consumer;
+    @Shadow private ResultConsumer<S> consumer;
 
     /**
      * @author wdog5

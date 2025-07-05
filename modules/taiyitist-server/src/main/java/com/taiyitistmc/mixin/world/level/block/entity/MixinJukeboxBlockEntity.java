@@ -2,30 +2,38 @@ package com.taiyitistmc.mixin.world.level.block.entity;
 
 import com.taiyitistmc.bukkit.DistValidate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.ContainerSingleItem;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class MixinJukeboxBlockEntity extends BlockEntity implements Clearable, ContainerSingleItem {
 
+    @Shadow @Final private NonNullList<ItemStack> items;
+    @Unique
     public List<HumanEntity> transaction = new ArrayList<>();
+    @Unique
+    private int maxStack = DEFAULT_DISTANCE_LIMIT;
+    @Unique
     public boolean opened;
-    @Shadow
-    private ItemStack item;
-    private int maxStack = MAX_STACK;
 
     public MixinJukeboxBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -37,13 +45,8 @@ public abstract class MixinJukeboxBlockEntity extends BlockEntity implements Cle
     }
 
     @Override
-    public void setMaxStackSize(int size) {
-        maxStack = size;
-    }
-
-    @Override
     public List<ItemStack> getContents() {
-        return Collections.singletonList(this.item);
+        return this.items;
     }
 
     @Override
@@ -62,17 +65,20 @@ public abstract class MixinJukeboxBlockEntity extends BlockEntity implements Cle
     }
 
     @Override
+    public void setMaxStackSize(int size) {
+        maxStack = size;
+    }
+
+    @Override
     public Location getLocation() {
         if (!DistValidate.isValid(level)) return null;
         return new Location(level.getWorld(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
     }
 
-    // Banner TODO fixme
-    /*
     @Redirect(method = "setRecordWithoutPlaying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;updateNeighborsAt(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V"))
     private void banner$levelNullCheck(Level instance, BlockPos p_46673_, Block p_46674_) {
         if (instance != null) {
             instance.updateNeighborsAt(p_46673_, p_46674_);
         }
-    }*/
+    }
 }

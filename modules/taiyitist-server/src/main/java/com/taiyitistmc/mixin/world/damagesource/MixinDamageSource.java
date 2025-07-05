@@ -7,38 +7,30 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(DamageSource.class)
 public class MixinDamageSource implements InjectionDamageSource {
 
+    @Shadow @Final @Nullable private Entity causingEntity;
+    @Shadow @Final private Holder<DamageType> type;
+    @Shadow @Final @Nullable private Entity directEntity;
+    @Shadow @Final @Nullable private Vec3 damageSourcePosition;
     // CraftBukkit start
-    private boolean withSweep;
+    @Unique
     private boolean melting;
+    @Unique
     private boolean poison;
-    @Nullable
-    private org.bukkit.block.Block directBlock; // The block that caused the damage. damageSourcePosition is not used for all block damages
-    private Entity customCausingEntity = null; // This field is a helper for when causing entity damage is not set by vanilla
-    @Shadow
-    @Final
-    private Entity causingEntity;
-    @Shadow
-    @Final
-    private Entity directEntity;
-    @Shadow
-    @Final
-    private Holder<DamageType> type;
-    @Shadow
-    @Final
-    private Vec3 damageSourcePosition;
-    @Nullable
-    private org.bukkit.block.BlockState directBlockState; // The block state of the block relevant to this damage source
-    private Entity customEntityDamager = null; // This field is a helper for when direct entity damage is not set by vanilla
-    private Entity customCausingEntityDamager = null; // This field is a helper for when causing entity damage is not set by vanilla
+    @Unique
+    private org.bukkit.block.Block directBlock;
+    @Unique
+    private boolean withSweep;
+    @Unique
+    private Entity customCausingEntity = null;
 
     @Override
     public boolean isSweep() {
@@ -47,7 +39,7 @@ public class MixinDamageSource implements InjectionDamageSource {
 
     @Override
     public DamageSource sweep() {
-        this.withSweep = true;
+        withSweep = true;
         return ((DamageSource) (Object) this);
     }
 
@@ -75,130 +67,80 @@ public class MixinDamageSource implements InjectionDamageSource {
 
     // CraftBukkit end
 
+    // Banner start
+    @Override
+    public boolean bridge$sweep() {
+        return withSweep;
+    }
+
+    @Override
+    public boolean bridge$melting() {
+        return melting;
+    }
+
+    @Override
+    public boolean bridge$poison() {
+        return poison;
+    }
+    // Banner end
+
     @Override
     public Entity getCausingEntity() {
-        return (this.customCausingEntity != null) ? this.customCausingEntity : this.causingEntity;
+        return this.customCausingEntity == null ? this.causingEntity : this.customCausingEntity;
     }
 
     @Override
-    public DamageSource customCausingEntity(Entity entity) {
-        // This method is not intended for change the causing entity if is already set
-        // also is only necessary if the entity passed is not the direct entity or different from the current causingEntity
-        if (this.customCausingEntity != null || this.directEntity == entity || this.causingEntity == entity) {
-            return ((DamageSource) (Object) this);
-        }
-        DamageSource damageSource = this.cloneInstance();
+    public Entity bridge$getCausingEntity() {
+        return this.getCausingEntity();
+    }
+
+    @Override
+    public DamageSource bridge$customCausingEntity(Entity entity) {
+        var src = cloneInstance();
+        return src.bridge$setCustomCausingEntity(entity);
+    }
+
+    @Override
+    public DamageSource bridge$setCustomCausingEntity(Entity entity) {
         this.customCausingEntity = entity;
-        return damageSource;
+        return (DamageSource) (Object) this;
     }
 
-    @Override
-    public org.bukkit.block.Block getDirectBlock() {
+    public Block getDirectBlock() {
         return this.directBlock;
     }
 
     @Override
-    public DamageSource directBlock(net.minecraft.world.level.Level world, net.minecraft.core.BlockPos blockPosition) {
-        if (blockPosition == null || world == null) {
-            return ((DamageSource) (Object) this);
-        }
-        return directBlock(org.bukkit.craftbukkit.block.CraftBlock.at(world, blockPosition));
+    public Block bridge$directBlock() {
+        return this.getDirectBlock();
     }
 
     @Override
-    public DamageSource directBlock(org.bukkit.block.Block block) {
-        if (block == null) {
-            return ((DamageSource) (Object) this);
-        }
-        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
-        DamageSource damageSource = this.cloneInstance();
+    public DamageSource bridge$directBlock(Block block) {
+        return cloneInstance().bridge$setDirectBlock(block);
+    }
+
+    @Override
+    public DamageSource bridge$setDirectBlock(Block block) {
         this.directBlock = block;
-        return damageSource;
+        return (DamageSource) (Object) this;
     }
 
     @Override
     public DamageSource cloneInstance() {
-        DamageSource damageSource = new DamageSource(this.type, this.directEntity, this.causingEntity, this.damageSourcePosition);
-        damageSource.banner$setDirectBlock(this.getDirectBlock());
-        damageSource.banner$setDirectBlockState(this.getDirectBlockState());
-        damageSource.banner$setCustomCausingEntity(this.customEntityDamager);
-        this.withSweep = this.isSweep();
-        this.poison = this.isPoison();
-        this.melting = this.isMelting();
-        return damageSource;
-    }
-
-    @Override
-    public DamageSource directBlockState(org.bukkit.block.BlockState blockState) {
-        if (blockState == null) {
-            return ((DamageSource) (Object) this);
+        var damageSource = new DamageSource(this.type, this.directEntity, this.causingEntity, this.damageSourcePosition);
+        var br = damageSource;
+        br.bridge$setDirectBlock(this.bridge$directBlock());
+        br.bridge$setCustomCausingEntity(this.customCausingEntity);
+        if (this.withSweep) {
+            br.bridge$sweep();
         }
-        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
-        DamageSource damageSource = this.cloneInstance();
-        this.directBlockState = blockState;
-        return damageSource;
-    }
-
-    @Override
-    public BlockState getDirectBlockState() {
-        return this.directBlockState;
-    }
-
-    @Override
-    public Entity getDamager() {
-        return (this.customEntityDamager != null) ? this.customEntityDamager : this.directEntity;
-    }
-
-    @Override
-    public Entity getCausingDamager() {
-        return (this.customCausingEntityDamager != null) ? this.customCausingEntityDamager : this.causingEntity;
-    }
-
-    @Override
-    public DamageSource customEntityDamager(Entity entity) {
-        // This method is not intended for change the causing entity if is already set
-        // also is only necessary if the entity passed is not the direct entity or different from the current causingEntity
-        if (this.customEntityDamager != null || this.directEntity == entity || this.causingEntity == entity) {
-            return ((DamageSource) (Object) this);
+        if (this.poison) {
+            br.bridge$poison();
         }
-        DamageSource damageSource = this.cloneInstance();
-        this.customEntityDamager = entity;
-        return damageSource;
-    }
-
-    @Override
-    public DamageSource customCausingEntityDamager(Entity entity) {
-        // This method is not intended for change the causing entity if is already set
-        // also is only necessary if the entity passed is not the direct entity or different from the current causingEntity
-        if (this.customCausingEntityDamager != null || this.directEntity == entity || this.causingEntity == entity) {
-            return ((DamageSource) (Object) this);
+        if (this.melting) {
+            br.bridge$melting();
         }
-        DamageSource damageSource = this.cloneInstance();
-        this.customCausingEntityDamager = entity;
         return damageSource;
-    }
-
-    @Override
-    public DamageSource banner$setCustomCausingEntity(Entity entity) {
-        this.customEntityDamager = entity;
-        return (DamageSource) (Object) this;
-    }
-
-    @Override
-    public DamageSource banner$setCustomCausingEntityDamager(Entity entity) {
-        this.customCausingEntityDamager = entity;
-        return (DamageSource) (Object) this;
-    }
-
-    @Override
-    public DamageSource banner$setDirectBlock(Block block) {
-        this.directBlock = block;
-        return (DamageSource) (Object) this;
-    }
-
-    @Override
-    public DamageSource banner$setDirectBlockState(BlockState block) {
-        this.directBlockState = block;
-        return (DamageSource) (Object) this;
     }
 }

@@ -14,9 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SculkCatalystBlock.class)
 public abstract class MixinSculkCatalystBlock extends Block {
 
-    @Shadow
-    @Final
-    private IntProvider xpRange;
+    @Shadow @Final private IntProvider xpRange;
 
     public MixinSculkCatalystBlock(Properties properties) {
         super(properties);

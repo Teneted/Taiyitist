@@ -18,7 +18,8 @@ public class MixinListPlayersCommand {
     @Inject(method = "format",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/network/chat/ComponentUtils;formatList(Ljava/util/Collection;Ljava/util/function/Function;)Lnet/minecraft/network/chat/Component;",
-                    shift = At.Shift.BEFORE))
+                    shift = At.Shift.BEFORE)
+    )
     private static void banner$format(CommandSourceStack source, Function<ServerPlayer, Component> nameExtractor, CallbackInfoReturnable<Integer> cir, @Local List<ServerPlayer> list) {
         // CraftBukkit start
         if (source.banner$getBukkitSender() instanceof org.bukkit.entity.Player sender) {

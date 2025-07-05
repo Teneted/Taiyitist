@@ -19,7 +19,7 @@ public class ShapelessRecipe extends CraftingRecipe {
 
     @Deprecated
     public ShapelessRecipe(@NotNull ItemStack result) {
-        this(NamespacedKey.randomKey(), result);
+        super(NamespacedKey.randomKey(), result);
     }
 
     /**
@@ -29,7 +29,6 @@ public class ShapelessRecipe extends CraftingRecipe {
      *
      * @param key the unique recipe key
      * @param result The item you want the recipe to create.
-     * @exception IllegalArgumentException if the {@code result} is an empty item (AIR)
      * @see ShapelessRecipe#addIngredient(Material)
      * @see ShapelessRecipe#addIngredient(MaterialData)
      * @see ShapelessRecipe#addIngredient(Material,int)
@@ -38,7 +37,7 @@ public class ShapelessRecipe extends CraftingRecipe {
      * @see ShapelessRecipe#addIngredient(int,Material,int)
      */
     public ShapelessRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result) {
-        super(key, checkResult(result));
+        super(key, result);
     }
 
     /**

@@ -11,12 +11,13 @@ import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.event.entity.PiglinBarterEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -25,59 +26,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PiglinAi.class)
 public abstract class MixinPiglinAi {
 
-    @Shadow
-    private static void throwItems(Piglin pilgin, List<ItemStack> stacks) {
-    }
-
-    @Shadow
-    private static List<ItemStack> getBarterResponseItems(Piglin piglin) {
-        return null;
-    }
-
-    @Shadow
-    private static boolean isBarterCurrency(ItemStack stack) {
-        return false;
-    }
-
-    @Shadow
-    protected static boolean isLovedItem(ItemStack item) {
-        return false;
-    }
-
-    @Shadow
-    private static void putInInventory(Piglin piglin, ItemStack stack) {
-    }
-
-    @Shadow
-    private static void eat(Piglin piglin) {
-    }
-
-    @Shadow
-    private static boolean hasEatenRecently(Piglin piglin) {
-        return false;
-    }
-
-    @Shadow
-    private static boolean isFood(ItemStack stack) {
-        return false;
-    }
-
-    @Shadow
-    private static void admireGoldItem(LivingEntity piglin) {
-    }
-
-    @Shadow
-    private static void holdInOffhand(Piglin piglin, ItemStack stack) {
-    }
-
-    @Shadow
-    private static ItemStack removeOneItemFromItemEntity(ItemEntity itemEntity) {
-        return null;
-    }
-
-    @Shadow
-    private static void stopWalking(Piglin piglin) {
-    }
+    @Shadow private static void throwItems(Piglin pilgin, List<ItemStack> stacks) {}
+    @Shadow private static List<ItemStack> getBarterResponseItems(Piglin piglin) {return null;}
+    @Shadow private static boolean isBarterCurrency(ItemStack stack) {return false;}
+    @Shadow protected static boolean isLovedItem(ItemStack item) {return false;}
+    @Shadow private static void putInInventory(Piglin piglin, ItemStack stack) {}
+    @Shadow private static void eat(Piglin piglin) {}
+    @Shadow private static boolean hasEatenRecently(Piglin piglin) {return false;}
+    @Shadow private static boolean isFood(ItemStack stack) {return false;}
+    @Shadow private static void admireGoldItem(LivingEntity piglin) {}
+    @Shadow private static void holdInOffhand(Piglin piglin, ItemStack stack) {}
+    @Shadow private static ItemStack removeOneItemFromItemEntity(ItemEntity itemEntity) {return null;}
+    @Shadow private static void stopWalking(Piglin piglin) {}
 
     /**
      * @author wdog5
@@ -112,14 +72,15 @@ public abstract class MixinPiglinAi {
         }
     }
 
+    @Unique
     private static boolean isLovedByPiglin(ItemStack itemstack, Piglin piglin) {
         return isLovedItem(itemstack) || piglin.bridge$interestItems().contains(itemstack.getItem())
-                || piglin.bridge$allowedBarterItems().contains(itemstack.getItem());
+                ||  piglin.bridge$allowedBarterItems().contains(itemstack.getItem());
     }
 
+    @Unique
     private static boolean isBarterItem(ItemStack itemstack, Piglin piglin) {
-        return isBarterCurrency(itemstack) || piglin.bridge$allowedBarterItems().contains(itemstack.getItem());
-    }
+        return isBarterCurrency(itemstack) || piglin.bridge$allowedBarterItems().contains(itemstack.getItem());    }
 
     @Redirect(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", remap = false, target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isBarterCurrency(Lnet/minecraft/world/item/ItemStack;)Z"))
     private static boolean banner$customBarter(ItemStack stack, Piglin piglin) {

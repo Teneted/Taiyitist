@@ -1,13 +1,14 @@
 package com.taiyitistmc.mixin.server.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import net.minecraft.server.ServerInfo;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.LegacyQueryHandler;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import net.minecraft.server.network.ServerConnectionListener;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,48 +18,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(LegacyQueryHandler.class)
 public abstract class MixinLegacyQueryHandler {
 
-    @Shadow
-    @Final
-    private static Logger LOGGER;
-    @Shadow
-    @Final
-    private ServerInfo server;
+    @Shadow @Final private ServerConnectionListener serverConnectionListener;
 
-    @Shadow
-    private static String createVersion0Response(ServerInfo serverInfo) {
-        return null;
-    }
+    @Shadow @Final private static Logger LOGGER;
 
-    @Shadow
-    private static void sendFlushAndClose(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
-    }
+    @Shadow protected abstract void sendFlushAndClose(ChannelHandlerContext ctx, ByteBuf data);
 
-    @Shadow
-    private static ByteBuf createLegacyDisconnectPacket(ByteBufAllocator byteBufAllocator, String string) {
-        return null;
-    }
-
-    @Shadow
-    private static boolean readCustomPayloadPacket(ByteBuf byteBuf) {
-        return false;
-    }
-
-    @Shadow
-    private static String createVersion1Response(ServerInfo serverInfo) {
-        return null;
-    }
-
-    // CraftBukkit start
-    private static String createVersion0Response(ServerInfo serverinfo, org.bukkit.event.server.ServerListPingEvent event) {
-        return String.format(Locale.ROOT, "%s\u00a7%d\u00a7%d", event.getMotd(), event.getNumPlayers(), event.getMaxPlayers());
-        // CraftBukkit end
-    }
-
-    // CraftBukkit start
-    private static String createVersion1Response(ServerInfo serverinfo, org.bukkit.event.server.ServerListPingEvent event) {
-        return String.format(Locale.ROOT, "\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d", 127, serverinfo.getServerVersion(), event.getMotd(), event.getNumPlayers(), event.getMaxPlayers());
-        // CraftBukkit end
-    }
+    @Shadow protected abstract ByteBuf createReply(String string);
 
     /**
      * @author wdog5
@@ -72,48 +38,64 @@ public abstract class MixinLegacyQueryHandler {
         boolean flag = true;
 
         try {
-            try {
-                if (bytebuf.readUnsignedByte() != 254) {
-                    return;
-                }
+            if (bytebuf.readUnsignedByte() != 254) {
+                return;
+            }
 
-                SocketAddress socketaddress = channelhandlercontext.channel().remoteAddress();
-                int i = bytebuf.readableBytes();
-                String s;
-                org.bukkit.event.server.ServerListPingEvent event = CraftEventFactory.callServerListPingEvent(socketaddress, server.getMotd(), server.getPlayerCount(), server.getMaxPlayers()); // CraftBukkit
+            InetSocketAddress inetsocketaddress = (InetSocketAddress) channelhandlercontext.channel().remoteAddress();
+            MinecraftServer minecraftserver = this.serverConnectionListener.getServer();
+            int i = bytebuf.readableBytes();
+            String s;
+            org.bukkit.event.server.ServerListPingEvent event = CraftEventFactory.callServerListPingEvent(minecraftserver.bridge$server(), inetsocketaddress.getAddress(), minecraftserver.getMotd(), minecraftserver.getPlayerCount(), minecraftserver.getMaxPlayers()); // CraftBukkit
 
-                if (i == 0) {
-                    LOGGER.debug("Ping: (<1.3.x) from {}", socketaddress);
-                    s = createVersion0Response(this.server, event); // CraftBukkit
-                    sendFlushAndClose(channelhandlercontext, createLegacyDisconnectPacket(channelhandlercontext.alloc(), s));
-                } else {
+            switch (i) {
+                case 0:
+                    LOGGER.debug("Ping: (<1.3.x) from {}:{}", inetsocketaddress.getAddress(), inetsocketaddress.getPort());
+                    s = String.format(Locale.ROOT, "%s\u00a7%d\u00a7%d", event.getMotd(), event.getNumPlayers(), event.getMaxPlayers()); // CraftBukkit
+                    this.sendFlushAndClose(channelhandlercontext, this.createReply(s));
+                    break;
+                case 1:
                     if (bytebuf.readUnsignedByte() != 1) {
                         return;
                     }
 
-                    if (bytebuf.isReadable()) {
-                        if (!readCustomPayloadPacket(bytebuf)) {
-                            return;
-                        }
+                    LOGGER.debug("Ping: (1.4-1.5.x) from {}:{}", inetsocketaddress.getAddress(), inetsocketaddress.getPort());
+                    s = String.format(Locale.ROOT, "\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d", 127, minecraftserver.getServerVersion(), event.getMotd(), event.getNumPlayers(), event.getMaxPlayers()); // CraftBukkit
+                    this.sendFlushAndClose(channelhandlercontext, this.createReply(s));
+                    break;
+                default:
+                    boolean flag1 = bytebuf.readUnsignedByte() == 1;
 
-                        LOGGER.debug("Ping: (1.6) from {}", socketaddress);
-                    } else {
-                        LOGGER.debug("Ping: (1.4-1.5.x) from {}", socketaddress);
+                    flag1 &= bytebuf.readUnsignedByte() == 250;
+                    flag1 &= "MC|PingHost".equals(new String(bytebuf.readBytes(bytebuf.readShort() * 2).array(), StandardCharsets.UTF_16BE));
+                    int j = bytebuf.readUnsignedShort();
+
+                    flag1 &= bytebuf.readUnsignedByte() >= 73;
+                    flag1 &= 3 + bytebuf.readBytes(bytebuf.readShort() * 2).array().length + 4 == j;
+                    flag1 &= bytebuf.readInt() <= 65535;
+                    flag1 &= bytebuf.readableBytes() == 0;
+                    if (!flag1) {
+                        return;
                     }
 
-                    s = createVersion1Response(this.server, event); // CraftBukkit
-                    sendFlushAndClose(channelhandlercontext, createLegacyDisconnectPacket(channelhandlercontext.alloc(), s));
-                }
+                    LOGGER.debug("Ping: (1.6) from {}:{}", inetsocketaddress.getAddress(), inetsocketaddress.getPort());
+                    String s1 = String.format(Locale.ROOT, "\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d", 127, minecraftserver.getServerVersion(), event.getMotd(), event.getNumPlayers(), event.getMaxPlayers()); // CraftBukkit
+                    ByteBuf bytebuf1 = this.createReply(s1);
 
-                bytebuf.release();
-                flag = false;
-            } catch (RuntimeException runtimeexception) {
+                    try {
+                        this.sendFlushAndClose(channelhandlercontext, bytebuf1);
+                    } finally {
+                        bytebuf1.release();
+                    }
             }
 
+            bytebuf.release();
+            flag = false;
+        } catch (RuntimeException runtimeexception) {
         } finally {
             if (flag) {
                 bytebuf.resetReaderIndex();
-                channelhandlercontext.channel().pipeline().remove(((LegacyQueryHandler) (Object) this));
+                channelhandlercontext.channel().pipeline().remove("legacy_query");
                 channelhandlercontext.fireChannelRead(object);
             }
 

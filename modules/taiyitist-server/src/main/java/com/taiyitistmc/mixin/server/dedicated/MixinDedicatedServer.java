@@ -5,7 +5,6 @@ import com.taiyitistmc.Metrics;
 import com.taiyitistmc.config.BannerConfig;
 import com.taiyitistmc.util.I18n;
 import com.mojang.datafixers.DataFixer;
-import java.io.IOException;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +20,16 @@ import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.rcon.RconConsoleSource;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecrell.terminalconsole.TerminalConsoleAppender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.io.IoBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.util.ForwardLogHandler;
+import org.bukkit.craftbukkit.v1_20_R1.util.ForwardLogHandler;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -39,8 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(DedicatedServer.class)
 public abstract class MixinDedicatedServer extends MinecraftServer {
-
-    public AtomicReference<RconConsoleSource> rconConsoleSource = new AtomicReference<>(null);
 
     public MixinDedicatedServer(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, ChunkProgressListenerFactory chunkProgressListenerFactory) {
         super(thread, levelStorageAccess, packRepository, worldStem, proxy, dataFixer, services, chunkProgressListenerFactory);
@@ -52,6 +49,9 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         // CraftBukkit start
         org.spigotmc.SpigotConfig.init((java.io.File) this.bridge$options().valueOf("spigot-settings"));
         BannerConfig.init((java.io.File) this.bridge$options().valueOf("banner-settings"));
+        if (BannerConfig.motdEnable) {
+            this.setMotd(BannerConfig.motd());
+        }
         org.spigotmc.SpigotConfig.registerCommands();
         this.bridge$server().loadPlugins();
         this.bridge$server().enablePlugins(PluginLoadOrder.STARTUP);
@@ -103,20 +103,24 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         cir.setReturnValue(result.toString());
     }
 
-    @Redirect(method = "handleConsoleInputs", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;performPrefixedCommand(Lnet/minecraft/commands/CommandSourceStack;Ljava/lang/String;)V"))
-    private void banner$serverCommandEvent(Commands commands, CommandSourceStack source, String command) {
+    @Redirect(method = "handleConsoleInputs", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;performPrefixedCommand(Lnet/minecraft/commands/CommandSourceStack;Ljava/lang/String;)I"))
+    private int banner$serverCommandEvent(Commands commands, CommandSourceStack source, String command) {
         if (command.isEmpty()) {
-            return;
+            return 0;
         }
         ServerCommandEvent event = new ServerCommandEvent(bridge$console(), command);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             bridge$server().dispatchServerCommand(bridge$console(), new ConsoleInput(event.getCommand(), source));
         }
+        return 0;
     }
 
+    @Unique
+    public AtomicReference<RconConsoleSource> rconConsoleSource = new AtomicReference<>(null);
+
     @Override
-    public void banner$setRconConsoleSource(RconConsoleSource source) {
+    public void banner$setRconConsoleSource(RconConsoleSource source)  {
         rconConsoleSource.set(source);
     }
 
@@ -143,16 +147,12 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "onServerExit", at = @At("RETURN"))
     public void banner$exitNow(CallbackInfo ci) {
-        try {
-            TerminalConsoleAppender.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Thread exitThread = new Thread(this::banner$exit, "Exit Thread");
         exitThread.setDaemon(true);
         exitThread.start();
     }
 
+    @Unique
     private void banner$exit() {
         try {
             Thread.sleep(5000L);
@@ -170,6 +170,11 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             TaiyitistMod.LOGGER.info("{} threads not shutting down correctly, force exiting", threads.size());
         }
         System.exit(0);
+    }
+
+    @Inject(method = "showGui", at = @At("HEAD"), cancellable = true)
+    public void banner$cancelGui(CallbackInfo ci) {
+        ci.cancel();
     }
 
     @Inject(method = "initServer", at = @At(value = "INVOKE",

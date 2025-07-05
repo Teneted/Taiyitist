@@ -10,10 +10,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Rabbit.class)
 public abstract class MixinRabbit extends Animal {
 
+    @Shadow public abstract void setSpeedModifier(double speedModifier);
+
     protected MixinRabbit(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
-
-    @Shadow
-    public abstract void setSpeedModifier(double speedModifier);
 }

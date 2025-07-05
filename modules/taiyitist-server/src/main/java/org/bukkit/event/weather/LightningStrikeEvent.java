@@ -93,10 +93,6 @@ public class LightningStrikeEvent extends WeatherEvent implements Cancellable {
          */
         WEATHER,
         /**
-         * Triggered by an enchantment but not a trident.
-         */
-        ENCHANTMENT,
-        /**
          * Unknown trigger.
          */
         UNKNOWN;

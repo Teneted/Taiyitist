@@ -4,7 +4,6 @@ import com.taiyitistmc.bukkit.DistValidate;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -14,12 +13,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -29,18 +29,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ChiseledBookShelfBlockEntity.class)
 public abstract class MixinChiseledBookShelfBlockEntity extends BlockEntity implements Container {
 
-    public List<HumanEntity> transaction = new ArrayList<>();
-    @Shadow
-    @Final
-    private NonNullList<ItemStack> items;
-    private int maxStack = 1;
+    @Shadow @Final private NonNullList<ItemStack> items;
+
+    @Shadow protected abstract void updateState(int i);
 
     public MixinChiseledBookShelfBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
 
-    @Shadow
-    protected abstract void updateState(int i);
+    @Unique
+    public List<HumanEntity> transaction = new ArrayList<>();
+    @Unique
+    private int maxStack = 1;
 
     @Override
     public List<ItemStack> getContents() {
@@ -67,13 +67,13 @@ public abstract class MixinChiseledBookShelfBlockEntity extends BlockEntity impl
     }
 
     @Override
-    public int getMaxStackSize() {
-        return maxStack;
+    public void setMaxStackSize(int size) {
+        maxStack = size;
     }
 
     @Override
-    public void setMaxStackSize(int size) {
-        maxStack = size;
+    public int getMaxStackSize() {
+        return maxStack;
     }
 
     @Override
@@ -90,14 +90,14 @@ public abstract class MixinChiseledBookShelfBlockEntity extends BlockEntity impl
         }
     }
 
-    @Inject(method = "loadAdditional", at = @At("HEAD"))
-    private void banner$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
-        super.loadAdditional(compoundTag, provider); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
+    @Inject(method = "load", at = @At("HEAD"))
+    private void banner$load(CompoundTag compoundTag, CallbackInfo ci) {
+        super.load(compoundTag); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
     }
 
     @Inject(method = "removeItem",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity;updateState(I)V"))
+            target = "Lnet/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity;updateState(I)V"))
     private void banner$checkWorld(int i, int j, CallbackInfoReturnable<ItemStack> cir) {
         if (level == null) {
             cir.cancel(); // CraftBukkit - SPIGOT-7381: check for null world

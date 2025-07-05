@@ -15,7 +15,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Nullable;
@@ -27,9 +27,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(TeleportCommand.class)
 public class MixinTeleportCommand {
 
-    @Shadow
-    @Final
-    private static SimpleCommandExceptionType INVALID_POSITION;
+    @Shadow @Final private static SimpleCommandExceptionType INVALID_POSITION;
 
 
     /**
@@ -61,18 +59,18 @@ public class MixinTeleportCommand {
                 z = to.getZ();
                 f = to.getYaw();
                 g = to.getPitch();
-
                 level = ((CraftWorld) to.getWorld()).getHandle();
+
                 result = entity.teleportTo(level, x, y, z, relativeList, f, g);
             }
+
             if (result) {
                 // CraftBukkit end
                 if (facing != null) {
                     facing.perform(source, entity);
                 }
 
-                label23:
-                {
+                label23: {
                     if (entity instanceof LivingEntity livingEntity) {
                         if (livingEntity.isFallFlying()) {
                             break label23;
@@ -90,5 +88,4 @@ public class MixinTeleportCommand {
             }
         }
     }
-
 }

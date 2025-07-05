@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.world.entity.monster.Vex$VexCopyOwnerTargetGoal")
 public class MixinVex_CopyOwnerTargetGoal {
 
-    @SuppressWarnings("target")
-    @Shadow(aliases = {"field_7413"}, remap = false)
+    @SuppressWarnings("target") @Shadow(aliases = {"field_7413"}, remap = false)
     private Vex outerThis;
 
     @Inject(method = "start", at = @At("HEAD"))

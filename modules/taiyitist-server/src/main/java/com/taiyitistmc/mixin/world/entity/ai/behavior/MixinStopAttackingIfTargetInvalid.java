@@ -9,8 +9,8 @@ import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
 import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -20,9 +20,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinStopAttackingIfTargetInvalid {
 
     @Shadow
-    private static boolean isTiredOfTryingToReachTarget(LivingEntity entity, Optional<Long> timeSinceInvalidTarget) {
-        return false;
-    }
+    private static boolean isTiredOfTryingToReachTarget(LivingEntity entity, Optional<Long> timeSinceInvalidTarget) { return false; }
 
     /**
      * @author Mgazul
@@ -43,10 +41,11 @@ public abstract class MixinStopAttackingIfTargetInvalid {
                         if (event.isCancelled()) {
                             return false;
                         }
-                        if (event.getTarget() != null) {
-                            livingentity.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, ((CraftLivingEntity) event.getTarget()).getHandle());
+                        if (event.getTarget() == null) {
+                            memoryAccessor.erase();
                             return true;
                         }
+                        livingentity = ((CraftLivingEntity) event.getTarget()).getHandle();
                         // CraftBukkit end
                         onStopAttacking.accept(mob, livingentity);
                         memoryAccessor.erase();

@@ -14,9 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntitySelector.class)
 public class MixinEntitySelector {
 
-    @Shadow
-    @Final
-    public static Predicate<Entity> NO_SPECTATORS;
+    @Shadow @Final public static Predicate<Entity> NO_SPECTATORS;
 
     /**
      * @author wdog5
@@ -26,10 +24,10 @@ public class MixinEntitySelector {
     public static Predicate<Entity> pushableBy(Entity entity) {
         Team team = entity.getTeam();
         Team.CollisionRule collisionRule = team == null ? Team.CollisionRule.ALWAYS : team.getCollisionRule();
-        return collisionRule == Team.CollisionRule.NEVER ? Predicates.alwaysFalse() : NO_SPECTATORS.and((entity2) -> {
+        return (Predicate)(collisionRule == Team.CollisionRule.NEVER ? Predicates.alwaysFalse() : NO_SPECTATORS.and((entity2) -> {
             if (!entity2.canCollideWithBukkit(entity) || !entity.canCollideWithBukkit(entity2)) { // CraftBukkit - collidable API
                 return false;
-            } else if (entity.level().isClientSide && (!(entity2 instanceof Player) || !((Player) entity2).isLocalPlayer())) {
+            } else if (entity.level().isClientSide && (!(entity2 instanceof Player) || !((Player)entity2).isLocalPlayer())) {
                 return false;
             } else {
                 Team team2 = entity2.getTeam();
@@ -45,6 +43,6 @@ public class MixinEntitySelector {
                     }
                 }
             }
-        });
+        }));
     }
 }

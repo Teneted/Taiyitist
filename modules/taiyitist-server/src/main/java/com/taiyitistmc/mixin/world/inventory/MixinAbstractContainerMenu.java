@@ -19,9 +19,9 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -31,6 +31,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -38,86 +39,72 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractContainerMenu.class)
 public abstract class MixinAbstractContainerMenu implements InjectionAbstractContainerMenu {
 
-    @Shadow
-    public NonNullList<Slot> slots;
-    @Shadow
-    @Final
-    public int containerId;
-    public boolean checkReachable = true;
-    @Shadow
-    private ItemStack remoteCarried;
-    @Shadow
-    @Nullable
-    private ContainerSynchronizer synchronizer;
-    @Shadow
-    private int quickcraftStatus;
-    @Shadow
-    private int quickcraftType;
-    @Shadow
-    @Final
-    private Set<Slot> quickcraftSlots;
-    private InventoryView bukkitView;
-    @Shadow
-    private ItemStack carried;
-    private Component title;
+    @Shadow private ItemStack remoteCarried;
 
-    @Shadow
-    public static int getQuickcraftHeader(int clickedButton) {
+    @Shadow public abstract ItemStack getCarried();
+
+    @Shadow @Nullable private ContainerSynchronizer synchronizer;
+    @Shadow private int quickcraftStatus;
+
+    @Shadow public static int getQuickcraftHeader(int clickedButton) {
         return clickedButton;
     }
+
+    @Shadow protected abstract void resetQuickCraft();
 
     @Shadow
     public static int getQuickcraftType(int eventButton) {
         return 0;
     }
 
+    @Shadow private int quickcraftType;
+
     @Shadow
     public static boolean isValidQuickcraftType(int dragMode, Player player) {
         return false;
     }
+
+    @Shadow @Final private Set<Slot> quickcraftSlots;
+    @Shadow public NonNullList<Slot> slots;
+    @Unique
+    private InventoryView bukkitView;
 
     @Shadow
     public static boolean canItemQuickReplace(@Nullable Slot slot, ItemStack stack, boolean stackSizeMatters) {
         return false;
     }
 
+    @Shadow public abstract void setCarried(ItemStack stack);
+
+    @Shadow public abstract void sendAllDataToRemote();
+
+    @Shadow public abstract ItemStack quickMoveStack(Player player, int index);
+
+    @Shadow @Final public int containerId;
+
+    @Shadow public abstract int incrementStateId();
+
+    @Shadow public abstract Slot getSlot(int slotId);
+
+    @Shadow public abstract boolean canTakeItemForPickAll(ItemStack stack, Slot slot);
+
+    @Shadow public abstract boolean canDragTo(Slot slot);
+
+    @Shadow protected abstract SlotAccess createCarriedSlotAccess();
+
+    @Shadow protected abstract boolean tryItemClickBehaviourOverride(Player player, ClickAction action, Slot slot, ItemStack clickedItem, ItemStack carriedItem);
+
+    @Shadow private ItemStack carried;
+
     @Shadow
     public static int getQuickCraftPlaceCount(Set<Slot> set, int i, ItemStack itemStack) {
         return 0;
     }
 
-    @Shadow
-    public abstract ItemStack getCarried();
-
-    @Shadow
-    public abstract void setCarried(ItemStack stack);
-
-    @Shadow
-    protected abstract void resetQuickCraft();
-
-    @Shadow
-    public abstract void sendAllDataToRemote();
-
-    @Shadow
-    public abstract ItemStack quickMoveStack(Player player, int index);
-
-    @Shadow
-    public abstract int incrementStateId();
-
-    @Shadow
-    public abstract Slot getSlot(int slotId);
-
-    @Shadow
-    public abstract boolean canTakeItemForPickAll(ItemStack stack, Slot slot);
-
-    @Shadow
-    public abstract boolean canDragTo(Slot slot);
-
-    @Shadow
-    protected abstract SlotAccess createCarriedSlotAccess();
-
-    @Shadow
-    protected abstract boolean tryItemClickBehaviourOverride(Player player, ClickAction action, Slot slot, ItemStack clickedItem, ItemStack carriedItem);
+    @Unique
+    public boolean checkReachable = true;
+    @Unique
+    private Component title;
 
     @Override
     public void transferTo(AbstractContainerMenu other, CraftHumanEntity player) {
@@ -182,7 +169,7 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
                 }
             } else if (this.quickcraftStatus == 2) {
                 if (!this.quickcraftSlots.isEmpty()) {
-                    if (false) { // CraftBukkit - treat everything as a drag since we are unable to easily call InventoryClickEvent instead
+                    if (false && this.quickcraftSlots.size() == 1) { // CraftBukkit - treat everything as a drag since we are unable to easily call InventoryClickEvent instead
                         int k = this.quickcraftSlots.iterator().next().index;
                         this.resetQuickCraft();
                         this.doClick(k, this.quickcraftType, ClickType.PICKUP, player);
@@ -282,6 +269,7 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
                 }
 
                 for (ItemStack itemstack = this.quickMoveStack(player, i); !itemstack.isEmpty() && ItemStack.isSameItem(slot.getItem(), itemstack); itemstack = this.quickMoveStack(player, i)) {
+                    ;
                 }
             } else {
                 if (i < 0) {
@@ -309,14 +297,14 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
                                 slot.onTake(player, itemstack4);
                             });
                         } else if (slot.mayPlace(itemstack3)) {
-                            if (ItemStack.isSameItemSameComponents(itemstack, itemstack3)) {
+                            if (ItemStack.isSameItemSameTags(itemstack, itemstack3)) {
                                 int i2 = clickaction == ClickAction.PRIMARY ? itemstack3.getCount() : 1;
                                 this.setCarried(slot.safeInsert(itemstack3, i2));
                             } else if (itemstack3.getCount() <= slot.getMaxStackSize(itemstack3)) {
                                 this.setCarried(itemstack);
                                 slot.setByPlayer(itemstack3);
                             }
-                        } else if (ItemStack.isSameItemSameComponents(itemstack, itemstack3)) {
+                        } else if (ItemStack.isSameItemSameTags(itemstack, itemstack3)) {
                             Optional<ItemStack> optional1 = slot.tryRemove(itemstack.getCount(), itemstack3.getMaxStackSize() - itemstack3.getCount(), player);
 
                             optional1.ifPresent((itemstack4) -> {
@@ -338,7 +326,7 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
                 }
                 // CraftBukkit end
             }
-        } else if (inventoryclicktype == ClickType.SWAP && (j >= 0 && j < 9 || j == 40)) {
+        } else if (inventoryclicktype == ClickType.SWAP) {
             Slot slot2 = this.slots.get(i);
             ItemStack itemstack1 = playerinventory.getItem(j);
             ItemStack itemstack = slot2.getItem();
@@ -453,11 +441,6 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
         return bukkitView;
     }
 
-    @Override
-    public void setBukkitView(InventoryView view) {
-        this.bukkitView = view;
-    }
-
     @Inject(method = "getCarried", at = @At("HEAD"))
     private void banner$checkCarried(CallbackInfoReturnable<ItemStack> cir) {
         // CraftBukkit start
@@ -465,5 +448,10 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
             this.setCarried(ItemStack.EMPTY);
         }
         // CraftBukkit end
+    }
+
+    @Override
+    public void setBukkitView(InventoryView view) {
+        this.bukkitView = view;
     }
 }

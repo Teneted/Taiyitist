@@ -1,7 +1,5 @@
 package com.taiyitistmc.mixin.world;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.NonNullList;
@@ -9,32 +7,36 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(SimpleContainer.class)
 public abstract class MixinSimpleContainer implements Container, StackedContentsCompatible {
 
     // @formatter:off
     @Shadow @Final public NonNullList<ItemStack> items;
-    public List<HumanEntity> transaction = new ArrayList<>();
-    protected InventoryHolder bukkitOwner;
     @Shadow @Final private int size;
     // @formatter:on
+    @Unique
     private int maxStack = MAX_STACK;
+    @Unique
+    protected InventoryHolder bukkitOwner;
+    @Unique
+    public List<HumanEntity> transaction = new ArrayList<>();
 
-    @ShadowConstructor
+    @Unique
     public void banner$constructor(int numSlots) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(int numSlots, InventoryHolder owner) {
         this.banner$constructor(numSlots);
         this.bukkitOwner = owner;
@@ -76,22 +78,22 @@ public abstract class MixinSimpleContainer implements Container, StackedContents
     }
 
     @Override
-    public RecipeHolder<?> getCurrentRecipe() {
+    public Recipe<?> getCurrentRecipe() {
         return null;
     }
 
     @Override
-    public void setCurrentRecipe(RecipeHolder<?> recipe) {
+    public void setCurrentRecipe(Recipe<?> recipe) {
+    }
+
+    @Override
+    public void setMaxStackSize(int size) {
+        this.maxStack = size;
     }
 
     @Override
     public int getMaxStackSize() {
         if (maxStack == 0) maxStack = MAX_STACK;
         return maxStack;
-    }
-
-    @Override
-    public void setMaxStackSize(int size) {
-        this.maxStack = size;
     }
 }

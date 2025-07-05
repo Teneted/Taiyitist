@@ -1,6 +1,5 @@
 package com.taiyitistmc.mixin.world.inventory;
 
-import com.taiyitistmc.config.BannerConfig;
 import com.taiyitistmc.injection.world.inventory.InjectionAnvilMenu;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
@@ -17,32 +16,31 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AnvilBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftInventoryAnvil;
-import org.bukkit.craftbukkit.inventory.view.CraftAnvilView;
+import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryAnvil;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AnvilMenu.class)
 public abstract class MixinAnvilMenu extends ItemCombinerMenu implements InjectionAnvilMenu {
 
+    @Shadow @Final public DataSlot cost;
     // CraftBukkit start
+    @Unique
     private static final int DEFAULT_DENIED_COST = -1;
-    @Shadow
-    @Final
-    public DataSlot cost;
-    public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, BannerConfig.maximumRepairCost));
-    private CraftAnvilView bukkitEntity;
+    @Unique
+    private CraftInventoryView bukkitEntity;
     // CraftBukkit end
 
     public MixinAnvilMenu(@Nullable MenuType<?> menuType, int i, Inventory inventory, ContainerLevelAccess containerLevelAccess) {
@@ -144,35 +142,19 @@ public abstract class MixinAnvilMenu extends ItemCombinerMenu implements Injecti
         sendAllDataToRemote(); // CraftBukkit - SPIGOT-6686: Always send completed inventory to stay in sync with client
     }
 
-    @ModifyConstant(method = "createResult", constant = @Constant(intValue = 40))
-    private int banner$maxRepairCost(int constant) {
-        return maximumRepairCost;
-    }
-
     @Override
     public int bridge$getDeniedCost() {
         return DEFAULT_DENIED_COST;
     }
-
-    @Override
-    public int bridge$maximumRepairCost() {
-        return maximumRepairCost;
-    }
-
-    @Override
-    public void banner$setMaximumRepairCost(int maximumRepairCost) {
-        this.maximumRepairCost = maximumRepairCost;
-    }
-
     // CraftBukkit start
     @Override
-    public CraftAnvilView getBukkitView() {
+    public CraftInventoryView getBukkitView() {
         if (bukkitEntity != null) {
             return bukkitEntity;
         }
-        CraftInventoryAnvil inventory = new CraftInventoryAnvil(
+        CraftInventory inventory = new CraftInventoryAnvil(
                 access.getLocation(), this.inputSlots, this.resultSlots, ((AnvilMenu) (Object) this));
-        bukkitEntity = new CraftAnvilView(this.player.getBukkitEntity(), inventory, ((AnvilMenu) (Object) this));
+        bukkitEntity = new CraftInventoryView(this.player.getBukkitEntity(), inventory, ((AnvilMenu) (Object) this));
         return bukkitEntity;
     }
     // CraftBukkit end

@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.entity.animal;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,8 +10,9 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -19,11 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Ocelot.class)
 public abstract class MixinOcelot extends Animal {
 
-    private final AtomicReference<Player> banner$player = new AtomicReference<>();
-
     protected MixinOcelot(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
+
+    @Unique
+    private AtomicReference<Player> banner$player = new AtomicReference<>();
 
     @Inject(method = "mobInteract", at = @At(("HEAD")))
     private void banner$setPlayer(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {

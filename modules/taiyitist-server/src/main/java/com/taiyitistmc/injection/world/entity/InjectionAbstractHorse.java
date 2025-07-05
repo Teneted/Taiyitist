@@ -3,10 +3,10 @@ package com.taiyitistmc.injection.world.entity;
 public interface InjectionAbstractHorse {
 
     default int bridge$maxDomestication() {
-        throw new IllegalStateException("Not implemented");
+        return 0;
     }
 
     default void banner$setMaxDomestication(int maxDomestication) {
-        throw new IllegalStateException("Not implemented");
+
     }
 }

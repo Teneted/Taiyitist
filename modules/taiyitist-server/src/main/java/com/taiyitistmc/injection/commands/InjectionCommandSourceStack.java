@@ -6,22 +6,20 @@ import net.minecraft.commands.CommandSource;
 public interface InjectionCommandSourceStack {
 
     default void banner$setSource(CommandSource source) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default boolean hasPermission(int i, String bukkitPermission) {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default org.bukkit.command.CommandSender banner$getBukkitSender() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default CommandNode<?> bridge$getCurrentCommand() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void banner$setCurrentCommand(CommandNode<?> node) {
-        throw new IllegalStateException("Not implemented");
     }
 }

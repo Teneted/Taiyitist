@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 import static org.bukkit.Material.CARVED_PUMPKIN;
 import static org.bukkit.Material.CHAINMAIL_BOOTS;
 import static org.bukkit.Material.CHAINMAIL_CHESTPLATE;

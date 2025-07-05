@@ -4,7 +4,7 @@ import com.mohistmc.dynamicenum.MohistDynamEnum;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftNamespacedKey;
 
 public class MaterialHelper {
 

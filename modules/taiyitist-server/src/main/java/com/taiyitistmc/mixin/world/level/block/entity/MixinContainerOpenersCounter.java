@@ -6,9 +6,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -17,28 +18,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ContainerOpenersCounter.class)
 public abstract class MixinContainerOpenersCounter implements InjectionContainerOpenersCounter {
 
-    public boolean opened;// CraftBukkit
     // @formatter:off
     @Shadow private int openCount;
-
     @Shadow protected abstract void onOpen(Level p_155460_, BlockPos p_155461_, BlockState p_155462_);
-
     @Shadow protected abstract void onClose(Level p_155473_, BlockPos p_155474_, BlockState p_155475_);
+    @Shadow protected abstract void openerCountChanged(Level p_155463_, BlockPos p_155464_, BlockState p_155465_, int p_155466_, int p_155467_);
     // @formatter:on
 
-    @Shadow protected abstract void openerCountChanged(Level p_155463_, BlockPos p_155464_, BlockState p_155465_, int p_155466_, int p_155467_);
+    @Unique
+    public boolean opened;// CraftBukkit
 
-    @Override
     public void onAPIOpen(Level world, BlockPos blockposition, BlockState iblockdata) {
         onOpen(world, blockposition, iblockdata);
     }
 
-    @Override
     public void onAPIClose(Level world, BlockPos blockposition, BlockState iblockdata) {
         onClose(world, blockposition, iblockdata);
     }
 
-    @Override
     public void openerAPICountChanged(Level world, BlockPos blockposition, BlockState iblockdata, int i, int j) {
         openerCountChanged(world, blockposition, iblockdata, i, j);
     }

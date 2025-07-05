@@ -17,7 +17,7 @@ public class MixinDragonEggBlock {
 
     @Inject(method = "teleport",
             at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/world/level/Level;isClientSide:Z"),
+            target = "Lnet/minecraft/world/level/Level;isClientSide:Z"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void banner$tpEvent(BlockState state, Level level, BlockPos pos, CallbackInfo ci,
                                 WorldBorder worldBorder, int i, BlockPos blockPos) {

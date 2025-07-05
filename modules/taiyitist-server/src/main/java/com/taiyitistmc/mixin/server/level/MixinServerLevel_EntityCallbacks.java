@@ -62,7 +62,6 @@ public class MixinServerLevel_EntityCallbacks {
 
     @Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("RETURN"))
     private void banner$invalid(Entity entity, CallbackInfo ci) {
-        entity.banner$setInWorld(true);
         entity.banner$setValid(false);
         if (!(entity instanceof ServerPlayer)) {
             for (var player : outerThis.players()) {

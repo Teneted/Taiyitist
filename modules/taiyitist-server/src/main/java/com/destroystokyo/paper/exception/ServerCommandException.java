@@ -3,7 +3,6 @@ package com.destroystokyo.paper.exception;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**

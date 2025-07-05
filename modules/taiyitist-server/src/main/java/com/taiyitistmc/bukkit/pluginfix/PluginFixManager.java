@@ -25,18 +25,22 @@ public class PluginFixManager {
         if (className.equals("com.comphenix.protocol.ProtocolConfig")) {
             return removeProtocolASM(clazz);
         }
-        if (className.endsWith("com.sk89q.worldedit.bukkit.WorldEditPlugin")) {
+        if (mainClass.equals("com.sk89q.worldedit.bukkit.WorldEditPlugin")) {
+            System.setProperty("worldedit.bukkit.adapter", "com.sk89q.worldedit.bukkit.adapter.impl.v1_20_R1.PaperweightAdapter");
+        }
+        if (mainClass.contains("FastAsyncWorldEdit")) {
             System.setProperty("worldedit.bukkit.adapter", "com.sk89q.worldedit.bukkit.adapter.impl.fawe.v1_20_R1.PaperweightFaweAdapter");
         }
+
         Consumer<ClassNode> patcher = switch (className) {
             case "com.sk89q.worldedit.bukkit.BukkitAdapter" -> WorldEdit::handleBukkitAdapter;
             case "com.sk89q.worldedit.bukkit.adapter.Refraction" -> WorldEdit::handlePickName;
-            case "com.sk89q.worldedit.bukkit.adapter.impl.v1_20_R1.PaperweightAdapter$SpigotWatchdog" -> WorldEdit::handleWatchdog;
+            case "com.sk89q.worldedit.bukkit.adapter.impl.v1_20_R1.PaperweightAdapter$SpigotWatchdog" ->
+                    WorldEdit::handleWatchdog;
             case "com.earth2me.essentials.utils.VersionUtil" -> node -> helloWorld(node, 110, 109);
             case "net.ess3.nms.refl.providers.ReflServerStateProvider" -> node -> helloWorld(node, "u", "U");
             case "net.Zrips.CMILib.Reflections" -> node -> helloWorld(node, "bR", "field_7512");
-            case "net.momirealms.customcrops.libraries.sparrow.impl.reobf_1_21_r1.Heart" -> node -> helloWorld(node, "net.minecraft.network.protocol.game.ClientboundBossEventPacket$OperationType", "net.minecraft.class_2629$class_5883");
-            case "net.momirealms.customfishing.bukkit.nms.impl.reobf_1_21_r1.Heart" -> node -> helloWorld(node, "net.minecraft.network.protocol.game.ClientboundBossEventPacket$OperationType", "net.minecraft.class_2629$class_5883");
+            case "io.lumine.mythic.core.volatilecode.v1_20_R1.VolatileEntityHandlerImpl" -> node -> helloWorld(node, "c", "d"); // mythicmobs-5.8
             default -> null;
         };
         return patcher == null ? clazz : patch(clazz, patcher);

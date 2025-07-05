@@ -13,7 +13,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.server.Main;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
+import net.minecraft.world.level.storage.LevelStorageSource;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -59,13 +59,14 @@ public abstract class MixinMain {
         optionParser.acceptsAll(Arrays.asList("B", "banner-settings"), "File for banner settings")
                 .withRequiredArg()
                 .ofType(File.class)
-                .defaultsTo(new File("banner-config", "banner.yml"))
+                .defaultsTo(new File("banner-config","banner.yml"))
                 .describedAs("Yml file");
         // Spigot End
     }
 
     @Inject(method = "main", at = @At(value = "INVOKE",
-            target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"),
+            target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
+            ordinal = 0),
             remap = false
     )
     private static void banner$addYmlInfo(String[] strings, CallbackInfo ci, @Local OptionSet optionSet) throws IOException {
@@ -84,8 +85,10 @@ public abstract class MixinMain {
         // CraftBukkit end
     }
 
-    @Inject(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;)Lnet/minecraft/server/packs/repository/PackRepository;"))
-    private static void banner$createBukkitDatapack(String[] strings, CallbackInfo ci, @Local LevelStorageAccess levelStorageAccess) {
+    @Inject(method = "main", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Ljava/nio/file/Path;)Lnet/minecraft/server/packs/repository/PackRepository;")
+    )
+    private static void banner$createBukkitDatapack(String[] strings, CallbackInfo ci, @Local LevelStorageSource.LevelStorageAccess levelStorageAccess) {
         // CraftBukkit start
         File bukkitDataPackFolder = new File(levelStorageAccess.getLevelPath(LevelResource.DATAPACK_DIR).toFile(), "bukkit");
         if (!bukkitDataPackFolder.exists()) {

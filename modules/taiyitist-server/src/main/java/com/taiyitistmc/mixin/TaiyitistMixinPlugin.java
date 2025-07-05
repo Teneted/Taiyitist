@@ -37,7 +37,7 @@ public class TaiyitistMixinPlugin implements IMixinConfigPlugin, IEnvironmentTok
         try {
             TaiyitistMCStart.run();
         } catch (Exception ex) {
-            TaiyitistMCStart.LOGGER.error("Failed to load Taiyitist Server..., caused by " + ex.getCause());
+            TaiyitistMCStart.LOGGER.error("Failed to load BannerServer..., caused by " + ex.getCause());
             throw new RuntimeException(ex);
         }
     }
@@ -49,26 +49,29 @@ public class TaiyitistMixinPlugin implements IMixinConfigPlugin, IEnvironmentTok
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        // Taiyitist start - compat for arclight
+        // Banner start - compat for arclight
         if (FabricLoader.getInstance().isModLoaded("arclight")) {
             return false;
         }
-        // Taiyitist end
-        if (mixinClassName.equals("com.taiyitistmc.mixin.core.world.entity.MixinMob$PaperSpawnAffect")) {
+        // Banner end
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.core.world.entity.MixinMob$PaperSpawnAffect")) {
             return !FabricLoader.getInstance().isModLoaded("vmp");
         }
-        if (mixinClassName.equals("com.taiyitistmc.mixin.core.world.level.spawner.MixinNaturalSpawner")) {
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.core.world.level.spawner.MixinNaturalSpawner")) {
             return !FabricLoader.getInstance().isModLoaded("carpet-tis-addition")
                     && !FabricLoader.getInstance().isModLoaded("carpet");
         }
-        if (mixinClassName.equals("com.taiyitistmc.mixin.core.network.protocol.MixinPacketUtils")) {
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.core.network.protocol.MixinPacketUtils")) {
             return !FabricLoader.getInstance().isModLoaded("cobblemon");
         }
-        if (mixinClassName.equals("com.taiyitistmc.mixin.core.world.item.MixinChorusFruitItem")) {
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.core.world.item.MixinChorusFruitItem")) {
             return !FabricLoader.getInstance().isModLoaded("openpartiesandclaims");
         }
-        if (mixinClassName.equals("com.taiyitistmc.mixin.server.commands.MixinWorldBorderCommand")) {
-            return !FabricLoader.getInstance().isModLoaded("multiworldborders");
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.world.level.block.MixinMagmaBlock")) {
+            return !FabricLoader.getInstance().isModLoaded("quad");
+        }
+        if (mixinClassName.equals("com.mohistmc.banner.mixin.world.inventory.MixinAnvilMenuMinFix")) {
+            return !FabricLoader.getInstance().isModLoaded("zenith");
         }
         return true;
     }

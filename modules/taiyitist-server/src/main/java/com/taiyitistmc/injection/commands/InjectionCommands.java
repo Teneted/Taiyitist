@@ -5,15 +5,15 @@ import net.minecraft.commands.CommandSourceStack;
 
 public interface InjectionCommands {
 
-    default void dispatchServerCommand(CommandSourceStack sender, String command) {
-        throw new IllegalStateException("Not implemented");
+    default int dispatchServerCommand(CommandSourceStack sender, String command) {
+        return 0;
     }
 
-    default void performPrefixedCommand(CommandSourceStack commandlistenerwrapper, String s, String label) {
-        throw new IllegalStateException("Not implemented");
+    default int performPrefixedCommand(CommandSourceStack commandlistenerwrapper, String s, String label) {
+        return 0;
     }
 
-    default void performCommand(ParseResults<CommandSourceStack> parseresults, String s, String label) {
-        throw new IllegalStateException("Not implemented");
+    default int performCommand(ParseResults<CommandSourceStack> parseresults, String s, String label) {
+        return 0;
     }
 }

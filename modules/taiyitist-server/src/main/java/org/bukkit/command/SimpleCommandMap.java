@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -68,8 +67,8 @@ public class SimpleCommandMap implements CommandMap {
      */
     @Override
     public boolean register(@NotNull String label, @NotNull String fallbackPrefix, @NotNull Command command) {
-        label = label.toLowerCase(Locale.ROOT).trim();
-        fallbackPrefix = fallbackPrefix.toLowerCase(Locale.ROOT).trim();
+        label = label.toLowerCase(java.util.Locale.ENGLISH).trim();
+        fallbackPrefix = fallbackPrefix.toLowerCase(java.util.Locale.ENGLISH).trim();
         boolean registered = register(label, command, false, fallbackPrefix);
 
         Iterator<String> iterator = command.getAliases().iterator();
@@ -137,7 +136,7 @@ public class SimpleCommandMap implements CommandMap {
             return false;
         }
 
-        String sentCommandLabel = args[0].toLowerCase(Locale.ROOT);
+        String sentCommandLabel = args[0].toLowerCase(java.util.Locale.ENGLISH);
         Command target = getCommand(sentCommandLabel);
 
         if (target == null) {
@@ -145,16 +144,15 @@ public class SimpleCommandMap implements CommandMap {
         }
 
         try {
-            target.timings.startTiming(); // Spigot
             // Note: we don't return the result of target.execute as thats success / failure, we return handled (true) or not handled (false)
             target.execute(sender, sentCommandLabel, Arrays.copyOfRange(args, 1, args.length));
-            target.timings.stopTiming(); // Spigot
         } catch (CommandException ex) {
-            target.timings.stopTiming(); // Spigot
+            server.getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerCommandException(ex, target, sender, args))); // Paper
             throw ex;
         } catch (Throwable ex) {
-            target.timings.stopTiming(); // Spigot
-            throw new CommandException("Unhandled exception executing '" + commandLine + "' in " + target, ex);
+            String msg = "Unhandled exception executing '" + commandLine + "' in " + target;
+            server.getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerCommandException(ex, target, sender, args))); // Paper
+            throw new CommandException(msg, ex);
         }
 
         // return true as command was handled
@@ -173,7 +171,7 @@ public class SimpleCommandMap implements CommandMap {
     @Override
     @Nullable
     public Command getCommand(@NotNull String name) {
-        Command target = knownCommands.get(name.toLowerCase(Locale.ROOT));
+        Command target = knownCommands.get(name.toLowerCase(java.util.Locale.ENGLISH));
         return target;
     }
 
@@ -233,7 +231,9 @@ public class SimpleCommandMap implements CommandMap {
         } catch (CommandException ex) {
             throw ex;
         } catch (Throwable ex) {
-            throw new CommandException("Unhandled exception executing tab-completer for '" + cmdLine + "' in " + target, ex);
+            String msg = "Unhandled exception executing tab-completer for '" + cmdLine + "' in " + target;
+            server.getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerTabCompleteException(msg, ex, target, sender, args))); // Paper
+            throw new CommandException(msg, ex);
         }
     }
 
@@ -277,10 +277,16 @@ public class SimpleCommandMap implements CommandMap {
 
             // We register these as commands so they have absolute priority.
             if (targets.size() > 0) {
-                knownCommands.put(alias.toLowerCase(Locale.ROOT), new FormattedCommandAlias(alias.toLowerCase(Locale.ROOT), targets.toArray(new String[targets.size()])));
+                knownCommands.put(alias.toLowerCase(java.util.Locale.ENGLISH), new FormattedCommandAlias(alias.toLowerCase(java.util.Locale.ENGLISH), targets.toArray(new String[targets.size()])));
             } else {
-                knownCommands.remove(alias.toLowerCase(Locale.ROOT));
+                knownCommands.remove(alias.toLowerCase(java.util.Locale.ENGLISH));
             }
         }
     }
+
+    // Banner start - add methods to support plugin manager
+    public Map<String, Command> getKnownCommands() {
+        return knownCommands;
+    }
+    // Banner - end
 }

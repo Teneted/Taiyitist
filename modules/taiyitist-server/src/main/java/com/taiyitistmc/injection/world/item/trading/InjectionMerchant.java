@@ -1,10 +1,10 @@
 package com.taiyitistmc.injection.world.item.trading;
 
-import org.bukkit.craftbukkit.inventory.CraftMerchant;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftMerchant;
 
 public interface InjectionMerchant {
 
     default CraftMerchant getCraftMerchant() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

@@ -9,22 +9,26 @@ import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BarrelBlockEntity.class)
 public abstract class MixinBarrelBlockEntity extends RandomizableContainerBlockEntity {
 
-    // CraftBukkit start - add fields and methods
-    public List<HumanEntity> transaction = new ArrayList<>();
-    @Shadow
-    private NonNullList<ItemStack> items;
-    private int maxStack = MAX_STACK;
+    @Shadow private NonNullList<ItemStack> items;
+
     protected MixinBarrelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
+
+    // CraftBukkit start - add fields and methods
+    @Unique
+    public List<HumanEntity> transaction = new ArrayList<>();
+    @Unique
+    private int maxStack = MAX_STACK;
 
     @Override
     public List<ItemStack> getContents() {

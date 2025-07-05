@@ -6,18 +6,17 @@ import net.minecraft.commands.CommandSourceStack;
 public interface InjectionRconConsoleSource {
 
     default SocketAddress bridge$socketAddress() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void banner$setSocketAddress(SocketAddress socketAddress) {
-        throw new IllegalStateException("Not implemented");
+
     }
 
     default void sendMessage(String message) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default org.bukkit.command.CommandSender getBukkitSender(CommandSourceStack wrapper) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

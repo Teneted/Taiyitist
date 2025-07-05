@@ -5,7 +5,7 @@ import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,10 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Fox.FoxEatBerriesGoal.class)
-public abstract class MixinFox_EatBerriesGoal extends MoveToBlockGoal {
+public abstract class MixinFox_EatBerriesGoal extends MoveToBlockGoal{
 
-    @SuppressWarnings("target")
-    @Shadow(aliases = {"field_17975"}, remap = false)
+    @SuppressWarnings("target") @Shadow(aliases = {"field_17975"}, remap = false)
     private Fox outerThis;
 
     public MixinFox_EatBerriesGoal(PathfinderMob creature, double speedIn, int length) {

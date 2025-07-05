@@ -10,11 +10,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(StoredUserList.class)
-public abstract class MixinStoredUserList<K, V extends StoredUserEntry<K>> implements InjectionStoredUserList<K, V> {
+public abstract class MixinStoredUserList<K, V extends StoredUserEntry<K>>  implements InjectionStoredUserList<K, V>  {
 
-    @Shadow
-    @Final
-    private Map<String, V> map;
+    @Shadow @Final private Map<String, V> map;
 
     @Override
     public Collection<V> getValues() {

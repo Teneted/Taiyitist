@@ -7,15 +7,12 @@ import org.bukkit.event.inventory.InventoryType;
 public interface InjectionTransientCraftingContainer {
 
     default InventoryType getInvType() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void bridge$setResultInventory(Container resultInventory) {
-        throw new IllegalStateException("Not implemented");
     }
 
-
     default void setOwner(Player owner) {
-        throw new IllegalStateException("Not implemented");
     }
 }

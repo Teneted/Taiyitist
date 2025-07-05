@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -187,7 +186,7 @@ public class Permission {
     @NotNull
     public Permission addParent(@NotNull String name, boolean value) {
         PluginManager pm = Bukkit.getServer().getPluginManager();
-        String lname = name.toLowerCase(Locale.ROOT);
+        String lname = name.toLowerCase(java.util.Locale.ENGLISH);
 
         Permission perm = pm.getPermission(lname);
 

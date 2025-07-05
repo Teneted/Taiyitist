@@ -8,7 +8,7 @@ import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -17,13 +17,11 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Panda.class)
 public abstract class MixinPanda extends Animal {
 
-    @Shadow
-    @Final
-    static Predicate<ItemEntity> PANDA_ITEMS;
-
     protected MixinPanda(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
+
+    @Shadow @Final static Predicate<ItemEntity> PANDA_ITEMS;
 
     /**
      * @author wdog5

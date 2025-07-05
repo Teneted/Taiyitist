@@ -1,6 +1,6 @@
 <div align="center">
 <img src="src/main/resources/assets/taiyitist/logo.png" alt="logo">
-  <h1>Taiyitist 1.21.1</h1>
+  <h1>Taiyitist 1.20.1</h1>
 
 ### The Bukkit/Spigot/Paper API implementation for Fabric
 ### The project is no longer a Fabric mod, but a standalone program
@@ -21,7 +21,7 @@
 - Fabric API uses mixins to change minecraft indirectly
 - Taiyitst also use mixins to hook Bukkit api as a fabric mod
 - There's a little breaking changes
-- This version of Taiyitst 1.21.1, supports MC version 1.21.1
+- This version of Taiyitst 1.20.1, supports MC version 1.20.1
 
 ## Tips
 - If you want to try a different Fabric + Bukkit hybrid server, you can try CardBoard

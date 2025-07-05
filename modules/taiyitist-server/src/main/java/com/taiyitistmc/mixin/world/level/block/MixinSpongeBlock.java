@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.SpongeBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.bukkit.craftbukkit.block.CraftBlockState;
-import org.bukkit.craftbukkit.util.BlockStateListPopulator;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_20_R1.util.BlockStateListPopulator;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,9 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SpongeBlock.class)
 public abstract class MixinSpongeBlock extends Block {
 
-    @Shadow
-    @Final
-    private static Direction[] ALL_DIRECTIONS;
+    @Shadow @Final private static Direction[] ALL_DIRECTIONS;
 
     public MixinSpongeBlock(Properties properties) {
         super(properties);
@@ -63,7 +61,7 @@ public abstract class MixinSpongeBlock extends Block {
 
                     if (block instanceof BucketPickup ifluidsource) {
 
-                        if (!ifluidsource.pickupBlock(null, blockList, blockposition1, iblockdata).isEmpty()) { // CraftBukkit
+                        if (!ifluidsource.pickupBlock(blockList, blockposition1, iblockdata).isEmpty()) { // CraftBukkit
                             return true;
                         }
                     }
@@ -105,7 +103,7 @@ public abstract class MixinSpongeBlock extends Block {
                 FluidState fluid = world.getFluidState(blockposition1);
 
                 if (fluid.is(FluidTags.WATER)) {
-                    if (iblockdata.getBlock() instanceof BucketPickup && !((BucketPickup) iblockdata.getBlock()).pickupBlock(null, blockList, blockposition1, iblockdata).isEmpty()) {
+                    if (iblockdata.getBlock() instanceof BucketPickup && !((BucketPickup) iblockdata.getBlock()).pickupBlock(blockList, blockposition1, iblockdata).isEmpty()) {
                         // NOP
                     } else if (iblockdata.getBlock() instanceof LiquidBlock) {
                         // NOP

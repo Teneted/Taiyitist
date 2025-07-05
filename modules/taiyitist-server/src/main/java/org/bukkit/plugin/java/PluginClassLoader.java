@@ -1,7 +1,6 @@
 package org.bukkit.plugin.java;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterators;
 import com.google.common.io.ByteStreams;
 import com.taiyitistmc.bukkit.pluginfix.PluginFixManager;
 import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
@@ -11,8 +10,6 @@ import io.izzel.tools.product.Product2;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -22,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,62 +77,37 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
         this.url = file.toURI().toURL();
         this.libraryLoader = libraryLoader;
 
-        Class<?> jarClass;
         try {
-            jarClass = Class.forName(description.getMain(), true, this);
-        } catch (ClassNotFoundException ex) {
-            throw new InvalidPluginException("Cannot find main class `" + description.getMain() + "'", ex);
-        }
+            Class<?> jarClass;
+            try {
+                jarClass = Class.forName(description.getMain(), true, this);
+            } catch (ClassNotFoundException ex) {
+                throw new InvalidPluginException("Cannot find main class `" + description.getMain() + "'", ex);
+            }
 
-        Class<? extends JavaPlugin> pluginClass;
-        try {
-            pluginClass = jarClass.asSubclass(JavaPlugin.class);
-        } catch (ClassCastException ex) {
-            throw new InvalidPluginException("main class `" + description.getMain() + "' must extend JavaPlugin", ex);
-        }
+            Class<? extends JavaPlugin> pluginClass;
+            try {
+                pluginClass = jarClass.asSubclass(JavaPlugin.class);
+            } catch (ClassCastException ex) {
+                throw new InvalidPluginException("main class `" + description.getMain() + "' does not extend JavaPlugin", ex);
+            }
 
-        Constructor<? extends JavaPlugin> pluginConstructor;
-        try {
-            pluginConstructor = pluginClass.getDeclaredConstructor();
-        } catch (NoSuchMethodException ex) {
-            throw new InvalidPluginException("main class `" + description.getMain() + "' must have a public no-args constructor", ex);
-        }
-
-        try {
-            plugin = pluginConstructor.newInstance();
+            plugin = pluginClass.newInstance();
         } catch (IllegalAccessException ex) {
-            throw new InvalidPluginException("main class `" + description.getMain() + "' constructor must be public", ex);
+            throw new InvalidPluginException("No public constructor", ex);
         } catch (InstantiationException ex) {
-            throw new InvalidPluginException("main class `" + description.getMain() + "' must not be abstract", ex);
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidPluginException("Could not invoke main class `" + description.getMain() + "' constructor", ex);
-        } catch (ExceptionInInitializerError | InvocationTargetException ex) {
-            throw new InvalidPluginException("Exception initializing main class `" + description.getMain() + "'", ex);
+            throw new InvalidPluginException("Abnormal plugin type", ex);
         }
     }
 
     @Override
     public URL getResource(String name) {
-        Objects.requireNonNull(name);
-        URL url = findResource(name);
-        if (url == null) {
-            if (getParent() != null) {
-                url = getParent().getResource(name);
-            }
-        }
-        return url;
+        return findResource(name);
     }
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        Objects.requireNonNull(name);
-        @SuppressWarnings("unchecked")
-        Enumeration<URL>[] tmp = (Enumeration<URL>[]) new Enumeration<?>[2];
-        if (getParent()!= null) {
-            tmp[1] = getParent().getResources(name);
-        }
-        tmp[0] = findResources(name);
-        return Iterators.asEnumeration(Iterators.concat(Iterators.forEnumeration(tmp[0]), Iterators.forEnumeration(tmp[1])));
+        return findResources(name);
     }
 
     @Override
@@ -213,9 +184,8 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     byteSource = () -> {
                         try (InputStream is = connection.getInputStream()) {
                             byte[] classBytes = ByteStreams.toByteArray(is);
-                            classBytes = Remapper.SWITCH_TABLE_FIXER.apply(classBytes);
-                            classBytes = PluginFixManager.injectPluginFix(description.getMain(), name, classBytes); // Mohist - Inject plugin fix
                             classBytes = Bukkit.getUnsafe().processClass(description, path, classBytes);
+                            classBytes = PluginFixManager.injectPluginFix(description.getMain(), name, classBytes); // Mohist - Inject plugin fix
                             return classBytes;
                         }
                     };
@@ -231,7 +201,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     if (getPackage(pkgName) == null) {
                         try {
                             if (manifest != null) {
-                                definePackage(pkgName, manifest, this.url);
+                                definePackage(pkgName, manifest, url);
                             } else {
                                 definePackage(pkgName, null, null, null, null, null, null, null);
                             }

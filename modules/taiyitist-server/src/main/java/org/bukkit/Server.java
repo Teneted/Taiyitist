@@ -27,8 +27,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityFactory;
-import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
@@ -37,7 +35,6 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemCraftResult;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
@@ -46,7 +43,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapView;
 import org.bukkit.packs.DataPackManager;
-import org.bukkit.packs.ResourcePack;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
@@ -58,7 +54,6 @@ import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -220,13 +215,6 @@ public interface Server extends PluginMessageRecipient {
     public boolean getAllowNether();
 
     /**
-     * Gets whether the server is logging the IP addresses of players.
-     *
-     * @return whether the server is logging the IP addresses of players
-     */
-    public boolean isLoggingIPs();
-
-    /**
      * Gets a list of packs to be enabled.
      *
      * @return a list of packs names
@@ -249,22 +237,6 @@ public interface Server extends PluginMessageRecipient {
      */
     @NotNull
     public DataPackManager getDataPackManager();
-
-    /**
-     * Get the ServerTick Manager.
-     *
-     * @return the manager
-     */
-    @NotNull
-    public ServerTickManager getServerTickManager();
-
-    /**
-     * Gets the resource pack configured to be sent to clients by the server.
-     *
-     * @return the resource pack
-     */
-    @Nullable
-    public ResourcePack getServerResourcePack();
 
     /**
      * Gets the server resource pack uri, or empty string if not specified.
@@ -544,10 +516,7 @@ public interface Server extends PluginMessageRecipient {
     public int getTicksPerSpawns(@NotNull SpawnCategory spawnCategory);
 
     /**
-     * Gets a player whose name matches the given name closest.
-     * <p>
-     * Use {@link #getPlayerExact(String)} to get the player matching the input exactly
-     * and {@link #matchPlayer(String)} if you want a list of all players matching the input.
+     * Gets a player object by the given username.
      * <p>
      * This method may not return objects for offline players.
      *
@@ -867,74 +836,6 @@ public interface Server extends PluginMessageRecipient {
     public ItemStack craftItem(@NotNull ItemStack[] craftingMatrix, @NotNull World world, @NotNull Player player);
 
     /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @return the {@link ItemStack} resulting from the given crafting matrix, if no recipe is found
-     * an ItemStack of {@link Material#AIR} is returned.
-     */
-    @NotNull
-    public ItemStack craftItem(@NotNull ItemStack[] craftingMatrix, @NotNull World world);
-
-    /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * <p>The {@link World} and {@link Player} arguments are required to fulfill the Bukkit Crafting
-     * events.</p>
-     *
-     * <p>Calls {@link org.bukkit.event.inventory.PrepareItemCraftEvent} to imitate the {@link Player}
-     * initiating the crafting event.</p>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @param player The player to imitate the crafting event on.
-     * @return resulting {@link ItemCraftResult} containing the resulting item, matrix and any overflow items.
-     */
-    @NotNull
-    public ItemCraftResult craftItemResult(@NotNull ItemStack[] craftingMatrix, @NotNull World world, @NotNull Player player);
-
-    /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @return resulting {@link ItemCraftResult} containing the resulting item, matrix and any overflow items.
-     */
-    @NotNull
-    public ItemCraftResult craftItemResult(@NotNull ItemStack[] craftingMatrix, @NotNull World world);
-
-    /**
      * Get an iterator through the list of crafting recipes.
      *
      * @return an iterator
@@ -1003,14 +904,6 @@ public interface Server extends PluginMessageRecipient {
      * @return true if only Mojang-signed players can join, false otherwise
      */
     public boolean isEnforcingSecureProfiles();
-
-    /**
-     * Gets whether this server is allowing connections transferred from other
-     * servers.
-     *
-     * @return true if the server accepts transfers, false otherwise
-     */
-    public boolean isAcceptingTransfers();
 
     /**
      * Gets whether the Server hide online players in server status.
@@ -1181,7 +1074,7 @@ public interface Server extends PluginMessageRecipient {
      * @return a ban list of the specified type
      */
     @NotNull
-    public <T extends BanList<?>> T getBanList(@NotNull BanList.Type type);
+    public  <T extends BanList<?>> T getBanList(@NotNull BanList.Type type);
 
     /**
      * Gets a set containing all player operators.
@@ -1443,15 +1336,6 @@ public interface Server extends PluginMessageRecipient {
     void setMotd(@NotNull String motd);
 
     /**
-     * Gets the server links which will be sent to clients
-     *
-     * @return the server's links
-     */
-    @NotNull
-    @ApiStatus.Experimental
-    ServerLinks getServerLinks();
-
-    /**
      * Gets the default message that is displayed when the server is stopped.
      *
      * @return the shutdown message
@@ -1475,15 +1359,6 @@ public interface Server extends PluginMessageRecipient {
      */
     @NotNull
     ItemFactory getItemFactory();
-
-    /**
-     * Gets the instance of the entity factory (for {@link EntitySnapshot}).
-     *
-     * @return the entity factory
-     * @see EntityFactory
-     */
-    @NotNull
-    EntityFactory getEntityFactory();
 
     /**
      * Gets the instance of the scoreboard manager.
@@ -1668,6 +1543,15 @@ public interface Server extends PluginMessageRecipient {
     @Nullable
     Entity getEntity(@NotNull UUID uuid);
 
+    // Paper start
+    /**
+     * Gets the current server TPS
+     *
+     * @return current server TPS (1m, 5m, 15m in Paper-Server)
+     */
+    @NotNull
+    public double[] getTPS();
+
     /**
      * Get the advancement specified by this key.
      *
@@ -1705,7 +1589,7 @@ public interface Server extends PluginMessageRecipient {
      * @return new data instance
      */
     @NotNull
-    public BlockData createBlockData(@NotNull Material material, @Nullable Consumer<? super BlockData> consumer);
+    public BlockData createBlockData(@NotNull Material material, @Nullable Consumer<BlockData> consumer);
 
     /**
      * Creates a new {@link BlockData} instance with material and properties
@@ -1872,4 +1756,5 @@ public interface Server extends PluginMessageRecipient {
     @NotNull
     Spigot spigot();
     // Spigot end
+
 }

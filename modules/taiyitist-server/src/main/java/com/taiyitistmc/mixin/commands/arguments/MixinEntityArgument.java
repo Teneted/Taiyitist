@@ -3,43 +3,33 @@ package com.taiyitistmc.mixin.commands.arguments;
 import com.taiyitistmc.injection.commands.arguments.InjectionEntityArgument;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityArgument.class)
 public abstract class MixinEntityArgument implements InjectionEntityArgument {
 
-    @Final@Shadow public static SimpleCommandExceptionType ERROR_NOT_SINGLE_PLAYER;
-    @Final@Shadow public static SimpleCommandExceptionType ERROR_NOT_SINGLE_ENTITY;
-    @Final@Shadow public static SimpleCommandExceptionType ERROR_ONLY_PLAYERS_ALLOWED;
-    // @formatter:off
-    @Shadow @Final boolean single;
-    @Shadow @Final boolean playersOnly;
-    // @formatter:on
+    @Shadow public abstract EntitySelector parse(StringReader reader) throws CommandSyntaxException;
+
+    @Unique
+    private AtomicBoolean banner$overridePerm = new AtomicBoolean(false);
 
     @Override
-    public EntitySelector parse(StringReader stringReader, boolean bl, boolean overridePermissions) throws CommandSyntaxException {
-        int i = 0;
-        EntitySelectorParser entityselectorparser = new EntitySelectorParser(stringReader, bl);
-        EntitySelector entityselector = entityselectorparser.parse(overridePermissions);
-        if (entityselector.getMaxResults() > 1 && this.single) {
-            if (this.playersOnly) {
-                stringReader.setCursor(0);
-                throw ERROR_NOT_SINGLE_PLAYER.createWithContext(stringReader);
-            } else {
-                stringReader.setCursor(0);
-                throw ERROR_NOT_SINGLE_ENTITY.createWithContext(stringReader);
-            }
-        } else if (entityselector.includesEntities() && this.playersOnly && !entityselector.isSelfSelector()) {
-            stringReader.setCursor(0);
-            throw ERROR_ONLY_PLAYERS_ALLOWED.createWithContext(stringReader);
-        } else {
-            return entityselector;
-        }
+    public EntitySelector parse(StringReader stringreader, boolean overridePermissions) throws CommandSyntaxException {
+        banner$overridePerm.set(overridePermissions);
+        return parse(stringreader);
+    }
+
+    @Redirect(method = "parse(Lcom/mojang/brigadier/StringReader;)Lnet/minecraft/commands/arguments/selector/EntitySelector;",
+    at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;parse()Lnet/minecraft/commands/arguments/selector/EntitySelector;"))
+    private EntitySelector banner$resetParse(EntitySelectorParser instance) throws CommandSyntaxException {
+        return instance.parse(banner$overridePerm.getAndSet(false));
     }
 }

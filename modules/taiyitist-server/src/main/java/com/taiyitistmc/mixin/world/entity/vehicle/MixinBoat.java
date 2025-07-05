@@ -1,39 +1,84 @@
 package com.taiyitistmc.mixin.world.entity.vehicle;
 
 import com.taiyitistmc.injection.world.entity.vehicle.InjectionBoat;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Boat.class)
-public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
+public abstract class MixinBoat extends Entity implements InjectionBoat {
 
+
+    // @formatter:off
+    @Shadow public abstract float getDamage();
+    @Shadow public abstract void setDamage(float damageTaken);
+    // @formatter:on
+
+    @Unique
     public double maxSpeed = 0.4D;
+    @Unique
     public double occupiedDeceleration = 0.2D;
+    @Unique
     public double unoccupiedDeceleration = -1;
+    @Unique
     public boolean landBoats = false;
+    @Unique
     private Location lastLocation;
 
     public MixinBoat(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Inject(method = "push", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/VehicleEntity;push(Lnet/minecraft/world/entity/Entity;)V"))
+
+    @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;setHurtDir(I)V"))
+    private void banner$damageVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        Vehicle vehicle = (Vehicle) this.getBukkitEntity();
+        org.bukkit.entity.Entity attacker = (source.getEntity() == null) ? null : source.getEntity().getBukkitEntity();
+
+        VehicleDamageEvent event = new VehicleDamageEvent(vehicle, attacker, amount);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/vehicle/Boat;getDamage()F"))
+    private void banner$destroyVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (this.getDamage() > 40.0F) {
+            Vehicle vehicle = (Vehicle) this.getBukkitEntity();
+            org.bukkit.entity.Entity attacker = (source.getEntity() == null) ? null : source.getEntity().getBukkitEntity();
+
+            VehicleDestroyEvent event = new VehicleDestroyEvent(vehicle, attacker);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                this.setDamage(40F);
+                cir.setReturnValue(true);
+            }
+        }
+    }
+
+    @Inject(method = "push", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
     private void banner$collideVehicle(Entity entityIn, CallbackInfo ci) {
         if (!isPassengerOfSameVehicle(entityIn)) {
             VehicleEntityCollisionEvent event = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), entityIn.getBukkitEntity());

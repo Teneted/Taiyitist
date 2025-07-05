@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -208,8 +208,8 @@ public class DumpCommand extends BukkitCommand {
 
     private void dumpAdvancements(CommandSender sender, String mode) {
         StringBuilder sb = new StringBuilder();
-        for (AdvancementHolder channel : BukkitMethodHooks.getServer().getAdvancements().getAllAdvancements()) {
-            sb.append(channel.id()).append("\n");
+        for (Advancement channel : BukkitMethodHooks.getServer().getAdvancements().getAllAdvancements()) {
+            sb.append(channel.getId()).append("\n");
         }
         dump(sender, "advancements", sb, mode);
     }

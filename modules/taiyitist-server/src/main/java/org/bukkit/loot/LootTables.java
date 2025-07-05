@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This enum holds a list of all known {@link LootTable}s offered by Mojang.
  * This list is not guaranteed to be accurate in future versions.
- * <br>
+ *
  * See the
- * <a href="https://minecraft.wiki/w/Loot_table#List_of_loot_tables">
+ * <a href="https://minecraft.gamepedia.com/Loot_table#List_of_loot_tables">
  * Minecraft Wiki</a> for more information on loot tables.
  */
 public enum LootTables implements Keyed {
@@ -33,26 +33,6 @@ public enum LootTables implements Keyed {
     ANCIENT_CITY("chests/ancient_city"),
     ANCIENT_CITY_ICE_BOX("chests/ancient_city_ice_box"),
     RUINED_PORTAL("chests/ruined_portal"),
-    TRIAL_CHAMBERS_REWARD("chests/trial_chambers/reward"),
-    TRIAL_CHAMBERS_REWARD_COMMON("chests/trial_chambers/reward_common"),
-    TRIAL_CHAMBERS_REWARD_RARE("chests/trial_chambers/reward_rare"),
-    TRIAL_CHAMBERS_REWARD_UNIQUE("chests/trial_chambers/reward_unique"),
-    TRIAL_CHAMBERS_REWARD_OMINOUS("chests/trial_chambers/reward_ominous"),
-    TRIAL_CHAMBERS_REWARD_OMINOUS_COMMON("chests/trial_chambers/reward_ominous_common"),
-    TRIAL_CHAMBERS_REWARD_OMINOUS_RARE("chests/trial_chambers/reward_ominous_rare"),
-    TRIAL_CHAMBERS_REWARD_OMINOUS_UNIQUE("chests/trial_chambers/reward_ominous_unique"),
-    TRIAL_CHAMBERS_SUPPLY("chests/trial_chambers/supply"),
-    TRIAL_CHAMBERS_CORRIDOR("chests/trial_chambers/corridor"),
-    TRIAL_CHAMBERS_INTERSECTION("chests/trial_chambers/intersection"),
-    TRIAL_CHAMBERS_INTERSECTION_BARREL("chests/trial_chambers/intersection_barrel"),
-    TRIAL_CHAMBERS_ENTRANCE("chests/trial_chambers/entrance"),
-    TRIAL_CHAMBERS_CORRIDOR_DISPENSER("dispensers/trial_chambers/corridor"),
-    TRIAL_CHAMBERS_CHAMBER_DISPENSER("dispensers/trial_chambers/chamber"),
-    TRIAL_CHAMBERS_WATER_DISPENSER("dispensers/trial_chambers/water"),
-    TRIAL_CHAMBERS_CORRIDOR_POT("pots/trial_chambers/corridor"),
-    EQUIPMENT_TRIAL_CHAMBER("equipment/trial_chamber"),
-    EQUIPMENT_TRIAL_CHAMBER_RANGED("equipment/trial_chamber_ranged"),
-    EQUIPMENT_TRIAL_CHAMBER_MELEE("equipment/trial_chamber_melee"),
     SHIPWRECK_MAP("chests/shipwreck_map"),
     SHIPWRECK_SUPPLY("chests/shipwreck_supply"),
     SHIPWRECK_TREASURE("chests/shipwreck_treasure"),
@@ -176,16 +156,7 @@ public enum LootTables implements Keyed {
     TOOLSMITH_GIFT("gameplay/hero_of_the_village/toolsmith_gift"),
     WEAPONSMITH_GIFT("gameplay/hero_of_the_village/weaponsmith_gift"),
     SNIFFER_DIGGING("gameplay/sniffer_digging"),
-    PANDA_SNEEZE("gameplay/panda_sneeze"),
     PIGLIN_BARTERING("gameplay/piglin_bartering"),
-    // Spawners
-    TRIAL_CHAMBER_KEY("spawners/trial_chamber/key"),
-    TRIAL_CHAMBER_CONSUMABLES("spawners/trial_chamber/consumables"),
-    OMINOUS_TRIAL_CHAMBER_KEY("spawners/ominous/trial_chamber/key"),
-    OMINOUS_TRIAL_CHAMBER_CONSUMABLES("spawners/ominous/trial_chamber/consumables"),
-    TRIAL_CHAMBER_ITEMS_TO_DROP_WHEN_OMINOUS("spawners/trial_chamber/items_to_drop_when_ominous"),
-    // Shearing
-    SHEARING_BOGGED("shearing/bogged"),
     // Archaeology
     DESERT_WELL_ARCHAEOLOGY("archaeology/desert_well"),
     DESERT_PYRAMID_ARCHAEOLOGY("archaeology/desert_pyramid"),

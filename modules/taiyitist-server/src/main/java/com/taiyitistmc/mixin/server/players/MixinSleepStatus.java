@@ -12,14 +12,11 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SleepStatus.class)
 public abstract class MixinSleepStatus {
 
-    @Shadow
-    private int activePlayers;
+    @Shadow private int activePlayers;
 
-    @Shadow
-    private int sleepingPlayers;
+    @Shadow private int sleepingPlayers;
 
-    @Shadow
-    public abstract int sleepersNeeded(int requiredSleepPercentage);
+    @Shadow public abstract int sleepersNeeded(int requiredSleepPercentage);
 
     /**
      * @author wdog5
@@ -28,9 +25,7 @@ public abstract class MixinSleepStatus {
     @Overwrite
     public boolean areEnoughDeepSleeping(int requiredSleepPercentage, List<ServerPlayer> sleepingPlayers) {
         // CraftBukkit start
-        int j = (int) sleepingPlayers.stream().filter((eh) -> {
-            return eh.isSleepingLongEnough() || eh.bridge$fauxSleeping();
-        }).count();
+        int j = (int) sleepingPlayers.stream().filter((eh) -> { return eh.isSleepingLongEnough() || eh.bridge$fauxSleeping(); }).count();
         boolean anyDeepSleep = sleepingPlayers.stream().anyMatch(Player::isSleepingLongEnough);
         return anyDeepSleep && j >= this.sleepersNeeded(j);
         // CraftBukkit end
@@ -38,7 +33,7 @@ public abstract class MixinSleepStatus {
 
     /**
      * @author wdog5
-     * @reason bukkit
+     * @reason  bukkit
      */
     @Overwrite
     public boolean update(List<ServerPlayer> list) {
@@ -51,7 +46,7 @@ public abstract class MixinSleepStatus {
         boolean anySleep = false; // CraftBukkit
 
         while (iterator.hasNext()) {
-            ServerPlayer entityplayer = iterator.next();
+            ServerPlayer entityplayer = (ServerPlayer) iterator.next();
 
             if (!entityplayer.isSpectator()) {
                 ++this.activePlayers;

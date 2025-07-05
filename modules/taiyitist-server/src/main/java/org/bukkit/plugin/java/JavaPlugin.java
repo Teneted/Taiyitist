@@ -12,7 +12,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Server;
@@ -310,11 +309,11 @@ public abstract class JavaPlugin extends PluginBase {
      */
     @Nullable
     public PluginCommand getCommand(@NotNull String name) {
-        String alias = name.toLowerCase(Locale.ROOT);
+        String alias = name.toLowerCase(java.util.Locale.ENGLISH);
         PluginCommand command = getServer().getPluginCommand(alias);
 
         if (command == null || command.getPlugin() != this) {
-            command = getServer().getPluginCommand(description.getName().toLowerCase(Locale.ROOT) + ":" + alias);
+            command = getServer().getPluginCommand(description.getName().toLowerCase(java.util.Locale.ENGLISH) + ":" + alias);
         }
 
         if (command != null && command.getPlugin() == this) {

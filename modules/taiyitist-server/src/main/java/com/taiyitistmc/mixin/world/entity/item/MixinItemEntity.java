@@ -12,15 +12,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -32,11 +35,10 @@ public abstract class MixinItemEntity extends Entity {
     // @formatter:off
     @Shadow @Final private static EntityDataAccessor<ItemStack> DATA_ITEM;
     @Shadow public int pickupDelay;
+    @Shadow public abstract ItemStack getItem();
     @Shadow public UUID target;
-    @Shadow
-    private int age;
+    @Shadow public int age;
     // @formatter:on
-    private final AtomicBoolean flyAtPlayer = new AtomicBoolean(false);// Paper
 
     public MixinItemEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -48,15 +50,6 @@ public abstract class MixinItemEntity extends Entity {
             ci.cancel();
         }
     }
-
-    @Redirect(method = "merge(Lnet/minecraft/world/entity/item/ItemEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;setItem(Lnet/minecraft/world/item/ItemStack;)V"))
-    private static void banner$setNonEmpty(ItemEntity itemEntity, ItemStack stack) {
-        if (!stack.isEmpty()) {
-            itemEntity.setItem(stack);
-        }
-    }
-
-    @Shadow public abstract ItemStack getItem();
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;markHurt()V"))
     private void banner$damageNonLiving(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
@@ -73,6 +66,9 @@ public abstract class MixinItemEntity extends Entity {
         return instance.inflate(radius, radius - 0.5D, radius);
         // Spigot end
     }
+
+    @Unique
+    private AtomicBoolean flyAtPlayer = new AtomicBoolean(false);// Paper
 
     @Inject(method = "playerTouch", at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/entity/item/ItemEntity;pickupDelay:I"),
@@ -111,7 +107,7 @@ public abstract class MixinItemEntity extends Entity {
             }
 
             // Call newer event afterwards
-            EntityPickupItemEvent entityEvent = new EntityPickupItemEvent(player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+            EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
             entityEvent.setCancelled(!entityEvent.getEntity().getCanPickupItems());
             this.level().getCraftServer().getPluginManager().callEvent(entityEvent);
             flyAtPlayer.set(playerEvent.getFlyAtPlayer()); // Paper
@@ -144,7 +140,7 @@ public abstract class MixinItemEntity extends Entity {
 
     @Inject(method = "playerTouch",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"),
+            target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"),
             cancellable = true)
     private void banner$checkIfFly(Player player, CallbackInfo ci) {
         if (!flyAtPlayer.get()) {
@@ -160,5 +156,17 @@ public abstract class MixinItemEntity extends Entity {
     @Inject(method = "makeFakeItem", at = @At("RETURN"))
     private void banner$makeFakeItem(CallbackInfo ci) {
         this.age = this.level().bridge$spigotConfig().itemDespawnRate - 1; // Spigot
+    }
+
+    @Redirect(method = "merge(Lnet/minecraft/world/entity/item/ItemEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;setItem(Lnet/minecraft/world/item/ItemStack;)V"))
+    private static void banner$setNonEmpty(ItemEntity itemEntity, ItemStack stack) {
+        if (!stack.isEmpty()) {
+            itemEntity.setItem(stack);
+        }
+    }
+
+    @ModifyConstant(method = "tick", constant = @Constant(intValue = 6000))
+    private int modifyValue(int constant) {
+        return this.level().bridge$spigotConfig().itemDespawnRate; // 将6000改为5000
     }
 }

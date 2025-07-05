@@ -13,17 +13,11 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(NaturalSpawner.SpawnState.class)
 public class MixinNaturalSpawner_SpawnState implements InjectionSpawnState {
 
-    @Shadow
-    @Final
-    private int spawnableChunkCount;
+    @Shadow @Final private int spawnableChunkCount;
 
-    @Shadow
-    @Final
-    private Object2IntOpenHashMap<MobCategory> mobCategoryCounts;
+    @Shadow @Final private Object2IntOpenHashMap<MobCategory> mobCategoryCounts;
 
-    @Shadow
-    @Final
-    private LocalMobCapCalculator localMobCapCalculator;
+    @Shadow @Final private LocalMobCapCalculator localMobCapCalculator;
 
     // CraftBukkit start
     @Override
@@ -31,6 +25,6 @@ public class MixinNaturalSpawner_SpawnState implements InjectionSpawnState {
         int i = limit * this.spawnableChunkCount / NaturalSpawner.MAGIC_NUMBER;
         // CraftBukkit end
 
-        return this.mobCategoryCounts.getInt(enumcreaturetype) < i && this.localMobCapCalculator.canSpawn(enumcreaturetype, chunkcoordintpair);
+        return this.mobCategoryCounts.getInt(enumcreaturetype) >= i ? false : this.localMobCapCalculator.canSpawn(enumcreaturetype, chunkcoordintpair);
     }
 }

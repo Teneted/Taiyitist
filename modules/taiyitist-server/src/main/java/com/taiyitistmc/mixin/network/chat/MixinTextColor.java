@@ -1,7 +1,5 @@
 package com.taiyitistmc.mixin.network.chat;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.network.chat.InjectionTextColor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TextColor;
@@ -10,6 +8,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,10 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TextColor.class)
 public class MixinTextColor implements InjectionTextColor {
 
-    @Nullable public ChatFormatting format;
     // @formatter:off
-    @Mutable @Shadow @Final @Nullable
-    private String name;
+    @Mutable @Shadow @Final @Nullable public String name;
+    @Unique@Nullable public ChatFormatting format;
     // @formatter:on
 
     @Override
@@ -28,12 +26,12 @@ public class MixinTextColor implements InjectionTextColor {
         return format;
     }
 
-    @ShadowConstructor
+    @Unique
     public void banner$constructor(int color) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(int color, String name, ChatFormatting textFormatting) {
         banner$constructor(color);
         this.name = name;

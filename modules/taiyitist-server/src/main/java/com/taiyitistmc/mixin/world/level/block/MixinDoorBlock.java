@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.world.level.block;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.jetbrains.annotations.Nullable;
@@ -18,28 +20,31 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(DoorBlock.class)
-public abstract class MixinDoorBlock extends Block {
+public abstract class MixinDoorBlock extends Block{
 
-    @Shadow
-    @Final
-    public static EnumProperty<DoubleBlockHalf> HALF;
+    @Shadow @Final public static EnumProperty<DoubleBlockHalf> HALF;
 
-    @Shadow
-    @Final
-    public static BooleanProperty POWERED;
+    @Shadow @Final public static BooleanProperty POWERED;
 
-    @Shadow
-    @Final
-    public static BooleanProperty OPEN;
+    @Shadow @Final public static BooleanProperty OPEN;
+
+    @Shadow protected abstract void playSound(@Nullable Entity source, Level level, BlockPos pos, boolean isOpening);
 
     public MixinDoorBlock(Properties properties) {
         super(properties);
     }
 
-    @Shadow
-    protected abstract void playSound(@Nullable Entity source, Level level, BlockPos pos, boolean isOpening);
+    @Unique
+    private final AtomicInteger banner$power = new AtomicInteger();
+    @Unique
+    private final AtomicInteger banner$oldPower = new AtomicInteger();
+    @Unique
+    private org.bukkit.block.Block bukkitBlock;
+    @Unique
+    private BlockRedstoneEvent eventRedstone;
 
     /**
      * @author wdog5
@@ -48,25 +53,28 @@ public abstract class MixinDoorBlock extends Block {
     @Overwrite
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         // CraftBukkit start
-        BlockPos otherHalf = pos.relative(state.getValue(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN);
-        World bworld = level.getWorld();
-        org.bukkit.block.Block bukkitBlock = bworld.getBlockAt(pos.getX(), pos.getY(), pos.getZ());
-        org.bukkit.block.Block blockTop = bworld.getBlockAt(otherHalf.getX(), otherHalf.getY(), otherHalf.getZ());
+        {
+            BlockPos otherHalf = pos.relative(state.getValue(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN);
+            World bworld = level.getWorld();
+            bukkitBlock = bworld.getBlockAt(pos.getX(), pos.getY(), pos.getZ());
+            org.bukkit.block.Block blockTop = bworld.getBlockAt(otherHalf.getX(), otherHalf.getY(), otherHalf.getZ());
 
-        int power = bukkitBlock.getBlockPower();
-        int powerTop = blockTop.getBlockPower();
-        if (powerTop > power) power = powerTop;
-        int oldPower = state.getValue(POWERED) ? 15 : 0;
-
-        if (oldPower == 0 ^ power == 0) {
-            BlockRedstoneEvent eventRedstone = new BlockRedstoneEvent(bukkitBlock, oldPower, power);
-            level.getCraftServer().getPluginManager().callEvent(eventRedstone);
+            int power = bukkitBlock.getBlockPower();
+            int powerTop = blockTop.getBlockPower();
+            if (powerTop > power) power = powerTop;
+            banner$power.set(power);
+            int oldPower = (Boolean) state.getValue(POWERED) ? 15 : 0;
+            banner$oldPower.set(oldPower);
+        }
+        if (banner$oldPower.get() == 0 ^ banner$power.get() == 0) {
+            eventRedstone = new BlockRedstoneEvent(bukkitBlock, banner$oldPower.get(), banner$power.get());
+            Bukkit.getPluginManager().callEvent(eventRedstone);
             boolean bl = eventRedstone.getNewCurrent() > 0;
-            if (bl != state.getValue(OPEN)) {
-                this.playSound(null, level, pos, bl);
-                level.gameEvent(null, bl ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
+            if (bl != (Boolean) state.getValue(OPEN)) {
+                this.playSound((Entity) null, level, pos, bl);
+                level.gameEvent((Entity) null, bl ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
             }
-            level.setBlock(pos, state.setValue(POWERED, bl).setValue(OPEN, bl), 2);
+            level.setBlock(pos, (BlockState) ((BlockState) state.setValue(POWERED, bl)).setValue(OPEN, bl), 2);
         }
     }
 }

@@ -3,12 +3,9 @@ package org.bukkit.inventory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.Translatable;
 import org.bukkit.Utility;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -70,7 +67,6 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
      * @param damage durability / damage
      * @deprecated see {@link #setDurability(short)}
      */
-    @Deprecated
     public ItemStack(@NotNull final Material type, final int amount, final short damage) {
         this(type, amount, damage, null);
     }
@@ -83,15 +79,8 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
      * @deprecated this method uses an ambiguous data byte object
      */
     @Deprecated
-    public ItemStack(@NotNull Material type, final int amount, final short damage, @Nullable final Byte data) {
+    public ItemStack(@NotNull final Material type, final int amount, final short damage, @Nullable final Byte data) {
         Preconditions.checkArgument(type != null, "Material cannot be null");
-        if (type.isLegacy()) {
-            if (type.getMaxDurability() > 0) {
-                type = Bukkit.getUnsafe().fromLegacy(new MaterialData(type, data == null ? 0 : data), true);
-            } else {
-                type = Bukkit.getUnsafe().fromLegacy(new MaterialData(type, data == null ? (byte) damage : data), true);
-            }
-        }
         this.type = type;
         this.amount = amount;
         if (damage != 0) {
@@ -241,21 +230,18 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
     }
 
     /**
-     * Get the maximum stack size for this item. If this item has a max stack
-     * size component ({@link ItemMeta#hasMaxStackSize()}), the value of that
-     * component will be returned. Otherwise, this item's Material's {@link
-     * Material#getMaxStackSize() default maximum stack size} will be returned
-     * instead.
+     * Get the maximum stacksize for the material hold in this ItemStack.
+     * (Returns -1 if it has no idea)
      *
-     * @return The maximum you can stack this item to.
+     * @return The maximum you can stack this material to.
      */
     @Utility
     public int getMaxStackSize() {
-        if (meta != null && meta.hasMaxStackSize()) {
-            return meta.getMaxStackSize();
+        Material material = getType();
+        if (material != null) {
+            return material.getMaxStackSize();
         }
-
-        return getType().getMaxStackSize();
+        return -1;
     }
 
     private void createData(final byte data) {
@@ -463,17 +449,6 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
         return level;
     }
 
-    /**
-     * Removes all enchantments on this ItemStack.
-     */
-    public void removeEnchantments() {
-        if (meta == null) {
-            return;
-        }
-
-        meta.removeEnchantments();
-    }
-
     @Override
     @NotNull
     @Utility
@@ -540,11 +515,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
                 Map<?, ?> map = (Map<?, ?>) raw;
 
                 for (Map.Entry<?, ?> entry : map.entrySet()) {
-                    String stringKey = entry.getKey().toString();
-                    stringKey = Bukkit.getUnsafe().get(Enchantment.class, stringKey);
-                    NamespacedKey key = NamespacedKey.fromString(stringKey.toLowerCase(Locale.ROOT));
-
-                    Enchantment enchantment = Bukkit.getUnsafe().get(Registry.ENCHANTMENT, key);
+                    Enchantment enchantment = Enchantment.getByName(entry.getKey().toString());
 
                     if ((enchantment != null) && (entry.getValue() instanceof Integer)) {
                         result.addUnsafeEnchantment(enchantment, (Integer) entry.getValue());
@@ -613,6 +584,11 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
             return false;
         }
         this.meta = Bukkit.getItemFactory().asMetaFor(itemMeta, material);
+
+        Material newType = Bukkit.getItemFactory().updateMaterial(meta, material);
+        if (this.type != newType) {
+            this.type = newType;
+        }
 
         if (this.meta == itemMeta) {
             this.meta = itemMeta.clone();

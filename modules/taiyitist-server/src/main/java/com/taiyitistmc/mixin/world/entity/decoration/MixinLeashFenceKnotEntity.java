@@ -7,19 +7,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.decoration.BlockAttachedEntity;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(LeashFenceKnotEntity.class)
-public abstract class MixinLeashFenceKnotEntity extends BlockAttachedEntity {
+public abstract class MixinLeashFenceKnotEntity extends HangingEntity {
 
 
     protected MixinLeashFenceKnotEntity(EntityType<? extends HangingEntity> entityType, Level level) {
@@ -53,7 +52,7 @@ public abstract class MixinLeashFenceKnotEntity extends BlockAttachedEntity {
         if (!flag) {
             boolean die = true;
             for (final Mob entityinsentient : list) {
-                if (entityinsentient.isLeashed() && entityinsentient.getLeashHolder() == this) {
+                if (entityinsentient.isLeashed() && entityinsentient.getLeashHolder() == (Object) this) {
                     if (CraftEventFactory.callPlayerUnleashEntityEvent(entityinsentient, entityhuman, enumhand).isCancelled()) {
                         die = false;
                     } else {

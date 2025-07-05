@@ -2,7 +2,6 @@ package org.bukkit.entity;
 
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -32,7 +31,7 @@ public enum EntityType implements Keyed, Translatable {
      * Spawn with {@link World#dropItem(Location, ItemStack)} or {@link
      * World#dropItemNaturally(Location, ItemStack)}
      */
-    ITEM("item", Item.class, 1),
+    DROPPED_ITEM("item", Item.class, 1, false),
     /**
      * An experience orb.
      */
@@ -60,7 +59,7 @@ public enum EntityType implements Keyed, Translatable {
     /**
      * A leash attached to a fencepost.
      */
-    LEASH_KNOT("leash_knot", LeashHitch.class, 8),
+    LEASH_HITCH("leash_knot", LeashHitch.class, 8),
     /**
      * A painting on a wall.
      */
@@ -88,15 +87,15 @@ public enum EntityType implements Keyed, Translatable {
     /**
      * An ender eye signal.
      */
-    EYE_OF_ENDER("eye_of_ender", EnderSignal.class, 15),
+    ENDER_SIGNAL("eye_of_ender", EnderSignal.class, 15),
     /**
      * A flying splash potion.
      */
-    POTION("potion", ThrownPotion.class, 16),
+    SPLASH_POTION("potion", ThrownPotion.class, 16, false),
     /**
      * A flying experience bottle.
      */
-    EXPERIENCE_BOTTLE("experience_bottle", ThrownExpBottle.class, 17),
+    THROWN_EXP_BOTTLE("experience_bottle", ThrownExpBottle.class, 17),
     /**
      * An item frame on a wall.
      */
@@ -108,15 +107,15 @@ public enum EntityType implements Keyed, Translatable {
     /**
      * Primed TNT that is about to explode.
      */
-    TNT("tnt", TNTPrimed.class, 20),
+    PRIMED_TNT("tnt", TNTPrimed.class, 20),
     /**
      * A block that is going to or is about to fall.
      */
-    FALLING_BLOCK("falling_block", FallingBlock.class, 21),
+    FALLING_BLOCK("falling_block", FallingBlock.class, 21, false),
     /**
      * Internal representation of a Firework once it has been launched.
      */
-    FIREWORK_ROCKET("firework_rocket", Firework.class, 22),
+    FIREWORK("firework_rocket", Firework.class, 22, false),
     /**
      * @see Husk
      */
@@ -180,7 +179,7 @@ public enum EntityType implements Keyed, Translatable {
     /**
      * @see CommandMinecart
      */
-    COMMAND_BLOCK_MINECART("command_block_minecart", CommandMinecart.class, 40),
+    MINECART_COMMAND("command_block_minecart", CommandMinecart.class, 40),
     /**
      * A placed boat.
      */
@@ -192,23 +191,23 @@ public enum EntityType implements Keyed, Translatable {
     /**
      * @see StorageMinecart
      */
-    CHEST_MINECART("chest_minecart", StorageMinecart.class, 43),
+    MINECART_CHEST("chest_minecart", StorageMinecart.class, 43),
     /**
      * @see PoweredMinecart
      */
-    FURNACE_MINECART("furnace_minecart", PoweredMinecart.class, 44),
+    MINECART_FURNACE("furnace_minecart", PoweredMinecart.class, 44),
     /**
      * @see ExplosiveMinecart
      */
-    TNT_MINECART("tnt_minecart", ExplosiveMinecart.class, 45),
+    MINECART_TNT("tnt_minecart", ExplosiveMinecart.class, 45),
     /**
      * @see HopperMinecart
      */
-    HOPPER_MINECART("hopper_minecart", HopperMinecart.class, 46),
+    MINECART_HOPPER("hopper_minecart", HopperMinecart.class, 46),
     /**
      * @see SpawnerMinecart
      */
-    SPAWNER_MINECART("spawner_minecart", SpawnerMinecart.class, 47),
+    MINECART_MOB_SPAWNER("spawner_minecart", SpawnerMinecart.class, 47),
     CREEPER("creeper", Creeper.class, 50),
     SKELETON("skeleton", Skeleton.class, 51),
     SPIDER("spider", Spider.class, 52),
@@ -235,8 +234,8 @@ public enum EntityType implements Keyed, Translatable {
     CHICKEN("chicken", Chicken.class, 93),
     SQUID("squid", Squid.class, 94),
     WOLF("wolf", Wolf.class, 95),
-    MOOSHROOM("mooshroom", MushroomCow.class, 96),
-    SNOW_GOLEM("snow_golem", Snowman.class, 97),
+    MUSHROOM_COW("mooshroom", MushroomCow.class, 96),
+    SNOWMAN("snow_golem", Snowman.class, 97),
     OCELOT("ocelot", Ocelot.class, 98),
     IRON_GOLEM("iron_golem", IronGolem.class, 99),
     HORSE("horse", Horse.class, 100),
@@ -246,7 +245,7 @@ public enum EntityType implements Keyed, Translatable {
     LLAMA_SPIT("llama_spit", LlamaSpit.class, 104),
     PARROT("parrot", Parrot.class, 105),
     VILLAGER("villager", Villager.class, 120),
-    END_CRYSTAL("end_crystal", EnderCrystal.class, 200),
+    ENDER_CRYSTAL("end_crystal", EnderCrystal.class, 200),
     TURTLE("turtle", Turtle.class, -1),
     PHANTOM("phantom", Phantom.class, -1),
     TRIDENT("trident", Trident.class, -1),
@@ -285,27 +284,21 @@ public enum EntityType implements Keyed, Translatable {
     ITEM_DISPLAY("item_display", ItemDisplay.class, -1),
     SNIFFER("sniffer", Sniffer.class, -1),
     TEXT_DISPLAY("text_display", TextDisplay.class, -1),
-    BREEZE("breeze", Breeze.class, -1),
-    WIND_CHARGE("wind_charge", WindCharge.class, -1),
-    BREEZE_WIND_CHARGE("breeze_wind_charge", BreezeWindCharge.class, -1),
-    ARMADILLO("armadillo", Armadillo.class, -1),
-    BOGGED("bogged", Bogged.class, -1),
-    OMINOUS_ITEM_SPAWNER("ominous_item_spawner", OminousItemSpawner.class, -1),
     /**
      * A fishing line and bobber.
      */
-    FISHING_BOBBER("fishing_bobber", FishHook.class, -1, false),
+    FISHING_HOOK("fishing_bobber", FishHook.class, -1, false),
     /**
      * A bolt of lightning.
      * <p>
      * Spawn with {@link World#strikeLightning(Location)}.
      */
-    LIGHTNING_BOLT("lightning_bolt", LightningStrike.class, -1),
+    LIGHTNING("lightning_bolt", LightningStrike.class, -1, false),
     PLAYER("player", Player.class, -1, false),
     /**
      * An unknown entity without an Entity Class
      */
-    UNKNOWN(null, null, -1, false);
+    UNKNOWN("unknown", null, -1, false);
 
     private final String name;
     private final Class<? extends Entity> clazz;
@@ -313,18 +306,33 @@ public enum EntityType implements Keyed, Translatable {
     private final boolean independent, living;
     public NamespacedKey key;
 
-    public static Map<String, EntityType> NAME_MAP = new HashMap<String, EntityType>();
-    public static Map<Short, EntityType> ID_MAP = new HashMap<Short, EntityType>();
+    public static final Map<String, EntityType> NAME_MAP = new HashMap<String, EntityType>();
+    public static final Map<Short, EntityType> ID_MAP = new HashMap<Short, EntityType>();
 
     static {
         for (EntityType type : values()) {
             if (type.name != null) {
-                NAME_MAP.put(type.name.toLowerCase(Locale.ROOT), type);
+                NAME_MAP.put(type.name.toLowerCase(java.util.Locale.ENGLISH), type);
             }
             if (type.typeId > 0) {
                 ID_MAP.put(type.typeId, type);
             }
         }
+
+        // Add legacy names
+        NAME_MAP.put("xp_orb", EXPERIENCE_ORB);
+        NAME_MAP.put("eye_of_ender_signal", ENDER_SIGNAL);
+        NAME_MAP.put("xp_bottle", THROWN_EXP_BOTTLE);
+        NAME_MAP.put("fireworks_rocket", FIREWORK);
+        NAME_MAP.put("evocation_fangs", EVOKER_FANGS);
+        NAME_MAP.put("evocation_illager", EVOKER);
+        NAME_MAP.put("vindication_illager", VINDICATOR);
+        NAME_MAP.put("illusion_illager", ILLUSIONER);
+        NAME_MAP.put("commandblock_minecart", MINECART_COMMAND);
+        NAME_MAP.put("snowman", SNOWMAN);
+        NAME_MAP.put("villager_golem", IRON_GOLEM);
+        NAME_MAP.put("ender_crystal", ENDER_CRYSTAL);
+        NAME_MAP.put("zombie_pigman", ZOMBIFIED_PIGLIN);
     }
 
     private EntityType(/*@Nullable*/ String name, /*@Nullable*/ Class<? extends Entity> clazz, int typeId) {
@@ -349,7 +357,7 @@ public enum EntityType implements Keyed, Translatable {
     @Deprecated
     @Nullable
     public String getName() {
-        return name;
+        return name == null ? name() : name; // Banner
     }
 
     @NotNull
@@ -390,7 +398,7 @@ public enum EntityType implements Keyed, Translatable {
         if (name == null) {
             return null;
         }
-        return NAME_MAP.get(name.toLowerCase(Locale.ROOT));
+        return NAME_MAP.get(name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     /**

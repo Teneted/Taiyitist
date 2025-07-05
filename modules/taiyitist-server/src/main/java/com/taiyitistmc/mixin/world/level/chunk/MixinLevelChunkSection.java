@@ -13,13 +13,23 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(LevelChunkSection.class)
 public abstract class MixinLevelChunkSection implements InjectionLevelChunkSection {
 
-    @Shadow
-    public PalettedContainer<BlockState> states;
-    @Shadow
-    private PalettedContainerRO<Holder<Biome>> biomes;
+    @Shadow private PalettedContainerRO<Holder<Biome>> biomes;
+    @Shadow public PalettedContainer<BlockState> states;
 
-    @Shadow
-    public abstract void recalcBlockCounts();
+    @Shadow public void recalcBlockCounts() {
+
+    };
+
+    public void banner$constructor(PalettedContainer<BlockState> pStates, PalettedContainerRO<Holder<Biome>> pBiomes) {
+        throw new RuntimeException();
+    }
+
+    public void banner$constructor(PalettedContainer<BlockState> pStates, PalettedContainer<Holder<Biome>> pBiomes) {
+        this.states = pStates;
+        this.biomes = pBiomes;
+        this.recalcBlockCounts();
+    }
+
 
     @Override
     public void setBiome(int i, int j, int k, Holder<Biome> biome) {

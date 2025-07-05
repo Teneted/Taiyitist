@@ -5,7 +5,7 @@ import net.minecraft.world.entity.boss.enderdragon.phases.DragonPhaseInstance;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhaseManager;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftEnderDragon;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEnderDragon;
 import org.bukkit.event.entity.EnderDragonChangePhaseEvent;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -35,7 +35,7 @@ public abstract class MixinEnderDragonPhaseManager {
             }
 
             EnderDragonChangePhaseEvent event = new EnderDragonChangePhaseEvent(
-                    (CraftEnderDragon) this.dragon.getBukkitEntity(),
+                    (CraftEnderDragon)  this.dragon.getBukkitEntity(),
                     (this.currentPhase == null) ? null : CraftEnderDragon.getBukkitPhase(this.currentPhase.getPhase()),
                     CraftEnderDragon.getBukkitPhase(phaseIn)
             );

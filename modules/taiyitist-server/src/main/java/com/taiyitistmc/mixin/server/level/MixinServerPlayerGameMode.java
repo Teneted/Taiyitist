@@ -1,7 +1,5 @@
 package com.taiyitistmc.mixin.server.level;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.taiyitistmc.injection.server.level.InjectionServerPlayerGameMode;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -16,10 +14,10 @@ import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -38,10 +36,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -52,29 +51,29 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayerGameMode.class)
 public abstract class MixinServerPlayerGameMode implements InjectionServerPlayerGameMode {
 
     @Shadow
     @Final
-    private static Logger LOGGER;
-    private final AtomicReference<BlockBreakEvent> banner$event = new AtomicReference<>();
-    // CraftBukkit start - whole method
-    public boolean interactResult = false;
-    public boolean firedInteract = false;
-    public BlockPos interactPosition;
-    public InteractionHand interactHand;
-    public ItemStack interactItemStack;
-    @Shadow
-    @Final
     protected ServerPlayer player;
+
     @Shadow
     protected ServerLevel level;
+
+    @Shadow
+    public abstract boolean isCreative();
+
+    @Shadow
+    protected abstract void debugLogging(BlockPos blockPos, boolean bl, int i, String string);
+
     @Shadow
     private GameType gameModeForPlayer;
     @Shadow
@@ -95,20 +94,16 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     private int delayedTickStart;
 
     @Shadow
-    public abstract boolean isCreative();
+    @Final
+    private static Logger LOGGER;
 
-    @Shadow
-    protected abstract void debugLogging(BlockPos blockPos, boolean bl, int i, String string);
+    @Shadow public abstract boolean destroyBlock(BlockPos pos);
 
-    @Shadow
-    public abstract boolean destroyBlock(BlockPos pos);
-
-    @Shadow
-    public abstract void destroyAndAck(BlockPos pos, int i, String string);
+    @Shadow public abstract void destroyAndAck(BlockPos pos, int i, String string);
 
     @Inject(method = "changeGameModeForPlayer", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayerGameMode;setGameModeForPlayer(Lnet/minecraft/world/level/GameType;Lnet/minecraft/world/level/GameType;)V"))
     private void banner$gameModeEvent(GameType gameType, CallbackInfoReturnable<Boolean> cir) {
-        PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(player.getBukkitEntity(), GameMode.getByValue(gameType.getId()));
+        PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(((ServerPlayer) player).getBukkitEntity(), GameMode.getByValue(gameType.getId()));
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
@@ -126,7 +121,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
      */
     @Overwrite
     public void handleBlockBreakAction(BlockPos blockposition, ServerboundPlayerActionPacket.Action packetplayinblockdig_enumplayerdigtype, Direction enumdirection, int i, int j) {
-        if (!this.player.canInteractWithBlock(blockposition, 1.0)) {
+        if (this.player.getEyePosition().distanceToSqr(Vec3.atCenterOf(blockposition)) > ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) {
             this.debugLogging(blockposition, false, j, "too far");
         } else if (blockposition.getY() >= i) {
             this.player.connection.send(new ClientboundBlockUpdatePacket(blockposition, this.level.getBlockState(blockposition)));
@@ -257,7 +252,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             } else if (packetplayinblockdig_enumplayerdigtype == ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK) {
                 this.isDestroyingBlock = false;
                 if (!Objects.equals(this.destroyPos, blockposition)) {
-                    LOGGER.warn("Mismatch in destroy block pos: {} {}", this.destroyPos, blockposition);
+                    LOGGER.debug("Mismatch in destroy block pos: {} {}", this.destroyPos, blockposition); // CraftBukkit - SPIGOT-5457 sent by client when interact event cancelled
                     this.level.destroyBlockProgress(this.player.getId(), this.destroyPos, -1);
                     this.debugLogging(blockposition, true, j, "aborted mismatched destroying");
                 }
@@ -270,6 +265,9 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
 
         }
     }
+
+    @Unique
+    private final AtomicReference<BlockBreakEvent> banner$event = new AtomicReference<>();
 
     @Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
     private void banner$fireBreakEvent(BlockPos blockposition, CallbackInfoReturnable<Boolean> cir) {
@@ -290,7 +288,6 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             }
 
             event = new BlockBreakEvent(bblock, this.player.getBukkitEntity());
-            banner$event.set(event);
 
             // Sword + Creative mode pre-cancel
             event.setCancelled(isSwordNoBreak);
@@ -306,11 +303,11 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             }
 
             this.level.getCraftServer().getPluginManager().callEvent(event);
+            banner$event.set(event);
 
             if (event.isCancelled()) {
                 if (isSwordNoBreak) {
                     cir.setReturnValue(false);
-                    return;
                 }
                 // Let the client know the block still exists
                 this.player.connection.send(new ClientboundBlockUpdatePacket(this.level, blockposition));
@@ -331,7 +328,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     }
 
     @Inject(method = "destroyBlock", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;",
+            target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)V",
             shift = At.Shift.BEFORE))
     private void banner$setDrops(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         level.banner$setCaptureDrops(new ArrayList<>());
@@ -347,40 +344,52 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
 
         // Drop event experience
         if (this.level.removeBlock(pos, false) && banner$event.get() != null) {
-            this.level.getBlockState(pos).getBlock().popExperience(this.level, pos, banner$event.getAndSet(null).getExpToDrop());
+            this.level.getBlockState(pos).getBlock().popExperience(this.level, pos, banner$event.get().getExpToDrop());
         }
+        banner$event.set(null);
         cir.setReturnValue(true);
     }
 
     @Redirect(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;canAttackBlock(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;)Z"))
     private boolean banner$addFalse(Item instance, BlockState state, Level level, BlockPos pos, Player player) {
-        return this.player.getMainHandItem().getItem().canAttackBlock(state, this.level, pos, this.player);
-    }
-
-    @Inject(method = "destroyBlock", at = @At("RETURN"))
-    private void banner$clearDrops(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
-        this.level.banner$setCaptureDrops(null);
+        return true && this.player.getMainHandItem().getItem().canAttackBlock(state, this.level, pos, this.player);
     }
 
     @Inject(method = "destroyBlock",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"), cancellable = true)
-    private void banner$resetState(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local LocalRef<BlockState> blockState) {
-        blockState.set(this.level.getBlockState(pos)); // CraftBukkit - update state from plugins
-        if (blockState.get().isAir())
-            cir.setReturnValue(false); // CraftBukkit - A plugin set block to air without cancelling
+                    target = "Lnet/minecraft/server/level/ServerLevel;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;",
+                    shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void banner$resetState(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
+        blockState = this.level.getBlockState(pos); // CraftBukkit - update state from plugins
+        if (blockState.isAir()) cir.setReturnValue(false); // CraftBukkit - A plugin set block to air without cancelling
     }
 
+    // CraftBukkit start - whole method
+    @Unique
+    public boolean interactResult = false;
+    @Unique
+    public boolean firedInteract = false;
+    @Unique
+    public BlockPos interactPosition;
+    @Unique
+    public InteractionHand interactHand;
+    @Unique
+    public ItemStack interactItemStack;
+    @Unique
+    public InteractionResult enuminteractionresult = InteractionResult.PASS;
+    @Unique
+    public PlayerInteractEvent event;
+    @Unique
+    boolean cancelledBlock = false;
+
     /**
-     * @author wdog5
+     * @author wdog4
      * @reason
      */
     @Overwrite
     public InteractionResult useItemOn(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, BlockHitResult hitResult) {
         BlockPos blockPos = hitResult.getBlockPos();
         BlockState blockState = level.getBlockState(blockPos);
-        InteractionResult enuminteractionresult = InteractionResult.PASS;
-        boolean cancelledBlock = false;
         if (!blockState.getBlock().isEnabled(level.enabledFeatures())) {
             return InteractionResult.FAIL;
         } else if (this.gameModeForPlayer == GameType.SPECTATOR) {
@@ -391,12 +400,12 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             cancelledBlock = true;
         }
 
-        PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, blockPos, hitResult.getDirection(), stack, cancelledBlock, hand, hitResult.getLocation());
+        event = CraftEventFactory.callPlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, blockPos, hitResult.getDirection(), stack, cancelledBlock, hand, hitResult.getLocation());
         firedInteract = true;
         interactResult = event.useItemInHand() == Event.Result.DENY;
         interactPosition = blockPos.immutable();
         interactHand = hand;
-        interactItemStack = stack;
+        interactItemStack = stack.copy();
 
         if (event.useInteractedBlock() == Event.Result.DENY) {
             // If we denied a door from opening, we need to send a correcting update to the client, as it already opened the door.
@@ -427,18 +436,11 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             boolean bl2 = player.isSecondaryUseActive() && bl;
             ItemStack itemStack = stack.copy();
             if (!bl2) {
-                ItemInteractionResult result = blockState.useItemOn(player.getItemInHand(hand), level, player, hand, hitResult);
-                if (result.consumesAction()) {
+                InteractionResult interactionResult = blockState.use(level, player, hand, hitResult);
+                enuminteractionresult = interactionResult; // Fix mixin
+                if (interactionResult.consumesAction()) {
                     CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, blockPos, itemStack);
-                    return result.result();
-                }
-
-                if (result == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION && hand == InteractionHand.MAIN_HAND) {
-                    enuminteractionresult = blockState.useWithoutItem(level, player, hitResult);
-                    if (enuminteractionresult.consumesAction()) {
-                        CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, blockPos, itemStack);
-                        return enuminteractionresult;
-                    }
+                    return interactionResult;
                 }
             }
 

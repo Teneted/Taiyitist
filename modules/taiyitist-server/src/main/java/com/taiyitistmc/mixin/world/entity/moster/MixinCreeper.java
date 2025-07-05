@@ -1,7 +1,9 @@
 package com.taiyitistmc.mixin.world.entity.moster;
 
+import com.destroystokyo.paper.event.entity.CreeperIgniteEvent;
 import com.taiyitistmc.injection.world.entity.monster.InjectionCreeper;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,12 +15,13 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreeperPowerEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,19 +33,17 @@ public abstract class MixinCreeper extends Monster implements PowerableMob, Inje
 
     // @formatter:off
     @Shadow @Final private static EntityDataAccessor<Boolean> DATA_IS_POWERED;
+    @Shadow @Final private static EntityDataAccessor<Boolean> DATA_IS_IGNITED;
     @Shadow public int explosionRadius;
-    @Shadow
-    public int swell;
-    protected MixinCreeper(EntityType<? extends Monster> entityType, Level level) {
-        super(entityType, level);
-    }
+    @Shadow public int swell;
+    @Shadow public abstract boolean isPowered();
+    @Shadow public abstract boolean isIgnited();
     // @formatter:on
 
-    @Shadow public abstract boolean isPowered();
+    public AtomicBoolean ignited = new AtomicBoolean(true);
 
-    @Override
-    public void setPowered(boolean power) {
-        this.entityData.set(DATA_IS_POWERED, power);
+    protected MixinCreeper(EntityType<? extends Monster> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Inject(method = "thunderHit", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/monster/Creeper;entityData:Lnet/minecraft/network/syncher/SynchedEntityData;"))
@@ -52,6 +53,10 @@ public abstract class MixinCreeper extends Monster implements PowerableMob, Inje
         }
     }
 
+    /**
+     * @author wdog5
+     * @reason
+     */
     @Inject(method = "explodeCreeper", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Creeper;isPowered()Z"), cancellable = true)
     public final void explodeCreeper(CallbackInfo ci) {
         ExplosionPrimeEvent event = new ExplosionPrimeEvent(this.getBukkitEntity(), this.explosionRadius * (this.isPowered() ? 2.0f : 1.0f), false);
@@ -65,7 +70,35 @@ public abstract class MixinCreeper extends Monster implements PowerableMob, Inje
     @Inject(method = "spawnLingeringCloud", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private void banner$creeperCloud(CallbackInfo ci, Collection<MobEffectInstance> collection, AreaEffectCloud areaeffectcloudentity) {
         areaeffectcloudentity.setOwner((Creeper) (Object) this);
-        this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.EXPLOSION);
+         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.EXPLOSION);
+    }
+
+    @Override
+    public void setPowered(boolean power) {
+        this.entityData.set(DATA_IS_POWERED, power);
+    }
+
+
+    /**
+     * @author  Mgazul
+     * @reason
+     */
+    @Overwrite
+    public void ignite() {
+        boolean i = ignited.getAndSet(true);
+        if (isIgnited() != i) {
+            CreeperIgniteEvent event = new CreeperIgniteEvent((org.bukkit.entity.Creeper) getBukkitEntity(), i);
+            if (event.callEvent()) {
+                this.entityData.set(DATA_IS_IGNITED, event.isIgnited());
+            }
+        }
+    }
+
+
+    @Override
+    public void setIgnited(boolean ignited) {
+        this.ignited.set(ignited);
+        ignite();
     }
 
 }

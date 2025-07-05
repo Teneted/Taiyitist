@@ -19,11 +19,12 @@ import net.minecraft.world.level.chunk.LightChunk;
 import net.minecraft.world.level.chunk.StructureAccess;
 import net.minecraft.world.level.chunk.UpgradeData;
 import net.minecraft.world.level.levelgen.blending.BlendingData;
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
-import org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -32,23 +33,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ChunkAccess.class)
 public abstract class MixinChunkAccess implements BlockGetter, BiomeManager.NoiseBiomeSource, LightChunk, StructureAccess, InjectionChunkAccess {
 
+    @Shadow public abstract int getHeight();
+
+    @Shadow @Final protected LevelChunkSection[] sections;
+
+    @Shadow public abstract int getMinBuildHeight();
+
     // CraftBukkit start - SPIGOT-6814: move to IChunkAccess to account for 1.17 to 1.18 chunk upgrading.
+    @Unique
     private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
+    @Unique
     public DirtyCraftPersistentDataContainer persistentDataContainer = new DirtyCraftPersistentDataContainer(DATA_TYPE_REGISTRY);
     // CraftBukkit end
+    @Unique
     public Registry<Biome> biomeRegistry;
-    @Shadow
-    @Final
-    protected LevelChunkSection[] sections;
-
-    @Shadow
-    public abstract int getHeight();
-
-    @Shadow
-    public abstract int getMinBuildHeight();
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor, Registry<Biome> registry, long l, LevelChunkSection[] levelChunkSections, BlendingData blendingData, CallbackInfo ci) {
+    private void banner$init(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor, Registry<Biome>  registry, long l, LevelChunkSection[] levelChunkSections, BlendingData blendingData, CallbackInfo ci) {
         this.biomeRegistry = registry;
     }
 

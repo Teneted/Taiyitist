@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(targets = "net.minecraft.world.entity.monster.Phantom$PhantomAttackPlayerTargetGoal")
 public class MixinPhantom_AttackPlayerTargetGoal {
 
-    @SuppressWarnings("target")
-    @Shadow(aliases = {"field_7319"}, remap = false)
+    @SuppressWarnings("target") @Shadow(aliases = {"field_7319"}, remap = false)
     private Phantom outerThis;
 
     // canUse  setTarget

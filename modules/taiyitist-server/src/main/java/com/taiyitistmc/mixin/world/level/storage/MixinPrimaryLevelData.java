@@ -1,17 +1,18 @@
 package com.taiyitistmc.mixin.world.level.storage;
 
+import com.taiyitistmc.config.BannerConfig;
 import com.taiyitistmc.injection.world.level.storage.InjectionPrimaryLevelData;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldDimensions;
@@ -24,6 +25,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -32,25 +34,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PrimaryLevelData.class)
 public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData {
 
-    @Shadow
-    public LevelSettings settings;
+    @Shadow public abstract boolean isDifficultyLocked();
+
+    @Shadow private boolean raining;
+
+    @Shadow public abstract String getLevelName();
+
+    @Shadow private boolean thundering;
+    @Shadow public LevelSettings settings;
+    @Shadow  public abstract Difficulty getDifficulty();
+    @Unique
     public ServerLevel world;
+    @Unique
     public Registry<LevelStem> customDimensions;
+    @Unique
     protected Tag pdc;
-    @Shadow
-    private boolean raining;
-    @Shadow
-    private boolean thundering;
-
-    @Shadow
-    public abstract boolean isDifficultyLocked();
-
-    @Shadow
-    public abstract String getLevelName();
 
     @Redirect(method = "setTagData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/WorldGenSettings;encode(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/world/level/levelgen/WorldOptions;Lnet/minecraft/core/RegistryAccess;)Lcom/mojang/serialization/DataResult;"))
     private <T extends Tag> DataResult<T> banner$customDim(DynamicOps<T> ops, WorldOptions options, RegistryAccess registry) {
         return WorldGenSettings.encode(ops, options, new WorldDimensions(this.customDimensions != null ? this.customDimensions : registry.registryOrThrow(Registries.LEVEL_STEM)));
+    }
+
+    @Inject(method = "setTagData", at = @At("RETURN"))
+    private void banner$addpdc(RegistryAccess registry, CompoundTag nbt, CompoundTag playerNBT, CallbackInfo ci) {
+        if (Bukkit.getServer() != null && world != null) {
+            nbt.putString("Bukkit.Version", Bukkit.getName() + "/" + Bukkit.getVersion() + "/" + Bukkit.getBukkitVersion()); // CraftBukkit
+            world.getWorld().storeBukkitValues(nbt); // CraftBukkit - add pdc
+        }
     }
 
     @Inject(method = "setThundering", cancellable = true, at = @At("HEAD"))
@@ -74,7 +84,9 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
         if (this.raining == isRaining) {
             return;
         }
-
+        if (BannerConfig.NoRaining && isRaining){
+            ci.cancel();
+        }
         World world = Bukkit.getWorld(this.getLevelName());
         if (world != null) {
             WeatherChangeEvent event = new WeatherChangeEvent(world, isRaining);
@@ -87,10 +99,10 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
 
     @Inject(method = "setDifficulty", at = @At("RETURN"))
     private void banner$sendDiffChange(Difficulty newDifficulty, CallbackInfo ci) {
-        ClientboundChangeDifficultyPacket packet = new ClientboundChangeDifficultyPacket(newDifficulty, this.isDifficultyLocked());
+        ClientboundChangeDifficultyPacket packet = new ClientboundChangeDifficultyPacket(getDifficulty(), this.isDifficultyLocked());
         if (this.world != null) {
-            for (Player player : this.world.players()) {
-                ((ServerPlayer) player).connection.send(packet);
+            for (ServerPlayer player : this.world.players()) {
+                player.connection.send(packet);
             }
         }
     }
@@ -115,7 +127,12 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
     // CraftBukkit start - Add world and pdc
     @Override
     public void setWorld(ServerLevel world) {
+        if (this.world != null) {
+            return;
+        }
         this.world = world;
+        world.getWorld().readBukkitValues(pdc);
+        pdc = null;
     }
     // CraftBukkit end
 }

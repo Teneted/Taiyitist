@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinDedicatedServerProperties {
 
     @Mutable
-    @Shadow
-    @Final
+    @Shadow @Final
     public long maxTickTime;
 
     @Inject(method = "<init>", at = @At("RETURN"))

@@ -1,7 +1,5 @@
 package com.taiyitistmc.mixin.world.inventory;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.world.inventory.InjectionTransientCraftingContainer;
 import java.util.List;
 import net.minecraft.core.NonNullList;
@@ -11,38 +9,41 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(TransientCraftingContainer.class)
 public abstract class MixinTransientTransientCraftingContainer implements Container, InjectionTransientCraftingContainer {
 
-    @Shadow
-    @Final
-    public AbstractContainerMenu menu;
+    @Shadow @Final private NonNullList<ItemStack> items;
+
+    @Shadow @Final public AbstractContainerMenu menu;
     // CraftBukkit start - add fields
+    @Unique
     public List<HumanEntity> transaction = new java.util.ArrayList<>();
+    @Unique
+    private Recipe<?> currentRecipe;
+    @Unique
     public Container resultInventory;
-    @Shadow
-    @Final
-    private NonNullList<ItemStack> items;
-    private RecipeHolder<?> currentRecipe;
+    @Unique
     private Player owner;
+    @Unique
     private int maxStack = MAX_STACK;
 
-    @ShadowConstructor
+    @Unique
     public void banner$constructor(AbstractContainerMenu eventHandlerIn, int width, int height) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(AbstractContainerMenu eventHandlerIn, int width, int height, Player owner) {
         banner$constructor(eventHandlerIn, width, height);
         this.owner = owner;
@@ -86,24 +87,13 @@ public abstract class MixinTransientTransientCraftingContainer implements Contai
     }
 
     @Override
-    public void setMaxStackSize(int size) {
-        maxStack = size;
-        resultInventory.setMaxStackSize(size);
-    }
-
-    @Override
     public List<HumanEntity> getViewers() {
         return transaction;
     }
 
     @Override
-    public RecipeHolder<?> getCurrentRecipe() {
+    public Recipe<?> getCurrentRecipe() {
         return currentRecipe;
-    }
-
-    @Override
-    public void setCurrentRecipe(RecipeHolder<?> recipe) {
-        this.currentRecipe = recipe;
     }
 
     @Override
@@ -112,7 +102,18 @@ public abstract class MixinTransientTransientCraftingContainer implements Contai
     }
 
     @Override
+    public void setMaxStackSize(int size) {
+        maxStack = size;
+        resultInventory.setMaxStackSize(size);
+    }
+
+    @Override
     public void bridge$setResultInventory(Container resultInventory) {
         this.resultInventory = resultInventory;
+    }
+
+    @Override
+    public void setCurrentRecipe(Recipe<?> recipe) {
+        this.currentRecipe = recipe;
     }
 }

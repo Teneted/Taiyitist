@@ -15,6 +15,6 @@ public class MixinMilkBucketItem {
 
     @Inject(method = "finishUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;removeAllEffects()Z"))
     public void banner$cureReason(ItemStack stack, Level worldIn, LivingEntity entityLiving, CallbackInfoReturnable<ItemStack> cir) {
-        entityLiving.pushEffectCause(EntityPotionEffectEvent.Cause.MILK);
+         entityLiving.pushEffectCause(EntityPotionEffectEvent.Cause.MILK);
     }
 }

@@ -2,10 +2,8 @@ package com.taiyitistmc.eventhandler;
 
 import com.taiyitistmc.TaiyitistMod;
 import com.taiyitistmc.eventhandler.dispatcher.EntityEventDispatcher;
-import com.taiyitistmc.eventhandler.dispatcher.FabricToBukkitEventDispatcher;
 import com.taiyitistmc.eventhandler.dispatcher.LevelEventDispatcher;
 import com.taiyitistmc.eventhandler.dispatcher.PlayerEventDispatcher;
-import com.taiyitistmc.eventhandler.dispatcher.ServerEventDispatcher;
 import com.taiyitistmc.util.I18n;
 
 public class BannerEventDispatcherRegistry {
@@ -15,7 +13,6 @@ public class BannerEventDispatcherRegistry {
         LevelEventDispatcher.dispatchLevel();
         PlayerEventDispatcher.dispatcherPlayer();
         EntityEventDispatcher.dispatchEntityEvent();
-        FabricToBukkitEventDispatcher.dispatchFabric2Bukkit();
-        ServerEventDispatcher.dispatchServer();
+        // FabricToBukkitEventDispatcher.dispatchFabric2Bukkit();
     }
 }

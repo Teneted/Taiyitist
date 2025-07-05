@@ -11,14 +11,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.entity.Slime;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityTransformEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,34 +26,39 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(net.minecraft.world.entity.monster.Slime.class)
 public abstract class MixinSlime extends Mob implements InjectionSlime {
 
-    private boolean canWander = true;
-    private transient List<LivingEntity> banner$slimes;
     protected MixinSlime(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
     }
-    // @formatter:on
 
     // @formatter:off
     @Shadow public abstract int getSize();
-
     @Shadow public abstract EntityType<? extends net.minecraft.world.entity.monster.Slime> getType();
+    // @formatter:on
+
+    @Unique
+    private boolean canWander = true;
+
+    @Unique
+    private transient List<LivingEntity> banner$slimes;
 
     /**
      * @author wdog5
      * @reason bukkit
      */
     @Overwrite(remap = false)
+    @Override
     public void remove(Entity.RemovalReason reason) {
         int i = this.getSize();
         if (!this.level().isClientSide && i > 1 && this.isDeadOrDying()) {
-            Component itextcomponent = this.getCustomName();
+            Component component = this.getCustomName();
+            Component component0 = this.getCustomName(); // Mixin ?
             boolean flag = this.isNoAi();
             float f = (float) i / 4.0F;
             int j = i / 2;
             int k = 2 + this.random.nextInt(3);
 
             {
-                SlimeSplitEvent event = new SlimeSplitEvent((Slime) this.getBukkitEntity(), k);
+                SlimeSplitEvent event = new SlimeSplitEvent((org.bukkit.entity.Slime) this.getBukkitEntity(), k);
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled() || event.getCount() <= 0) {
                     super.remove(reason);
@@ -72,7 +77,7 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
                     slimeentity.setPersistenceRequired();
                 }
 
-                slimeentity.setCustomName(itextcomponent);
+                slimeentity.setCustomName(component);
                 slimeentity.setNoAi(flag);
                 slimeentity.setInvulnerable(this.isInvulnerable());
                 slimeentity.setSize(j, true);
@@ -99,7 +104,7 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
 
     @Inject(method = "addAdditionalSaveData",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V"))
+            target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V"))
     private void banner$putData(CompoundTag compound, CallbackInfo ci) {
         compound.putBoolean("Paper.canWander", this.canWander); // Paper
     }

@@ -1,7 +1,6 @@
 package org.bukkit.event.entity;
 
 import java.util.List;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,16 +17,16 @@ public class PlayerDeathEvent extends EntityDeathEvent {
     private boolean keepLevel = false;
     private boolean keepInventory = false;
 
-    public PlayerDeathEvent(@NotNull final Player player, @NotNull DamageSource damageSource, @NotNull final List<ItemStack> drops, final int droppedExp, @Nullable final String deathMessage) {
-        this(player, damageSource, drops, droppedExp, 0, deathMessage);
+    public PlayerDeathEvent(@NotNull final Player player, @NotNull final List<ItemStack> drops, final int droppedExp, @Nullable final String deathMessage) {
+        this(player, drops, droppedExp, 0, deathMessage);
     }
 
-    public PlayerDeathEvent(@NotNull final Player player, @NotNull DamageSource damageSource, @NotNull final List<ItemStack> drops, final int droppedExp, final int newExp, @Nullable final String deathMessage) {
-        this(player, damageSource, drops, droppedExp, newExp, 0, 0, deathMessage);
+    public PlayerDeathEvent(@NotNull final Player player, @NotNull final List<ItemStack> drops, final int droppedExp, final int newExp, @Nullable final String deathMessage) {
+        this(player, drops, droppedExp, newExp, 0, 0, deathMessage);
     }
 
-    public PlayerDeathEvent(@NotNull final Player player, @NotNull DamageSource damageSource, @NotNull final List<ItemStack> drops, final int droppedExp, final int newExp, final int newTotalExp, final int newLevel, @Nullable final String deathMessage) {
-        super(player, damageSource, drops, droppedExp);
+    public PlayerDeathEvent(@NotNull final Player player, @NotNull final List<ItemStack> drops, final int droppedExp, final int newExp, final int newTotalExp, final int newLevel, @Nullable final String deathMessage) {
+        super(player, drops, droppedExp);
         this.newExp = newExp;
         this.newTotalExp = newTotalExp;
         this.newLevel = newLevel;
@@ -38,6 +37,17 @@ public class PlayerDeathEvent extends EntityDeathEvent {
     @Override
     public Player getEntity() {
         return (Player) entity;
+    }
+
+    /**
+     * Clarity method for getting the player. Not really needed except
+     * for reasons of clarity.
+     *
+     * @return Player who is involved in this event
+     */
+    @NotNull
+    public Player getPlayer() {
+        return getEntity();
     }
 
     /**

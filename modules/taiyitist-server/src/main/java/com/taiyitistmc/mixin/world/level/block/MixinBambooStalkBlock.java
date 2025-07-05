@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.properties.BambooLeaves;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -21,16 +21,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BambooStalkBlock.class)
 public abstract class MixinBambooStalkBlock {
 
-    @Shadow
-    @Final
-    public static IntegerProperty AGE;
-    @Shadow
-    @Final
-    public static IntegerProperty STAGE;
+    @Shadow @Final public static IntegerProperty AGE;
+    @Shadow @Final public static IntegerProperty STAGE;
 
-    @Shadow
-    @Final
-    public static EnumProperty<BambooLeaves> LEAVES;
+    @Shadow @Final public static EnumProperty<BambooLeaves> LEAVES;
 
     @Redirect(method = "performBonemeal", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
     private <T extends Comparable<T>> T banner$skipIfCancel(BlockState state, Property<T> property) {

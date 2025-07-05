@@ -1,60 +1,60 @@
 package com.taiyitistmc.mixin.world.food;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.world.food.InjectionFoodData;
-import io.izzel.arclight.mixin.Decorate;
-import io.izzel.arclight.mixin.DecorationOps;
 import java.util.concurrent.atomic.AtomicBoolean;
-import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.Validate;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FoodData.class)
 public abstract class MixinFoodData implements InjectionFoodData {
 
-    @Shadow
-    public int foodLevel;
-    @Shadow
-    public float saturationLevel;
-    public int saturatedRegenRate = 10;
-    public int unsaturatedRegenRate = 80;
-    public int starvationRate = 80;
-    @Shadow
-    private int lastFoodLevel;
+    @Shadow public int foodLevel;
+    @Shadow private int lastFoodLevel;
+    @Shadow public float saturationLevel;
+    @Unique
     private Player entityhuman;
-    private final AtomicBoolean duplicateCall = new AtomicBoolean(false);
-    private transient ItemStack banner$eatStack;
+    @Unique
+    public int saturatedRegenRate = 10;
+    @Unique
+    public int unsaturatedRegenRate = 80;
+    @Unique
+    public int starvationRate = 80;
 
-    @Shadow
-    protected abstract void add(int i, float f);
-
-    @ShadowConstructor
+    @Unique
     public void banner$constructor() {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(Player entityhuman) {
-        Validate.notNull(entityhuman);
+        org.apache.commons.lang.Validate.notNull(entityhuman);
         this.entityhuman = entityhuman;
     }
+
+    @Unique
+    private transient Item banner$foodItem;
+    @Unique
+    private transient ItemStack banner$foodStack;
+
+    @Unique
+    private AtomicBoolean duplicateCall = new AtomicBoolean(false);
 
     @Inject(method = "eat(IF)V", at = @At("HEAD"), cancellable = true)
     private void banner$eatCake(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
@@ -68,33 +68,29 @@ public abstract class MixinFoodData implements InjectionFoodData {
         // Banner end
     }
 
-    @Override
-    public void eat(ItemStack itemstack, FoodProperties foodinfo) {
-        int oldFoodLevel = foodLevel;
-
-        FoodLevelChangeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodinfo.nutrition() + oldFoodLevel, itemstack);
-
-        if (!event.isCancelled()) {
-            this.add(event.getFoodLevel() - oldFoodLevel, foodinfo.saturation());
-        }
-        ((ServerPlayer) entityhuman).getBukkitEntity().sendHealthUpdate();
+    @Inject(method = "eat(IF)V", at = @At("TAIL"))
+    private void banner$sendUpdate(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
+        ((ServerPlayer) entityhuman).getBukkitEntity().sendHealthUpdate(); // Banner
     }
 
-    @Decorate(method = "eat(Lnet/minecraft/world/food/FoodProperties;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;add(IF)V"))
-    private void banner$foodLevelChange(FoodData foodStats, int foodLevelIn, float foodSaturationModifier, FoodProperties food) throws Throwable {
-        var stack = this.banner$eatStack;
-        this.banner$eatStack = null;
-        int deltaFoodLevel = foodLevelIn;
-        if (this.entityhuman != null && stack != null) {
-            int newFoodLevel = Mth.clamp(this.foodLevel + foodLevelIn, 0, 20);
-            FoodLevelChangeEvent event = CraftEventFactory.callFoodLevelChangeEvent(this.entityhuman, newFoodLevel, stack);
-            if (event.isCancelled()) {
-                return;
-            }
-            deltaFoodLevel = event.getFoodLevel() - this.foodLevel;
-            ((ServerPlayer) this.entityhuman).getBukkitEntity().sendHealthUpdate();
+    @Inject(method = "eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;)V", at = @At("HEAD"))
+    private void banner$setFoodInformation(Item item, ItemStack stack, CallbackInfo ci) {
+        this.banner$foodItem = item;
+        this.banner$foodStack = stack;
+    }
+
+    @Redirect(method = "eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;)V",
+            at = @At(value = "INVOKE",target = "Lnet/minecraft/world/food/FoodData;eat(IF)V"))
+    private void banner$foodLevelChange(FoodData instance, int foodLevelModifier, float saturationLevelModifier) {
+        int oldFoodLevel = foodLevel;
+        FoodProperties foodInfo = banner$foodItem.getFoodProperties();
+        FoodLevelChangeEvent event = CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodInfo.getNutrition() + oldFoodLevel, banner$foodStack);
+
+        if (!event.isCancelled()) {
+            duplicateCall.set(true);
+            instance.eat(event.getFoodLevel() - oldFoodLevel, saturationLevelModifier);
         }
-        DecorationOps.callsite().invoke(foodStats, deltaFoodLevel, foodSaturationModifier);
+        // CraftBukkit end
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE_ASSIGN", remap = false, target = "Ljava/lang/Math;max(II)I"))
@@ -103,14 +99,12 @@ public abstract class MixinFoodData implements InjectionFoodData {
             return;
         }
         FoodLevelChangeEvent event = CraftEventFactory.callFoodLevelChangeEvent(entityhuman, Math.max(this.lastFoodLevel - 1, 0));
-
+        duplicateCall.set(true);
         if (!event.isCancelled()) {
             this.foodLevel = event.getFoodLevel();
         } else {
             this.foodLevel = this.lastFoodLevel;
         }
-
-        ((ServerPlayer) entityhuman).connection.send(new ClientboundSetHealthPacket(((ServerPlayer) entityhuman).getBukkitEntity().getScaledHealth(), this.foodLevel, this.saturationLevel));
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"))
@@ -118,8 +112,8 @@ public abstract class MixinFoodData implements InjectionFoodData {
         if (entityhuman == null) {
             entityhuman = player;
         }
-        player.pushHealReason(EntityRegainHealthEvent.RegainReason.SATIATED);
-        player.pushExhaustReason(EntityExhaustionEvent.ExhaustionReason.REGEN);
+         player.pushHealReason(EntityRegainHealthEvent.RegainReason.SATIATED);
+         player.pushExhaustReason(EntityExhaustionEvent.ExhaustionReason.REGEN);
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 10))
@@ -175,10 +169,5 @@ public abstract class MixinFoodData implements InjectionFoodData {
     @Override
     public void banner$setStarvationRate(int starvationRate) {
         this.starvationRate = starvationRate;
-    }
-
-    @Override
-    public void pushEatStack(ItemStack stack) {
-        this.banner$eatStack = stack;
     }
 }

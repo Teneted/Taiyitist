@@ -11,10 +11,10 @@ public class MixinClientboundInitializeBorderPacket {
 
     @Redirect(method = "<init>(Lnet/minecraft/world/level/border/WorldBorder;)V",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/border/WorldBorder;getCenterX()D"))
+            target = "Lnet/minecraft/world/level/border/WorldBorder;getCenterX()D"))
     private double multiCenterX(WorldBorder instance) {
         // CraftBukkit start - multiply out nether border
-        return instance.getCenterX() * instance.bridge$world().dimensionType().coordinateScale();
+        return  instance.getCenterX() * instance.bridge$world().dimensionType().coordinateScale();
     }
 
     @Redirect(method = "<init>(Lnet/minecraft/world/level/border/WorldBorder;)V",

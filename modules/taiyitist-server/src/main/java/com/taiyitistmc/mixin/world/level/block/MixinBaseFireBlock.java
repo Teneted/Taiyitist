@@ -5,9 +5,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,13 +17,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BaseFireBlock.class)
 public class MixinBaseFireBlock {
 
-    @Redirect(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(F)V"))
-    private void banner$onFire(Entity entity, float f) {
-        var event = new EntityCombustByBlockEvent(CraftBlock.at(entity.level(), entity.getOnPos()), entity.getBukkitEntity(), f);
+    @Redirect(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
+    private void banner$onFire(Entity instance, int seconds, BlockState state, Level level, BlockPos pos) {
+        var event = new EntityCombustByBlockEvent(CraftBlock.at(level, pos), instance.getBukkitEntity(), seconds);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            entity.banner$setSecondsOnFire(event.getDuration(), false);
+            instance.setSecondsOnFire(event.getDuration(), false);
         }
     }
 

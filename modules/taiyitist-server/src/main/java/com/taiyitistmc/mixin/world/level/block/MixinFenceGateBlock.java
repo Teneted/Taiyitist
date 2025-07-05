@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,9 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(FenceGateBlock.class)
 public class MixinFenceGateBlock {
 
-    @Shadow
-    @Final
-    public static BooleanProperty POWERED;
+    @Shadow @Final public static BooleanProperty POWERED;
 
     @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;hasNeighborSignal(Lnet/minecraft/core/BlockPos;)Z"))
     private boolean banner$blockRedstone(Level world, BlockPos pos, BlockState state) {

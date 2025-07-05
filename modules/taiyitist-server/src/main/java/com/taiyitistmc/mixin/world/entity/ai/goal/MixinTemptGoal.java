@@ -3,8 +3,8 @@ package com.taiyitistmc.mixin.world.entity.ai.goal;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.player.Player;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.jetbrains.annotations.Nullable;
@@ -18,13 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TemptGoal.class)
 public class MixinTemptGoal {
 
-    @Shadow
-    @Nullable
-    protected Player player;
+    @Shadow @Nullable protected Player player;
 
-    @Shadow
-    @Final
-    protected PathfinderMob mob;
+    @Shadow @Final protected PathfinderMob mob;
 
     @Inject(method = "canUse", at = @At("TAIL"), cancellable = true)
     private void banner$targetEvent(CallbackInfoReturnable<Boolean> cir) {

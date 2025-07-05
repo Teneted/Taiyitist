@@ -2,16 +2,16 @@ package com.taiyitistmc.mixin.world.level.levelgen.structure;
 
 import com.taiyitistmc.injection.world.level.levelgen.structure.InjectionStructureStart;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer;
 import org.bukkit.event.world.AsyncStructureGenerateEvent;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(StructureStart.class)
-public abstract class MixinStructureStart implements InjectionStructureStart {
+public class MixinStructureStart implements InjectionStructureStart {
 
     // CraftBukkit start
-    private static final org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry();
-    public org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer persistentDataContainer = new org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer(DATA_TYPE_REGISTRY);
+    private static final org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry();
+    public org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer persistentDataContainer = new org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer(DATA_TYPE_REGISTRY);
     public org.bukkit.event.world.AsyncStructureGenerateEvent.Cause generationEventCause = org.bukkit.event.world.AsyncStructureGenerateEvent.Cause.WORLD_GENERATION;
     // CraftBukkit end
 
@@ -21,7 +21,7 @@ public abstract class MixinStructureStart implements InjectionStructureStart {
     }
 
     @Override
-    public org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer bridge$persistentDataContainer() {
+    public org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer bridge$persistentDataContainer() {
         return persistentDataContainer;
     }
 

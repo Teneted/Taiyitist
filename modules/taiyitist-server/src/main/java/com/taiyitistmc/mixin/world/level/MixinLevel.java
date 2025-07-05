@@ -1,10 +1,6 @@
 package com.taiyitistmc.mixin.world.level;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
-import com.taiyitistmc.asm.annotation.TransformAccess;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.config.BannerWorldConfig;
 import com.taiyitistmc.fabric.BukkitRegistry;
 import com.taiyitistmc.fabric.WrappedWorlds;
@@ -38,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.BorderChangeListener;
@@ -52,27 +49,25 @@ import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.level.storage.WritableLevelData;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CapturedBlockState;
-import org.bukkit.craftbukkit.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.generator.CraftWorldInfo;
-import org.bukkit.craftbukkit.generator.CustomChunkGenerator;
-import org.bukkit.craftbukkit.generator.CustomWorldChunkManager;
-import org.bukkit.craftbukkit.util.CraftSpawnCategory;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.block.CapturedBlockState;
+import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R1.generator.CraftWorldInfo;
+import org.bukkit.craftbukkit.v1_20_R1.generator.CustomChunkGenerator;
+import org.bukkit.craftbukkit.v1_20_R1.generator.CustomWorldChunkManager;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftSpawnCategory;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.spigotmc.SpigotWorldConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -83,73 +78,76 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Level.class)
 public abstract class MixinLevel implements LevelAccessor, AutoCloseable, InjectionLevel {
 
-    @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
-    private static BlockPos lastPhysicsProblem; // Spigot
-    public final it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap<SpawnCategory> ticksPerSpawnCategory = new it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap<>();
     // @formatter:off
     @Shadow @Final public boolean isClientSide;
     @Shadow @Final public Thread thread;
-    public boolean pvpMode;
-    public boolean keepSpawnInMemory = true;
-    public org.bukkit.generator.ChunkGenerator generator;
-    public boolean preventPoiUpdated = false; // CraftBukkit - SPIGOT-5710
-    public boolean captureBlockStates = false;
-    // @formatter:on
-    public boolean captureTreeGeneration = false;
-    public Map<BlockPos, CapturedBlockState> capturedBlockStates = new java.util.LinkedHashMap<>();
-    public Map<BlockPos, BlockEntity> capturedTileEntities = new HashMap<>();
-    public List<ItemEntity> captureDrops;
-    public boolean populating;
-    public org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
-    protected org.bukkit.World.Environment environment;
-    protected org.bukkit.generator.BiomeProvider biomeProvider;
-    private CraftWorld world;
-    private BannerWorldConfig bannerConfig;
-    private final AtomicBoolean captured = new AtomicBoolean(false);
-    private final AtomicReference<BlockState> banner$state = new AtomicReference<>();
-
     @Shadow public abstract WorldBorder getWorldBorder();
-
     @Shadow public abstract LevelChunk getChunk(int chunkX, int chunkZ);
-
     @Shadow public abstract LevelData getLevelData();
-
     @Shadow public abstract ResourceKey<Level> dimension();
-
     @Shadow public abstract DimensionType dimensionType();
-
     @Shadow public abstract LevelChunk getChunkAt(BlockPos pos);
-
     @Shadow public abstract boolean isDebug();
+    // @formatter:on
 
-    @Shadow
-    public abstract void setBlocksDirty(BlockPos blockPos, BlockState oldState, BlockState newState);
+    @Shadow public abstract void setBlocksDirty(BlockPos blockPos, BlockState oldState, BlockState newState);
 
-    @Shadow
-    public abstract void sendBlockUpdated(BlockPos pos, BlockState oldState, BlockState newState, int flags);
+    @Shadow public abstract void sendBlockUpdated(BlockPos pos, BlockState oldState, BlockState newState, int flags);
 
-    @Shadow
-    public abstract void updateNeighbourForOutputSignal(BlockPos pos, Block block);
+    @Shadow public abstract void updateNeighbourForOutputSignal(BlockPos pos, Block block);
 
-    @Shadow
-    public abstract void onBlockStateChange(BlockPos pos, BlockState blockState, BlockState newState);
+    @Shadow public abstract void onBlockStateChange(BlockPos pos, BlockState blockState, BlockState newState);
 
-    @Shadow
-    @Nullable
-    public abstract MinecraftServer getServer();
+    @Shadow @Nullable public abstract MinecraftServer getServer();
 
-    @ShadowConstructor
+    @Shadow public abstract RegistryAccess registryAccess();
+
+    @Unique
+    private CraftWorld world;
+    @Unique
+    public boolean pvpMode;
+    @Unique
+    public boolean keepSpawnInMemory = true;
+    @Unique
+    public org.bukkit.generator.ChunkGenerator generator;
+
+    @Unique
+    public boolean preventPoiUpdated = false; // CraftBukkit - SPIGOT-5710
+    @Unique
+    public boolean captureBlockStates = false;
+    @Unique
+    public boolean captureTreeGeneration = false;
+    @Unique
+    public Map<BlockPos, CapturedBlockState> capturedBlockStates = new java.util.LinkedHashMap<>();
+    @Unique
+    public Map<BlockPos, BlockEntity> capturedTileEntities = new HashMap<>();
+    @Unique
+    public List<ItemEntity> captureDrops;
+    @Unique
+    public final it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap<SpawnCategory> ticksPerSpawnCategory = new it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap<>();
+    @Unique
+    public boolean populating;
+    @Unique
+    public org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
+    @Unique
+    protected org.bukkit.World.Environment environment;
+    @Unique
+    protected org.bukkit.generator.BiomeProvider biomeProvider;
+    @Unique
+    private BannerWorldConfig bannerConfig;
+
+    @Unique
     public void banner$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env) {
         banner$constructor(worldInfo, dimension, registryAccess, dimensionType, profiler, isRemote, isDebug, seed, maxNeighborUpdate);
         this.generator = gen;
         this.environment = env;
         this.biomeProvider = biomeProvider;
-        banner$initWorld(null);
+        getWorld();
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -193,12 +191,10 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             }
 
             @Override
-            public void onBorderSetDamagePerBlock(WorldBorder worldborder, double d0) {
-            }
+            public void onBorderSetDamagePerBlock(WorldBorder worldborder, double d0) {}
 
             @Override
-            public void onBorderSetDamageSafeZOne(WorldBorder worldborder, double d0) {
-            }
+            public void onBorderSetDamageSafeZOne(WorldBorder worldborder, double d0) {}
         });
         // CraftBukkit end
     }
@@ -219,9 +215,49 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Override
     public CraftWorld getWorld() {
-        banner$initWorld(null);
+        if (this.world == null) {
+            Optional<Field> delegate = WrappedWorlds.getDelegate(this.getClass());
+            if (delegate.isPresent()) {
+                try {
+                    return ((Level) delegate.get().get(this)).getWorld();
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (environment == null) {
+                environment = BukkitRegistry.environment.getOrDefault(getTypeKey(), World.Environment.CUSTOM);
+            }
+            if (generator == null) {
+                generator = getCraftServer().getGenerator(((ServerLevelData) this.getLevelData()).getLevelName());
+                if (generator != null && (Object) this instanceof ServerLevel serverWorld) {
+                    org.bukkit.generator.WorldInfo worldInfo = new CraftWorldInfo((ServerLevelData) getLevelData(),
+                            ((ServerLevel) (Object) this).bridge$convertable(), environment, this.dimensionType());
+                    if (biomeProvider == null && generator != null) {
+                        biomeProvider = generator.getDefaultBiomeProvider(worldInfo);
+                    }
+                    var generator = serverWorld.getChunkSource().getGenerator();
+                    if (biomeProvider != null) {
+                        BiomeSource biomeSource = new CustomWorldChunkManager(worldInfo, biomeProvider, serverWorld.registryAccess().registryOrThrow(Registries.BIOME));
+                        if (generator instanceof NoiseBasedChunkGenerator cga) {
+                            generator = new NoiseBasedChunkGenerator(biomeSource, cga.settings);
+                        } else if (generator instanceof FlatLevelSource cpf) {
+                            var flatLevelSource = new FlatLevelSource(cpf.settings());
+                            flatLevelSource.banner$setBiomeSource(biomeSource);
+                            generator = flatLevelSource;
+                        }
+                    }
+                    serverWorld.getChunkSource().chunkMap.generator =
+                            new CustomChunkGenerator(serverWorld, generator, this.generator);
+                }
+            }
+            this.world = new CraftWorld((ServerLevel) (Object) this, generator, biomeProvider, environment);
+            getCraftServer().addWorld(this.world);
+        }
         return this.world;
     }
+
+    @Unique
+    private AtomicBoolean captured = new AtomicBoolean(false);
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z", at = @At("HEAD"), cancellable = true)
     private void banner$captureTree(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
@@ -235,17 +271,16 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             blockstate.setData(blockState);
             cir.setReturnValue(true);
         }
-        Entity entityChangeBlock = BukkitSnapshotCaptures.getEntityChangeBlock();
-        if (entityChangeBlock != null && !CraftEventFactory.callEntityChangeBlockEvent(entityChangeBlock, blockPos, blockState)) {
-            cir.setReturnValue(false);
-        }
         // CraftBukkit end
     }
+
+    @Unique
+    private AtomicReference<BlockState> banner$state = new AtomicReference<>();
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"),
-            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+            locals = LocalCapture.CAPTURE_FAILHARD)
     private void banner$captrueBlock(BlockPos blockPos, BlockState blockState, int i, int j,
                                      CallbackInfoReturnable<Boolean> cir, LevelChunk levelChunk, Block block) {
         // CraftBukkit start - capture blockstates
@@ -261,7 +296,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Redirect(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"))
+            target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"))
     private BlockState banner$resetState(LevelChunk levelChunk, BlockPos blockPos, BlockState blockState, boolean bl) {
         BlockState banner$state1 = banner$state.get();
         banner$state1 = banner$state1 == null ? levelChunk.setBlockState(blockPos, blockState, bl) : banner$state1;
@@ -286,7 +321,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;onBlockStateChange(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V"),
+            target = "Lnet/minecraft/world/level/Level;onBlockStateChange(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V"),
             cancellable = true)
     private void banner$checkState(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
         if (preventPoiUpdated) {
@@ -300,7 +335,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
                     target = "Lnet/minecraft/world/level/block/state/BlockState;updateNeighbourShapes(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;II)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void banner$physicEvent(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir, LevelChunk levelChunk, Block block, BlockState blockState2, BlockState blockState3, int k) {
-        CraftWorld world = ((Level) (Object) this).getWorld();
+        CraftWorld world = ((ServerLevel) (Object) this).getWorld();
         if (world != null) {
             BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(blockPos.getX(), blockPos.getY(), blockPos.getZ()), CraftBlockData.fromData(blockState));
             this.getCraftServer().getPluginManager().callEvent(event);
@@ -339,18 +374,14 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
                 // CraftBukkit start
                 iblockdata1.updateIndirectNeighbourShapes(((Level) (Object) this), blockposition, k, j - 1); // Don't call an event for the old block to limit event spam
-                CraftWorld world = ((Level) (Object) this).getWorld();
-                try {
-                    if (world != null) {
-                        BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ()), CraftBlockData.fromData(iblockdata));
-                        this.getCraftServer().getPluginManager().callEvent(event);
+                CraftWorld world = ((ServerLevel) (Object) this).getWorld();
+                if (world != null) {
+                    BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ()), CraftBlockData.fromData(iblockdata));
+                    this.getCraftServer().getPluginManager().callEvent(event);
 
-                        if (event.isCancelled()) {
-                            return;
-                        }
+                    if (event.isCancelled()) {
+                        return;
                     }
-                } catch (StackOverflowError e) {
-                    lastPhysicsProblem = blockposition;
                 }
                 // CraftBukkit end
                 iblockdata.updateNeighbourShapes(((Level) (Object) this), blockposition, k, j - 1);
@@ -367,6 +398,9 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Inject(method = "getBlockState", at = @At("HEAD"), cancellable = true)
     private void banner$addCaptureCheck(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
+        if (pos == null) {
+            cir.setReturnValue(Blocks.AIR.defaultBlockState());
+        }
         // CraftBukkit start - tree generation
         if (captureTreeGeneration) {
             CapturedBlockState previous = capturedBlockStates.get(pos);
@@ -386,8 +420,8 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Inject(method = "setBlockEntity",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;getChunkAt(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/chunk/LevelChunk;",
-                    shift = At.Shift.BEFORE),
+            target = "Lnet/minecraft/world/level/Level;getChunkAt(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/chunk/LevelChunk;",
+            shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void banner$addCaptureCheck0(BlockEntity blockEntity, CallbackInfo ci, BlockPos blockPos) {
         // CraftBukkit start
@@ -408,19 +442,42 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
         return spigotConfig;
     }
 
-    /**
-     * @author wdog5
-     * @reason functionality replaced
-     * TODO inline this with injects
-     */
-    @Overwrite
-    @Nullable
-    public BlockEntity getBlockEntity(BlockPos pos) {
-        return getBlockEntity(pos, true);
+    @Inject(method = "getBlockEntity", cancellable = true, at = @At(value = "HEAD"))
+    private void banner$getCaptureBlockEntity(BlockPos blockPos, CallbackInfoReturnable<BlockEntity> cir) {
+        if (blockPos == null) {
+            cir.setReturnValue(null);
+        }
+        if (this.capturedTileEntities.containsKey(blockPos)) {
+            cir.setReturnValue(this.capturedTileEntities.get(blockPos));
+        }
+    }
+
+    @Unique
+    private final AtomicBoolean callEvent = new AtomicBoolean(false);
+    @Unique
+    private BlockState banner$defaultBlockState;
+
+    @Override
+    public void banner$callEvent(boolean call) {
+        callEvent.set(call);
+    }
+
+    @Override
+    public BlockState banner$defaultBlockState() {
+        return banner$defaultBlockState;
+    }
+
+    @Inject(method = "setBlockAndUpdate", cancellable = true, at = @At(value = "HEAD"))
+    private void banner$setBlockAndUpdate(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> cir) {
+        banner$defaultBlockState = state;
+        if (callEvent.getAndSet(false)){
+            cir.setReturnValue(false);
+        }
     }
 
     @Override
     public BlockEntity getBlockEntity(BlockPos blockposition, boolean validate) {
+        if (blockposition == null) return null;
         // CraftBukkit start
         if (capturedTileEntities.containsKey(blockposition)) {
             return capturedTileEntities.get(blockposition);
@@ -435,7 +492,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Override
     public boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason reason) {
-        if (getWorld().getHandle() != (Object) this) {
+        if (getWorld().getHandle() != ((Level) (Object) this)) {
             return getWorld().getHandle().addEntity(entity, reason);
         } else {
             this.pushAddEntityReason(reason);
@@ -445,14 +502,14 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Override
     public void pushAddEntityReason(CreatureSpawnEvent.SpawnReason reason) {
-        if (getWorld().getHandle() != (Object) this) {
-            getWorld().getHandle().pushAddEntityReason(reason);
+        if (getWorld().getHandle() != ((Level) (Object) this)) {
+           getWorld().getHandle().pushAddEntityReason(reason);
         }
     }
 
     @Override
     public CreatureSpawnEvent.SpawnReason getAddEntityReason() {
-        if (getWorld().getHandle() != (Object) this) {
+        if (getWorld().getHandle() != ((Level) (Object) this)) {
             return getWorld().getHandle().getAddEntityReason();
         }
         return null;
@@ -557,7 +614,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public boolean bridge$keepSpawnInMemory() {
+    public boolean bridge$KeepSpawnInMemory() {
         return keepSpawnInMemory;
     }
 
@@ -601,50 +658,5 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
         this.preventPoiUpdated = preventPoiUpdated;
     }
 
-    @Override
-    public CraftWorld banner$initWorld(@Nullable LevelStem levelStem) {
-        var newStem = levelStem;
-        if (this.world == null) {
-            Optional<Field> delegate = WrappedWorlds.getDelegate(this.getClass());
-            if (delegate.isPresent()) {
-                try {
-                    return ((Level) delegate.get().get(this)).getWorld();
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (environment == null) {
-                environment = BukkitRegistry.environment.getOrDefault(getTypeKey(), World.Environment.CUSTOM);
-            }
-            if (generator == null) {
-                generator = getCraftServer().getGenerator(((ServerLevelData) this.getLevelData()).getLevelName());
-                if (generator != null && (Object) this instanceof ServerLevel serverWorld) {
-                    org.bukkit.generator.WorldInfo worldInfo = new CraftWorldInfo((ServerLevelData) getLevelData(),
-                            serverWorld.bridge$convertable(), environment, this.dimensionType());
-                    if (biomeProvider == null && generator != null) {
-                        biomeProvider = generator.getDefaultBiomeProvider(worldInfo);
-                    }
-                    var generator = serverWorld.getChunkSource().getGenerator();
-                    if (biomeProvider != null) {
-                        BiomeSource biomeSource = new CustomWorldChunkManager(worldInfo, biomeProvider, serverWorld.registryAccess().registryOrThrow(Registries.BIOME));
-                        if (generator instanceof NoiseBasedChunkGenerator cga) {
-                            generator = new NoiseBasedChunkGenerator(biomeSource, cga.settings);
-                        } else if (generator instanceof FlatLevelSource cpf) {
-                            var flatLevelSource = new FlatLevelSource(cpf.settings());
-                            flatLevelSource.banner$setBiomeSource(biomeSource);
-                            generator = flatLevelSource;
-                        }
-                    }
-                    if (((Level) (Object) this) instanceof ServerLevel) {
-                        var banner$gen = newStem.generator();
-                        banner$gen = new CustomChunkGenerator(serverWorld, generator, this.generator);
-                    }
-                }
-            }
-            this.world = new CraftWorld((ServerLevel) (Object) this, generator, biomeProvider, environment);
-            getCraftServer().addWorld(this.world);
-        }
-        return this.world;
-    }
 }
 

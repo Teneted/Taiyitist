@@ -14,17 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TargetGoal.class)
 public class MixinTargetGoal {
 
-    @Shadow
-    @Final
-    protected Mob mob;
+    @Shadow @Final protected Mob mob;
 
     @Inject(method = "canContinueToUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
     private void banner$reason(CallbackInfoReturnable<Boolean> cir) {
-        this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_ENTITY, true);
+         this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_ENTITY, true);
     }
 
     @Inject(method = "stop", at = @At("HEAD"))
     private void banner$reason(CallbackInfo ci) {
-        this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
+         this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
     }
 }

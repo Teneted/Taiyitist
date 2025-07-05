@@ -1,9 +1,13 @@
 package com.taiyitistmc.injection.world;
 
 import java.util.Collections;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import net.minecraft.world.item.crafting.Recipe;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 
 public interface InjectionContainer {
@@ -15,11 +19,9 @@ public interface InjectionContainer {
     }
 
     default void onOpen(CraftHumanEntity who) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default void onClose(CraftHumanEntity who) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default java.util.List<org.bukkit.entity.HumanEntity> getViewers() {
@@ -27,30 +29,36 @@ public interface InjectionContainer {
     }
 
     default org.bukkit.inventory.InventoryHolder getOwner() {
-        throw new IllegalStateException("Not implemented");
+        return null;
+    }
+
+    default Inventory getOwnerInventory() {
+        InventoryHolder owner = this.getOwner();
+        if (owner != null) {
+            return owner.getInventory();
+        } else {
+            return new CraftInventory((Container) this);
+        }
     }
 
     default void setOwner(org.bukkit.inventory.InventoryHolder owner) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default void setMaxStackSize(int size) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default org.bukkit.Location getLocation() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
-    default RecipeHolder<?> getCurrentRecipe() {
-        throw new IllegalStateException("Not implemented");
+    default Recipe<?> getCurrentRecipe() {
+        return null;
     }
 
-    default void setCurrentRecipe(RecipeHolder<?> recipe) {
-        throw new IllegalStateException("Not implemented");
+    default void setCurrentRecipe(Recipe<?> recipe) {
     }
 
     default InventoryView getBukkitView() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

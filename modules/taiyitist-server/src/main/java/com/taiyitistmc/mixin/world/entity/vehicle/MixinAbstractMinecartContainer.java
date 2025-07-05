@@ -8,14 +8,15 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
 import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,9 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractMinecartContainer.class)
 public abstract class MixinAbstractMinecartContainer extends AbstractMinecart implements ContainerEntity {
 
+    @Shadow private NonNullList<ItemStack> itemStacks;
+
+    @Unique
     public List<HumanEntity> transaction;
-    @Shadow
-    private NonNullList<ItemStack> itemStacks;
+    @Unique
     private int maxStack;
 
     protected MixinAbstractMinecartContainer(EntityType<?> entityType, Level level) {
@@ -90,7 +93,7 @@ public abstract class MixinAbstractMinecartContainer extends AbstractMinecart im
     }
 
     @Override
-    public RecipeHolder<?> getCurrentRecipe() {
+    public Recipe<?> getCurrentRecipe() {
         return null;
     }
 

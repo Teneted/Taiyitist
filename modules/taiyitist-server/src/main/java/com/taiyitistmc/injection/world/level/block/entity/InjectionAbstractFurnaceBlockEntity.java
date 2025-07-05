@@ -8,20 +8,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.phys.Vec3;
 
 public interface InjectionAbstractFurnaceBlockEntity {
 
     default Object2IntOpenHashMap<ResourceLocation> getRecipesUsed() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
-    default List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel world, Vec3 vec, BlockPos pos, Player entity, ItemStack itemStack, int amount) {
-        throw new IllegalStateException("Not implemented");
+    default List<Recipe<?>> getRecipesToAwardAndPopExperience(ServerLevel world, Vec3 vec, BlockPos pos, Player entity, ItemStack itemStack, int amount) {
+        return null;
     }
 
-    default List<RecipeHolder<?>> bridge$dropExp(ServerPlayer entity, ItemStack itemStack, int amount) {
-        throw new IllegalStateException("Not implemented");
+    default List<Recipe<?>> bridge$dropExp(ServerPlayer entity, ItemStack itemStack, int amount) {
+        return null;
     }
 }

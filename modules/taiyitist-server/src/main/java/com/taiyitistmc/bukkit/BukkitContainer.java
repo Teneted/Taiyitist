@@ -9,11 +9,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -32,6 +31,11 @@ public class BukkitContainer {
     }
 
     public static CraftInventory createInv(Player containerOwner, AbstractContainerMenu container) {
+        // Banner start - fix owner NPE
+        if (containerOwner == null) {
+            containerOwner = BukkitSnapshotCaptures.getContainerOwner();
+        }
+        // Banner end
         return new CraftInventory(new ContainerInvWrapper(container, containerOwner));
     }
 
@@ -154,15 +158,6 @@ public class BukkitContainer {
                 return ((ContainerLevelAccess) container).getLocation();
             }
             return null;
-        }
-
-        @Override
-        public RecipeHolder<?> getCurrentRecipe() {
-            return null;
-        }
-
-        @Override
-        public void setCurrentRecipe(RecipeHolder<?> recipe) {
         }
     }
 }

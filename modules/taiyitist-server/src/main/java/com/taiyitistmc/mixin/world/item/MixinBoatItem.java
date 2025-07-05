@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,15 +31,15 @@ public abstract class MixinBoatItem extends Item {
 
     @Inject(method = "use",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/BoatItem;getBoat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/entity/vehicle/Boat;",
-                    shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+            target = "Lnet/minecraft/world/item/BoatItem;getBoat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/vehicle/Boat;",
+            shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void banner$boatEvent(Level level, Player player, InteractionHand usedHand,
                                   CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
                                   ItemStack itemStack, HitResult hitResult) {
         // CraftBukkit start - Boat placement
         PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(player,
                 org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK, ((BlockHitResult) hitResult).getBlockPos(),
-                ((BlockHitResult) hitResult).getDirection(), itemStack, false, usedHand, hitResult.getLocation());
+                ((BlockHitResult) hitResult).getDirection(), itemStack,false,  usedHand, hitResult.getLocation());
         if (event.isCancelled()) {
             cir.setReturnValue(InteractionResultHolder.pass(itemStack));
         }
@@ -48,15 +48,15 @@ public abstract class MixinBoatItem extends Item {
 
     @Redirect(method = "use",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
+            target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean banner$cancelAddEntity(Level instance, Entity entity) {
         return false;
     }
 
     @Inject(method = "use",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;gameEvent(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/core/Holder;Lnet/minecraft/world/phys/Vec3;)V",
-                    shift = At.Shift.BEFORE),
+            target = "Lnet/minecraft/world/level/Level;gameEvent(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/gameevent/GameEvent;Lnet/minecraft/world/phys/Vec3;)V",
+            shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void banner$handleBoatEntityAdd(Level level, Player player, InteractionHand usedHand,
                                             CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,

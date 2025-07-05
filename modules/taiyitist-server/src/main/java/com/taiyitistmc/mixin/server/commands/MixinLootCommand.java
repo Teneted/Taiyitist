@@ -15,7 +15,7 @@ public class MixinLootCommand {
 
     @Inject(method = "dropInWorld",
             at = @At(value = "INVOKE",
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
+            target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
                     shift = At.Shift.BEFORE))
     private static void banner$ifRemove(CommandSourceStack source, Vec3 pos, List<ItemStack> items, LootCommand.Callback callback, CallbackInfoReturnable<Integer> cir) {
         items.removeIf(ItemStack::isEmpty); // CraftBukkit - SPIGOT-6959 Remove empty items for avoid throw an error in new EntityItem

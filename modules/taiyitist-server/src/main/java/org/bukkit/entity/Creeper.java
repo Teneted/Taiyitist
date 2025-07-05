@@ -1,8 +1,5 @@
 package org.bukkit.entity;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
  * Represents a Creeper
  */
@@ -72,7 +69,7 @@ public interface Creeper extends Monster {
 
     /**
      * Makes this Creeper explode instantly.
-     * <br>
+     *
      * The resulting explosion can be cancelled by an
      * {@link org.bukkit.event.entity.ExplosionPrimeEvent} and obeys the mob
      * griefing gamerule.
@@ -81,35 +78,29 @@ public interface Creeper extends Monster {
 
     /**
      * Ignites this Creeper, beginning its fuse.
-     * <br>
-     * The amount of time the Creeper takes to explode will depend on what
-     * {@link #setMaxFuseTicks} is set as.
-     * <br>
-     * The resulting explosion can be cancelled by an
-     * {@link org.bukkit.event.entity.ExplosionPrimeEvent} and obeys the mob
-     * griefing gamerule.
      *
-     * @param entity the entity which ignited the creeper
-     */
-    public void ignite(@NotNull Entity entity);
-
-    /**
-     * Ignites this Creeper, beginning its fuse.
-     * <br>
      * The amount of time the Creeper takes to explode will depend on what
      * {@link #setMaxFuseTicks} is set as.
-     * <br>
+     *
      * The resulting explosion can be cancelled by an
      * {@link org.bukkit.event.entity.ExplosionPrimeEvent} and obeys the mob
      * griefing gamerule.
      */
     public void ignite();
 
+    // Paper start
     /**
-     * Gets the entity which ignited the creeper, if available.
+     * Set whether creeper is ignited or not (armed to explode)
      *
-     * @return the entity which ignited the creeper (if available) or null
+     * @param ignited New ignited state
      */
-    @Nullable
-    public Entity getIgniter();
+    public void setIgnited(boolean ignited);
+
+    /**
+     * Check if creeper is ignited or not (armed to explode)
+     *
+     * @return Ignited state
+     */
+    public boolean isIgnited();
+    // Paper end
 }

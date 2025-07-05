@@ -1,9 +1,8 @@
 package com.taiyitistmc.mixin.world.level.block.entity;
 
-import java.util.Collections;
+import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -14,8 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,12 +43,12 @@ public abstract class MixinBrushableBlockEntity extends BlockEntity {
                                   double i, ItemEntity itemEntity) {
         // CraftBukkit start
         org.bukkit.block.Block bblock = CraftBlock.at(this.level, this.worldPosition);
-        CraftEventFactory.handleBlockDropItemEvent(bblock, bblock.getState(), (ServerPlayer) player, Collections.singletonList(itemEntity));
+        CraftEventFactory.handleBlockDropItemEvent(bblock, bblock.getState(), (ServerPlayer) player, Arrays.asList(itemEntity));
         // CraftBukkit end
     }
 
-    @Inject(method = "loadAdditional", at = @At("HEAD"))
-    private void banner$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
-        super.loadAdditional(compoundTag, provider); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
+    @Inject(method = "load", at = @At("HEAD"))
+    private void banner$load(CompoundTag compoundTag, CallbackInfo ci) {
+        super.load(compoundTag); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
     }
 }

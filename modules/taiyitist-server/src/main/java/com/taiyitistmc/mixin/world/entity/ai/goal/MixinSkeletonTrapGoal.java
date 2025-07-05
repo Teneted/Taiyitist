@@ -2,6 +2,7 @@ package com.taiyitistmc.mixin.world.entity.ai.goal;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import net.minecraft.world.entity.animal.horse.SkeletonTrapGoal;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -31,13 +32,13 @@ public class MixinSkeletonTrapGoal {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean banner$addHorse(ServerLevel world, Entity entityIn) {
-        world.strikeLightning(entityIn, LightningStrikeEvent.Cause.TRAP);
+        world.strikeLightning((LightningBolt) entityIn, LightningStrikeEvent.Cause.TRAP);
         return true;
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/horse/SkeletonTrapGoal;createHorse(Lnet/minecraft/world/DifficultyInstance;)Lnet/minecraft/world/entity/animal/horse/AbstractHorse;")))
     private void banner$jockey(CallbackInfo ci) {
-        this.horse.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.JOCKEY);
+         this.horse.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.JOCKEY);
     }
 }

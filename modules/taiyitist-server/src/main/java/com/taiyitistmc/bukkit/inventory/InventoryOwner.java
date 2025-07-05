@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.bukkit.craftbukkit.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockEntityState;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -20,7 +20,7 @@ public class InventoryOwner {
     }
 
     public static InventoryHolder get(BlockEntity te) {
-        return get(te.getLevel(), te.getBlockPos(), true);
+        return get(te.getLevel(), te.getBlockPos());
     }
 
     public static InventoryHolder get(Container inventory) {
@@ -31,7 +31,7 @@ public class InventoryOwner {
         }
     }
 
-    public static InventoryHolder get(Level world, BlockPos pos, boolean useSnapshot) {
+    public static InventoryHolder get(Level world, BlockPos pos) {
         if (world == null) return null;
         // Spigot start
         org.bukkit.block.Block block = world.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());

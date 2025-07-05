@@ -9,11 +9,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface InjectionBlock {
 
     default int getExpDrop(BlockState blockState, ServerLevel world, BlockPos blockPos, ItemStack itemStack, boolean flag) {
-        throw new IllegalStateException("Not implemented");
+        return 0;
     }
 
     default int banner$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
-        throw new IllegalStateException("Not implemented");
+        return 0;
     }
 
 }

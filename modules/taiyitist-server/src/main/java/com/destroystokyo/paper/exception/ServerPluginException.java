@@ -2,7 +2,6 @@ package com.destroystokyo.paper.exception;
 
 import org.bukkit.plugin.Plugin;
 
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**

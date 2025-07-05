@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,7 +52,7 @@ public class PermissibleBase implements Permissible {
             throw new IllegalArgumentException("Permission name cannot be null");
         }
 
-        return permissions.containsKey(name.toLowerCase(Locale.ROOT));
+        return permissions.containsKey(name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     @Override
@@ -71,7 +70,7 @@ public class PermissibleBase implements Permissible {
             throw new IllegalArgumentException("Permission name cannot be null");
         }
 
-        String name = inName.toLowerCase(Locale.ROOT);
+        String name = inName.toLowerCase(java.util.Locale.ENGLISH);
 
         if (isPermissionSet(name)) {
             return permissions.get(name).getValue();
@@ -92,7 +91,7 @@ public class PermissibleBase implements Permissible {
             throw new IllegalArgumentException("Permission cannot be null");
         }
 
-        String name = perm.getName().toLowerCase(Locale.ROOT);
+        String name = perm.getName().toLowerCase(java.util.Locale.ENGLISH);
 
         if (isPermissionSet(name)) {
             return permissions.get(name).getValue();
@@ -157,12 +156,13 @@ public class PermissibleBase implements Permissible {
 
     @Override
     public void recalculatePermissions() {
+        if (Bukkit.getServer() == null) return;
         clearPermissions();
         Set<Permission> defaults = Bukkit.getServer().getPluginManager().getDefaultPermissions(isOp());
         Bukkit.getServer().getPluginManager().subscribeToDefaultPerms(isOp(), parent);
 
         for (Permission perm : defaults) {
-            String name = perm.getName().toLowerCase(Locale.ROOT);
+            String name = perm.getName().toLowerCase(java.util.Locale.ENGLISH);
             permissions.put(name, new PermissionAttachmentInfo(parent, name, null, true));
             Bukkit.getServer().getPluginManager().subscribeToPermission(name, parent);
             calculateChildPermissions(perm.getChildren(), false, null);
@@ -192,7 +192,7 @@ public class PermissibleBase implements Permissible {
 
             Permission perm = Bukkit.getServer().getPluginManager().getPermission(name);
             boolean value = entry.getValue() ^ invert;
-            String lname = name.toLowerCase(Locale.ROOT);
+            String lname = name.toLowerCase(java.util.Locale.ENGLISH);
 
             permissions.put(lname, new PermissionAttachmentInfo(parent, lname, attachment, value));
             Bukkit.getServer().getPluginManager().subscribeToPermission(name, parent);

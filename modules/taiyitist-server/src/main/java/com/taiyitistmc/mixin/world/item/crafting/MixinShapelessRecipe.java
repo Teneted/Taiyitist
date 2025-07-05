@@ -1,16 +1,15 @@
 package com.taiyitistmc.mixin.world.item.crafting;
 
-import com.taiyitistmc.bukkit.inventory.recipe.BannerShapelessRecipe;
+import com.taiyitistmc.bukkit.inventory.recipe.BannerModdedRecipe;
 import com.taiyitistmc.injection.world.item.crafting.InjectionShapelessRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.inventory.CraftRecipe;
-import org.bukkit.craftbukkit.inventory.CraftShapelessRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftShapelessRecipe;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,26 +17,23 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ShapelessRecipe.class)
 public abstract class MixinShapelessRecipe implements CraftingRecipe, InjectionShapelessRecipe {
 
-    @Shadow
-    @Final
+    @Shadow @Final
     ItemStack result;
 
-    @Shadow
-    @Final
+    @Shadow @Final
     String group;
 
-    @Shadow
-    @Final
+    @Shadow @Final
     NonNullList<Ingredient> ingredients;
 
     @Override
     // CraftBukkit start
-    public org.bukkit.inventory.ShapelessRecipe toBukkitRecipe(NamespacedKey id) {
+    public org.bukkit.inventory.Recipe toBukkitRecipe() {
         if (this.result.isEmpty()) {
-            return new BannerShapelessRecipe(id, ((ShapelessRecipe) (Object) this));
+            return new BannerModdedRecipe(((ShapelessRecipe) (Object) this));
         }
         CraftItemStack result = CraftItemStack.asCraftMirror(this.result);
-        CraftShapelessRecipe recipe = new CraftShapelessRecipe(id, result, ((ShapelessRecipe) (Object) this));
+        CraftShapelessRecipe recipe = new CraftShapelessRecipe(result, ((ShapelessRecipe) (Object) this));
         recipe.setGroup(this.group);
         recipe.setCategory(CraftRecipe.getCategory(this.category()));
 

@@ -25,8 +25,6 @@ import org.bukkit.plugin.TimedRegisteredListener;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.spigotmc.CustomTimingsHandler;
-// CHECKSTYLE:ON
-// Spigot end
 
 public class TimingsCommand extends BukkitCommand {
     private static final List<String> TIMINGS_SUBCOMMANDS = ImmutableList.of("report", "reset", "on", "off", "paste"); // Spigot
@@ -101,7 +99,7 @@ public class TimingsCommand extends BukkitCommand {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String currentAlias, @NotNull String[] args) {
         if (!testPermission(sender)) return true;
-        if (args.length < 1) { // Spigot
+        if (args.length < 1) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }

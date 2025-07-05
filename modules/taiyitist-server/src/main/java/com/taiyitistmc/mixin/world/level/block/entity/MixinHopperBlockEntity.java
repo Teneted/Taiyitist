@@ -1,10 +1,17 @@
 package com.taiyitistmc.mixin.world.level.block.entity;
 
+import com.taiyitistmc.bukkit.DistValidate;
+import com.taiyitistmc.bukkit.inventory.InventoryOwner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -12,34 +19,53 @@ import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryDoubleChest;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
+import org.bukkit.event.inventory.HopperInventorySearchEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-// Banner TODO fix patches
 @Mixin(HopperBlockEntity.class)
 public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockEntity implements Hopper {
 
-    public List<HumanEntity> transaction = new ArrayList<>();
     // @formatter:off
     @Shadow private NonNullList<ItemStack> items;
-    private int maxStack = MAX_STACK;
+    @Shadow public abstract void setItem(int index, ItemStack stack);
+    @Shadow private static boolean tryMoveItems(Level p_155579_, BlockPos p_155580_, BlockState p_155581_, HopperBlockEntity p_155582_, BooleanSupplier p_155583_) { return false; }
     // @formatter:on
+
+    @Shadow(prefix = "shadow$")
+    private static boolean shadow$ejectItems(Level level, BlockPos pos, BlockState state, Container sourceContainer) {
+        return false;
+    }
+
+    @Shadow protected abstract boolean inventoryFull();
+
+    @Unique
+    public List<HumanEntity> transaction = new ArrayList<>();
+    @Unique
+    private int maxStack = MAX_STACK;
 
     protected MixinHopperBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
 
-    @Shadow private static boolean tryMoveItems(Level p_155579_, BlockPos p_155580_, BlockState p_155581_, HopperBlockEntity p_155582_, BooleanSupplier p_155583_) { return false; }
-
-    @Shadow public abstract void setItem(int index, ItemStack stack);
-
-    @Shadow
-    protected abstract boolean inventoryFull();
-
-    /*
     @Redirect(method = "pushItemsTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;tryMoveItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;Ljava/util/function/BooleanSupplier;)Z"))
     private static boolean banner$hopperCheck(Level level, BlockPos pos, BlockState state, HopperBlockEntity hopper, BooleanSupplier flag) {
         var result = tryMoveItems(level, pos, state, hopper, flag);
@@ -49,6 +75,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         return result;
     }
 
+    @Unique
     private static AtomicReference<HopperBlockEntity> banner$hopperEntity = new AtomicReference<>();
 
     @Inject(method = "tryMoveItems", at = @At("HEAD"))
@@ -56,27 +83,27 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         banner$hopperEntity.set(blockEntity);
     }
 
-    /*
     @Redirect(method = "tryMoveItems",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;ejectItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/Container;)Z"))
     private static boolean banner$changeEjects(Level level, BlockPos pos, BlockState state, Container sourceContainer) {
         return ejectItems(level, pos, state, sourceContainer, banner$hopperEntity.get());
-    }*/
+    }
 
-    /*
+    @Unique
     private static AtomicReference<HopperBlockEntity> banner$hopper = new AtomicReference<>();
+    @Unique
     private static AtomicReference<Level> banner$world = new AtomicReference<>();
+    @Unique
     private static AtomicReference<InventoryMoveItemEvent> banner$moveEvent = new AtomicReference<>();
 
-    /*
+    @Unique
     private static boolean ejectItems(Level world, BlockPos blockposition, BlockState iblockdata, Container iinventory, HopperBlockEntity hopper) { // CraftBukkit
         banner$hopper.set(hopper);
         banner$world.set(world);
         return shadow$ejectItems(world, blockposition, iblockdata, iinventory);
-    }*/
+    }
 
-    /*
     @Redirect(method = "ejectItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;"))
     private static ItemStack banner$moveItem(Container source, Container destination, ItemStack stack, Direction direction) {
         var entity = banner$hopper.getAndSet(null);
@@ -169,6 +196,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         }
     }
 
+    @Unique
     private static Container runHopperInventorySearchEvent(Container inventory, CraftBlock hopper, CraftBlock searchLocation, HopperInventorySearchEvent.ContainerType containerType) {
         var event = new HopperInventorySearchEvent((inventory != null) ? new CraftInventory(inventory) : null, containerType, hopper, searchLocation);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -191,7 +219,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         var hopperBlock = CraftBlock.at(level, blockPos);
         var containerBlock = CraftBlock.at(level, blockPos.above());
         cir.setReturnValue(runHopperInventorySearchEvent(container, hopperBlock, containerBlock, HopperInventorySearchEvent.ContainerType.SOURCE));
-    }*/
+    }
 
     @Override
     public List<ItemStack> getContents() {

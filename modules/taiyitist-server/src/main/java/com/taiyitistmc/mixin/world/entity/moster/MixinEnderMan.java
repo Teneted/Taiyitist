@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,30 +27,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EnderMan.class)
 public abstract class MixinEnderMan extends Monster {
 
+    // @formatter:off
+    @Shadow private int targetChangeTime;
     @Shadow @Final private static EntityDataAccessor<Boolean> DATA_CREEPY;
     @Shadow @Final private static EntityDataAccessor<Boolean> DATA_STARED_AT;
     @Shadow @Final private static AttributeModifier SPEED_MODIFIER_ATTACKING;
-    // @formatter:off
-    @Shadow private int targetChangeTime;
+
+    @Shadow abstract boolean isLookingAtMe(Player player);
 
     protected MixinEnderMan(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
-
-    @Shadow abstract boolean isLookingAtMe(Player player);
     // @formatter:on
 
+    @Unique
     public void bridge$updateTarget(LivingEntity livingEntity) {
         AttributeInstance modifiableattributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (livingEntity == null) {
             this.targetChangeTime = 0;
             this.entityData.set(DATA_CREEPY, false);
             this.entityData.set(DATA_STARED_AT, false);
-            modifiableattributeinstance.removeModifier(SPEED_MODIFIER_ATTACKING.id());
+            modifiableattributeinstance.removeModifier(SPEED_MODIFIER_ATTACKING);
         } else {
             this.targetChangeTime = this.tickCount;
             this.entityData.set(DATA_CREEPY, true);
-            if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_ATTACKING.id())) {
+            if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_ATTACKING)) {
                 modifiableattributeinstance.addTransientModifier(SPEED_MODIFIER_ATTACKING);
             }
         }
@@ -73,8 +75,9 @@ public abstract class MixinEnderMan extends Monster {
         cir.cancel();
     }
 
+    @Unique
     private boolean isLookingAtMe_check(Player player) {
-        ItemStack itemStack = player.getInventory().armor.get(3);
+        ItemStack itemStack = (ItemStack) player.getInventory().armor.get(3);
         if (itemStack.is(Blocks.CARVED_PUMPKIN.asItem())) {
             return false;
         } else {
@@ -83,7 +86,7 @@ public abstract class MixinEnderMan extends Monster {
             double d = vec32.length();
             vec32 = vec32.normalize();
             double e = vec3.dot(vec32);
-            return e > 1.0 - 0.025 / d && player.hasLineOfSight(this);
+            return e > 1.0 - 0.025 / d ? player.hasLineOfSight(this) : false;
         }
     }
 

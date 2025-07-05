@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -23,6 +24,15 @@ public abstract class MixinParrot extends ShoulderRidingEntity {
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Parrot;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
     private void arclight$feed(Player playerIn, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         pushEffectCause(EntityPotionEffectEvent.Cause.FOOD);
+    }
+
+    /**
+     * @author wdog5
+     * @reason
+     */
+    @Overwrite
+    public boolean isPushable() {
+        return super.isPushable(); // CraftBukkit - collidable API
     }
 
 }

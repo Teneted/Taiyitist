@@ -17,13 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Axolotl.class)
 public abstract class MixinAxolotl extends Animal {
 
-    @Shadow
-    @Final
-    private static int AXOLOTL_TOTAL_AIR_SUPPLY;
-
     protected MixinAxolotl(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
+
+    @Shadow @Final private static int AXOLOTL_TOTAL_AIR_SUPPLY;
 
     @Inject(method = "getMaxAirSupply", cancellable = true, at = @At("RETURN"))
     private void banner$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
@@ -37,6 +35,6 @@ public abstract class MixinAxolotl extends Animal {
 
     @Inject(method = "applySupportingEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
     private void banner$cause(Player player, CallbackInfo ci) {
-        player.pushEffectCause(EntityPotionEffectEvent.Cause.AXOLOTL);
+         player.pushEffectCause(EntityPotionEffectEvent.Cause.AXOLOTL);
     }
 }

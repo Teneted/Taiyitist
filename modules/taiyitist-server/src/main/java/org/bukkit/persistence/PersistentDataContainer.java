@@ -21,24 +21,24 @@ public interface PersistentDataContainer {
      *
      * @param key the key this value will be stored under
      * @param type the type this tag uses
-     * @param value the value to store in the tag
-     * @param <P> the generic java type of the tag value
-     * @param <C> the generic type of the object to store
+     * @param value the value stored in the tag
+     * @param <T> the generic java type of the tag value
+     * @param <Z> the generic type of the object to store
      *
-     * @throws IllegalArgumentException if the key is null
-     * @throws IllegalArgumentException if the type is null
-     * @throws IllegalArgumentException if the value is null. Removing a tag should
+     * @throws NullPointerException if the key is null
+     * @throws NullPointerException if the type is null
+     * @throws NullPointerException if the value is null. Removing a tag should
      * be done using {@link #remove(NamespacedKey)}
-     * @throws IllegalArgumentException if no suitable adapter was found for
+     * @throws IllegalArgumentException if no suitable adapter will be found for
      * the {@link PersistentDataType#getPrimitiveType()}
      */
-    <P, C> void set(@NotNull NamespacedKey key, @NotNull PersistentDataType<P, C> type, @NotNull C value);
+    <T, Z> void set(@NotNull NamespacedKey key, @NotNull PersistentDataType<T, Z> type, @NotNull Z value);
 
     /**
      * Returns if the persistent metadata provider has metadata registered
      * matching the provided parameters.
      * <p>
-     * This method will only return true if the found value has the same primitive
+     * This method will only return if the found value has the same primitive
      * data type as the provided key.
      * <p>
      * Storing a value using a custom {@link PersistentDataType} implementation
@@ -49,40 +49,21 @@ public interface PersistentDataContainer {
      * bytes long.
      * <p>
      * This method is only usable for custom object keys. Overwriting existing
-     * tags, like the display name, will not work as the values are stored
+     * tags, like the the display name, will not work as the values are stored
      * using your namespace.
      *
      * @param key the key the value is stored under
-     * @param type the type the primative stored value has to match
-     * @param <P> the generic type of the stored primitive
-     * @param <C> the generic type of the eventually created complex object
+     * @param type the type which primitive storage type has to match the value
+     * @param <T> the generic type of the stored primitive
+     * @param <Z> the generic type of the eventually created complex object
      *
-     * @return if a value with the provided key and type exists
+     * @return if a value
      *
-     * @throws IllegalArgumentException if the key to look up is null
-     * @throws IllegalArgumentException if the type to cast the found object to is
+     * @throws NullPointerException if the key to look up is null
+     * @throws NullPointerException if the type to cast the found object to is
      * null
      */
-    <P, C> boolean has(@NotNull NamespacedKey key, @NotNull PersistentDataType<P, C> type);
-
-    /**
-     * Returns if the persistent metadata provider has metadata registered matching
-     * the provided parameters.
-     * <p>
-     * This method will return true as long as a value with the given key exists,
-     * regardless of its type.
-     * <p>
-     * This method is only usable for custom object keys. Overwriting existing tags,
-     * like the display name, will not work as the values are stored using your
-     * namespace.
-     *
-     * @param key the key the value is stored under
-     *
-     * @return if a value with the provided key exists
-     *
-     * @throws IllegalArgumentException if the key to look up is null
-     */
-    boolean has(@NotNull NamespacedKey key);
+    <T, Z> boolean has(@NotNull NamespacedKey key, @NotNull PersistentDataType<T, Z> type);
 
     /**
      * Returns the metadata value that is stored on the
@@ -90,23 +71,23 @@ public interface PersistentDataContainer {
      *
      * @param key the key to look up in the custom tag map
      * @param type the type the value must have and will be casted to
-     * @param <P> the generic type of the stored primitive
-     * @param <C> the generic type of the eventually created complex object
+     * @param <T> the generic type of the stored primitive
+     * @param <Z> the generic type of the eventually created complex object
      *
      * @return the value or {@code null} if no value was mapped under the given
      * value
      *
-     * @throws IllegalArgumentException if the key to look up is null
-     * @throws IllegalArgumentException if the type to cast the found object to is
+     * @throws NullPointerException if the key to look up is null
+     * @throws NullPointerException if the type to cast the found object to is
      * null
-     * @throws IllegalArgumentException if a value exists under the given key,
-     * but cannot be accessed using the given type
-     * @throws IllegalArgumentException if no suitable adapter was found for
+     * @throws IllegalArgumentException if the value exists under the given key,
+     * but cannot be access using the given type
+     * @throws IllegalArgumentException if no suitable adapter will be found for
      * the {@link
      * PersistentDataType#getPrimitiveType()}
      */
     @Nullable
-    <P, C> C get(@NotNull NamespacedKey key, @NotNull PersistentDataType<P, C> type);
+    <T, Z> Z get(@NotNull NamespacedKey key, @NotNull PersistentDataType<T, Z> type);
 
     /**
      * Returns the metadata value that is stored on the
@@ -117,25 +98,25 @@ public interface PersistentDataContainer {
      * @param type the type the value must have and will be casted to
      * @param defaultValue the default value to return if no value was found for
      * the provided key
-     * @param <P> the generic type of the stored primitive
-     * @param <C> the generic type of the eventually created complex object
+     * @param <T> the generic type of the stored primitive
+     * @param <Z> the generic type of the eventually created complex object
      *
      * @return the value or the default value if no value was mapped under the
-     * given key
+     * given value
      *
-     * @throws IllegalArgumentException if the key to look up is null
-     * @throws IllegalArgumentException if the type to cast the found object to is
+     * @throws NullPointerException if the key to look up is null
+     * @throws NullPointerException if the type to cast the found object to is
      * null
-     * @throws IllegalArgumentException if a value exists under the given key,
-     * but cannot be accessed using the given type
-     * @throws IllegalArgumentException if no suitable adapter was found for
+     * @throws IllegalArgumentException if the value exists under the given key,
+     * but cannot be access using the given type
+     * @throws IllegalArgumentException if no suitable adapter will be found for
      * the {@link PersistentDataType#getPrimitiveType()}
      */
     @NotNull
-    <P, C> C getOrDefault(@NotNull NamespacedKey key, @NotNull PersistentDataType<P, C> type, @NotNull C defaultValue);
+    <T, Z> Z getOrDefault(@NotNull NamespacedKey key, @NotNull PersistentDataType<T, Z> type, @NotNull Z defaultValue);
 
     /**
-     * Get the set of keys present on this {@link PersistentDataContainer}
+     * Get a set of keys present on this {@link PersistentDataContainer}
      * instance.
      *
      * Any changes made to the returned set will not be reflected on the
@@ -149,9 +130,9 @@ public interface PersistentDataContainer {
     /**
      * Removes a custom key from the {@link PersistentDataHolder} instance.
      *
-     * @param key the key to remove
+     * @param key the key
      *
-     * @throws IllegalArgumentException if the provided key is null
+     * @throws NullPointerException if the provided key is null
      */
     void remove(@NotNull NamespacedKey key);
 
@@ -164,24 +145,57 @@ public interface PersistentDataContainer {
     boolean isEmpty();
 
     /**
-     * Copies all values from this {@link PersistentDataContainer} to the provided
-     * container.
-     * <p>
-     * This method only copies custom object keys. Existing tags, like the display
-     * name, will not be copied as the values are stored using your namespace.
-     *
-     * @param other   the container to copy to
-     * @param replace whether to replace any matching values in the target container
-     *
-     * @throws IllegalArgumentException if the other container is null
-     */
-    void copyTo(@NotNull PersistentDataContainer other, boolean replace);
-
-    /**
      * Returns the adapter context this tag container uses.
      *
      * @return the tag context
      */
     @NotNull
     PersistentDataAdapterContext getAdapterContext();
+
+    // Paper start
+    /**
+     * Returns if the persistent metadata provider has metadata registered
+     * matching the provided key.
+     *
+     * @param key the key for which existence should be checked.
+     *
+     * @return whether the key exists
+     *
+     * @throws NullPointerException if the key to look up is null
+     */
+    boolean has(@NotNull NamespacedKey key);
+
+    /**
+     * Serialize this {@link PersistentDataContainer} instance to a
+     * byte array.
+     *
+     * @return a binary representation of this container
+     * @throws java.io.IOException if we fail to write this container to a byte array
+     */
+    byte @NotNull [] serializeToBytes() throws java.io.IOException;
+
+    /**
+     * Read values from a serialised byte array into this
+     * {@link PersistentDataContainer} instance.
+     *
+     * @param bytes the byte array to read from
+     * @param clear if true, this {@link PersistentDataContainer} instance
+     *              will be cleared before reading
+     * @throws java.io.IOException if the byte array has an invalid format
+     */
+    void readFromBytes(byte @NotNull [] bytes, boolean clear) throws java.io.IOException;
+
+    /**
+     * Read values from a serialised byte array into this
+     * {@link PersistentDataContainer} instance.
+     * This method has the same effect as
+     * <code>PersistentDataContainer#readFromBytes(bytes, true)</code>
+     *
+     * @param bytes the byte array to read from
+     * @throws java.io.IOException if the byte array has an invalid format
+     */
+    default void readFromBytes(byte @NotNull [] bytes) throws java.io.IOException {
+        this.readFromBytes(bytes, true);
+    }
+    // Paper end
 }

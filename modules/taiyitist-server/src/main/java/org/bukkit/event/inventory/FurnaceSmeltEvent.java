@@ -17,7 +17,7 @@ public class FurnaceSmeltEvent extends BlockCookEvent {
 
     // Paper start
     public FurnaceSmeltEvent(@NotNull final Block furnace, @NotNull final ItemStack source, @NotNull final ItemStack result, @org.jetbrains.annotations.Nullable org.bukkit.inventory.CookingRecipe<?> recipe) {
-        super(furnace, source, result);
+        super(furnace, source, result, recipe);
     }
     // Paper end
 }

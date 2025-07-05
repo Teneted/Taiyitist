@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.ChorusPlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -30,20 +30,16 @@ public abstract class MixinChorusFlowerBlock extends Block {
 
     // @formatter:off
     @Shadow @Final public static IntegerProperty AGE;
-    @Shadow
-    @Final
-    private Block plant;
+    @Shadow @Final private ChorusPlantBlock plant;
 
     public MixinChorusFlowerBlock(Properties properties) {
         super(properties);
     }
 
     @Shadow private static boolean allNeighborsEmpty(LevelReader worldIn, BlockPos pos, @Nullable Direction excludingSide) { return false; }
-
     @Shadow protected abstract void placeGrownFlower(Level worldIn, BlockPos pos, int age);
-    // @formatter:on
-
     @Shadow protected abstract void placeDeadFlower(Level worldIn, BlockPos pos);
+    // @formatter:on
 
     /**
      * @author wdog5
@@ -83,9 +79,9 @@ public abstract class MixinChorusFlowerBlock extends Block {
                     flag = true;
                 }
 
-                if (flag && allNeighborsEmpty(worldIn, blockpos, null) && worldIn.isEmptyBlock(pos.above(2))) {
+                if (flag && allNeighborsEmpty(worldIn, blockpos, (Direction) null) && worldIn.isEmptyBlock(pos.above(2))) {
                     if (CraftEventFactory.handleBlockSpreadEvent(worldIn, pos, blockpos, this.defaultBlockState().setValue(ChorusFlowerBlock.AGE, i), 2)) {
-                        worldIn.setBlock(pos, ChorusPlantBlock.getStateWithConnections(worldIn, pos, this.plant.defaultBlockState()), 2);
+                        worldIn.setBlock(pos, this.plant.getStateForPlacement(worldIn, pos), 2);
                         this.placeGrownFlower(worldIn, blockpos, i);
                     }
                 } else if (i < 4) {
@@ -108,7 +104,7 @@ public abstract class MixinChorusFlowerBlock extends Block {
                     }
 
                     if (flag2) {
-                        worldIn.setBlock(pos, ChorusPlantBlock.getStateWithConnections(worldIn, pos, this.plant.defaultBlockState()), 2);
+                        worldIn.setBlock(pos, this.plant.getStateForPlacement(worldIn, pos), 2);
                     } else {
                         if (CraftEventFactory.handleBlockGrowEvent(worldIn, pos, this.defaultBlockState().setValue(ChorusFlowerBlock.AGE, 5), 2)) {
                             this.placeDeadFlower(worldIn, pos);

@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SculkShriekerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,7 +26,7 @@ public abstract class MixinSculkShriekerBlock extends Block {
 
     @Inject(method = "stepOn", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockEntity(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntityType;)Ljava/util/Optional;"))
     private void banner$interact(Level world, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci,
-                                 ServerLevel level, ServerPlayer player) {
+                                   ServerLevel level, ServerPlayer player) {
         if (CraftEventFactory.callPlayerInteractEvent(player, org.bukkit.event.block.Action.PHYSICAL, pos, null, null, null).isCancelled()) {
             ci.cancel();
         }

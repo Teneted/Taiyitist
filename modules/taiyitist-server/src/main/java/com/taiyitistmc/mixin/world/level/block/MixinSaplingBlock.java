@@ -6,12 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SaplingBlock;
-import net.minecraft.world.level.block.grower.TreeGrower;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
-import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -25,20 +25,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SaplingBlock.class)
 public class MixinSaplingBlock {
 
+    @Shadow @Final private AbstractTreeGrower treeGrower;
     @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
-    private static TreeType treeType; // CraftBukkit
-    @Shadow
-    @Final
-    protected TreeGrower treeGrower;
+    private static TreeType treeType = BukkitFieldHooks.treeType(); // CraftBukkit
+
 
     @Redirect(method = "advanceTree", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/block/grower/TreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z"))
-    private boolean banner$cancelGrowTree(TreeGrower instance, ServerLevel serverLevel, ChunkGenerator chunkGenerator, BlockPos blockPos, BlockState blockState, RandomSource randomSource) {
+            target = "Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z"))
+    private boolean banner$cancelGrowTree(AbstractTreeGrower instance, ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
         return false;
     }
 
     @Inject(method = "advanceTree", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/block/grower/TreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z",
+            target = "Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z",
             shift = At.Shift.AFTER))
     private void banner$fireStructureGrowEvent(ServerLevel level, BlockPos pos, BlockState state,
                                                RandomSource random, CallbackInfo ci) {

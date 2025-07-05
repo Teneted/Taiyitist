@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(VillageSiege.class)
 public class MixinVillageSiege {
 
-    @Inject(method = "trySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Zombie;moveTo(DDDFF)V", shift = At.Shift.AFTER))
+    @Inject(method = "trySpawn", at= @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Zombie;moveTo(DDDFF)V", shift = At.Shift.AFTER))
     private void banner$pushAddReason(ServerLevel level, CallbackInfo ci) {
         level.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION);
     }

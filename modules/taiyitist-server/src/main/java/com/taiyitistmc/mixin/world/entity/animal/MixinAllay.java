@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -28,15 +29,15 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
     // @formatter:off
     @Shadow @Final private static EntityDataAccessor<Boolean> DATA_CAN_DUPLICATE;
     // @formatter:on
-    public boolean forceDancing = false;
-    private transient Allay banner$duplicate;
+
+    @Shadow protected abstract void duplicateAllay();
 
     protected MixinAllay(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Shadow
-    protected abstract void duplicateAllay();
+    @Unique
+    public boolean forceDancing = false;
 
     @Override
     public void setCanDuplicate(boolean canDuplicate) {
@@ -63,6 +64,9 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
             cir.setReturnValue(false);
         }
     }
+
+    @Unique
+    private transient Allay banner$duplicate;
 
     @Redirect(method = "duplicateAllay", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean banner$captureDuplicate(Level instance, Entity entity) {

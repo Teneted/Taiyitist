@@ -20,9 +20,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ChestBlock.class)
 public abstract class MixinChestBlock implements InjectionChestBlock {
 
-    @Shadow
-    @Final
-    private static DoubleBlockCombiner.Combiner<ChestBlockEntity, Optional<MenuProvider>> MENU_PROVIDER_COMBINER;
+    @Shadow public abstract DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override);
+
+    @Shadow @Final private static DoubleBlockCombiner.Combiner<ChestBlockEntity, Optional<MenuProvider>> MENU_PROVIDER_COMBINER;
+
+    @Override
+    public MenuProvider getMenuProvider(BlockState iblockdata, Level world, BlockPos blockposition, boolean ignoreObstructions) {
+        return this.combine(iblockdata, world, blockposition, ignoreObstructions).apply(MENU_PROVIDER_COMBINER).orElse(null);
+    }
 
     @Inject(method = "isCatSittingOnChest", at = @At("HEAD"), cancellable = true)
     private static void banner$configCatSitting(LevelAccessor level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
@@ -31,13 +36,5 @@ public abstract class MixinChestBlock implements InjectionChestBlock {
             cir.setReturnValue(false);
         }
         // Paper end
-    }
-
-    @Shadow
-    public abstract DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override);
-
-    @Override
-    public MenuProvider getMenuProvider(BlockState iblockdata, Level world, BlockPos blockposition, boolean ignoreObstructions) {
-        return this.combine(iblockdata, world, blockposition, ignoreObstructions).apply(MENU_PROVIDER_COMBINER).orElse(null);
     }
 }

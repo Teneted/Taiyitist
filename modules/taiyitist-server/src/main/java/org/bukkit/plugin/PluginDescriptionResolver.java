@@ -3,7 +3,7 @@ package org.bukkit.plugin;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.resolver.Resolver;
 
-final class PluginDescriptionResolver extends Resolver {
+public class PluginDescriptionResolver extends Resolver {
 
     @Override
     protected void addImplicitResolvers() {

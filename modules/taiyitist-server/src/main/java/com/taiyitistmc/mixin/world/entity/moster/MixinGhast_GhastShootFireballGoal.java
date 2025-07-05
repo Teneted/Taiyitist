@@ -13,9 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(targets = "net.minecraft.world.entity.monster.Ghast$GhastShootFireballGoal")
 public abstract class MixinGhast_GhastShootFireballGoal {
 
-    @Shadow
-    @Final
-    private Ghast ghast;
+    @Shadow @Final private Ghast ghast;
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean banner$setYaw(Level world, Entity entityIn) {

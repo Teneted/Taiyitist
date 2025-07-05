@@ -8,8 +8,7 @@ import java.util.logging.Logger;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.util.PathConverter;
-import net.minecrell.terminalconsole.TerminalConsoleAppender;
-
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 
 import static java.util.Arrays.asList;
 
@@ -165,7 +164,7 @@ public class Main extends OptionParser {
                 System.err.println("Unsupported Java detected (" + javaVersion + "). This version of Minecraft requires at least Java 17. Check your Java version with the command 'java -version'.");
                 return;
             }
-            if (javaVersion > 67.0) {
+            if (javaVersion > 65.0) {
                 System.err.println("Unsupported Java detected (" + javaVersion + "). Only up to Java 21 is supported.");
                 return;
             }
@@ -179,14 +178,12 @@ public class Main extends OptionParser {
             }
 
             if (options.has("nojline")) {
-                System.setProperty(TerminalConsoleAppender.JLINE_OVERRIDE_PROPERTY, "false");
                 useJline = false;
             }
 
             if (options.has("noconsole")) {
                 useConsole = false;
                 useJline = false;
-                System.setProperty(TerminalConsoleAppender.JLINE_OVERRIDE_PROPERTY, "false");
             }
         }
     }

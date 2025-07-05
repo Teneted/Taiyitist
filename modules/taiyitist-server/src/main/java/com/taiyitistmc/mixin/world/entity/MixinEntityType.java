@@ -1,6 +1,5 @@
 package com.taiyitistmc.mixin.world.entity;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.injection.world.entity.InjectionEntityType;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -21,48 +20,43 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EntityType.class)
 public abstract class MixinEntityType<T extends Entity> implements InjectionEntityType<T> {
+
+    @Shadow @Nullable public abstract T spawn(ServerLevel level, BlockPos pos, MobSpawnType spawnType);
 
     @Shadow
     public static Optional<Entity> create(CompoundTag tag, Level level) {
         return Optional.empty();
     }
 
-    @Shadow
-    @Nullable
-    public abstract T spawn(ServerLevel level, BlockPos pos, MobSpawnType spawnType);
+    @Shadow @Nullable public abstract T create(ServerLevel level, @Nullable CompoundTag nbt, @Nullable Consumer<T> consumer, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore);
 
-    @Shadow
-    @Nullable
-    public abstract T spawn(ServerLevel serverLevel, @Nullable ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore);
-
-    @Shadow
-    @Nullable
-    public abstract T create(ServerLevel serverLevel, @Nullable Consumer<T> consumer, BlockPos blockPos, MobSpawnType mobSpawnType, boolean bl, boolean bl2);
+    @Shadow @Nullable public abstract T spawn(ServerLevel serverLevel, @Nullable ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore);
 
     @Inject(method = "spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
             at = @At(value = "HEAD"))
     private void banner$spawnReason(ServerLevel serverLevel, ItemStack stack, Player player, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore, CallbackInfoReturnable<T> cir) {
-        CreatureSpawnEvent.SpawnReason spawnReason = serverLevel.getAddEntityReason();
+        CreatureSpawnEvent.SpawnReason spawnReason =  serverLevel.getAddEntityReason();
         if (spawnReason == null) {
             serverLevel.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         }
     }
 
-    @Inject(method = "spawn(Lnet/minecraft/server/level/ServerLevel;Ljava/util/function/Consumer;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
-            cancellable = true, at = @At("RETURN"),
+    @Inject(method = "spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/nbt/CompoundTag;Ljava/util/function/Consumer;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
+            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At("RETURN"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V")))
-    private void banner$returnIfSuccess(ServerLevel serverLevel, Consumer<T> consumer, BlockPos blockPos, MobSpawnType mobSpawnType, boolean bl, boolean bl2, CallbackInfoReturnable<T> cir, @Local Entity entity) {
+    private void banner$returnIfSuccess(ServerLevel level, CompoundTag compound, Consumer<T> consumer, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore, CallbackInfoReturnable<T> cir, T entity) {
         if (entity != null) {
-            cir.setReturnValue(entity.isRemoved() ? null : (T) entity);
+            cir.setReturnValue(entity.isRemoved() ? null : entity);
         }
     }
 
     @Override
     public @Nullable T spawn(ServerLevel worldserver, @Nullable CompoundTag nbttagcompound, @Nullable Consumer<T> consumer, BlockPos blockposition, MobSpawnType enummobspawn, boolean flag, boolean flag1, CreatureSpawnEvent.SpawnReason spawnReason) {
-        T t = this.create(worldserver, consumer, blockposition, enummobspawn, flag, flag1);
+        T t = this.create(worldserver, nbttagcompound, consumer, blockposition, enummobspawn, flag, flag1);
         if (t != null) {
             worldserver.pushAddEntityReason(spawnReason);
             worldserver.addFreshEntityWithPassengers(t);

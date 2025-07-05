@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.TripWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
@@ -23,16 +23,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(TripWireBlock.class)
 public abstract class MixinTripWireBlock extends Block {
 
-    @Shadow
-    @Final
-    public static BooleanProperty POWERED;
+    @Shadow @Final public static BooleanProperty POWERED;
+
+    @Shadow protected abstract void updateSource(Level level, BlockPos pos, BlockState state);
 
     public MixinTripWireBlock(Properties properties) {
         super(properties);
     }
-
-    @Shadow
-    protected abstract void updateSource(Level level, BlockPos pos, BlockState state);
 
     /**
      * @author wdog5
@@ -90,7 +87,7 @@ public abstract class MixinTripWireBlock extends Block {
         }
 
         if (flag1) {
-            worldIn.scheduleTick(new BlockPos(pos), (Block) this, 10);
+            worldIn.scheduleTick(new BlockPos(pos), (Block) (Object) this, 10);
         }
 
     }

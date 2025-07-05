@@ -7,10 +7,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -19,9 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LightningBolt.class)
 public class MixinLightningBolt implements InjectionLightningBolt {
 
+    @Shadow private int life;
+    @Unique
     public boolean isSilent = false; // Spigot
-    @Shadow
-    private int life;
+
 
     @Redirect(method = "tick", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, ordinal = 0, target = "Lnet/minecraft/world/entity/LightningBolt;life:I"))
     private int banner$silent(LightningBolt lightningBolt) {

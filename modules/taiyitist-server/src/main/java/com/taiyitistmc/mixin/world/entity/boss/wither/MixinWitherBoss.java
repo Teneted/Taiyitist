@@ -11,7 +11,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WitherBoss.class)
 public abstract class MixinWitherBoss extends Monster {
-
 
     protected MixinWitherBoss(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);

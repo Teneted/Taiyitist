@@ -1,15 +1,12 @@
 package com.taiyitistmc.mixin.world.item.trading;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.world.item.trading.InjectionMerchantOffer;
-import java.util.Optional;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
-import org.bukkit.craftbukkit.inventory.CraftMerchantRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftMerchantRecipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -18,21 +15,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MerchantOffer.class)
 public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
 
-    @Shadow
-    public ItemCost baseCostA;
+    @Shadow public ItemStack baseCostA;
+
+    @Shadow public abstract ItemStack getCostA();
+
+    @Unique
     private CraftMerchantRecipe bukkitHandle;
 
-    @Shadow
-    public abstract ItemStack getCostA();
-
-    @ShadowConstructor
-    public void banner$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l) {
+    @Unique
+    public void banner$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
-    public void banner$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l, CraftMerchantRecipe bukkit) {
-        banner$constructor(itemCost, optional, itemStack, i, j, k, f, l);
+    @Unique
+    public void banner$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand, CraftMerchantRecipe bukkit) {
+        banner$constructor(buyingStackFirstIn, buyingStackSecondIn, sellingStackIn, usesIn, maxUsesIn, givenEXPIn, priceMultiplierIn, demand);
+        this.bukkitHandle = bukkit;
+    }
+
+    @Override
+    public void bukkit(CraftMerchantRecipe bukkit) {
         this.bukkitHandle = bukkit;
     }
 
@@ -43,7 +45,7 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
 
     @Inject(method = "getCostA", cancellable = true, at = @At("HEAD"))
     private void banner$fix(CallbackInfoReturnable<ItemStack> cir) {
-        if (this.baseCostA.count() <= 0) {
+        if (this.baseCostA.getCount() <= 0) {
             cir.setReturnValue(ItemStack.EMPTY);
         }
     }

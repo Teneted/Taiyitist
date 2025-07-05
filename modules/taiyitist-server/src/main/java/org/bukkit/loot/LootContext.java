@@ -54,7 +54,7 @@ public final class LootContext {
 
     /**
      * Represents the
-     * {@link org.bukkit.enchantments.Enchantment#LOOTING} the
+     * {@link org.bukkit.enchantments.Enchantment#LOOT_BONUS_MOBS} the
      * {@link #getKiller()} entity has on their equipped item.
      *
      * This value is only set via
@@ -62,9 +62,7 @@ public final class LootContext {
      * {@link #getKiller()} entity's looting level will be used instead.
      *
      * @return the looting level
-     * @deprecated no longer functional
      */
-    @Deprecated
     public int getLootingModifier() {
         return lootingModifier;
     }
@@ -126,17 +124,15 @@ public final class LootContext {
         }
 
         /**
-         * Set the {@link org.bukkit.enchantments.Enchantment#LOOTING}
+         * Set the {@link org.bukkit.enchantments.Enchantment#LOOT_BONUS_MOBS}
          * level equivalent to use when generating loot. Values less than or
          * equal to 0 will force the {@link LootTable} to only return a single
          * {@link org.bukkit.inventory.ItemStack} per pool.
          *
          * @param modifier the looting level modifier
          * @return the Builder
-         * @deprecated no longer functional
          */
         @NotNull
-        @Deprecated
         public Builder lootingModifier(int modifier) {
             this.lootingModifier = modifier;
             return this;

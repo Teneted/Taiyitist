@@ -1,15 +1,16 @@
 package com.taiyitistmc.mixin.world.entity.ambient;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,22 +21,17 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Bat.class)
 public abstract class MixinBat extends AmbientCreature {
 
-    @Shadow
-    @Final
-    private static TargetingConditions BAT_RESTING_TARGETING;
-    @Shadow
-    @Nullable
-    private BlockPos targetPosition;
-
     protected MixinBat(EntityType<? extends AmbientCreature> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Shadow
-    public abstract boolean isResting();
+    @Shadow public abstract boolean isResting();
 
-    @Shadow
-    public abstract void setResting(boolean isResting);
+    @Shadow @Final private static TargetingConditions BAT_RESTING_TARGETING;
+
+    @Shadow public abstract void setResting(boolean isResting);
+
+    @Shadow @Nullable private BlockPos targetPosition;
 
     /**
      * @author wdog5
@@ -60,7 +56,7 @@ public abstract class MixinBat extends AmbientCreature {
                     if (CraftEventFactory.handleBatToggleSleepEvent(this, true)) {
                         this.setResting(false);
                         if (!flag) {
-                            this.level().levelEvent(null, 1025, blockposition, 0);
+                            this.level().levelEvent((Player) null, 1025, blockposition, 0);
                         }
                     }
                     // CraftBukkit End
@@ -70,7 +66,7 @@ public abstract class MixinBat extends AmbientCreature {
                 if (CraftEventFactory.handleBatToggleSleepEvent(this, true)) {
                     this.setResting(false);
                     if (!flag) {
-                        this.level().levelEvent(null, 1025, blockposition, 0);
+                        this.level().levelEvent((Player) null, 1025, blockposition, 0);
                     }
                 }
                 // CraftBukkit End - Call BatToggleSleepEvent

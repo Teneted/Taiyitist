@@ -8,9 +8,9 @@ import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.CraftEquipmentSlot;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.CraftEquipmentSlot;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ public class MixinHangingEntityItem {
         org.bukkit.block.BlockFace blockFace = CraftBlock.notchToBlockFace(direction);
         org.bukkit.inventory.EquipmentSlot hand = CraftEquipmentSlot.getHand(context.getHand());
 
-        HangingPlaceEvent event = new HangingPlaceEvent((org.bukkit.entity.Hanging) hangingEntity.getBukkitEntity(), who, blockClicked, blockFace, hand, CraftItemStack.asBukkitCopy(itemStack));
+        HangingPlaceEvent event = new HangingPlaceEvent((org.bukkit.entity.Hanging) ((HangingEntity) hangingEntity).getBukkitEntity(), who, blockClicked, blockFace, hand, CraftItemStack.asBukkitCopy(itemStack));
         world.getCraftServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {

@@ -4,7 +4,6 @@ import com.taiyitistmc.asm.annotation.TransformAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +20,7 @@ public class MixinDispenserBlock {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/DispenserBlockEntity;setItem(ILnet/minecraft/world/item/ItemStack;)V",
                     shift = At.Shift.BEFORE))
-    private void banner$restEventStatus(ServerLevel serverLevel, BlockState blockState, BlockPos blockPos, CallbackInfo ci) {
+    private void banner$restEventStatus(ServerLevel level, BlockPos pos, CallbackInfo ci) {
         eventFired = false; // CraftBukkit - reset event status
     }
 

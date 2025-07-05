@@ -1,6 +1,7 @@
 package com.taiyitistmc.mixin.world.item;
 
 import com.taiyitistmc.asm.annotation.TransformAccess;
+import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,17 +25,16 @@ public class MixinSignItem {
 
     @Redirect(method = "updateCustomBlockEntityTag", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V"))
-    private void banner$cancelOpen(SignBlock instance, Player player, SignBlockEntity signBlockEntity, boolean bl) {
-    }
+    private void banner$cancelOpen(SignBlock instance, Player player, SignBlockEntity signBlockEntity, boolean bl) {}
 
     @Inject(method = "updateCustomBlockEntityTag",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V",
-                    shift = At.Shift.AFTER))
+            target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V",
+            shift = At.Shift.AFTER))
     private void banner$setOpenSign(BlockPos pos, Level level, Player player,
                                     ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start - SPIGOT-4678
-        openSign = pos;
+        BukkitFieldHooks.setOpenSign(pos);
         // CraftBukkit end
     }
 }

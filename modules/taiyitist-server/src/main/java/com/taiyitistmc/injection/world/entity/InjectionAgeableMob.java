@@ -3,10 +3,9 @@ package com.taiyitistmc.injection.world.entity;
 public interface InjectionAgeableMob {
 
     default boolean bridge$ageLocked() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default void banner$setAgeLocked(boolean ageLocked) {
-        throw new IllegalStateException("Not implemented");
     }
 }

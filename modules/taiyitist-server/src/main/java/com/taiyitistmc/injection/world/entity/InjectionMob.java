@@ -13,43 +13,39 @@ import org.bukkit.event.entity.EntityTransformEvent;
 public interface InjectionMob extends InjectionNeutralMob {
 
     default boolean getBanner$targetSuccess() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default boolean bridge$aware() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default void banner$setAware(boolean aware){
-        throw new IllegalStateException("Not implemented");
     }
 
     default void setPersistenceRequired(boolean persistenceRequired) {
-        throw new IllegalStateException("Not implemented");
     }
 
     @Override
     default boolean setTarget(LivingEntity entityliving, EntityTargetEvent.TargetReason reason, boolean fireEvent) {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default SoundEvent getAmbientSound0() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default ItemStack equipItemIfPossible(ItemStack itemstack, ItemEntity entityitem) {
-        throw new IllegalStateException("Not implemented");
+        return itemstack;
     }
 
     default <T extends Mob> T convertTo(EntityType<T> entitytypes, boolean flag, EntityTransformEvent.TransformReason transformReason, CreatureSpawnEvent.SpawnReason spawnReason) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason reason, boolean fireEvent) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default void bridge$pushTransformReason(EntityTransformEvent.TransformReason transformReason) {
-        throw new IllegalStateException("Not implemented");
     }
 }

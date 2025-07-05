@@ -8,14 +8,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface InjectionBeehiveBlockEntity {
 
     default int bridge$maxBees() {
-        throw new IllegalStateException("Not implemented");
+        return 0;
     }
 
     default void banner$setMaxBees(int maxBees) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default List<Entity> releaseBees(BlockState iblockdata, BeehiveBlockEntity.BeeReleaseStatus tileentitybeehive_releasestatus, boolean force) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

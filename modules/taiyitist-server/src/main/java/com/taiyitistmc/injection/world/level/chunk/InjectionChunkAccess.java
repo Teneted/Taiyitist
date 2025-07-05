@@ -3,19 +3,19 @@ package com.taiyitistmc.injection.world.level.chunk;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
-import org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer;
 
 public interface InjectionChunkAccess {
 
     default DirtyCraftPersistentDataContainer bridge$persistentDataContainer() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void setBiome(int i, int j, int k, Holder<Biome> biome) {
-        throw new IllegalStateException("Not implemented");
+
     }
 
     default Registry<Biome> bridge$biomeRegistry() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

@@ -17,12 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(EnderDragonPhase.class)
 public class MixinEnderDragonPhase implements InjectionEnderDragonPhase {
 
-    @Shadow
-    private static EnderDragonPhase<?>[] phases;
+    @Shadow private static EnderDragonPhase<?>[] phases;
 
-    @Shadow
-    @Final
-    private String name;
+    @Shadow @Final private String name;
 
     @Inject(method = "create", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static <T extends DragonPhaseInstance> void banner$addPhase(Class<T> phase, String name,

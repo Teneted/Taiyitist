@@ -26,7 +26,7 @@ public abstract class MixinPainting {
         Direction.Axis enumdirection_enumaxis = enumdirection.getAxis();
         // CraftBukkit start
         double d2 = enumdirection_enumaxis == Direction.Axis.X ? 0.0625D : (double) width;
-        double d3 = height;
+        double d3 = (double) height;
         double d4 = enumdirection_enumaxis == Direction.Axis.Z ? 0.0625D : (double) width;
         // CraftBukkit end
 

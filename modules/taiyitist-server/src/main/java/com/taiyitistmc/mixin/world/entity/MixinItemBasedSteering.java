@@ -11,19 +11,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ItemBasedSteering.class)
 public abstract class MixinItemBasedSteering implements InjectionItemBasedSteering {
 
-    @Shadow
-    public boolean boosting;
+    @Shadow public boolean boosting;
 
-    @Shadow
-    public int boostTime;
+    @Shadow public int boostTime;
 
-    @Shadow
-    @Final
-    private SynchedEntityData entityData;
+    @Shadow @Final private SynchedEntityData entityData;
 
-    @Shadow
-    @Final
-    private EntityDataAccessor<Integer> boostTimeAccessor;
+    @Shadow @Final private EntityDataAccessor<Integer> boostTimeAccessor;
 
     // CraftBukkit add setBoostTicks(int)
     @Override

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface Raider extends Monster {
 
+
     /**
      * Set the {@link Raid} that this raider is participating in.
      *

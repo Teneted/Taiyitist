@@ -192,7 +192,8 @@ public class EntityPotionEffectEvent extends EntityEvent implements Cancellable 
          */
         CONVERSION,
         /**
-         * When all effects are removed due to death.
+         * When all effects are removed due to death (Note: This is called on
+         * respawn, so it's player only!)
          */
         DEATH,
         /**

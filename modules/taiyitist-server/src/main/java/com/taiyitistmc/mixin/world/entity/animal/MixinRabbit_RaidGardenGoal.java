@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarrotBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,9 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(targets = "net.minecraft.world.entity.animal.Rabbit$RaidGardenGoal")
 public class MixinRabbit_RaidGardenGoal {
 
-    @Shadow
-    @Final
-    private Rabbit rabbit;
+    @Shadow @Final private Rabbit rabbit;
 
     @Inject(method = "tick", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))

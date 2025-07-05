@@ -64,9 +64,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder 
      * @param prop The property.
      * @param value The value to set the property to.
      * @return True if the property was successfully set.
-     * @deprecated use {@link InventoryView} and its children.
      */
-    @Deprecated(forRemoval = true, since = "1.21")
     public boolean setWindowProperty(@NotNull InventoryView.Property prop, int value);
 
     /**
@@ -138,12 +136,6 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder 
 
     /**
      * Opens an inventory window to the specified inventory view.
-     * <p>
-     * The player associated with the InventoryView must be the same as this
-     * instance of HumanEntity.
-     * <p>
-     * The player of the InventoryView can be checked using
-     * {@link InventoryView#getPlayer()}.
      *
      * @param inventory The view to open
      */
@@ -287,15 +279,6 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder 
     public void wakeup(boolean setSpawnLocation);
 
     /**
-     * Make the player start a riptide spin attack.
-     *
-     * @param duration spin attack duration in ticks.
-     * @param attackStrength damage value inflicted upon entities hit by spin attack.
-     * @param attackItem item used to attack.
-     */
-    public void startRiptideAttack(int duration, float attackStrength, @Nullable ItemStack attackItem);
-
-    /**
      * Gets the location of the bed the player is currently sleeping in
      *
      * @return location
@@ -333,6 +316,16 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder 
      * @return Whether their hand is raised
      */
     public boolean isHandRaised();
+
+    /**
+     * Gets the item that the player is using (eating food, drawing back a bow,
+     * blocking, etc.)
+     *
+     * @return the item being used by the player, or null if they are not using
+     * an item
+     */
+    @Nullable
+    public ItemStack getItemInUse();
 
     /**
      * Get the total amount of experience required for the player to level

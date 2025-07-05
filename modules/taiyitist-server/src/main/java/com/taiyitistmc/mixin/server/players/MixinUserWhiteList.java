@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraft.server.players.StoredUserList;
 import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
-import org.bukkit.craftbukkit.profile.CraftPlayerProfile;
+import org.bukkit.craftbukkit.v1_20_R1.profile.CraftPlayerProfile;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(UserWhiteList.class)

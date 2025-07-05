@@ -11,12 +11,14 @@ import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.AABB;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(PressurePlateBlock.class)
 public abstract class MixinPressurePlateBlock extends BasePressurePlateBlock {
@@ -25,14 +27,17 @@ public abstract class MixinPressurePlateBlock extends BasePressurePlateBlock {
         super(properties, blockSetType);
     }
 
+    @Shadow protected abstract int getSignalForState(BlockState state);
+
+    @Shadow @Final private PressurePlateBlock.Sensitivity sensitivity;
+
+
+    @Unique
     private static <T extends Entity> java.util.List<T> getEntities(Level world, AABB axisalignedbb, Class<T> oclass) {
         return world.getEntitiesOfClass(oclass, axisalignedbb, EntitySelector.NO_SPECTATORS.and((entity) -> {
             return !entity.isIgnoringBlockTriggers();
         }));
     }
-
-    @Shadow
-    protected abstract int getSignalForState(BlockState state);
 
     /**
      * @author wdig5
@@ -42,7 +47,7 @@ public abstract class MixinPressurePlateBlock extends BasePressurePlateBlock {
     protected int getSignalStrength(Level world, BlockPos blockposition) {
         Class<? extends Entity> oclass; // CraftBukkit
 
-        switch (this.type.pressurePlateSensitivity()) {
+        switch (this.sensitivity) {
             case EVERYTHING:
                 oclass = Entity.class;
                 break;
@@ -58,7 +63,7 @@ public abstract class MixinPressurePlateBlock extends BasePressurePlateBlock {
         // CraftBukkit start - Call interact event when turning on a pressure plate
         for (Entity entity : getEntities(world, TOUCH_AABB.move(blockposition), oclass)) {
             if (this.getSignalForState(world.getBlockState(blockposition)) == 0) {
-                org.bukkit.World bworld = world.getWorld();
+                org.bukkit.World bworld =  world.getWorld();
                 org.bukkit.plugin.PluginManager manager = world.getCraftServer().getPluginManager();
                 org.bukkit.event.Cancellable cancellable;
 

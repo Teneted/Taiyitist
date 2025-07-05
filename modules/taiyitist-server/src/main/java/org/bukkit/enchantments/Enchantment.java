@@ -1,11 +1,9 @@
 package org.bukkit.enchantments;
 
-import com.google.common.collect.Lists;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
-import org.bukkit.Translatable;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -14,222 +12,217 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The various type of enchantments that may be added to armour or weapons
  */
-public abstract class Enchantment implements Keyed, Translatable {
+public abstract class Enchantment implements Keyed {
     /**
      * Provides protection against environmental damage
      */
-    public static final Enchantment PROTECTION = getEnchantment("protection");
+    public static final Enchantment PROTECTION_ENVIRONMENTAL = new EnchantmentWrapper("protection");
 
     /**
      * Provides protection against fire damage
      */
-    public static final Enchantment FIRE_PROTECTION = getEnchantment("fire_protection");
+    public static final Enchantment PROTECTION_FIRE = new EnchantmentWrapper("fire_protection");
 
     /**
      * Provides protection against fall damage
      */
-    public static final Enchantment FEATHER_FALLING = getEnchantment("feather_falling");
+    public static final Enchantment PROTECTION_FALL = new EnchantmentWrapper("feather_falling");
 
     /**
      * Provides protection against explosive damage
      */
-    public static final Enchantment BLAST_PROTECTION = getEnchantment("blast_protection");
+    public static final Enchantment PROTECTION_EXPLOSIONS = new EnchantmentWrapper("blast_protection");
 
     /**
      * Provides protection against projectile damage
      */
-    public static final Enchantment PROJECTILE_PROTECTION = getEnchantment("projectile_protection");
+    public static final Enchantment PROTECTION_PROJECTILE = new EnchantmentWrapper("projectile_protection");
 
     /**
      * Decreases the rate of air loss whilst underwater
      */
-    public static final Enchantment RESPIRATION = getEnchantment("respiration");
+    public static final Enchantment OXYGEN = new EnchantmentWrapper("respiration");
 
     /**
      * Increases the speed at which a player may mine underwater
      */
-    public static final Enchantment AQUA_AFFINITY = getEnchantment("aqua_affinity");
+    public static final Enchantment WATER_WORKER = new EnchantmentWrapper("aqua_affinity");
 
     /**
      * Damages the attacker
      */
-    public static final Enchantment THORNS = getEnchantment("thorns");
+    public static final Enchantment THORNS = new EnchantmentWrapper("thorns");
 
     /**
      * Increases walking speed while in water
      */
-    public static final Enchantment DEPTH_STRIDER = getEnchantment("depth_strider");
+    public static final Enchantment DEPTH_STRIDER = new EnchantmentWrapper("depth_strider");
 
     /**
      * Freezes any still water adjacent to ice / frost which player is walking on
      */
-    public static final Enchantment FROST_WALKER = getEnchantment("frost_walker");
+    public static final Enchantment FROST_WALKER = new EnchantmentWrapper("frost_walker");
 
     /**
      * Item cannot be removed
      */
-    public static final Enchantment BINDING_CURSE = getEnchantment("binding_curse");
+    public static final Enchantment BINDING_CURSE = new EnchantmentWrapper("binding_curse");
 
     /**
      * Increases damage against all targets
      */
-    public static final Enchantment SHARPNESS = getEnchantment("sharpness");
+    public static final Enchantment DAMAGE_ALL = new EnchantmentWrapper("sharpness");
 
     /**
      * Increases damage against undead targets
      */
-    public static final Enchantment SMITE = getEnchantment("smite");
+    public static final Enchantment DAMAGE_UNDEAD = new EnchantmentWrapper("smite");
 
     /**
      * Increases damage against arthropod targets
      */
-    public static final Enchantment BANE_OF_ARTHROPODS = getEnchantment("bane_of_arthropods");
+    public static final Enchantment DAMAGE_ARTHROPODS = new EnchantmentWrapper("bane_of_arthropods");
 
     /**
      * All damage to other targets will knock them back when hit
      */
-    public static final Enchantment KNOCKBACK = getEnchantment("knockback");
+    public static final Enchantment KNOCKBACK = new EnchantmentWrapper("knockback");
 
     /**
      * When attacking a target, has a chance to set them on fire
      */
-    public static final Enchantment FIRE_ASPECT = getEnchantment("fire_aspect");
+    public static final Enchantment FIRE_ASPECT = new EnchantmentWrapper("fire_aspect");
 
     /**
      * Provides a chance of gaining extra loot when killing monsters
      */
-    public static final Enchantment LOOTING = getEnchantment("looting");
+    public static final Enchantment LOOT_BONUS_MOBS = new EnchantmentWrapper("looting");
 
     /**
      * Increases damage against targets when using a sweep attack
      */
-    public static final Enchantment SWEEPING_EDGE = getEnchantment("sweeping_edge");
+    public static final Enchantment SWEEPING_EDGE = new EnchantmentWrapper("sweeping");
 
     /**
      * Increases the rate at which you mine/dig
      */
-    public static final Enchantment EFFICIENCY = getEnchantment("efficiency");
+    public static final Enchantment DIG_SPEED = new EnchantmentWrapper("efficiency");
 
     /**
      * Allows blocks to drop themselves instead of fragments (for example,
      * stone instead of cobblestone)
      */
-    public static final Enchantment SILK_TOUCH = getEnchantment("silk_touch");
+    public static final Enchantment SILK_TOUCH = new EnchantmentWrapper("silk_touch");
 
     /**
      * Decreases the rate at which a tool looses durability
      */
-    public static final Enchantment UNBREAKING = getEnchantment("unbreaking");
+    public static final Enchantment DURABILITY = new EnchantmentWrapper("unbreaking");
 
     /**
      * Provides a chance of gaining extra loot when destroying blocks
      */
-    public static final Enchantment FORTUNE = getEnchantment("fortune");
+    public static final Enchantment LOOT_BONUS_BLOCKS = new EnchantmentWrapper("fortune");
 
     /**
      * Provides extra damage when shooting arrows from bows
      */
-    public static final Enchantment POWER = getEnchantment("power");
+    public static final Enchantment ARROW_DAMAGE = new EnchantmentWrapper("power");
 
     /**
      * Provides a knockback when an entity is hit by an arrow from a bow
      */
-    public static final Enchantment PUNCH = getEnchantment("punch");
+    public static final Enchantment ARROW_KNOCKBACK = new EnchantmentWrapper("punch");
 
     /**
      * Sets entities on fire when hit by arrows shot from a bow
      */
-    public static final Enchantment FLAME = getEnchantment("flame");
+    public static final Enchantment ARROW_FIRE = new EnchantmentWrapper("flame");
 
     /**
      * Provides infinite arrows when shooting a bow
      */
-    public static final Enchantment INFINITY = getEnchantment("infinity");
+    public static final Enchantment ARROW_INFINITE = new EnchantmentWrapper("infinity");
 
     /**
      * Decreases odds of catching worthless junk
      */
-    public static final Enchantment LUCK_OF_THE_SEA = getEnchantment("luck_of_the_sea");
+    public static final Enchantment LUCK = new EnchantmentWrapper("luck_of_the_sea");
 
     /**
      * Increases rate of fish biting your hook
      */
-    public static final Enchantment LURE = getEnchantment("lure");
+    public static final Enchantment LURE = new EnchantmentWrapper("lure");
 
     /**
      * Causes a thrown trident to return to the player who threw it
      */
-    public static final Enchantment LOYALTY = getEnchantment("loyalty");
+    public static final Enchantment LOYALTY = new EnchantmentWrapper("loyalty");
 
     /**
      * Deals more damage to mobs that live in the ocean
      */
-    public static final Enchantment IMPALING = getEnchantment("impaling");
+    public static final Enchantment IMPALING = new EnchantmentWrapper("impaling");
 
     /**
      * When it is rainy, launches the player in the direction their trident is thrown
      */
-    public static final Enchantment RIPTIDE = getEnchantment("riptide");
+    public static final Enchantment RIPTIDE = new EnchantmentWrapper("riptide");
 
     /**
      * Strikes lightning when a mob is hit with a trident if conditions are
      * stormy
      */
-    public static final Enchantment CHANNELING = getEnchantment("channeling");
+    public static final Enchantment CHANNELING = new EnchantmentWrapper("channeling");
 
     /**
      * Shoot multiple arrows from crossbows
      */
-    public static final Enchantment MULTISHOT = getEnchantment("multishot");
+    public static final Enchantment MULTISHOT = new EnchantmentWrapper("multishot");
 
     /**
      * Charges crossbows quickly
      */
-    public static final Enchantment QUICK_CHARGE = getEnchantment("quick_charge");
+    public static final Enchantment QUICK_CHARGE = new EnchantmentWrapper("quick_charge");
 
     /**
      * Crossbow projectiles pierce entities
      */
-    public static final Enchantment PIERCING = getEnchantment("piercing");
-
-    /**
-     * Increases fall damage of maces
-     */
-    public static final Enchantment DENSITY = getEnchantment("density");
-
-    /**
-     * Reduces armor effectiveness against maces
-     */
-    public static final Enchantment BREACH = getEnchantment("breach");
-
-    /**
-     * Emits wind burst upon hitting enemy
-     */
-    public static final Enchantment WIND_BURST = getEnchantment("wind_burst");
+    public static final Enchantment PIERCING = new EnchantmentWrapper("piercing");
 
     /**
      * Allows mending the item using experience orbs
      */
-    public static final Enchantment MENDING = getEnchantment("mending");
+    public static final Enchantment MENDING = new EnchantmentWrapper("mending");
 
     /**
      * Item disappears instead of dropping
      */
-    public static final Enchantment VANISHING_CURSE = getEnchantment("vanishing_curse");
+    public static final Enchantment VANISHING_CURSE = new EnchantmentWrapper("vanishing_curse");
 
     /**
      * Walk quicker on soul blocks
      */
-    public static final Enchantment SOUL_SPEED = getEnchantment("soul_speed");
+    public static final Enchantment SOUL_SPEED = new EnchantmentWrapper("soul_speed");
 
     /**
      * Walk quicker while sneaking
      */
-    public static final Enchantment SWIFT_SNEAK = getEnchantment("swift_sneak");
+    public static final Enchantment SWIFT_SNEAK = new EnchantmentWrapper("swift_sneak");
+
+    private static final Map<NamespacedKey, Enchantment> byKey = new HashMap<NamespacedKey, Enchantment>();
+    private static final Map<String, Enchantment> byName = new HashMap<String, Enchantment>();
+    private static boolean acceptingNew = true;
+    private final NamespacedKey key;
+
+    public Enchantment(@NotNull NamespacedKey key) {
+        this.key = key;
+    }
 
     @NotNull
-    private static Enchantment getEnchantment(@NotNull String key) {
-        return Registry.ENCHANTMENT.getOrThrow(NamespacedKey.minecraft(key));
+    @Override
+    public NamespacedKey getKey() {
+        return key;
     }
 
     /**
@@ -260,10 +253,8 @@ public abstract class Enchantment implements Keyed, Translatable {
      * Gets the type of {@link ItemStack} that may fit this Enchantment.
      *
      * @return Target type of the Enchantment
-     * @deprecated enchantment groupings are now managed by tags, not categories
      */
     @NotNull
-    @Deprecated
     public abstract EnchantmentTarget getItemTarget();
 
     /**
@@ -273,9 +264,7 @@ public abstract class Enchantment implements Keyed, Translatable {
      * fishing.
      *
      * @return true if the enchantment is a treasure enchantment
-     * @deprecated enchantment types are now managed by tags
      */
-    @Deprecated
     public abstract boolean isTreasure();
 
     /**
@@ -311,21 +300,75 @@ public abstract class Enchantment implements Keyed, Translatable {
      */
     public abstract boolean canEnchantItem(@NotNull ItemStack item);
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Enchantment)) {
+            return false;
+        }
+        final Enchantment other = (Enchantment) obj;
+        if (!this.key.equals(other.key)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return key.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Enchantment[" + key + ", " + getName() + "]";
+    }
+
+    /**
+     * Registers an enchantment with the given ID and object.
+     * <p>
+     * Generally not to be used from within a plugin.
+     *
+     * @param enchantment Enchantment to register
+     */
+    public static void registerEnchantment(@NotNull Enchantment enchantment) {
+        if (byKey.containsKey(enchantment.key) || byName.containsKey(enchantment.getName())) {
+            throw new IllegalArgumentException("Cannot set already-set enchantment");
+        } else if (!isAcceptingRegistrations()) {
+            throw new IllegalStateException("No longer accepting new enchantments (can only be done by the server implementation)");
+        }
+
+        byKey.put(enchantment.key, enchantment);
+        byName.put(enchantment.getName(), enchantment);
+    }
+
+    /**
+     * Checks if this is accepting Enchantment registrations.
+     *
+     * @return True if the server Implementation may add enchantments
+     */
+    public static boolean isAcceptingRegistrations() {
+        return acceptingNew;
+    }
+
+    /**
+     * Stops accepting any enchantment registrations
+     */
+    public static void stopAcceptingRegistrations() {
+        acceptingNew = false;
+    }
+
     /**
      * Gets the Enchantment at the specified key
      *
      * @param key key to fetch
      * @return Resulting Enchantment, or null if not found
-     * @deprecated only for backwards compatibility, use {@link Registry#get(NamespacedKey)} instead
      */
     @Contract("null -> null")
     @Nullable
-    @Deprecated
     public static Enchantment getByKey(@Nullable NamespacedKey key) {
-        if (key == null) {
-            return null;
-        }
-        return Registry.ENCHANTMENT.get(key);
+        return byKey.get(key);
     }
 
     /**
@@ -339,22 +382,16 @@ public abstract class Enchantment implements Keyed, Translatable {
     @Contract("null -> null")
     @Nullable
     public static Enchantment getByName(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
-
-        return getByKey(NamespacedKey.fromString(name.toLowerCase(Locale.ROOT)));
+        return byName.get(name);
     }
 
     /**
      * Gets an array of all the registered {@link Enchantment}s
      *
      * @return Array of enchantments
-     * @deprecated use {@link Registry#iterator() Registry.ENCHANTMENT.iterator()}
      */
     @NotNull
-    @Deprecated
     public static Enchantment[] values() {
-        return Lists.newArrayList(Registry.ENCHANTMENT).toArray(new Enchantment[0]);
+        return byName.values().toArray(new Enchantment[byName.size()]);
     }
 }

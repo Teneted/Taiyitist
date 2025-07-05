@@ -33,10 +33,7 @@ public class BannerConfig {
         try
         {
             config.load( CONFIG_FILE );
-        } catch ( IOException ex )
-        {
-        } catch ( InvalidConfigurationException ex )
-        {
+        } catch ( IOException | InvalidConfigurationException ex ) {
             Bukkit.getLogger().log( Level.SEVERE, "Could not load banner.yml, please correct your syntax errors", ex );
             throw Throwables.propagate( ex );
         }
@@ -121,9 +118,10 @@ public class BannerConfig {
     public static int max_enchantment_level;
     public static boolean check_update;
     public static boolean check_libraries;
+    public static String libraries_downloadsource;
     public static String lang;
     public static boolean showLogo;
-    public static boolean stackdeobf;
+    public static boolean debug;
     public static boolean isSymlinkWorld;
     public static boolean skipOtherWorldPreparing;
     // Thread Priority
@@ -134,38 +132,57 @@ public class BannerConfig {
     public static List<String> clear_item__whitelist;
     public static String clear_item__msg;
     public static int clear_item__time;
+    public static boolean motdEnable;
     public static String motdFirstLine;
     public static String motdSecondLine;
 
     public static boolean velocityEnabled;
     public static String velocitySecret;
-    public static List<String> banned_entities;
-    public static List<String> banned_breakable_entities;
-    public static boolean banned_tnt;
+    public static double WatchDogTimeOut;
+    public static String Watchdogtimetodo;
+    public static boolean spawnForChunk;
+    public static boolean spawnForNatural;
+    public static boolean NoRaining;
+    public static boolean SkyLight15;
+    public static boolean disable_skullblock_skin;
+
+    public static boolean networkmanager_debug;
+    public static List<String> networkmanager_intercept;
+
+    public static String motd() {
+        return ColorsAPI.of(motdFirstLine) + "\n" + ColorsAPI.of(motdSecondLine);
+    }
 
     private static void banner() {
         check_update = getBoolean("banner.check_update", false);
         check_libraries = getBoolean("banner.check_libraries", true);
         lang = getString("banner.lang", "xx_XX");
         showLogo = getBoolean("banner.show_logo", true);
-        stackdeobf = getBoolean("banner.stackdeobf", true);
+        debug = getBoolean("banner.debug", false);
         maximumRepairCost = getInt("anvilfix.maximumrepaircost", 40);
         enchantment_fix = getBoolean("anvilfix.enchantment_fix", false);
         max_enchantment_level = getInt("anvilfix.max_enchantment_level", 32767);
-        isSymlinkWorld = getBoolean("compat.symlink_world", false);
-        skipOtherWorldPreparing = getBoolean("compat.skipOtherWorldPreparing", true);
+        isSymlinkWorld = getBoolean("compat.symlink_world", true);
+        skipOtherWorldPreparing = getBoolean("compat.skipOtherWorldPreparing", false);
         server_thread = getInt("threadpriority.server_thread", 8);
         nospawnEntity = getList("entity.nospawn", Collections.emptyList());
+        spawnForChunk = getBoolean("entity.spawnForChunk", true);
+        spawnForNatural = getBoolean("entity.spawnForNatural", true);
         clear_item = getBoolean("entity.clear.item.enable", false);
         clear_item__whitelist = getList("entity.clear.item.whitelist", Collections.emptyList());
-        banned_entities = getList("entity.banned_entities", Collections.emptyList());
-        banned_entities = getList("entity.banned_breakable_entities", Collections.emptyList());
         clear_item__msg = getString("entity.clear.item.msg", "[Server] Cleaned up %size% drops");
         clear_item__time = getInt("entity.clear.item.time", 1800);
-        motdFirstLine = ColorsAPI.of(getString("motd.firstline", "<RAINBOW1>A Minecraft Server</RAINBOW>"));
-        motdFirstLine = ColorsAPI.of(getString("motd.secondline", ""));
+        motdEnable = getBoolean("motd.enable", true);
+        motdFirstLine = getString("motd.firstline", "<RAINBOW1>A Minecraft Server</RAINBOW>");
+        motdSecondLine = getString("motd.secondline", "");
         velocityEnabled = getBoolean("proxies.velocity.enabled", false);
         velocitySecret = getString("proxies.velocity.secret", "");
-        banned_tnt = getBoolean("tnt.banned_tnt", false);
+        NoRaining = getBoolean("event.NoRaining", false);
+
+        networkmanager_debug = getBoolean("networkmanager.debug", false);
+        networkmanager_intercept = getList("networkmanager.intercept", Collections.emptyList());
+        Watchdogtimetodo = getString("Watchdogtimetodo", "restart");
+        SkyLight15 = getBoolean("SkyLight15", false);
+        disable_skullblock_skin = getBoolean("disable_skullblock_skin", false);
     }
 }

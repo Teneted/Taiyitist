@@ -7,11 +7,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,17 +17,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(DamageSources.class)
 public abstract class MixinDamageSources implements InjectionDamageSources {
 
-    // CraftBukkit start
-    public DamageSource melting;
-    public DamageSource poison;
-
     // @formatter:off
-    @Shadow protected abstract DamageSource source(ResourceKey<DamageType> resourceKey);
+    @Shadow  public abstract DamageSource source(ResourceKey<DamageType> resourceKey);
     // @formatter:on
 
-    @Shadow public abstract DamageSource source(ResourceKey<DamageType> resourceKey, @Nullable Entity entity, @Nullable Entity entity2);
-
-    @Shadow public abstract DamageSource badRespawnPointExplosion(Vec3 vec3);
+    // CraftBukkit start
+    @Unique
+    public DamageSource melting;
+    @Unique
+    public DamageSource poison;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/damagesource/DamageSources;" +
@@ -41,25 +37,25 @@ public abstract class MixinDamageSources implements InjectionDamageSources {
         // CraftBukkit end
     }
 
-    // Banner start
+    @Override
+    public DamageSource poison() {
+        return poison;
+    }
+
     @Override
     public DamageSource melting() {
         return melting;
     }
 
+    // Banner start
     @Override
-    public DamageSource poison() {
-        return poison;
+    public DamageSource bridge$melting() {
+        return melting();
+    }
+
+    @Override
+    public DamageSource bridge$poison() {
+        return poison();
     }
     // Banner end
-
-    @Override
-    public DamageSource explosion(@Nullable Entity entity, @Nullable Entity entity1, ResourceKey<DamageType> resourceKey) {
-        return this.source(resourceKey, entity, entity1);
-    }
-
-    @Override
-    public DamageSource badRespawnPointExplosion(Vec3 vec3d, org.bukkit.block.BlockState blockState) {
-        return this.badRespawnPointExplosion(vec3d).directBlockState(blockState);
-    }
 }

@@ -1,11 +1,14 @@
 package com.taiyitistmc.injection.world.item.trading;
 
-import org.bukkit.craftbukkit.inventory.CraftMerchantRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftMerchantRecipe;
 
 public interface InjectionMerchantOffer {
 
     default CraftMerchantRecipe asBukkit() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
+    default void bukkit(CraftMerchantRecipe bukkit) {
+
+    }
 }

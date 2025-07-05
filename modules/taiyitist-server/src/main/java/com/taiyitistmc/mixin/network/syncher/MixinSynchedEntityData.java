@@ -4,7 +4,6 @@ import com.taiyitistmc.injection.network.syncher.InjectionSynchedEntityData;
 import java.util.List;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -16,18 +15,15 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SynchedEntityData.class)
 public abstract class MixinSynchedEntityData implements InjectionSynchedEntityData {
 
-    @Shadow
-    private boolean isDirty;
-    @Shadow
-    @Final
-    private SyncedDataHolder entity;
+    @Shadow protected abstract <T> SynchedEntityData.DataItem<T> getItem(EntityDataAccessor<T> key);
 
-    @Shadow
-    protected abstract <T> SynchedEntityData.DataItem<T> getItem(EntityDataAccessor<T> key);
+    @Shadow private boolean isDirty;
 
-    @Shadow
-    @Nullable
-    public abstract List<SynchedEntityData.DataValue<?>> getNonDefaultValues();
+    @Shadow public abstract boolean isEmpty();
+
+    @Shadow @Nullable public abstract List<SynchedEntityData.DataValue<?>> getNonDefaultValues();
+
+    @Shadow @Final private Entity entity;
 
     @Override
     public <T> void markDirty(EntityDataAccessor<T> datawatcherobject) {
@@ -36,10 +32,13 @@ public abstract class MixinSynchedEntityData implements InjectionSynchedEntityDa
     }
 
     @Override
-    public void refresh(ServerPlayer player) {
-        var list = this.getNonDefaultValues();
-        if (list != null && this.entity instanceof Entity entity) {
-            player.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), list));
+    public void refresh(ServerPlayer to) {
+        if (!this.isEmpty()) {
+            List<SynchedEntityData.DataValue<?>> list = this.getNonDefaultValues();
+
+            if (list != null) {
+                to.connection.send(new ClientboundSetEntityDataPacket(this.entity.getId(), list));
+            }
         }
     }
 }

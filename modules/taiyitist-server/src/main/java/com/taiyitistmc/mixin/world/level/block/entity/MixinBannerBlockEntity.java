@@ -1,10 +1,9 @@
 package com.taiyitistmc.mixin.world.level.block.entity;
 
-import java.util.List;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
-import net.minecraft.world.level.block.entity.BannerPatternLayers;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,19 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BannerBlockEntity.class)
 public class MixinBannerBlockEntity {
 
-    @Shadow
-    private BannerPatternLayers patterns;
+    @Shadow @Nullable public ListTag itemPatterns;
 
-    @Inject(method = "applyImplicitComponents", at = @At(value = "FIELD",
-            target = "Lnet/minecraft/world/level/block/entity/BannerBlockEntity;name:Lnet/minecraft/network/chat/Component;"))
-    private void banner$checkPattern(BlockEntity.DataComponentInput dataComponentInput, CallbackInfo ci) {
-        this.setPatterns(dataComponentInput.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)); // CraftBukkit - apply limits
-    }
-
-    public void setPatterns(BannerPatternLayers bannerpatternlayers) {
-        if (bannerpatternlayers.layers().size() > 20) {
-            bannerpatternlayers = new BannerPatternLayers(List.copyOf(bannerpatternlayers.layers().subList(0, 20)));
+    @Inject(method = "load", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/nbt/CompoundTag;getList(Ljava/lang/String;I)Lnet/minecraft/nbt/ListTag;",
+            shift = At.Shift.AFTER))
+    private void banner$checkPattern(CompoundTag tag, CallbackInfo ci) {
+        if (this.itemPatterns != null) {
+            // CraftBukkit start
+            while (this.itemPatterns.size() > 20) {
+                this.itemPatterns.remove(20);
+            }
+            // CraftBukkit end
         }
-        this.patterns = bannerpatternlayers;
     }
+
 }

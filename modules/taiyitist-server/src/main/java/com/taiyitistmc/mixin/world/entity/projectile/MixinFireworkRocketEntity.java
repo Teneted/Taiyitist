@@ -1,7 +1,7 @@
 package com.taiyitistmc.mixin.world.entity.projectile;
 
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,5 +15,15 @@ public class MixinFireworkRocketEntity {
         if (CraftEventFactory.callFireworkExplodeEvent((FireworkRocketEntity) (Object) this).isCancelled()) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "dealExplosionDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private void banner$damageSource(CallbackInfo ci) {
+        CraftEventFactory.entityDamage = (FireworkRocketEntity) (Object) this;
+    }
+
+    @Inject(method = "dealExplosionDamage", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private void banner$damageSourceReset(CallbackInfo ci) {
+        CraftEventFactory.entityDamage = null;
     }
 }

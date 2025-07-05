@@ -21,15 +21,16 @@ import net.minecraft.world.level.levelgen.blending.BlendingData;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.ticks.LevelChunkTicks;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftChunk;
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
+import org.bukkit.craftbukkit.v1_20_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -38,25 +39,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LevelChunk.class)
 public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLevelChunk {
 
-    private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
-    @Mutable @Shadow @Final public Level level;
-    // CraftBukkit start
-    public org.bukkit.Chunk bukkitChunk;
-    // @formatter:on
-    public boolean mustNotSave;
-    public boolean needsDecoration;
-    public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
-    public AtomicBoolean banner$doPlace = new AtomicBoolean(true);
-    public ServerLevel r;
     public MixinLevelChunk(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor, Registry<Biome> registry, long l, @org.jetbrains.annotations.Nullable LevelChunkSection[] levelChunkSections, @org.jetbrains.annotations.Nullable BlendingData blendingData) {
         super(chunkPos, upgradeData, levelHeightAccessor, registry, l, levelChunkSections, blendingData);
     }
 
     // @formatter:off
     @Shadow @Nullable public abstract BlockState setBlockState(BlockPos pos, BlockState state, boolean isMoving);
+    @Mutable @Shadow @Final public Level level;
+    // @formatter:on
 
-    @Shadow
-    public abstract Level getLevel();
+    @Shadow public abstract Level getLevel();
+
+    // CraftBukkit start
+    @Unique
+    public org.bukkit.Chunk bukkitChunk;
+
+    @Unique
+    public boolean mustNotSave;
+    @Unique
+    public boolean needsDecoration;
+    @Unique
+    private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry();
+    @Unique
+    public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer( DATA_TYPE_REGISTRY );
+    @Unique
+    public AtomicBoolean banner$doPlace = new AtomicBoolean(true);
+    @Unique
+    public ServerLevel r;
 
     @Override
     public ServerLevel banner$r() {
@@ -68,7 +77,7 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
         if (DistValidate.isValid(worldIn)) {
             this.r = ((ServerLevel) worldIn);
         }
-        if (p_196855_ != null) this.bukkitChunk = new CraftChunk((LevelChunk) (Object) this);
+        if (p_196855_ != null) this.bukkitChunk = new org.bukkit.craftbukkit.v1_20_R1.CraftChunk((LevelChunk) (Object) this);
     }
 
     @Inject(method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V", at = @At("RETURN"))

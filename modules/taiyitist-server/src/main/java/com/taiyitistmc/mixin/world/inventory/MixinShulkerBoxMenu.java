@@ -5,12 +5,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.ShulkerBoxMenu;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,7 +24,9 @@ public abstract class MixinShulkerBoxMenu extends AbstractContainerMenu {
     @Shadow @Final private Container container;
     // @formatter:on
 
+    @Unique
     private CraftInventoryView bukkitEntity;
+    @Unique
     private Inventory playerInventory;
 
     protected MixinShulkerBoxMenu(@Nullable MenuType<?> menuType, int i) {
@@ -46,7 +49,7 @@ public abstract class MixinShulkerBoxMenu extends AbstractContainerMenu {
             return bukkitEntity;
         }
 
-        bukkitEntity = new CraftInventoryView(this.playerInventory.player.getBukkitEntity(), new CraftInventory(this.container), (AbstractContainerMenu) this);
+        bukkitEntity = new CraftInventoryView(this.playerInventory.player.getBukkitEntity(), new CraftInventory(this.container), (AbstractContainerMenu) (Object) this);
         return bukkitEntity;
     }
 }

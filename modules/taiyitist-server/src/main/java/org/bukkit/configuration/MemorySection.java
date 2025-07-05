@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 import static org.bukkit.util.NumberConversions.toDouble;
 import static org.bukkit.util.NumberConversions.toInt;
 import static org.bukkit.util.NumberConversions.toLong;

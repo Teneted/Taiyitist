@@ -10,11 +10,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(targets = "net/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity")
-public class MixinLevelChunk_BoundTickingBlockEntity<T extends BlockEntity> {
+public class MixinLevelChunk_BoundTickingBlockEntity<T extends BlockEntity>  {
 
-    @Shadow
-    @Final
-    private T blockEntity;
+    @Shadow @Final private T blockEntity;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntityTicker;tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/BlockEntity;)V"))
     private void banner$captureBlockEntity(CallbackInfo ci) {

@@ -19,7 +19,7 @@ public class MixinMenuType {
         if (key.equals("lectern")) {
             cir.setReturnValue(Registry.register(BuiltInRegistries.MENU, key, new MenuType<>((i, inv) -> {
                 LecternMenu container = new LecternMenu(i);
-                container.bridge$setPlayerInventory(inv);
+                 container.bridge$setPlayerInventory(inv);
                 return (T) container;
             }, FeatureFlags.VANILLA_SET)));
         }

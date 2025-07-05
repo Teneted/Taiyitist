@@ -4,42 +4,55 @@ import com.taiyitistmc.injection.world.level.portal.InjectionPortalForcer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.portal.PortalForcer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.util.BlockStateListPopulator;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.util.BlockStateListPopulator;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = PortalForcer.class, priority = 1500)
+@Mixin(PortalForcer.class)
 public abstract class MixinPortalForcer implements InjectionPortalForcer {
 
-    @Shadow @Final protected ServerLevel level;
+    // @formatter:off
+    @Shadow public abstract Optional<BlockUtil.FoundRectangle> createPortal(BlockPos pos, Direction.Axis axis);
+    @Shadow @Final private ServerLevel level;
+    @Shadow public abstract Optional<BlockUtil.FoundRectangle> findPortalAround(BlockPos p_192986_, boolean p_192987_, WorldBorder p_192988_);
+    // @formatter:on
 
-    private transient int banner$searchRadius = -1;
+    @Unique
+    private AtomicReference<Integer> banner$searchRadius = new AtomicReference<>();
+    @Unique
+    private transient BlockStateListPopulator banner$populator;
+    @Unique
+    private transient Entity banner$entity;
+    @Unique
+    private transient int banner$createRadius = -1;
 
     @Override
-    public void pushSearchRadius(int searchRadius) {
-        this.banner$searchRadius = searchRadius;
-    }
-
-    @ModifyVariable(method = "findClosestPortalPosition", ordinal = 0, at = @At(value = "STORE", ordinal = 0))
-    private int banner$useSearchRadius(int i) {
-        return this.banner$searchRadius == -1 ? i : this.banner$searchRadius;
+    public Optional<BlockUtil.FoundRectangle> findPortalAround(BlockPos pos, WorldBorder worldBorder, int searchRadius) {
+        this.banner$searchRadius.set(searchRadius);
+        try {
+            return this.findPortalAround(pos, false, worldBorder);
+        } finally {
+            this.banner$searchRadius.set(-1);
+        }
     }
 
     @ModifyArg(method = "createPortal", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;spiralAround(Lnet/minecraft/core/BlockPos;ILnet/minecraft/core/Direction;Lnet/minecraft/core/Direction;)Ljava/lang/Iterable;"))
@@ -66,7 +79,7 @@ public abstract class MixinPortalForcer implements InjectionPortalForcer {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Inject(method = "createPortal", cancellable = true, at = @At("RETURN"))
     private void banner$portalCreate(BlockPos pos, Direction.Axis axis, CallbackInfoReturnable<Optional<BlockUtil.FoundRectangle>> cir) {
-        CraftWorld craftWorld = this.level.getWorld();
+        CraftWorld craftWorld =  this.level.getWorld();
         List<org.bukkit.block.BlockState> blockStates;
         if (this.banner$populator == null) {
             blockStates = new ArrayList<>();
@@ -85,13 +98,15 @@ public abstract class MixinPortalForcer implements InjectionPortalForcer {
         }
     }
 
-    private transient BlockStateListPopulator banner$populator;
-    private transient Entity banner$entity;
-    private transient int banner$createRadius = -1;
-
     @Override
-    public void pushPortalCreate(Entity entity, int createRadius) {
+    public Optional<BlockUtil.FoundRectangle> createPortal(BlockPos pos, Direction.Axis axis, Entity entity, int createRadius) {
         this.banner$entity = entity;
         this.banner$createRadius = createRadius;
+        try {
+            return this.createPortal(pos, axis);
+        } finally {
+            this.banner$entity = null;
+            this.banner$createRadius = -1;
+        }
     }
 }

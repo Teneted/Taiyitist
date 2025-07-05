@@ -8,6 +8,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,17 +16,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(StructurePlaceSettings.class)
 public abstract class MixinStructurePlaceSettings {
 
-    @Shadow
-    public int palette;
+    @Shadow public int palette;
 
-    @Shadow
-    public abstract RandomSource getRandom(@Nullable BlockPos seedPos);
+    @Shadow public abstract RandomSource getRandom(@Nullable BlockPos seedPos);
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void banner$resetValue(CallbackInfo ci) {
         this.palette = -1; // CraftBukkit - Set initial value so we know if the palette has been set forcefully
     }
 
+    @Unique
     public StructureTemplate.Palette getRandomPalette(List<StructureTemplate.Palette> palettes, @Nullable BlockPos pos) {
         int i = palettes.size();
         if (i == 0) {
@@ -38,7 +38,7 @@ public abstract class MixinStructurePlaceSettings {
             return palettes.get(this.palette);
             // CraftBukkit end
         } else {
-            return palettes.get(this.getRandom(pos).nextInt(i));
+            return (StructureTemplate.Palette)palettes.get(this.getRandom(pos).nextInt(i));
         }
     }
 }

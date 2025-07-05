@@ -22,15 +22,14 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(ZombifiedPiglin.class)
 public abstract class MixinZombifiedPiglin extends Zombie {
 
+    // @formatter:off
+    @Shadow public abstract UUID getPersistentAngerTarget();
+    @Shadow public abstract int getRemainingPersistentAngerTime();
+    // @formatter:on
+
     public MixinZombifiedPiglin(EntityType<? extends Zombie> entityType, Level level) {
         super(entityType, level);
     }
-
-    // @formatter:off
-    @Shadow public abstract UUID getPersistentAngerTarget();
-    // @formatter:on
-
-    @Shadow public abstract int getRemainingPersistentAngerTime();
 
     /**
      * @author wdog5

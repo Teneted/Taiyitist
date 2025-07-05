@@ -10,7 +10,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-
 import static org.bukkit.util.NumberConversions.floor;
 import static org.bukkit.util.NumberConversions.round;
 

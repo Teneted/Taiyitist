@@ -10,7 +10,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ShulkerBullet;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
@@ -24,20 +23,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ShulkerBullet.class)
 public abstract class MixinShulkerBullet extends Projectile implements InjectionShulkerBullet {
 
-    @Shadow
-    @Nullable
-    private Entity finalTarget;
+    @Shadow @Nullable private Entity finalTarget;
 
-    @Shadow
-    @Nullable
-    private Direction currentMoveDirection;
+    @Shadow @Nullable private Direction currentMoveDirection;
 
     public MixinShulkerBullet(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Shadow
-    protected abstract void selectNextMoveDirection(@Nullable Direction.Axis axis);
+    @Shadow protected abstract void selectNextMoveDirection(@Nullable Direction.Axis axis);
 
     @Override
     public Entity getTarget() {
@@ -64,7 +58,7 @@ public abstract class MixinShulkerBullet extends Projectile implements Injection
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void banner$hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (CraftEventFactory.handleNonLivingEntityDamageEvent(this, source, amount, false)) {
+        if (org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory.handleNonLivingEntityDamageEvent(this, source, amount, false)) {
             cir.setReturnValue(false);
         }
     }

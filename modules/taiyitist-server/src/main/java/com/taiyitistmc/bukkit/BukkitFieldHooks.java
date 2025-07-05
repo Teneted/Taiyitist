@@ -9,6 +9,8 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.bukkit.TreeType;
 import org.bukkit.plugin.Plugin;
 
@@ -20,6 +22,7 @@ public class BukkitFieldHooks {
     private static final VarHandle pluginTicket;
     private static final VarHandle pluginTicketType;
     private static final VarHandle openSign;
+    private static final VarHandle looting_mod;
 
     static {
         try {
@@ -35,6 +38,8 @@ public class BukkitFieldHooks {
             pluginTicketType = MethodHandles.lookup().unreflectVarHandle(pluginTicketTypeField);
             var openSignField = SignItem.class.getDeclaredField("openSign");
             openSign = MethodHandles.lookup().unreflectVarHandle(openSignField);
+            var looting_modField = LootContextParams.class.getDeclaredField("LOOTING_MOD");
+            looting_mod = MethodHandles.lookup().unreflectVarHandle(looting_modField);
         } catch (Throwable t) {
             throw new ExceptionInInitializerError(t);
         }
@@ -78,5 +83,13 @@ public class BukkitFieldHooks {
 
     public static void setOpenSign(BlockPos newSign) {
         openSign.set(newSign);
+    }
+
+    public static LootContextParam<Integer> looting_mod() {
+        return (LootContextParam<Integer>) looting_mod.get();
+    }
+
+    public static void setLootingMod(LootContextParam<Integer> new_looting_mod) {
+        looting_mod.set(new_looting_mod);
     }
 }

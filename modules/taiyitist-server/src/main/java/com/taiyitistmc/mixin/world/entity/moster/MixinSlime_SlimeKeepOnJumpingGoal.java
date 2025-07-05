@@ -10,9 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(targets = "net.minecraft.world.entity.monster.Slime.SlimeKeepOnJumpingGoal")
 public class MixinSlime_SlimeKeepOnJumpingGoal {
 
-    @Shadow
-    @Final
-    private Slime slime;
+    @Shadow @Final private Slime slime;
 
     /**
      * @author wdog5

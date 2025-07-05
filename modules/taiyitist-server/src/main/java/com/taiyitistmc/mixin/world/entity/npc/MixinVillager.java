@@ -10,7 +10,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -29,12 +30,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(net.minecraft.world.entity.npc.Villager.class)
 public abstract class MixinVillager extends AbstractVillager {
 
-    @Shadow
-    @Final
-    private static Logger LOGGER;
+    @Shadow @Final private static Logger LOGGER;
 
-    private final AtomicReference<DamageSource> banner$damageSource = new AtomicReference<>();
-
+    @Unique
+    private AtomicReference<DamageSource> banner$damageSource = new AtomicReference<>();
     public MixinVillager(EntityType<? extends AbstractVillager> entityType, Level level) {
         super(entityType, level);
     }
@@ -42,7 +41,18 @@ public abstract class MixinVillager extends AbstractVillager {
     @Redirect(method = "thunderHit", at = @At(value = "INVOKE",
             target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
             remap = false))
-    private void banner$moveDown(Logger instance, String s, Object o1, Object o2) {
+    private void banner$moveDown(Logger instance, String s, Object o1, Object o2) { }
+
+    @Inject(method = "thunderHit", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/monster/Witch;moveTo(DDDFF)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void banner$fireZapEvent(ServerLevel level,
+                                     LightningBolt lightning,
+                                     CallbackInfo ci, Witch witch) {
+        // Paper start
+        if (CraftEventFactory.callEntityZapEvent(this, lightning, witch).isCancelled()) {
+            ci.cancel();
+        }
+        if (org.spigotmc.SpigotConfig.logVillagerDeaths) LOGGER.info("Villager {} was struck by lightning {}.", this, lightning); // Move down
     }
 
     @Inject(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/npc/Villager;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
@@ -95,6 +105,6 @@ public abstract class MixinVillager extends AbstractVillager {
     @Redirect(method = "die", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
     private void banner$logVillagerDeaths(Logger instance, String s, Object o1, Object o2) {
         if (org.spigotmc.SpigotConfig.logVillagerDeaths)
-            LOGGER.info("Villager {} died, message: '{}'", (Object) this, banner$damageSource.get().getLocalizedDeathMessage(this).getString()); // Spigot
+            LOGGER.info("Villager {} died, message: '{}'", ((net.minecraft.world.entity.npc.Villager) (Object) this), banner$damageSource.get().getLocalizedDeathMessage(this).getString()); // Spigot
     }
 }

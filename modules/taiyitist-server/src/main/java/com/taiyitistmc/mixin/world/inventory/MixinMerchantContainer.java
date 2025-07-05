@@ -7,16 +7,17 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.inventory.MerchantContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.trading.Merchant;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftAbstractVillager;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftAbstractVillager;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(MerchantContainer.class)
 public abstract class MixinMerchantContainer implements Container {
@@ -27,7 +28,9 @@ public abstract class MixinMerchantContainer implements Container {
     @Shadow @Final private Merchant merchant;
     // @formatter:on
 
-    private final List<HumanEntity> transactions = new ArrayList<>();
+    @Unique
+    private List<HumanEntity> transactions = new ArrayList<>();
+    @Unique
     private int maxStack = MAX_STACK;
 
     @Override
@@ -53,12 +56,11 @@ public abstract class MixinMerchantContainer implements Container {
 
     @Override
     public InventoryHolder getOwner() {
-        return this.merchant instanceof AbstractVillager ? ((CraftAbstractVillager) ((AbstractVillager) this.merchant).getBukkitEntity()) : null;
+        return this.merchant instanceof AbstractVillager ? ((CraftAbstractVillager)  ((AbstractVillager) this.merchant).getBukkitEntity()) : null;
     }
 
     @Override
-    public void setOwner(InventoryHolder owner) {
-    }
+    public void setOwner(InventoryHolder owner) { }
 
     @Override
     public int getMaxStackSize() {
@@ -77,11 +79,9 @@ public abstract class MixinMerchantContainer implements Container {
     }
 
     @Override
-    public RecipeHolder<?> getCurrentRecipe() {
-        return null;
-    }
+    public Recipe<?> getCurrentRecipe() { return null; }
 
     @Override
-    public void setCurrentRecipe(RecipeHolder<?> recipe) {
+    public void setCurrentRecipe(Recipe<?> recipe) {
     }
 }

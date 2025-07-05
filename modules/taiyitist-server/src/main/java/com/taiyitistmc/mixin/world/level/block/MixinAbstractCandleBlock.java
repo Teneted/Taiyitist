@@ -5,7 +5,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +21,7 @@ public class MixinAbstractCandleBlock {
             cancellable = true)
     private void banner$callBlockIgniteEvent(Level level, BlockState state, BlockHitResult hit, Projectile projectile, CallbackInfo ci) {
         // CraftBukkit start
-        if (CraftEventFactory.callBlockIgniteEvent(level, hit.getBlockPos(), projectile).isCancelled()) {
+        if (org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory.callBlockIgniteEvent(level, hit.getBlockPos(), projectile).isCancelled()) {
             ci.cancel();
         }
         // CraftBukkit end

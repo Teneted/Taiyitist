@@ -6,9 +6,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.generator.structure.GeneratedStructure;
-import org.bukkit.generator.structure.Structure;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +32,32 @@ public interface Chunk extends PersistentDataHolder {
      * @return Z-coordinate
      */
     int getZ();
+
+    // Paper start
+    /**
+     * @return The Chunks X and Z coordinates packed into a long
+     */
+    default long getChunkKey() {
+        return getChunkKey(getX(), getZ());
+    }
+
+    /**
+     * @param loc Location to get chunk key
+     * @return Location's chunk coordinates packed into a long
+     */
+    static long getChunkKey(@NotNull Location loc) {
+        return getChunkKey((int) Math.floor(loc.getX()) >> 4, (int) Math.floor(loc.getZ()) >> 4);
+    }
+
+    /**
+     * @param x X Coordinate
+     * @param z Z Coordinate
+     * @return Chunk coordinates packed into a long
+     */
+    static long getChunkKey(int x, int z) {
+        return (long) x & 0xffffffffL | ((long) z & 0xffffffffL) << 32;
+    }
+    // Paper end
 
     /**
      * Gets the world containing this chunk
@@ -257,6 +280,7 @@ public interface Chunk extends PersistentDataHolder {
      */
     boolean contains(@NotNull Biome biome);
 
+
     /**
      * Gets the load level of this chunk, which determines what game logic is
      * processed.
@@ -265,37 +289,6 @@ public interface Chunk extends PersistentDataHolder {
      */
     @NotNull
     LoadLevel getLoadLevel();
-
-    /**
-     * Gets all generated structures that intersect this chunk. <br>
-     * If no structures are present an empty collection will be returned.
-     *
-     * @return a collection of placed structures in this chunk
-     */
-    @NotNull
-    Collection<GeneratedStructure> getStructures();
-
-    /**
-     * Gets all generated structures of a given {@link Structure} that intersect
-     * this chunk. <br>
-     * If no structures are present an empty collection will be returned.
-     *
-     * @param structure the structure to find
-     * @return a collection of placed structures in this chunk
-     */
-    @NotNull
-    Collection<GeneratedStructure> getStructures(@NotNull Structure structure);
-
-    /**
-     * Get a list of all players who are can view the chunk from their client
-     * <p>
-     * This list will be empty if no players are viewing the chunk, or the chunk
-     * is unloaded.
-     *
-     * @return collection of players who can see the chunk
-     */
-    @NotNull
-    public Collection<Player> getPlayersSeeingChunk();
 
     /**
      * An enum to specify the load level of a chunk.

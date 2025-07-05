@@ -66,10 +66,6 @@ public enum TreeType {
      */
     MEGA_REDWOOD,
     /**
-     * Mega pine tree
-     */
-    MEGA_PINE,
-    /**
      * Tall birch tree
      */
     TALL_BIRCH,
@@ -101,4 +97,8 @@ public enum TreeType {
      * Cherry tree
      */
     CHERRY,
+    /**
+     * Modded tree
+     */
+    MODDED
 }

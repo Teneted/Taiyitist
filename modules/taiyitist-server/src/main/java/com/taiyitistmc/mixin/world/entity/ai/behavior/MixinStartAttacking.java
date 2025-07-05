@@ -1,38 +1,44 @@
 package com.taiyitistmc.mixin.world.entity.ai.behavior;
 
-import com.mojang.datafixers.kinds.K1;
-import io.izzel.arclight.mixin.Decorate;
-import io.izzel.arclight.mixin.DecorationOps;
-import io.izzel.arclight.mixin.Local;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.StartAttacking;
 import net.minecraft.world.entity.ai.behavior.declarative.MemoryAccessor;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(StartAttacking.class)
 public class MixinStartAttacking {
 
-    @SuppressWarnings({"unchecked", "MixinAnnotationTarget"})
-    @Decorate(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/behavior/declarative/MemoryAccessor;set(Ljava/lang/Object;)V"))
-    private static <F extends K1, Value> void banner$targetEvent(MemoryAccessor<F, Value> instance, Value object, @Local(ordinal = -1) Mob mob) throws Throwable {
-        var newTarget = (LivingEntity) object;
-        EntityTargetEvent event = CraftEventFactory.callEntityTargetLivingEvent(mob, newTarget, (newTarget instanceof ServerPlayer) ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.CLOSEST_ENTITY);
+    @Inject(method = "method_47123", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/ai/behavior/declarative/MemoryAccessor;set(Ljava/lang/Object;)V"),
+            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private static <E extends Mob> void banner$targetEvent(Predicate<E> predicate, Function<E, Optional<? extends LivingEntity>> function,
+                                           MemoryAccessor memoryAccessor, MemoryAccessor memoryAccessor2,
+                                           ServerLevel serverLevel, Mob mob, long l, CallbackInfoReturnable<Boolean> cir,
+                                           Optional optional, LivingEntity livingEntity) {
+        // CraftBukkit start
+        EntityTargetEvent event = CraftEventFactory.callEntityTargetLivingEvent(mob, livingEntity, (livingEntity instanceof ServerPlayer) ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.CLOSEST_ENTITY);
         if (event.isCancelled()) {
-            DecorationOps.cancel().invoke(false);
-            return;
+            cir.setReturnValue(false);
         }
         if (event.getTarget() == null) {
-            instance.erase();
-            DecorationOps.cancel().invoke(false);
-            return;
+            memoryAccessor.erase();
+            cir.setReturnValue(true);
+        } else {
+            livingEntity = ((CraftLivingEntity) event.getTarget()).getHandle();
         }
-        object = (Value) ((CraftLivingEntity) event.getTarget()).getHandle();
-        DecorationOps.callsite().invoke(instance, object);
+        // CraftBukkit end
     }
 }

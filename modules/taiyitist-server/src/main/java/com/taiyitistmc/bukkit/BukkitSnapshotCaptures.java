@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.WorldLoader;
@@ -21,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.event.CraftPortalEvent;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftPortalEvent;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 
@@ -88,6 +86,13 @@ public class BukkitSnapshotCaptures {
             return blockBreakEventStack.peek().getBlockDrops();
         }
         return null;
+    }
+
+    public static boolean getBlockBreakDropItems() {
+        if (!blockBreakEventStack.empty()) {
+            return blockBreakEventStack.peek().isDropItems();
+        }
+        return true;
     }
 
     public static BlockBreakEventContext popPrimaryBlockBreakEvent() {
@@ -364,27 +369,24 @@ public class BukkitSnapshotCaptures {
     public static class BlockBreakEventContext {
 
         final private BlockBreakEvent blockBreakEvent;
+        @Getter
         final private ArrayList<ItemEntity> blockDrops;
+        @Getter
         final private BlockState blockBreakPlayerState;
         final private boolean primary;
+        @Getter
+        private final boolean dropItems;
 
         public BlockBreakEventContext(BlockBreakEvent event, boolean primary) {
             this.blockBreakEvent = event;
             this.blockDrops = new ArrayList<>();
             this.blockBreakPlayerState = event.getBlock().getState();
             this.primary = primary;
+            this.dropItems = event.isDropItems();
         }
 
         public BlockBreakEvent getEvent() {
             return blockBreakEvent;
-        }
-
-        public ArrayList<ItemEntity> getBlockDrops() {
-            return blockDrops;
-        }
-
-        public BlockState getBlockBreakPlayerState() {
-            return blockBreakPlayerState;
         }
 
         public void mergeAllDrops(List<BlockBreakEventContext> others) {
@@ -397,17 +399,4 @@ public class BukkitSnapshotCaptures {
             return primary;
         }
     }
-
-    public static class Totem {
-        public static AtomicBoolean fakeShrink = new AtomicBoolean(false);
-        @Getter
-        @Setter
-        private static org.bukkit.inventory.EquipmentSlot hand = null;
-
-        public static void clear() {
-            fakeShrink.set(false);
-            hand = null;
-        }
-    }
-
 }

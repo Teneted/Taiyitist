@@ -18,6 +18,6 @@ public class MixinSummonCommand {
 
     @Inject(method = "createEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;tryAddFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)Z"))
     private static void banner$summonReason(CommandSourceStack commandSourceStack, Holder.Reference<EntityType<?>> reference, Vec3 vec3, CompoundTag compoundTag, boolean bl, CallbackInfoReturnable<Entity> cir) {
-        commandSourceStack.getLevel().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.COMMAND);
+         commandSourceStack.getLevel().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.COMMAND);
     }
 }

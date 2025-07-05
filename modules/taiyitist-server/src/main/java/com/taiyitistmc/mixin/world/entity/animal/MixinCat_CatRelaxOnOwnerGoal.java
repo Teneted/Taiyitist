@@ -15,9 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(targets = "net.minecraft.world.entity.animal.Cat$CatRelaxOnOwnerGoal")
 public class MixinCat_CatRelaxOnOwnerGoal {
 
-    @Shadow
-    @Final
-    private Cat cat;
+    @Shadow @Final private Cat cat;
 
     @Redirect(method = "giveMorningGift", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean banner$dropItem(Level instance, Entity entity) {

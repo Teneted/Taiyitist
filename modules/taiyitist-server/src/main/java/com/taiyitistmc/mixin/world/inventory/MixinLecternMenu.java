@@ -1,7 +1,5 @@
 package com.taiyitistmc.mixin.world.inventory;
 
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.world.inventory.InjectionLecternMenu;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,13 +9,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.LecternMenu;
 import net.minecraft.world.inventory.MenuType;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.inventory.CraftInventoryLectern;
-import org.bukkit.craftbukkit.inventory.view.CraftLecternView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryLectern;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -25,33 +24,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LecternMenu.class)
 public abstract class MixinLecternMenu extends AbstractContainerMenu implements InjectionLecternMenu {
 
-    @Shadow
-    @Final
-    private Container lectern;
-    private CraftLecternView bukkitEntity;
+    @Shadow @Final private Container lectern;
+    @Unique
+    private CraftInventoryView bukkitEntity;
+    @Unique
     private Inventory playerInventory;
 
     protected MixinLecternMenu(@Nullable MenuType<?> menuType, int i) {
         super(menuType, i);
     }
 
-    @ShadowConstructor
+    @Unique
     public void banner$constructor(int i) {
         throw new RuntimeException();
     }
 
-    @ShadowConstructor
+    @Unique
     public void banner$constructor(int i, Container inventory, ContainerData intArray) {
         throw new RuntimeException();
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(int i, Inventory playerInventory) {
         banner$constructor(i);
         this.playerInventory = playerInventory;
     }
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor(int i, Container inventory, ContainerData intArray, Inventory playerInventory) {
         banner$constructor(i, inventory, intArray);
         this.playerInventory = playerInventory;
@@ -59,7 +58,7 @@ public abstract class MixinLecternMenu extends AbstractContainerMenu implements 
 
     @Inject(method = "clickMenuButton", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Container;removeItemNoUpdate(I)Lnet/minecraft/world/item/ItemStack;"))
     public void banner$takeBook(Player playerIn, int id, CallbackInfoReturnable<Boolean> cir) {
-        PlayerTakeLecternBookEvent event = new PlayerTakeLecternBookEvent((org.bukkit.entity.Player) this.playerInventory.player.getBukkitEntity(), getBukkitView().getTopInventory().getHolder());
+        PlayerTakeLecternBookEvent event = new PlayerTakeLecternBookEvent((org.bukkit.entity.Player) this.playerInventory.player.getBukkitEntity(), ((CraftInventoryLectern) getBukkitView().getTopInventory()).getHolder());
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
@@ -72,7 +71,7 @@ public abstract class MixinLecternMenu extends AbstractContainerMenu implements 
     }
 
     @Override
-    public CraftLecternView getBukkitView() {
+    public CraftInventoryView getBukkitView() {
         if (this.playerInventory == null) {
             return null;
         }
@@ -80,7 +79,7 @@ public abstract class MixinLecternMenu extends AbstractContainerMenu implements 
             return bukkitEntity;
         }
         CraftInventoryLectern inventory = new CraftInventoryLectern(this.lectern);
-        bukkitEntity = new CraftLecternView(this.playerInventory.player.getBukkitEntity(), inventory, (LecternMenu) (Object) this);
+        bukkitEntity = new CraftInventoryView(this.playerInventory.player.getBukkitEntity(), inventory, (AbstractContainerMenu) (Object) this);
         return bukkitEntity;
     }
 

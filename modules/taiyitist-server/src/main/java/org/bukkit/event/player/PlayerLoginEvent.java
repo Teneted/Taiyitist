@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerLoginEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     private final InetAddress address;
-    private final InetAddress realAddress;
     private final String hostname;
     private Result result = Result.ALLOWED;
     private String message = "";
+    private final InetAddress realAddress; // Spigot
 
     /**
      * This constructor defaults message to an empty string, and result to
@@ -30,24 +30,16 @@ public class PlayerLoginEvent extends PlayerEvent {
      *     timing issues
      * @param realAddress the actual, unspoofed connecting address
      */
-    public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address, final @NotNull InetAddress realAddress) {
+    public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address, final @NotNull InetAddress realAddress) { // Spigot
         super(player);
         this.hostname = hostname;
         this.address = address;
+        // Spigot start
         this.realAddress = realAddress;
     }
-
-    /**
-     * This constructor defaults message to an empty string, and result to
-     * ALLOWED
-     *
-     * @param player The {@link Player} for this event
-     * @param hostname The hostname that was used to connect to the server
-     * @param address The address the player used to connect, provided for
-     *     timing issues
-     */
     public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address) {
         this(player, hostname, address, address);
+        // Spigot end
     }
 
     /**
@@ -61,11 +53,23 @@ public class PlayerLoginEvent extends PlayerEvent {
      * @param message The message to be displayed if result denies login
      * @param realAddress the actual, unspoofed connecting address
      */
-    public PlayerLoginEvent(@NotNull final Player player, @NotNull String hostname, @NotNull final InetAddress address, @NotNull final Result result, @NotNull final String message, @NotNull final InetAddress realAddress) {
-        this(player, hostname, address, realAddress);
+    public PlayerLoginEvent(@NotNull final Player player, @NotNull String hostname, @NotNull final InetAddress address, @NotNull final Result result, @NotNull final String message, @NotNull final InetAddress realAddress) { // Spigot
+        this(player, hostname, address, realAddress); // Spigot
         this.result = result;
         this.message = message;
     }
+
+    // Spigot start
+    /**
+     * Gets the connection address of this player, regardless of whether it has been spoofed or not.
+     *
+     * @return the player's connection address
+     */
+    @NotNull
+    public InetAddress getRealAddress() {
+        return realAddress;
+    }
+    // Spigot end
 
     /**
      * Gets the current result of the login, as an enum
@@ -147,18 +151,6 @@ public class PlayerLoginEvent extends PlayerEvent {
     @NotNull
     public InetAddress getAddress() {
         return address;
-    }
-
-    /**
-     * Gets the connection address of this player, regardless of whether it has
-     * been spoofed or not.
-     *
-     * @return the player's connection address
-     * @see #getAddress()
-     */
-    @NotNull
-    public InetAddress getRealAddress() {
-        return realAddress;
     }
 
     @NotNull

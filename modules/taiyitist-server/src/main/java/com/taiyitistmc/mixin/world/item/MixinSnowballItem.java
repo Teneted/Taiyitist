@@ -1,6 +1,5 @@
 package com.taiyitistmc.mixin.world.item;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -16,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(SnowballItem.class)
 public class MixinSnowballItem extends Item {
@@ -30,11 +30,11 @@ public class MixinSnowballItem extends Item {
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z")
-    )
+            target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"),
+            locals = LocalCapture.CAPTURE_FAILHARD)
     private void banner$addEntity(Level level, Player player, InteractionHand usedHand,
                                   CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
-                                  @Local Snowball snowball) {
+                                  ItemStack itemStack, Snowball snowball) {
         // CraftBukkit start
         if (!level.addFreshEntity(snowball)) {
             if (player instanceof ServerPlayer) {

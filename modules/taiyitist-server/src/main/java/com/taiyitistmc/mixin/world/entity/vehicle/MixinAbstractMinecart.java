@@ -1,82 +1,69 @@
 package com.taiyitistmc.mixin.world.entity.vehicle;
 
 import com.taiyitistmc.injection.world.entity.vehicle.InjectionAbstractMinecart;
-import java.util.List;
-import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import io.izzel.arclight.mixin.Decorate;
+import io.izzel.arclight.mixin.DecorationOps;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseRailBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.PoweredRailBlock;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.util.Vector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractMinecart.class)
-public abstract class MixinAbstractMinecart extends VehicleEntity implements InjectionAbstractMinecart {
+public abstract class MixinAbstractMinecart extends Entity implements InjectionAbstractMinecart {
 
-    public boolean slowWhenEmpty = true;
-    public double maxSpeed = 0.4D;
-    @Shadow private boolean flipped;
-    @Shadow
-    private boolean onRails;
-    @Shadow
-    private int lerpSteps;
+    // @formatter:off
+    @Shadow public abstract void setHurtDir(int rollingDirection);
+    @Shadow public abstract int getHurtDir();
+    @Shadow public abstract void setHurtTime(int rollingAmplitude);
+    @Shadow public abstract void setDamage(float damage);
+    @Shadow public abstract float getDamage();
+    @Shadow public abstract void destroy(DamageSource source);
     // @formatter:on
-    @Shadow
-    private double lerpX;
-    @Shadow
-    private double lerpY;
-    @Shadow
-    private double lerpZ;
-    @Shadow
-    private double lerpYRot;
-    @Shadow
-    private double lerpXRot;
+
+    @Unique
+    public boolean slowWhenEmpty = true;
+    @Unique
     private double derailedX = 0.5;
+    @Unique
     private double derailedY = 0.5;
+    @Unique
     private double derailedZ = 0.5;
+    @Unique
     private double flyingX = 0.95;
+    @Unique
     private double flyingY = 0.95;
+    @Unique
     private double flyingZ = 0.95;
-    // Banner start - fix mixin by Spelunkery mod
-    private double prevX;
-    private double prevY;
-    private double prevZ;
-    private float prevYaw;
-    private float prevPitch;
+    @Unique
+    public double maxSpeed = 0.4D;
 
     public MixinAbstractMinecart(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    // @formatter:off
-    @Shadow protected abstract void moveAlongTrack(BlockPos pos, BlockState state);
-
-    @Shadow public abstract void activateMinecart(int x, int y, int z, boolean receivingPower);
-
-    @Shadow public abstract AbstractMinecart.Type getMinecartType();
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
     private void banner$init(EntityType<?> type, Level worldIn, CallbackInfo ci) {
@@ -89,157 +76,116 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
         flyingZ = 0.95;
         maxSpeed = 0.4D;
     }
-    // Banner end
 
     /**
      * @author wdog5
      * @reason
      */
     @Overwrite
-    public void tick() {
-        // CraftBukkit start
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-        this.prevZ = this.getZ();
-        this.prevYaw = this.getYRot();
-        this.prevPitch = this.getXRot();
-        // CraftBukkit end
-
-        if (this.getHurtTime() > 0) {
-            this.setHurtTime(this.getHurtTime() - 1);
-        }
-
-        if (this.getDamage() > 0.0F) {
-            this.setDamage(this.getDamage() - 1.0F);
-        }
-
-        this.checkBelowWorld();
-        // this.handleNetherPortal(); // CraftBukkit - handled in postTick
-        if (this.level().isClientSide) {
-            if (this.lerpSteps > 0) {
-                this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
-                --this.lerpSteps;
+    public boolean hurt(DamageSource damagesource, float f) {
+        if (!this.level().isClientSide && !this.isRemoved()) {
+            if (this.isInvulnerableTo(damagesource)) {
+                return false;
             } else {
-                this.reapplyPosition();
-                this.setRot(this.getYRot(), this.getXRot());
-            }
+                // CraftBukkit start - fire VehicleDamageEvent
+                Vehicle vehicle = (Vehicle) this.getBukkitEntity();
+                org.bukkit.entity.Entity passenger = (damagesource.getEntity() == null) ? null : damagesource.getEntity().getBukkitEntity();
 
+                VehicleDamageEvent event = new VehicleDamageEvent(vehicle, passenger, f);
+                this.level().getCraftServer().getPluginManager().callEvent(event);
+
+                if (event.isCancelled()) {
+                    return false;
+                }
+
+                f = (float) event.getDamage();
+                // CraftBukkit end
+                this.setHurtDir(-this.getHurtDir());
+                this.setHurtTime(10);
+                this.markHurt();
+                this.setDamage(this.getDamage() + f * 10.0F);
+                this.gameEvent(GameEvent.ENTITY_DAMAGE, damagesource.getEntity());
+                boolean flag = damagesource.getEntity() instanceof Player && ((Player) damagesource.getEntity()).getAbilities().instabuild;
+
+                if (flag || this.getDamage() > 40.0F) {
+                    // CraftBukkit start
+                    VehicleDestroyEvent destroyEvent = new VehicleDestroyEvent(vehicle, passenger);
+                    this.level().getCraftServer().getPluginManager().callEvent(destroyEvent);
+
+                    if (destroyEvent.isCancelled()) {
+                        this.setDamage(40); // Maximize damage so this doesn't get triggered again right away
+                        return true;
+                    }
+                    // CraftBukkit end
+                    this.ejectPassengers();
+                    if (flag && !this.hasCustomName()) {
+                        this.discard();
+                    } else {
+                        this.destroy(damagesource);
+                    }
+                }
+
+                return true;
+            }
         } else {
-            if (!this.isNoGravity()) {
-                double d = this.isInWater() ? -0.005D : -0.04D;
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, d, 0.0D));
-            }
-
-            int i = Mth.floor(this.getX());
-            int j = Mth.floor(this.getY());
-            int k = Mth.floor(this.getZ());
-            if (this.level().getBlockState(new BlockPos(i, j - 1, k)).is(BlockTags.RAILS)) {
-                --j;
-            }
-
-            BlockPos blockposition = new BlockPos(i, j, k);
-            BlockState iblockdata = this.level().getBlockState(blockposition);
-            this.onRails = BaseRailBlock.isRail(iblockdata);
-            if (this.onRails) {
-                this.moveAlongTrack(blockposition, iblockdata);
-                if (iblockdata.is(Blocks.ACTIVATOR_RAIL)) {
-                    this.activateMinecart(i, j, k, iblockdata.getValue(PoweredRailBlock.POWERED));
-                }
-            } else {
-                this.comeOffTrack();
-            }
-
-            this.checkInsideBlocks();
-            this.setXRot(0.0F);
-            double d4 = this.xo - this.getX();
-            double d5 = this.zo - this.getZ();
-
-            if (d4 * d4 + d5 * d5 > 0.001D) {
-                this.setYRot((float) (Mth.atan2(d5, d4) * 180.0D / 3.141592653589793D));
-                if (this.flipped) {
-                    this.setYRot(this.getYRot() + 180.0F);
-                }
-            }
-
-            double d6 = Mth.wrapDegrees(this.getYRot() - this.yRotO);
-
-            if (d6 < -170.0D || d6 >= 170.0D) {
-                this.setYRot(this.getYRot() + 180.0F);
-                this.flipped = !this.flipped;
-            }
-
-            this.setRot(this.getYRot(), this.getXRot());
-            // CraftBukkit start
-            org.bukkit.World bworld = this.level().getWorld();
-            Location from = new Location(bworld, prevX, prevY, prevZ, prevYaw, prevPitch);
-            Location to = CraftLocation.toBukkit(this.position(), bworld, this.getYRot(), this.getXRot());
-            Vehicle vehicle = (Vehicle) this.getBukkitEntity();
-
-            this.level().getCraftServer().getPluginManager().callEvent(new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle));
-
-            if (!from.equals(to)) {
-                this.level().getCraftServer().getPluginManager().callEvent(new org.bukkit.event.vehicle.VehicleMoveEvent(vehicle, from, to));
-            }
-            // CraftBukkit end
-            if (this.getMinecartType() == AbstractMinecart.Type.RIDEABLE && this.getDeltaMovement().horizontalDistanceSqr() > 0.01D) {
-                List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate(0.20000000298023224D, 0.0D, 0.20000000298023224D), EntitySelector.pushableBy(this));
-
-                if (!list.isEmpty()) {
-                    for (Entity value : list) {
-                        Entity entity = value;
-
-                        if (!(entity instanceof Player) && !(entity instanceof IronGolem) && !(entity instanceof AbstractMinecart) && !this.isVehicle() && !entity.isPassenger()) {
-                            // CraftBukkit start
-                            VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent(vehicle, entity.getBukkitEntity());
-                            this.level().getCraftServer().getPluginManager().callEvent(collisionEvent);
-
-                            if (collisionEvent.isCancelled()) {
-                                continue;
-                            }
-                            // CraftBukkit end
-                            entity.startRiding(this);
-                        } else {
-                            // CraftBukkit start
-                            if (!this.isPassengerOfSameVehicle(entity)) {
-                                VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent(vehicle, entity.getBukkitEntity());
-                                this.level().getCraftServer().getPluginManager().callEvent(collisionEvent);
-
-                                if (collisionEvent.isCancelled()) {
-                                    continue;
-                                }
-                            }
-                            // CraftBukkit end
-                            entity.push(this);
-                        }
-                    }
-                }
-            } else {
-
-                for (Entity entity1 : this.level().getEntities(this, this.getBoundingBox().inflate(0.20000000298023224D, 0.0D, 0.20000000298023224D))) {
-                    if (!this.hasPassenger(entity1) && entity1.isPushable() && entity1 instanceof AbstractMinecart) {
-                        // CraftBukkit start
-                        VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent(vehicle, entity1.getBukkitEntity());
-                        this.level().getCraftServer().getPluginManager().callEvent(collisionEvent);
-
-                        if (collisionEvent.isCancelled()) {
-                            continue;
-                        }
-                        // CraftBukkit end
-                        entity1.push(this);
-                    }
-                }
-            }
-
-            this.updateInWaterStateAndDoFluidPushing();
-            if (this.isInLava()) {
-                this.lavaHurt();
-                this.fallDistance *= 0.5F;
-            }
-
-            this.firstTick = false;
+            return true;
         }
     }
 
+    @Unique
+    private transient Location banner$prevLocation;
+
+    @Decorate(method = "tick", inject = true, at = @At("HEAD"))
+    private void banner$storePreviousLocation() {
+        this.banner$prevLocation = new Location(null, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;setRot(FF)V"))
+    private void banner$vehicleUpdateEvent(CallbackInfo ci) {
+        org.bukkit.World bworld = this.level().getWorld();
+        Location to = new Location(bworld, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+        Vehicle vehicle = (Vehicle) this.getBukkitEntity();
+        Bukkit.getPluginManager().callEvent(new VehicleUpdateEvent(vehicle));
+        Location from = this.banner$prevLocation;
+        if (from != null) {
+            from.setWorld(bworld);
+            if (!from.equals(to)) {
+                Bukkit.getPluginManager().callEvent(new VehicleMoveEvent(vehicle, from, to));
+            }
+        }
+    }
+
+    @Decorate(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;startRiding(Lnet/minecraft/world/entity/Entity;)Z"))
+    private boolean banner$ridingCollide(Entity instance, Entity entity) throws Throwable {
+        VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
+        Bukkit.getPluginManager().callEvent(collisionEvent);
+        if (collisionEvent.isCancelled()) {
+            return false;
+        }
+        return (boolean) DecorationOps.callsite().invoke(instance, entity);
+    }
+
+    @Decorate(method = "tick", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
+    private void banner$pushCollide(Entity instance, Entity entity) throws Throwable {
+        if (!this.isPassengerOfSameVehicle(instance)) {
+            VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
+            Bukkit.getPluginManager().callEvent(collisionEvent);
+            if (collisionEvent.isCancelled()) {
+                return;
+            }
+        }
+        DecorationOps.callsite().invoke(instance, entity);
+    }
+
+    @Decorate(method = "tick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
+    private void banner$pushCollide2(Entity instance, Entity entity) throws Throwable {
+        VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
+        Bukkit.getPluginManager().callEvent(collisionEvent);
+        if (collisionEvent.isCancelled()) {
+            return;
+        }
+        DecorationOps.callsite().invoke(instance, entity);
+    }
     /**
      * @author wdog5
      * @reason
@@ -288,16 +234,6 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
             }
         }
     }
-
-    // CraftBukkit start
-    @Override
-    public Vec3 getKnownMovement() {
-        double d0 = this.getMaxSpeed();
-        Vec3 vec3d = super.getKnownMovement();
-
-        return new Vec3(Mth.clamp(vec3d.x, -d0, d0), vec3d.y, Mth.clamp(vec3d.z, -d0, d0));
-    }
-    // CraftBukkit end
 
     @Override
     public Vector getFlyingVelocityMod() {

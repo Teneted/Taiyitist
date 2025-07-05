@@ -202,11 +202,9 @@ public interface EntityEquipment {
     void setBoots(@Nullable ItemStack boots, boolean silent);
 
     /**
-     * Gets all ItemStacks from the armor slots.
+     * Gets a copy of all worn armor
      *
-     * @return all the ItemStacks from the armor slots. Individual items can be
-     * null and are returned in a fixed order starting from the boots and going
-     * up to the helmet
+     * @return The array of worn armor. Individual items may be null.
      */
     @NotNull
     ItemStack[] getArmorContents();

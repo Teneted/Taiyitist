@@ -10,11 +10,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,11 +23,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ShulkerBoxBlockEntity.class)
 public abstract class MixinShulkerBoxBlockEntity extends RandomizableContainerBlockEntity implements InjectionShulkerBoxBlockEntity {
 
+    @Shadow private NonNullList<ItemStack> itemStacks;
+    @Unique
     public List<HumanEntity> transaction = new java.util.ArrayList<>();
-    public boolean opened;
-    @Shadow
-    private NonNullList<ItemStack> itemStacks;
+    @Unique
     private int maxStack = 64;
+    @Unique
+    public boolean opened;
 
     protected MixinShulkerBoxBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);

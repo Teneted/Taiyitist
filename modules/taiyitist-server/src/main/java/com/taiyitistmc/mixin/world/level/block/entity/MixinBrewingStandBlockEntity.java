@@ -12,9 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.block.BrewingStartEvent;
 import org.bukkit.event.inventory.BrewingStandFuelEvent;
@@ -22,6 +22,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -31,9 +32,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(value = BrewingStandBlockEntity.class, priority = 300)
 public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEntity {
 
+    @Shadow private NonNullList<ItemStack> items;
+    @Unique
     public List<HumanEntity> transaction = new ArrayList<>();
-    @Shadow
-    private NonNullList<ItemStack> items;
+    @Unique
     private int maxStack = MAX_STACK;
 
     protected MixinBrewingStandBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -42,7 +44,7 @@ public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEnt
 
     @Inject(at = @At("HEAD"), method = "serverTick", cancellable = true)
     private static void doBukkitEvent_BrewingStandFuelEvent(Level level, BlockPos pos, BlockState state, BrewingStandBlockEntity blockEntity, CallbackInfo ci) {
-        ItemStack itemstack = (blockEntity).getContents().get(4);
+        ItemStack itemstack = (ItemStack) (blockEntity).getContents().get(4);
 
         if (blockEntity.fuel <= 0 && itemstack.getItem() == Items.BLAZE_POWDER) {
             BrewingStandFuelEvent event = new BrewingStandFuelEvent(blockEntity.getLevel().getWorld().getBlockAt(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ()), CraftItemStack.asCraftMirror(itemstack), 20);
@@ -59,7 +61,7 @@ public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEnt
     }
 
     @Inject(method = "serverTick",
-            at = @At(value = "CONSTANT",
+            at = @At (value = "CONSTANT",
                     args = "intValue=20"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
@@ -79,10 +81,9 @@ public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEnt
     }
 
     @Redirect(method = "serverTick",
-            at = @At(value = "INVOKE",
+            at = @At (value = "INVOKE",
                     target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private static void banner$isConsuming(ItemStack stack, int amount) {
-    }
+    private static void banner$isConsuming(ItemStack stack, int amount) {}
 
     @Inject(method = "serverTick", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;ingredient:Lnet/minecraft/world/item/Item;"))
     private static void banner$brewBegin(Level level, BlockPos pos, BlockState p_155288_, BrewingStandBlockEntity entity, CallbackInfo ci) {

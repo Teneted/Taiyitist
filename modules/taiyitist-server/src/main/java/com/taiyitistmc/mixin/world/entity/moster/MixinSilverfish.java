@@ -26,7 +26,7 @@ public abstract class MixinSilverfish extends Monster {
     @Overwrite
     public static boolean checkSilverfishSpawnRules(EntityType<Silverfish> entityType, LevelAccessor levelAccessor, MobSpawnType mobSpawnType, BlockPos blockPos, RandomSource randomSource) {
         if (checkAnyLightMonsterSpawnRules(entityType, levelAccessor, mobSpawnType, blockPos, randomSource)) {
-            Player player = levelAccessor.getNearestPlayer((double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.5, (double) blockPos.getZ() + 0.5, 5.0, true);
+            Player player = levelAccessor.getNearestPlayer((double)blockPos.getX() + 0.5, (double)blockPos.getY() + 0.5, (double)blockPos.getZ() + 0.5, 5.0, true);
             return !(player != null && !player.bridge$affectsSpawning()) && player == null; // Paper - Affects Spawning API
         } else {
             return false;

@@ -16,15 +16,16 @@ import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlockState;
-import org.bukkit.craftbukkit.block.CraftBlockStates;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.TNTPrimeEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -34,19 +35,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinFireBlock implements InjectionFireBlock {
 
 
-    @Shadow
-    @Final
-    private Object2IntMap<Block> burnOdds;
-    // @formatter:on
-    private final AtomicReference<BlockPos> sourceposition = new AtomicReference<>();
-
     // @formatter:off
     @Shadow
     protected abstract BlockState getStateForPlacement(BlockGetter blockReader, BlockPos pos);
+    // @formatter:on
+
+    @Shadow @Final private Object2IntMap<Block> burnOdds;
+    @Unique
+    private AtomicReference<BlockPos> sourceposition = new AtomicReference<>();
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
     public boolean banner$fireSpread(ServerLevel world, BlockPos mutablePos, BlockState newState, int flags,
-                                     BlockState state, ServerLevel worldIn, BlockPos pos) {
+                                       BlockState state, ServerLevel worldIn, BlockPos pos) {
         if (world.getBlockState(mutablePos).getBlock() != Blocks.FIRE) {
             if (!CraftEventFactory.callBlockIgniteEvent(world, mutablePos, pos).isCancelled()) {
                 return CraftEventFactory.handleBlockSpreadEvent(world, pos, mutablePos, newState, flags);

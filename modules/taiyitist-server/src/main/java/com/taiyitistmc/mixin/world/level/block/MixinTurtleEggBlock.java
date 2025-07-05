@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.TurtleEggBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -29,9 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(TurtleEggBlock.class)
 public class MixinTurtleEggBlock {
 
-    @Shadow
-    @Final
-    public static IntegerProperty HATCH;
+    @Shadow @Final public static IntegerProperty HATCH;
 
     @Inject(method = "randomTick", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerLevel;playSound(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"))

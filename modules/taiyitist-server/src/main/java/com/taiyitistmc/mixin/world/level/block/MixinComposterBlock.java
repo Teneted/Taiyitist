@@ -1,6 +1,5 @@
 package com.taiyitistmc.mixin.world.level.block;
 
-import com.taiyitistmc.asm.annotation.TransformAccess;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -14,15 +13,15 @@ import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftBlockInventoryHolder;
-import org.bukkit.craftbukkit.util.DummyGeneratorAccess;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftBlockInventoryHolder;
+import org.bukkit.craftbukkit.v1_20_R1.util.DummyGeneratorAccess;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -38,6 +37,14 @@ public class MixinComposterBlock {
     @Shadow
     public static BlockState empty(@Nullable Entity p_270236_, BlockState p_270873_, LevelAccessor p_270963_, BlockPos p_270211_) { return null; }
     // @formatter:on
+
+    @SuppressWarnings({"InvalidMemberReference", "UnresolvedMixinReference", "MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
+    @Redirect(method = "getContainer", at = @At(value = "NEW", target = "()Lnet/minecraft/world/level/block/ComposterBlock$EmptyContainer;"))
+    public ComposterBlock.EmptyContainer banner$newEmpty(BlockState blockState, LevelAccessor world, BlockPos blockPos) {
+        ComposterBlock.EmptyContainer inventory = new ComposterBlock.EmptyContainer();
+        inventory.setOwner(new CraftBlockInventoryHolder(world, blockPos, inventory));
+        return inventory;
+    }
 
     /**
      * @author wdog5
@@ -72,7 +79,7 @@ public class MixinComposterBlock {
         }
     }
 
-    @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
+    @Unique
     private static BlockState addItem(Entity entity, BlockState state, LevelAccessor world, BlockPos pos, ItemStack stack, double rand) {
         int i = state.getValue(LEVEL);
         float f = COMPOSTABLES.getFloat(stack.getItem());
@@ -88,13 +95,5 @@ public class MixinComposterBlock {
             }
             return blockstate;
         }
-    }
-
-    @SuppressWarnings({"InvalidMemberReference", "UnresolvedMixinReference", "MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
-    @Redirect(method = "getContainer", at = @At(value = "NEW", target = "()Lnet/minecraft/world/level/block/ComposterBlock$EmptyContainer;"))
-    public ComposterBlock.EmptyContainer banner$newEmpty(BlockState blockState, LevelAccessor world, BlockPos blockPos) {
-        ComposterBlock.EmptyContainer inventory = new ComposterBlock.EmptyContainer();
-        inventory.setOwner(new CraftBlockInventoryHolder(world, blockPos, inventory));
-        return inventory;
     }
 }

@@ -1,12 +1,15 @@
 package org.spigotmc;
 
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import com.taiyitistmc.config.BannerConfig;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
+
+import static org.bukkit.Bukkit.shutdown;
 
 public class WatchdogThread extends Thread
 {
@@ -96,10 +99,13 @@ public class WatchdogThread extends Thread
                     WatchdogThread.dumpThread( thread, log );
                 }
                 log.log( Level.SEVERE, "------------------------------" );
-
-                if ( this.restart && !BukkitMethodHooks.getServer().hasStopped() )
-                {
-                    RestartCommand.restart();
+                if (BannerConfig.Watchdogtimetodo == "restart"){
+                    if ( this.restart && !BukkitMethodHooks.getServer().hasStopped() )
+                    {
+                        RestartCommand.restart();
+                    }
+                }else {
+                    shutdown();
                 }
                 break;
             }

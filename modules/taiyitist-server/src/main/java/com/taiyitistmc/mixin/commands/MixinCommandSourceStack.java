@@ -9,12 +9,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.PlayerList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.command.VanillaCommandWrapper;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.command.VanillaCommandWrapper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,21 +25,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(CommandSourceStack.class)
 public abstract class MixinCommandSourceStack implements InjectionCommandSourceStack {
 
-    @Mutable
-    @Shadow
-    @Final
-    public CommandSource source;
-    public volatile CommandNode currentCommand; // CraftBukkit
-    @Shadow
-    @Final
-    private int permissionLevel;
+    @Shadow @Final private int permissionLevel;
 
-    @Shadow
-    public abstract ServerLevel getLevel();
+    @Shadow public abstract ServerLevel getLevel();
+
+    @Mutable
+    @Shadow @Final public CommandSource source;
+    @Unique
+    public volatile CommandNode currentCommand; // CraftBukkit
 
     @Inject(method = "hasPermission", cancellable = true, at = @At("HEAD"))
     public void banner$checkPermission(int level, CallbackInfoReturnable<Boolean> cir) {
-        CommandNode currentCommand = this.currentCommand;
+        CommandNode currentCommand =  this.currentCommand;
         if (currentCommand != null) {
             cir.setReturnValue(hasPermission(level, VanillaCommandWrapper.getPermission(currentCommand)));
         }
@@ -55,6 +53,7 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
         return ((getLevel() == null || !((CraftServer) Bukkit.getServer()).ignoreVanillaPermissions) && this.permissionLevel >= i) || getBukkitSender().hasPermission(bukkitPermission);
     }
 
+    @Unique
     public CommandSender getBukkitSender() {
         return this.source.banner$getBukkitSender((CommandSourceStack) (Object) this);
     }

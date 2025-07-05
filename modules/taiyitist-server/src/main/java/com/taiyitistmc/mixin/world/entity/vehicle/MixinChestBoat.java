@@ -11,18 +11,21 @@ import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ChestBoat.class)
 public abstract class MixinChestBoat extends Boat implements HasCustomInventoryScreen, ContainerEntity {
 
+    @Shadow private NonNullList<ItemStack> itemStacks;
+
+    @Unique
     public List<HumanEntity> transaction = new ArrayList<>();
-    @Shadow
-    private NonNullList<ItemStack> itemStacks;
+    @Unique
     private int maxStack = MAX_STACK;
 
     public MixinChestBoat(EntityType<? extends Boat> entityType, Level level) {

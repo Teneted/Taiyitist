@@ -1,5 +1,6 @@
 package org.bukkit.inventory;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.jetbrains.annotations.NotNull;
@@ -8,14 +9,16 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a view linking two inventories and a single player (whose
  * inventory may or may not be one of the two).
+ * <p>
+ * Note: If you implement this interface but fail to satisfy the expected
+ * contracts of certain methods, there's no guarantee that the game will work
+ * as it should.
  */
-public interface InventoryView {
+public abstract class InventoryView {
     public static final int OUTSIDE = -999;
     /**
      * Represents various extra properties of certain inventory windows.
-     * @deprecated use {@link InventoryView} and its children
      */
-    @Deprecated(forRemoval = true, since = "1.21")
     public enum Property {
         /**
          * The progress of the down-pointing arrow in a brewing inventory.
@@ -136,7 +139,7 @@ public interface InventoryView {
      * @return the inventory
      */
     @NotNull
-    public Inventory getTopInventory();
+    public abstract Inventory getTopInventory();
 
     /**
      * Get the lower inventory involved in this transaction.
@@ -144,7 +147,7 @@ public interface InventoryView {
      * @return the inventory
      */
     @NotNull
-    public Inventory getBottomInventory();
+    public abstract Inventory getBottomInventory();
 
     /**
      * Get the player viewing.
@@ -152,7 +155,7 @@ public interface InventoryView {
      * @return the player
      */
     @NotNull
-    public HumanEntity getPlayer();
+    public abstract HumanEntity getPlayer();
 
     /**
      * Determine the type of inventory involved in the transaction. This
@@ -162,7 +165,7 @@ public interface InventoryView {
      * @return the inventory type
      */
     @NotNull
-    public InventoryType getType();
+    public abstract InventoryType getType();
 
     /**
      * Sets one item in this inventory view by its raw slot ID.
@@ -173,7 +176,14 @@ public interface InventoryView {
      * @param slot The ID as returned by InventoryClickEvent.getRawSlot()
      * @param item The new item to put in the slot, or null to clear it.
      */
-    public void setItem(int slot, @Nullable ItemStack item);
+    public void setItem(int slot, @Nullable ItemStack item) {
+        Inventory inventory = getInventory(slot);
+        if (inventory != null) {
+            inventory.setItem(convertSlot(slot), item);
+        } else if (item != null) {
+            getPlayer().getWorld().dropItemNaturally(getPlayer().getLocation(), item);
+        }
+    }
 
     /**
      * Gets one item in this inventory view by its raw slot ID.
@@ -182,7 +192,10 @@ public interface InventoryView {
      * @return The item currently in the slot.
      */
     @Nullable
-    public ItemStack getItem(int slot);
+    public ItemStack getItem(int slot) {
+        Inventory inventory = getInventory(slot);
+        return (inventory == null) ? null : inventory.getItem(convertSlot(slot));
+    }
 
     /**
      * Sets the item on the cursor of one of the viewing players.
@@ -190,7 +203,9 @@ public interface InventoryView {
      * @param item The item to put on the cursor, or null to remove the item
      *     on their cursor.
      */
-    public void setCursor(@Nullable ItemStack item);
+    public final void setCursor(@Nullable ItemStack item) {
+        getPlayer().setItemOnCursor(item);
+    }
 
     /**
      * Get the item on the cursor of one of the viewing players.
@@ -199,7 +214,9 @@ public interface InventoryView {
      *     one.
      */
     @Nullable
-    public ItemStack getCursor();
+    public final ItemStack getCursor() {
+        return getPlayer().getItemOnCursor();
+    }
 
     /**
      * Gets the inventory corresponding to the given raw slot ID.
@@ -214,7 +231,21 @@ public interface InventoryView {
      * @return corresponding inventory, or null
      */
     @Nullable
-    public Inventory getInventory(int rawSlot);
+    public final Inventory getInventory(int rawSlot) {
+        // Slot may be -1 if not properly detected due to client bug
+        // e.g. dropping an item into part of the enchantment list section of an enchanting table
+        if (rawSlot == OUTSIDE || rawSlot == -1) {
+            return null;
+        }
+        Preconditions.checkArgument(rawSlot >= 0, "Negative, non outside slot %s", rawSlot);
+        Preconditions.checkArgument(rawSlot < countSlots(), "Slot %s greater than inventory slot count", rawSlot);
+
+        if (rawSlot < getTopInventory().getSize()) {
+            return getTopInventory();
+        } else {
+            return getBottomInventory();
+        }
+    }
 
     /**
      * Converts a raw slot ID into its local slot ID into whichever of the two
@@ -228,7 +259,69 @@ public interface InventoryView {
      * @param rawSlot The raw slot ID.
      * @return The converted slot ID.
      */
-    public int convertSlot(int rawSlot);
+    public final int convertSlot(int rawSlot) {
+        int numInTop = getTopInventory().getSize();
+        // Index from the top inventory as having slots from [0,size]
+        if (rawSlot < numInTop) {
+            return rawSlot;
+        }
+
+        // Move down the slot index by the top size
+        int slot = rawSlot - numInTop;
+
+        // Player crafting slots are indexed differently. The matrix is caught by the first return.
+        // Creative mode is the same, except that you can't see the crafting slots (but the IDs are still used)
+        if (getType() == InventoryType.CRAFTING || getType() == InventoryType.CREATIVE) {
+            /*
+             * Raw Slots:
+             *
+             * 5             1  2     0
+             * 6             3  4
+             * 7
+             * 8           45
+             * 9  10 11 12 13 14 15 16 17
+             * 18 19 20 21 22 23 24 25 26
+             * 27 28 29 30 31 32 33 34 35
+             * 36 37 38 39 40 41 42 43 44
+             */
+
+            /*
+             * Converted Slots:
+             *
+             * 39             1  2     0
+             * 38             3  4
+             * 37
+             * 36          40
+             * 9  10 11 12 13 14 15 16 17
+             * 18 19 20 21 22 23 24 25 26
+             * 27 28 29 30 31 32 33 34 35
+             * 0  1  2  3  4  5  6  7  8
+             */
+
+            if (slot < 4) {
+                // Send [5,8] to [39,36]
+                return 39 - slot;
+            } else if (slot > 39) {
+                // Slot lives in the extra slot section
+                return slot;
+            } else {
+                // Reset index so 9 -> 0
+                slot -= 4;
+            }
+        }
+
+        // 27 = 36 - 9
+        if (slot >= 27) {
+            // Put into hotbar section
+            slot -= 27;
+        } else {
+            // Take out of hotbar section
+            // 9 = 36 - 27
+            slot += 9;
+        }
+
+        return slot;
+    }
 
     /**
      * Determine the type of the slot by its raw slot ID.
@@ -240,12 +333,93 @@ public interface InventoryView {
      * @return the slot type
      */
     @NotNull
-    public InventoryType.SlotType getSlotType(int slot);
+    public final InventoryType.SlotType getSlotType(int slot) {
+        InventoryType.SlotType type = InventoryType.SlotType.CONTAINER;
+        if (slot >= 0 && slot < this.getTopInventory().getSize()) {
+            switch (this.getType()) {
+            case BLAST_FURNACE:
+            case FURNACE:
+            case SMOKER:
+                if (slot == 2) {
+                    type = InventoryType.SlotType.RESULT;
+                } else if (slot == 1) {
+                    type = InventoryType.SlotType.FUEL;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case BREWING:
+                if (slot == 3) {
+                    type = InventoryType.SlotType.FUEL;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case ENCHANTING:
+                type = InventoryType.SlotType.CRAFTING;
+                break;
+            case WORKBENCH:
+            case CRAFTING:
+                if (slot == 0) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case BEACON:
+                type = InventoryType.SlotType.CRAFTING;
+                break;
+            case ANVIL:
+            case SMITHING:
+            case CARTOGRAPHY:
+            case GRINDSTONE:
+            case MERCHANT:
+                if (slot == 2) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case STONECUTTER:
+                if (slot == 1) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case LOOM:
+            case SMITHING_NEW:
+                if (slot == 3) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            default:
+                // Nothing to do, it's a CONTAINER slot
+            }
+        } else {
+            if (slot < 0) {
+                type = InventoryType.SlotType.OUTSIDE;
+            } else if (this.getType() == InventoryType.CRAFTING) { // Also includes creative inventory
+                if (slot < 9) {
+                    type = InventoryType.SlotType.ARMOR;
+                } else if (slot > 35) {
+                    type = InventoryType.SlotType.QUICKBAR;
+                }
+            } else if (slot >= (this.countSlots() - (9 + 4 + 1))) { // Quickbar, Armor, Offhand
+                type = InventoryType.SlotType.QUICKBAR;
+            }
+        }
+        return type;
+    }
 
     /**
      * Closes the inventory view.
      */
-    public void close();
+    public final void close() {
+        getPlayer().closeInventory();
+    }
 
     /**
      * Check the total number of slots in this view, combining the upper and
@@ -256,7 +430,9 @@ public interface InventoryView {
      *
      * @return The total size
      */
-    public int countSlots();
+    public final int countSlots() {
+        return getTopInventory().getSize() + getBottomInventory().getSize();
+    }
 
     /**
      * Sets an extra property of this inventory if supported by that
@@ -267,7 +443,9 @@ public interface InventoryView {
      * @return true if the property was updated successfully, false if the
      *     property is not supported by that inventory
      */
-    public boolean setProperty(@NotNull Property prop, int value);
+    public final boolean setProperty(@NotNull Property prop, int value) {
+        return getPlayer().setWindowProperty(prop, value);
+    }
 
     /**
      * Get the title of this inventory window.
@@ -275,7 +453,7 @@ public interface InventoryView {
      * @return The title.
      */
     @NotNull
-    public String getTitle();
+    public abstract String getTitle();
 
     /**
      * Get the original title of this inventory window, before any changes were
@@ -284,7 +462,7 @@ public interface InventoryView {
      * @return the original title
      */
     @NotNull
-    public String getOriginalTitle();
+    public abstract String getOriginalTitle();
 
     /**
      * Sets the title of this inventory window to the specified title if the
@@ -296,5 +474,5 @@ public interface InventoryView {
      *
      * @param title The new title.
      */
-    public void setTitle(@NotNull String title);
+    public abstract void setTitle(@NotNull String title);
 }

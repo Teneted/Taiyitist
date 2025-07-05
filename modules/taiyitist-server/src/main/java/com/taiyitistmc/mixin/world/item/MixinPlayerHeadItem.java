@@ -1,8 +1,13 @@
 package com.taiyitistmc.mixin.world.item;
 
+import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PlayerHeadItem;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerHeadItem.class)
 public abstract class MixinPlayerHeadItem extends Item {
@@ -11,10 +16,9 @@ public abstract class MixinPlayerHeadItem extends Item {
         super(properties);
     }
 
-    /*
-    @Inject(method = "verifyComponentsAfterLoad", at = @At("TAIL"))
-    private void banner$verifyTag(ItemStack itemStack, CallbackInfo ci) {
-        boolean banner$flag = components().get("SkullOwner", 8)
+    @Inject(method = "verifyTagAfterLoad", at = @At("TAIL"))
+    private void banner$verifyTag(CompoundTag compoundTag, CallbackInfo ci) {
+        boolean banner$flag = compoundTag.contains("SkullOwner", 8)
                 && !Util.isBlank(compoundTag.getString("SkullOwner"));
         // CraftBukkit start
         if (!banner$flag) {
@@ -32,5 +36,5 @@ public abstract class MixinPlayerHeadItem extends Item {
             }
             // CraftBukkit end
         }
-    }*/
+    }
 }

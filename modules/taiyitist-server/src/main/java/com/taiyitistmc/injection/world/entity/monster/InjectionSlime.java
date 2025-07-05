@@ -3,10 +3,9 @@ package com.taiyitistmc.injection.world.entity.monster;
 public interface InjectionSlime {
 
     default boolean canWander() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default void setWander(boolean canWander) {
-        throw new IllegalStateException("Not implemented");
     }
 }

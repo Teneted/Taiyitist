@@ -2,8 +2,6 @@ package com.taiyitistmc.mixin.commands;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import com.taiyitistmc.asm.annotation.CreateConstructor;
-import com.taiyitistmc.bukkit.BukkitDispatcher;
 import com.taiyitistmc.injection.commands.InjectionCommandNode;
 import com.taiyitistmc.injection.commands.InjectionCommands;
 import com.mojang.brigadier.CommandDispatcher;
@@ -15,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.ExecutionCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,42 +23,36 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(Commands.class)
 public abstract class MixinCommands implements InjectionCommands {
 
-    @Mutable
-    @Shadow
-    @Final
-    private CommandDispatcher<CommandSourceStack> dispatcher;
+    @Mutable @Shadow @Final private CommandDispatcher<CommandSourceStack> dispatcher;
 
-    @Shadow
-    protected abstract void fillUsableCommands(CommandNode<CommandSourceStack> rootCommandSource, CommandNode<SharedSuggestionProvider> rootSuggestion, CommandSourceStack source, Map<CommandNode<CommandSourceStack>, CommandNode<SharedSuggestionProvider>> commandNodeToSuggestionNode);
+    @Shadow protected abstract void fillUsableCommands(CommandNode<CommandSourceStack> rootCommandSource, CommandNode<SharedSuggestionProvider> rootSuggestion, CommandSourceStack source, Map<CommandNode<CommandSourceStack>, CommandNode<SharedSuggestionProvider>> commandNodeToSuggestionNode);
 
-    @Shadow
-    public abstract void performCommand(ParseResults<CommandSourceStack> parseResults, String string);
+    @Shadow public abstract int performCommand(ParseResults<CommandSourceStack> parseResults, String command);
 
-    @Shadow
-    public abstract void performPrefixedCommand(CommandSourceStack commandSourceStack, String string);
+    @Shadow public abstract int performPrefixedCommand(CommandSourceStack source, String command);
 
-    @CreateConstructor
+    @Unique
     public void banner$constructor() {
-        this.dispatcher = new BukkitDispatcher((Commands) (Object) this);
-        this.dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
+        this.dispatcher.setConsumer((context, b, i) -> context.getSource().onCommandComplete(context, b, i));
     }
 
     @Override
-    public void performPrefixedCommand(CommandSourceStack commandSourceStack, String s, String label) {
-        this.performPrefixedCommand(commandSourceStack, s);
+    public int performPrefixedCommand(CommandSourceStack commandSourceStack, String s, String label) {
+        return this.performPrefixedCommand(commandSourceStack, s);
     }
 
     @Override
-    public void performCommand(ParseResults<CommandSourceStack> parseResults, String s, String label) {
-        this.performCommand(parseResults, s);
+    public int performCommand(ParseResults<CommandSourceStack> parseResults, String s, String label) {
+        return this.performCommand(parseResults, s);
     }
 
     @Override
-    public void dispatchServerCommand(CommandSourceStack sender, String command) {
+    public int dispatchServerCommand(CommandSourceStack sender, String command) {
         Joiner joiner = Joiner.on(" ");
         if (command.startsWith("/")) {
             command = command.substring(1);
@@ -70,7 +61,7 @@ public abstract class MixinCommands implements InjectionCommands {
         ServerCommandEvent event = new ServerCommandEvent(sender.banner$getBukkitSender(), command);
         org.bukkit.Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            return;
+            return 0;
         }
         command = event.getCommand();
 
@@ -84,7 +75,7 @@ public abstract class MixinCommands implements InjectionCommands {
         if (cmd.equalsIgnoreCase("stop") || cmd.equalsIgnoreCase("kick") || cmd.equalsIgnoreCase("op")
                 || cmd.equalsIgnoreCase("deop") || cmd.equalsIgnoreCase("ban") || cmd.equalsIgnoreCase("ban-ip")
                 || cmd.equalsIgnoreCase("pardon") || cmd.equalsIgnoreCase("pardon-ip") || cmd.equalsIgnoreCase("reload")) {
-            return;
+            return 0;
         }
 
         // Handle vanilla commands;
@@ -93,7 +84,7 @@ public abstract class MixinCommands implements InjectionCommands {
         }
 
         String newCommand = joiner.join(args);
-        this.performPrefixedCommand(sender, newCommand, newCommand);
+        return this.performPrefixedCommand(sender, newCommand, newCommand);
     }
 
     /**
@@ -107,7 +98,7 @@ public abstract class MixinCommands implements InjectionCommands {
 
         RootCommandNode<CommandSourceStack> vanilla = player.getServer().bridge$getVanillaCommands().getDispatcher().getRoot();
         map.put(vanilla, vanillaRoot);
-        this.fillUsableCommands(vanilla, vanillaRoot, player.createCommandSourceStack(), map);
+        this.fillUsableCommands(vanilla, vanillaRoot, player.createCommandSourceStack(), (Map) map);
 
         RootCommandNode<SharedSuggestionProvider> rootCommandNode = new RootCommandNode();
         map.put(this.dispatcher.getRoot(), rootCommandNode);

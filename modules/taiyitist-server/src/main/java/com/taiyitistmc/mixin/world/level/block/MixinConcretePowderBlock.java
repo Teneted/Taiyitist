@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlockState;
-import org.bukkit.craftbukkit.block.CraftBlockStates;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.block.BlockFormEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,9 +23,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 public abstract class MixinConcretePowderBlock extends Block {
 
-    @Shadow
-    @Final
-    private Block concrete;
+    @Shadow @Final private BlockState concrete;
 
     public MixinConcretePowderBlock(Properties properties) {
         super(properties);
@@ -36,12 +34,12 @@ public abstract class MixinConcretePowderBlock extends Block {
         return CraftEventFactory.handleBlockFormEvent(world, pos, newState, flags);
     }
 
-    @Redirect(method = "getStateForPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;defaultBlockState()Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockForm(Block instance, BlockPlaceContext context) {
+    @Redirect(method = "getStateForPlacement", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/ConcretePowderBlock;concrete:Lnet/minecraft/world/level/block/state/BlockState;"))
+    public BlockState banner$blockForm(ConcretePowderBlock instance, BlockPlaceContext context) {
         Level world = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
         CraftBlockState blockState = CraftBlockStates.getBlockState(world, blockPos);
-        blockState.setData(this.concrete.defaultBlockState());
+        blockState.setData(this.concrete);
         BlockFormEvent event = new BlockFormEvent(blockState.getBlock(), blockState);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -50,13 +48,13 @@ public abstract class MixinConcretePowderBlock extends Block {
         return super.getStateForPlacement(context);
     }
 
-    @Redirect(method = "updateShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;defaultBlockState()Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockForm(Block instance, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    @Redirect(method = "updateShape", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/ConcretePowderBlock;concrete:Lnet/minecraft/world/level/block/state/BlockState;"))
+    public BlockState banner$blockForm(ConcretePowderBlock instance, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!(worldIn instanceof Level)) {
-            return this.concrete.defaultBlockState();
+            return this.concrete;
         }
         CraftBlockState blockState = CraftBlockStates.getBlockState(worldIn, currentPos);
-        blockState.setData(this.concrete.defaultBlockState());
+        blockState.setData(this.concrete);
         BlockFormEvent event = new BlockFormEvent(blockState.getBlock(), blockState);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {

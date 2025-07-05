@@ -1,6 +1,5 @@
 package org.bukkit.event.player;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,11 +38,7 @@ public abstract class PlayerBucketEvent extends PlayerEvent implements Cancellab
         this.blockClicked = blockClicked;
         this.blockFace = blockFace;
         this.itemStack = itemInHand;
-        if (bucket != null && bucket.isLegacy()) {
-            this.bucket = Bukkit.getUnsafe().fromLegacy(new MaterialData(bucket), true);
-        } else {
-            this.bucket = bucket;
-        }
+        this.bucket = bucket;
         this.hand = hand;
     }
 

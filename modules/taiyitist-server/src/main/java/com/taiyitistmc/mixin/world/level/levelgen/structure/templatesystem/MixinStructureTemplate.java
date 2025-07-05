@@ -6,9 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataTypeRegistry;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,7 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StructureTemplate.class)
 public class MixinStructureTemplate implements InjectionStructureTemplate {
 
+    @Unique
     private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
+    @Unique
     public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 
     @Inject(method = "save", at = @At("TAIL"))
@@ -38,7 +41,6 @@ public class MixinStructureTemplate implements InjectionStructureTemplate {
         }
         // CraftBukkit end
     }
-
     @Override
     public CraftPersistentDataContainer bridge$persistentDataContainer() {
         return persistentDataContainer;

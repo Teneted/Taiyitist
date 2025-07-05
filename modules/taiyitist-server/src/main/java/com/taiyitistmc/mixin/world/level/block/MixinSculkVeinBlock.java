@@ -11,9 +11,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SculkSpreader;
 import net.minecraft.world.level.block.SculkVeinBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,11 +25,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class MixinSculkVeinBlock {
 
 
-    private final AtomicReference<BlockPos> banner$source = new AtomicReference<>();
-    private final AtomicReference<BlockPos> banner$pos = new AtomicReference<>();
+    @Shadow protected abstract boolean attemptPlaceSculk(SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random);
 
-    @Shadow
-    protected abstract boolean attemptPlaceSculk(SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random);
+    @Unique
+    private AtomicReference<BlockPos> banner$source = new AtomicReference<>();
 
     @Inject(method = "attemptUseCharge", at = @At("HEAD"))
     private void banner$getSource(SculkSpreader.ChargeCursor cursor,
@@ -44,6 +44,10 @@ public abstract class MixinSculkVeinBlock {
         return attemptPlaceSculk(spreader, level, pos, random, banner$source.get());
     }
 
+    @Unique
+    private AtomicReference<BlockPos> banner$pos = new AtomicReference<>();
+
+    @Unique
     private boolean attemptPlaceSculk(SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random, BlockPos sourceBlock) {
         banner$pos.set(sourceBlock);
         return attemptPlaceSculk(spreader, level, pos, random);

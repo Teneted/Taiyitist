@@ -99,4 +99,5 @@ public interface CommandSender extends Permissible {
     @NotNull
     Spigot spigot();
     // Spigot end
+
 }

@@ -3,6 +3,7 @@ package org.bukkit.event.player;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
  * range.
  *
  * @see Player#showEntity(org.bukkit.plugin.Plugin, org.bukkit.entity.Entity)
+ * @apiNote draft API
  */
+@ApiStatus.Experimental
 public class PlayerShowEntityEvent extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();

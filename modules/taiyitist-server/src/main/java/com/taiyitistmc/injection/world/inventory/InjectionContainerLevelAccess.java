@@ -7,14 +7,14 @@ import org.bukkit.Location;
 public interface InjectionContainerLevelAccess {
 
     default Level getWorld() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default BlockPos getPosition() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default Location getLocation() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

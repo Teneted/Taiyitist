@@ -3,7 +3,6 @@ package org.bukkit.event.player;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,17 +16,10 @@ public class PlayerRiptideEvent extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
     private final ItemStack item;
-    private final Vector velocity;
 
-    public PlayerRiptideEvent(@NotNull final Player who, @NotNull final ItemStack item, @NotNull Vector velocity) {
+    public PlayerRiptideEvent(@NotNull final Player who, @NotNull final ItemStack item) {
         super(who);
         this.item = item;
-        this.velocity = velocity;
-    }
-
-    @Deprecated
-    public PlayerRiptideEvent(@NotNull final Player who, @NotNull final ItemStack item) {
-        this(who, item, new Vector());
     }
 
     /**
@@ -38,16 +30,6 @@ public class PlayerRiptideEvent extends PlayerEvent {
     @NotNull
     public ItemStack getItem() {
         return item;
-    }
-
-    /**
-     * Get the velocity applied to the player as a result of this riptide.
-     *
-     * @return the riptide velocity
-     */
-    @NotNull
-    public Vector getVelocity() {
-        return velocity.clone();
     }
 
     @NotNull

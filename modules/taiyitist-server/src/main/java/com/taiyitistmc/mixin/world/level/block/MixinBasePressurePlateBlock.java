@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BasePressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,8 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BasePressurePlateBlock.class)
 public abstract class MixinBasePressurePlateBlock {
 
-    @Shadow
-    protected abstract int getSignalStrength(Level level, BlockPos pos);
+    @Shadow protected abstract int getSignalStrength(Level level, BlockPos pos);
 
     @Redirect(method = "checkPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BasePressurePlateBlock;getSignalStrength(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)I"))
     private int banner$blockRedstone(BasePressurePlateBlock abstractPressurePlateBlock, Level worldIn, BlockPos pos, Entity entity, Level world, BlockPos blockPos, BlockState state, int oldRedstoneStrength) {

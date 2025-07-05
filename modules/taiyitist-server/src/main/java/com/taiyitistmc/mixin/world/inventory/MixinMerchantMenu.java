@@ -7,12 +7,13 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.MerchantContainer;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.trading.Merchant;
-import org.bukkit.craftbukkit.inventory.CraftInventoryMerchant;
-import org.bukkit.craftbukkit.inventory.view.CraftMerchantView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryMerchant;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,7 +26,9 @@ public abstract class MixinMerchantMenu extends AbstractContainerMenu {
     @Shadow @Final private MerchantContainer tradeContainer;
     // @formatter:on
 
-    private CraftMerchantView bukkitEntity = null;
+    @Unique
+    private CraftInventoryView bukkitEntity = null;
+    @Unique
     private Inventory playerInventory;
 
     protected MixinMerchantMenu(@Nullable MenuType<?> menuType, int i) {
@@ -45,9 +48,9 @@ public abstract class MixinMerchantMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public CraftMerchantView getBukkitView() {
+    public CraftInventoryView getBukkitView() {
         if (bukkitEntity == null) {
-            bukkitEntity = new CraftMerchantView(this.playerInventory.player.getBukkitEntity(), new CraftInventoryMerchant(this.trader, this.tradeContainer), (MerchantMenu) (Object) this, trader);
+            bukkitEntity = new CraftInventoryView(this.playerInventory.player.getBukkitEntity(), new CraftInventoryMerchant(this.trader, this.tradeContainer), (AbstractContainerMenu) (Object) this);
         }
         return bukkitEntity;
     }

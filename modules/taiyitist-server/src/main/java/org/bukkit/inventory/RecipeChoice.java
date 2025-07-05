@@ -7,16 +7,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a potential item match within a recipe. All choices within a
- * recipe must be satisfied for it to be craftable. Choices must never be
- * null or air.
+ * recipe must be satisfied for it to be craftable.
  *
  * <b>This class is not legal for implementation by plugins!</b>
  */
@@ -67,19 +64,11 @@ public interface RecipeChoice extends Predicate<ItemStack>, Cloneable {
         public MaterialChoice(@NotNull List<Material> choices) {
             Preconditions.checkArgument(choices != null, "choices");
             Preconditions.checkArgument(!choices.isEmpty(), "Must have at least one choice");
-
-            this.choices = new ArrayList<>(choices.size());
-
             for (Material choice : choices) {
                 Preconditions.checkArgument(choice != null, "Cannot have null choice");
-
-                if (choice.isLegacy()) {
-                    choice = Bukkit.getUnsafe().fromLegacy(new MaterialData(choice, (byte) 0), true);
-                }
-
-                Preconditions.checkArgument(!choice.isAir(), "Cannot have empty/air choice");
-                this.choices.add(choice);
             }
+
+            this.choices = new ArrayList<>(choices);
         }
 
         @Override
@@ -155,8 +144,8 @@ public interface RecipeChoice extends Predicate<ItemStack>, Cloneable {
     }
 
     /**
-     * Represents a choice that will be valid only if one of the stacks is
-     * exactly matched (aside from stack size).
+     * Represents a choice that will be valid only one of the stacks is exactly
+     * matched (aside from stack size).
      * <br>
      * <b>Only valid for shaped recipes</b>
      */
@@ -177,7 +166,6 @@ public interface RecipeChoice extends Predicate<ItemStack>, Cloneable {
             Preconditions.checkArgument(!choices.isEmpty(), "Must have at least one choice");
             for (ItemStack choice : choices) {
                 Preconditions.checkArgument(choice != null, "Cannot have null choice");
-                Preconditions.checkArgument(!choice.getType().isAir(), "Cannot have empty/air choice");
             }
 
             this.choices = new ArrayList<>(choices);

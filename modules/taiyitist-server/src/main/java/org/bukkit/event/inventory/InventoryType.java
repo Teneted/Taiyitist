@@ -1,10 +1,7 @@
 package org.bukkit.event.inventory;
 
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the different kinds of inventories available in Bukkit.
@@ -28,150 +25,143 @@ public enum InventoryType {
      * A chest inventory, with 0, 9, 18, 27, 36, 45, or 54 slots of type
      * CONTAINER.
      */
-    CHEST(27, "Chest", MenuType.GENERIC_9X3),
+    CHEST(27, "Chest"),
     /**
      * A dispenser inventory, with 9 slots of type CONTAINER.
      */
-    DISPENSER(9, "Dispenser", MenuType.GENERIC_3X3),
+    DISPENSER(9, "Dispenser"),
     /**
      * A dropper inventory, with 9 slots of type CONTAINER.
      */
-    DROPPER(9, "Dropper", MenuType.GENERIC_3X3),
+    DROPPER(9, "Dropper"),
     /**
      * A furnace inventory, with a RESULT slot, a CRAFTING slot, and a FUEL
      * slot.
      */
-    FURNACE(3, "Furnace", MenuType.FURNACE),
+    FURNACE(3, "Furnace"),
     /**
      * A workbench inventory, with 9 CRAFTING slots and a RESULT slot.
      */
-    WORKBENCH(10, "Crafting", MenuType.CRAFTING),
+    WORKBENCH(10, "Crafting"),
     /**
      * A player's crafting inventory, with 4 CRAFTING slots and a RESULT slot.
      * Also implies that the 4 ARMOR slots are accessible.
      */
-    CRAFTING(5, "Crafting", null, false),
+    CRAFTING(5, "Crafting", false),
     /**
      * An enchantment table inventory, with two CRAFTING slots and three
      * enchanting buttons.
      */
-    ENCHANTING(2, "Enchanting", MenuType.ENCHANTMENT),
+    ENCHANTING(2, "Enchanting"),
     /**
      * A brewing stand inventory, with one FUEL slot and four CRAFTING slots.
      */
-    BREWING(5, "Brewing", MenuType.BREWING_STAND),
+    BREWING(5, "Brewing"),
     /**
      * A player's inventory, with 9 QUICKBAR slots, 27 CONTAINER slots, 4 ARMOR
      * slots and 1 offhand slot. The ARMOR and offhand slots may not be visible
      * to the player, though.
      */
-    PLAYER(41, "Player", MenuType.GENERIC_9X4),
+    PLAYER(41, "Player"),
     /**
      * The creative mode inventory, with only 9 QUICKBAR slots and nothing
      * else. (The actual creative interface with the items is client-side and
      * cannot be altered by the server.)
      */
-    CREATIVE(9, "Creative", null, false),
+    CREATIVE(9, "Creative", false),
     /**
      * The merchant inventory, with 2 CRAFTING slots, and 1 RESULT slot.
      */
-    MERCHANT(3, "Villager", MenuType.MERCHANT, false),
+    MERCHANT(3, "Villager", false),
     /**
      * The ender chest inventory, with 27 slots.
      */
-    ENDER_CHEST(27, "Ender Chest", MenuType.GENERIC_9X3),
+    ENDER_CHEST(27, "Ender Chest"),
     /**
      * An anvil inventory, with 2 CRAFTING slots and 1 RESULT slot
      */
-    ANVIL(3, "Repairing", MenuType.ANVIL),
+    ANVIL(3, "Repairing"),
     /**
-     * A smithing inventory, with 3 CRAFTING slots and 1 RESULT slot.
+     * A smithing inventory, with 3 CRAFTING slots and 1 RESULT slot
      */
-    SMITHING(4, "Upgrade Gear", MenuType.SMITHING),
+    SMITHING(4, "Upgrade Gear"),
     /**
      * A beacon inventory, with 1 CRAFTING slot
      */
-    BEACON(1, "container.beacon", MenuType.BEACON),
+    BEACON(1, "container.beacon"),
     /**
      * A hopper inventory, with 5 slots of type CONTAINER.
      */
-    HOPPER(5, "Item Hopper", MenuType.HOPPER),
+    HOPPER(5, "Item Hopper"),
     /**
      * A shulker box inventory, with 27 slots of type CONTAINER.
      */
-    SHULKER_BOX(27, "Shulker Box", MenuType.SHULKER_BOX),
+    SHULKER_BOX(27, "Shulker Box"),
     /**
      * A barrel box inventory, with 27 slots of type CONTAINER.
      */
-    BARREL(27, "Barrel", MenuType.GENERIC_9X3),
+    BARREL(27, "Barrel"),
     /**
      * A blast furnace inventory, with a RESULT slot, a CRAFTING slot, and a
      * FUEL slot.
      */
-    BLAST_FURNACE(3, "Blast Furnace", MenuType.BLAST_FURNACE),
+    BLAST_FURNACE(3, "Blast Furnace"),
     /**
      * A lectern inventory, with 1 BOOK slot.
      */
-    LECTERN(1, "Lectern", MenuType.LECTERN),
+    LECTERN(1, "Lectern"),
     /**
      * A smoker inventory, with a RESULT slot, a CRAFTING slot, and a FUEL slot.
      */
-    SMOKER(3, "Smoker", MenuType.SMOKER),
+    SMOKER(3, "Smoker"),
     /**
      * Loom inventory, with 3 CRAFTING slots, and 1 RESULT slot.
      */
-    LOOM(4, "Loom", MenuType.LOOM),
+    LOOM(4, "Loom"),
     /**
      * Cartography inventory with 2 CRAFTING slots, and 1 RESULT slot.
      */
-    CARTOGRAPHY(3, "Cartography Table", MenuType.CARTOGRAPHY_TABLE),
+    CARTOGRAPHY(3, "Cartography Table"),
     /**
      * Grindstone inventory with 2 CRAFTING slots, and 1 RESULT slot.
      */
-    GRINDSTONE(3, "Repair & Disenchant", MenuType.GRINDSTONE),
+    GRINDSTONE(3, "Repair & Disenchant"),
     /**
      * Stonecutter inventory with 1 CRAFTING slot, and 1 RESULT slot.
      */
-    STONECUTTER(2, "Stonecutter", MenuType.STONECUTTER),
+    STONECUTTER(2, "Stonecutter"),
     /**
      * Pseudo composter inventory with 0 or 1 slots of undefined type.
      */
-    COMPOSTER(1, "Composter", null, false),
+    COMPOSTER(1, "Composter", false),
     /**
      * Pseudo chiseled bookshelf inventory, with 6 slots of undefined type.
      */
-    CHISELED_BOOKSHELF(6, "Chiseled Bookshelf", null, false),
+    CHISELED_BOOKSHELF(6, "Chiseled Bookshelf", false),
     /**
      * Pseudo jukebox inventory with 1 slot of undefined type.
      */
-    JUKEBOX(1, "Jukebox", null, false),
-    /**
-     * A crafter inventory, with 9 CRAFTING slots.
-     */
-    @ApiStatus.Experimental
-    CRAFTER(9, "Crafter", MenuType.CRAFTER_3X3),
+    JUKEBOX(1, "Jukebox", false),
     /**
      * The new smithing inventory, with 3 CRAFTING slots and 1 RESULT slot.
      *
      * @deprecated use {@link #SMITHING}
      */
     @Deprecated
-    SMITHING_NEW(4, "Upgrade Gear", MenuType.SMITHING),
+    SMITHING_NEW(4, "Upgrade Gear"),
     ;
 
     private final int size;
     private final String title;
-    private final MenuType menuType;
     private final boolean isCreatable;
 
-    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle, @Nullable MenuType type) {
-        this(defaultSize, defaultTitle, type, true);
+    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle) {
+        this(defaultSize, defaultTitle, true);
     }
 
-    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle, @Nullable MenuType type, boolean isCreatable) {
+    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle, boolean isCreatable) {
         size = defaultSize;
         title = defaultTitle;
-        this.menuType = type;
         this.isCreatable = isCreatable;
     }
 
@@ -182,28 +172,6 @@ public enum InventoryType {
     @NotNull
     public String getDefaultTitle() {
         return title;
-    }
-
-    /**
-     * Gets the corresponding {@link MenuType} of this InventoryType.
-     * <p>
-     * Not all InventoryType correspond to a {@link MenuType}. These
-     * InventoryTypes are also not creatable. If this method returns null,
-     * {@link #isCreatable()} will return false, with the exception of
-     * {@link #MERCHANT}.
-     * <p>
-     * As well as not necessarily corresponding to a {@link MenuType} some
-     * InventoryType correspond to the same {@link MenuType}, including:
-     * <ul>
-     * <li>Dropper, Dispenser
-     * <li>ShulkerBox, Barrel, Chest
-     * </ul>
-     *
-     * @return the corresponding {@link MenuType}
-     */
-    @Nullable
-    public MenuType getMenuType() {
-        return menuType;
     }
 
     /**

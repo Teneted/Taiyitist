@@ -1,7 +1,6 @@
 package org.bukkit.event.entity;
 
 import java.util.List;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -12,17 +11,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EntityDeathEvent extends EntityEvent {
     private static final HandlerList handlers = new HandlerList();
-    private final DamageSource damageSource;
     private final List<ItemStack> drops;
     private int dropExp = 0;
 
-    public EntityDeathEvent(@NotNull final LivingEntity entity, @NotNull DamageSource damageSource, @NotNull final List<ItemStack> drops) {
-        this(entity, damageSource, drops, 0);
+    public EntityDeathEvent(@NotNull final LivingEntity entity, @NotNull final List<ItemStack> drops) {
+        this(entity, drops, 0);
     }
 
-    public EntityDeathEvent(@NotNull final LivingEntity what, @NotNull DamageSource damageSource, @NotNull final List<ItemStack> drops, final int droppedExp) {
+    public EntityDeathEvent(@NotNull final LivingEntity what, @NotNull final List<ItemStack> drops, final int droppedExp) {
         super(what);
-        this.damageSource = damageSource;
         this.drops = drops;
         this.dropExp = droppedExp;
     }
@@ -31,16 +28,6 @@ public class EntityDeathEvent extends EntityEvent {
     @Override
     public LivingEntity getEntity() {
         return (LivingEntity) entity;
-    }
-
-    /**
-     * Gets the source of damage which caused the death.
-     *
-     * @return a DamageSource detailing the source of the damage for the death.
-     */
-    @NotNull
-    public DamageSource getDamageSource() {
-        return damageSource;
     }
 
     /**

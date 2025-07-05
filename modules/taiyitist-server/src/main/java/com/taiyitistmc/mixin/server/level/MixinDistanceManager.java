@@ -2,20 +2,32 @@ package com.taiyitistmc.mixin.server.level;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.injection.server.level.InjectionDistanceManager;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ChunkTaskPriorityQueueSorter;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.Ticket;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.TickingTracker;
 import net.minecraft.util.SortedArraySet;
+import net.minecraft.util.thread.ProcessorHandle;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,18 +38,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinDistanceManager implements InjectionDistanceManager {
 
 
-    @Shadow @Final public Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> tickets;
     // @formatter:off
     @Shadow @Final private DistanceManager.ChunkTicketTracker ticketTracker;
-    @Shadow
-    private long ticketTickCounter;
-
-    @Shadow private static int getTicketLevelAt(SortedArraySet<Ticket<?>> p_229844_0_) { return 0; }
-
+    @Shadow private long ticketTickCounter;
+    @Shadow @Final private DistanceManager.FixedPlayerDistanceChunkTracker naturalSpawnChunkCounter;
+    @Shadow @Final private TickingTracker tickingTicketsTracker;
+    @Shadow @Final private DistanceManager.PlayerTicketTracker playerTicketManager;
+    @Shadow @Final Set<ChunkHolder> chunksToUpdateFutures;
+    @Shadow @Final LongSet ticketsToRelease;
+    @Shadow @Final Executor mainThreadExecutor;
+    @Shadow @Final ProcessorHandle<ChunkTaskPriorityQueueSorter.Release> ticketThrottlerReleaser;
     @Shadow protected abstract SortedArraySet<Ticket<?>> getTickets(long p_229848_1_);
-    // @formatter:on
-
+    @Shadow private static int getTicketLevelAt(SortedArraySet<Ticket<?>> p_229844_0_) { return 0; }
+    @Shadow @Final public Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> tickets;
     @Shadow abstract TickingTracker tickingTracker();
+    // @formatter:on
 
     @Inject(method = "removePlayer", cancellable = true, at = @At(value = "INVOKE", remap = false, target = "Lit/unimi/dsi/fastutil/objects/ObjectSet;remove(Ljava/lang/Object;)Z"))
     private void banner$remove(SectionPos p_140829_, ServerPlayer p_140830_, CallbackInfo ci, @Local ObjectSet<?> set) {
@@ -80,7 +95,10 @@ public abstract class MixinDistanceManager implements InjectionDistanceManager {
     @Override
     public boolean removeTicket(long chunkPosIn, Ticket<?> ticketIn) {
         SortedArraySet<Ticket<?>> ticketSet = this.getTickets(chunkPosIn);
-        boolean removed = ticketSet.remove(ticketIn);
+        boolean removed = false;
+        if (ticketSet.remove(ticketIn)) {
+            removed = true;
+        }
         if (ticketSet.isEmpty()) {
             this.tickets.remove(chunkPosIn);
         }
@@ -101,6 +119,52 @@ public abstract class MixinDistanceManager implements InjectionDistanceManager {
                     iterator.remove();
                 }
             }
+        }
+    }
+
+    /**
+     * @author
+     * @reason
+     */
+    @Overwrite
+    public boolean runAllUpdates(ChunkMap chunkManager) {
+        this.naturalSpawnChunkCounter.runAllUpdates();
+        this.tickingTicketsTracker.runAllUpdates();
+        this.playerTicketManager.runAllUpdates();
+        int i = Integer.MAX_VALUE - this.ticketTracker.runDistanceUpdates(Integer.MAX_VALUE);
+        boolean bl = i != 0;
+        if (bl) {
+        }
+
+        if (!this.chunksToUpdateFutures.isEmpty()) {
+            try {
+                this.chunksToUpdateFutures.forEach((chunkHolderx) -> chunkHolderx.updateFutures(chunkManager, this.mainThreadExecutor));
+            } catch (Exception ignored) {
+            }
+            this.chunksToUpdateFutures.clear();
+            return true;
+        } else {
+            if (!this.ticketsToRelease.isEmpty()) {
+                LongIterator longIterator = this.ticketsToRelease.iterator();
+
+                while(longIterator.hasNext()) {
+                    long l = longIterator.nextLong();
+                    if (this.getTickets(l).stream().anyMatch((ticket) -> ticket.getType() == TicketType.PLAYER)) {
+                        ChunkHolder chunkHolder = chunkManager.getUpdatingChunkIfPresent(l);
+                        if (chunkHolder == null) {
+                            throw new IllegalStateException();
+                        }
+
+                        CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> completableFuture = chunkHolder.getEntityTickingChunkFuture();
+                        completableFuture.thenAccept((either) -> this.mainThreadExecutor.execute(() -> this.ticketThrottlerReleaser.tell(ChunkTaskPriorityQueueSorter.release(() -> {
+                        }, l, false))));
+                    }
+                }
+
+                this.ticketsToRelease.clear();
+            }
+
+            return bl;
         }
     }
 }

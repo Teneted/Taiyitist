@@ -1,20 +1,23 @@
 package com.taiyitistmc.injection.world.level.levelgen.structure;
 
+import org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer;
+import org.bukkit.event.world.AsyncStructureGenerateEvent;
+
 public interface InjectionStructureStart {
 
     default org.bukkit.event.world.AsyncStructureGenerateEvent.Cause bridge$generationEventCause() {
-        throw new IllegalStateException("Not implemented");
+        throw new RuntimeException("Not implemented!");
     }
 
-    default org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer bridge$persistentDataContainer() {
-        throw new IllegalStateException("Not implemented");
+    default org.bukkit.craftbukkit.v1_20_R1.persistence.DirtyCraftPersistentDataContainer bridge$persistentDataContainer() {
+        throw new RuntimeException("Not implemented!");
     }
 
-    default void banner$setGenerationEventCause(org.bukkit.event.world.AsyncStructureGenerateEvent.Cause generationEventCause) {
-        throw new IllegalStateException("Not implemented");
+    default void banner$setGenerationEventCause(AsyncStructureGenerateEvent.Cause generationEventCause) {
+        throw new RuntimeException("Not implemented!");
     }
 
-    default void banner$setPersistentDataContainer(org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer persistentDataContainer) {
-        throw new IllegalStateException("Not implemented");
+    default void banner$setPersistentDataContainer(DirtyCraftPersistentDataContainer persistentDataContainer) {
+        throw new RuntimeException("Not implemented!");
     }
 }

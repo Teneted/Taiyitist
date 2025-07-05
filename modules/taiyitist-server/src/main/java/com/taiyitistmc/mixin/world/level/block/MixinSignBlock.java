@@ -3,6 +3,7 @@ package com.taiyitistmc.mixin.world.level.block;
 import com.taiyitistmc.injection.world.level.block.InjectionSignBlock;
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -10,13 +11,14 @@ import net.minecraft.world.level.block.SignBlock;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.block.CraftBlockStates;
-import org.bukkit.craftbukkit.block.CraftSign;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftSign;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.player.PlayerSignOpenEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,11 +27,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SignBlock.class)
 public abstract class MixinSignBlock implements InjectionSignBlock {
 
-    private final AtomicReference<PlayerSignOpenEvent.Cause> banner$signOpenCause =
-            new AtomicReference<>(PlayerSignOpenEvent.Cause.UNKNOWN);
+    @Shadow public abstract void openTextEdit(Player player, SignBlockEntity signEntity, boolean isFrontText);
 
-    @Shadow
-    public abstract void openTextEdit(Player player, SignBlockEntity signEntity, boolean isFrontText);
+    @Unique
+    private AtomicReference<PlayerSignOpenEvent.Cause> banner$signOpenCause =
+            new AtomicReference<>(PlayerSignOpenEvent.Cause.UNKNOWN);
 
     @Inject(method = "openTextEdit",
             at = @At("HEAD"))
@@ -44,20 +46,20 @@ public abstract class MixinSignBlock implements InjectionSignBlock {
         org.bukkit.entity.Player bukkitPlayer = (org.bukkit.entity.Player) player.getBukkitEntity();
         org.bukkit.block.Block bukkitBlock = CraftBlock.at(signEntity.getLevel(), signEntity.getBlockPos());
         CraftSign<?> bukkitSign = (CraftSign<?>) CraftBlockStates.getBlockState(bukkitBlock);
-        PlayerSignOpenEvent event =
-                new PlayerSignOpenEvent(
+        io.papermc.paper.event.player.PlayerOpenSignEvent event =
+                new io.papermc.paper.event.player.PlayerOpenSignEvent(
                         bukkitPlayer,
                         bukkitSign,
                         isFrontText ? org.bukkit.block.sign.Side.FRONT : org.bukkit.block.sign.Side.BACK,
                         cause);
-        if (!CraftEventFactory.callPlayerSignOpenEvent(player, signEntity, isFrontText, cause) || event.isCancelled()) {
-        } // Banner
+        if (!CraftEventFactory.callPlayerSignOpenEvent(player, signEntity, isFrontText, cause) || !event.callEvent()) return; // Banner
         // Paper end
     }
 
-    @Inject(method = "useWithoutItem", at = @At(value = "INVOKE",
+    @Inject(method = "use", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V"))
-    private void banner$setCause(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
+    private void banner$setCause(BlockState state, Level level, BlockPos pos, Player player,
+                                 InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         pushOpenSignCause(PlayerSignOpenEvent.Cause.INTERACT);
     }
 

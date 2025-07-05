@@ -5,10 +5,10 @@ import net.minecraft.world.entity.raid.Raider;
 public interface InjectionRaid {
 
     default boolean isInProgress() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default java.util.Collection<Raider> getRaiders() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

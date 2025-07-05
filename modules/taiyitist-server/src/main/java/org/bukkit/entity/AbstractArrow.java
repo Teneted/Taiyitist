@@ -1,8 +1,6 @@
 package org.bukkit.entity;
 
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,20 +15,14 @@ public interface AbstractArrow extends Projectile {
      * of the bow that shot it.
      *
      * @return the knockback strength value
-     * @see #getWeapon()
-     * @deprecated a function of the firing weapon
      */
-    @Deprecated
     public int getKnockbackStrength();
 
     /**
      * Sets the knockback strength for an arrow.
      *
      * @param knockbackStrength the knockback strength value
-     * @see #setWeapon(org.bukkit.inventory.ItemStack)
-     * @deprecated a function of the firing weapon
      */
-    @Deprecated
     public void setKnockbackStrength(int knockbackStrength);
 
     /**
@@ -129,45 +121,8 @@ public interface AbstractArrow extends Projectile {
      * Sets if this arrow was shot from a crossbow.
      *
      * @param shotFromCrossbow if shot from a crossbow
-     * @see #setWeapon(org.bukkit.inventory.ItemStack)
-     * @deprecated a function of the firing weapon instead
      */
-    @Deprecated
     public void setShotFromCrossbow(boolean shotFromCrossbow);
-
-    /**
-     * Gets the ItemStack which will be picked up from this arrow.
-     *
-     * @return The picked up ItemStack
-     */
-    @NotNull
-    @ApiStatus.Experimental
-    public ItemStack getItem();
-
-    /**
-     * Sets the ItemStack which will be picked up from this arrow.
-     *
-     * @param item ItemStack set to be picked up
-     */
-    @ApiStatus.Experimental
-    public void setItem(@NotNull ItemStack item);
-
-    /**
-     * Gets the ItemStack which fired this arrow.
-     *
-     * @return The firing ItemStack
-     */
-    @NotNull
-    @ApiStatus.Experimental
-    public ItemStack getWeapon();
-
-    /**
-     * Sets the ItemStack which fired this arrow.
-     *
-     * @param item The firing ItemStack
-     */
-    @ApiStatus.Experimental
-    public void setWeapon(@NotNull ItemStack item);
 
     /**
      * Represents the pickup status of this arrow.

@@ -1,24 +1,10 @@
 package org.bukkit.command.defaults;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.Resources;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.taiyitistmc.TaiyitistMCStart;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +27,40 @@ public class VersionCommand extends BukkitCommand {
     public boolean execute(@NotNull CommandSender sender, @NotNull String currentAlias, @NotNull String[] args) {
         if (!testPermission(sender)) return true;
 
-        sender.sendMessage("This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")");
+        if (args.length == 0) {
+            sender.sendMessage("This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")");
+        } else {
+            StringBuilder name = new StringBuilder();
+
+            for (String arg : args) {
+                if (name.length() > 0) {
+                    name.append(' ');
+                }
+
+                name.append(arg);
+            }
+
+            String pluginName = name.toString();
+            Plugin exactPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+            if (exactPlugin != null) {
+                describeToSender(exactPlugin, sender);
+                return true;
+            }
+
+            boolean found = false;
+            pluginName = pluginName.toLowerCase(java.util.Locale.ENGLISH);
+            for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+                if (plugin.getName().toLowerCase(java.util.Locale.ENGLISH).contains(pluginName)) {
+                    describeToSender(plugin, sender);
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                sender.sendMessage("This server is not running any plugin by that name.");
+                sender.sendMessage("Use /plugins to get a list of plugins.");
+            }
+        }
         return true;
     }
 
@@ -101,7 +120,7 @@ public class VersionCommand extends BukkitCommand {
 
         if (args.length == 1) {
             List<String> completions = new ArrayList<String>();
-            String toComplete = args[0].toLowerCase(Locale.ROOT);
+            String toComplete = args[0].toLowerCase(java.util.Locale.ENGLISH);
             for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
                 if (StringUtil.startsWithIgnoreCase(plugin.getName(), toComplete)) {
                     completions.add(plugin.getName());
@@ -110,87 +129,5 @@ public class VersionCommand extends BukkitCommand {
             return completions;
         }
         return ImmutableList.of();
-    }
-
-    private final ReentrantLock versionLock = new ReentrantLock();
-    private boolean hasVersion = false;
-    private String versionMessage = null;
-    private final Set<CommandSender> versionWaiters = new HashSet<CommandSender>();
-    private boolean versionTaskStarted = false;
-    private long lastCheck = 0;
-
-    private void sendVersion(@NotNull CommandSender sender) {
-        if (hasVersion) {
-            if (System.currentTimeMillis() - lastCheck > 21600000) {
-                lastCheck = System.currentTimeMillis();
-                hasVersion = false;
-            } else {
-                sender.sendMessage(versionMessage);
-                return;
-            }
-        }
-        versionLock.lock();
-        try {
-            if (hasVersion) {
-                sender.sendMessage(versionMessage);
-                return;
-            }
-            versionWaiters.add(sender);
-            sender.sendMessage("Checking version, please wait...");
-            if (!versionTaskStarted) {
-                versionTaskStarted = true;
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        obtainVersion();
-                    }
-                }).start();
-            }
-        } finally {
-            versionLock.unlock();
-        }
-    }
-
-    private void obtainVersion() {
-        setVersionMessage("You are running the version of" + TaiyitistMCStart.getVersion());
-
-    }
-
-    private void setVersionMessage(@NotNull String msg) {
-        lastCheck = System.currentTimeMillis();
-        versionMessage = msg;
-        versionLock.lock();
-        try {
-            hasVersion = true;
-            versionTaskStarted = false;
-            for (CommandSender sender : versionWaiters) {
-                sender.sendMessage(versionMessage);
-            }
-            versionWaiters.clear();
-        } finally {
-            versionLock.unlock();
-        }
-    }
-
-    private static int getDistance(@NotNull String repo, @NotNull String hash) {
-        try {
-            BufferedReader reader = Resources.asCharSource(
-                    new URL("https://hub.spigotmc.org/stash/rest/api/1.0/projects/SPIGOT/repos/" + repo + "/commits?since=" + URLEncoder.encode(hash, "UTF-8") + "&withCounts=true"),
-                    Charsets.UTF_8
-            ).openBufferedStream();
-            try {
-                JsonObject obj = new Gson().fromJson(reader, JsonObject.class);
-                return obj.get("totalCount").getAsInt();
-            } catch (JsonSyntaxException ex) {
-                ex.printStackTrace();
-                return -1;
-            } finally {
-                reader.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        }
     }
 }

@@ -3,7 +3,6 @@ package org.bukkit.generator.structure;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represent a StructureType of a {@link Structure}.
@@ -32,8 +31,7 @@ public abstract class StructureType implements Keyed {
     public static final StructureType SWAMP_HUT = getStructureType("swamp_hut");
     public static final StructureType WOODLAND_MANSION = getStructureType("woodland_mansion");
 
-    @NotNull
-    private static StructureType getStructureType(@NotNull String name) {
-        return Registry.STRUCTURE_TYPE.getOrThrow(NamespacedKey.minecraft(name));
+    private static StructureType getStructureType(String name) {
+        return Registry.STRUCTURE_TYPE.get(NamespacedKey.minecraft(name));
     }
 }

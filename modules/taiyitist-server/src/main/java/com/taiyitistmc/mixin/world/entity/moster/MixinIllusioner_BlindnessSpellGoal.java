@@ -11,12 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.world.entity.monster.Illusioner$IllusionerBlindnessSpellGoal")
 public class MixinIllusioner_BlindnessSpellGoal {
 
-    @SuppressWarnings("target")
-    @Shadow(aliases = {"field_7299"}, remap = false)
+    @SuppressWarnings("target") @Shadow(aliases = {"field_7299"}, remap = false)
     private Illusioner outerThis;
 
     @Inject(method = "performSpellCasting", at = @At("HEAD"))
     private void banner$reason(CallbackInfo ci) {
-        outerThis.pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
+         outerThis.pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 }

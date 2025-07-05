@@ -5,22 +5,25 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(targets = "net/minecraft/world/level/block/entity/LecternBlockEntity$1")
 public abstract class MixinLecternBlockEntity1 implements Container {
 
+    @Shadow(aliases = {"field_17391"}, remap = false) private LecternBlockEntity outerThis;
+
+    @Unique
     public List<HumanEntity> transaction = new ArrayList<>();
-    @Shadow(aliases = {"field_17391"}, remap = false)
-    private LecternBlockEntity outerThis;
+    @Unique
     private int maxStack = 1;
 
     @Override
@@ -80,14 +83,15 @@ public abstract class MixinLecternBlockEntity1 implements Container {
     }
 
     @Override
-    public RecipeHolder<?> getCurrentRecipe() {
+    public Recipe<?> getCurrentRecipe() {
         return null;
     }
 
     @Override
-    public void setCurrentRecipe(RecipeHolder<?> recipe) {
+    public void setCurrentRecipe(Recipe<?> recipe) {
     }
 
+    @Unique
     public LecternBlockEntity getLectern() {
         return outerThis;
     }

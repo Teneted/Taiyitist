@@ -19,6 +19,7 @@ import org.bukkit.entity.SpawnCategory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -26,15 +27,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ServerChunkCache.class)
 public abstract class MixinServerChunkCache implements InjectionServerChunkCache {
 
-    @Shadow @Final public ChunkMap chunkMap;
+    // @formatter:off
+    @Shadow public abstract void save(boolean flush);
     @Shadow @Final ThreadedLevelLightEngine lightEngine;
+    @Shadow @Final public ChunkMap chunkMap;
     @Shadow @Final
     ServerLevel level;
     @Shadow @Final private DistanceManager distanceManager;
-
-    // @formatter:off
-    @Shadow public abstract void save(boolean flush);
-
     @Shadow protected abstract void clearCache();
     @Shadow @Nullable protected abstract ChunkHolder getVisibleChunkIfPresent(long chunkPosIn);
 
@@ -47,7 +46,7 @@ public abstract class MixinServerChunkCache implements InjectionServerChunkCache
         return chunk != null &&  chunk.getFullChunkNow() != null;
     }
 
-    public ThreadedLevelLightEngine a() {
+    @Unique public ThreadedLevelLightEngine a() {
         return this.lightEngine;
     }
 
@@ -108,7 +107,7 @@ public abstract class MixinServerChunkCache implements InjectionServerChunkCache
         this.clearCache();
     }
 
-    @Redirect(method = "chunkAbsent", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;getTicketLevel()I"), require = 0)
+    @Redirect(method = "chunkAbsent", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;getTicketLevel()I"))
     public int banner$useOldTicketLevel(ChunkHolder chunkHolder) {
         return chunkHolder.oldTicketLevel;
     }

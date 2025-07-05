@@ -27,8 +27,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityFactory;
-import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
@@ -37,7 +35,6 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemCraftResult;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
@@ -46,7 +43,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapView;
 import org.bukkit.packs.DataPackManager;
-import org.bukkit.packs.ResourcePack;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
@@ -57,7 +53,6 @@ import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -264,15 +259,6 @@ public final class Bukkit {
         return server.getAllowNether();
     }
 
-    /**
-     * Gets whether the server is logging the IP addresses of players.
-     *
-     * @return whether the server is logging the IP addresses of players
-     */
-    public static boolean isLoggingIPs() {
-        return server.isLoggingIPs();
-    }
-
     @NotNull
     public static List<String> getInitialEnabledPacks() {
         return server.getInitialEnabledPacks();
@@ -291,26 +277,6 @@ public final class Bukkit {
     @NotNull
     public static DataPackManager getDataPackManager() {
         return server.getDataPackManager();
-    }
-
-    /**
-     * Gets the resource pack configured to be sent to clients by the server.
-     *
-     * @return the resource pack
-     */
-    @Nullable
-    public static ResourcePack getServerResourcePack() {
-        return server.getServerResourcePack();
-    }
-
-    /**
-     * Get the ServerTick Manager.
-     *
-     * @return the manager
-     */
-    @NotNull
-    public static ServerTickManager getServerTickManager() {
-        return server.getServerTickManager();
     }
 
     /**
@@ -633,10 +599,7 @@ public final class Bukkit {
     }
 
     /**
-     * Gets a player whose name matches the given name closest.
-     * <p>
-     * Use {@link #getPlayerExact(String)} to get the player matching the input exactly
-     * and {@link #matchPlayer(String)} if you want a list of all players matching the input.
+     * Gets a player object by the given username.
      * <p>
      * This method may not return objects for offline players.
      *
@@ -868,7 +831,6 @@ public final class Bukkit {
      */
     public static void reload() {
         server.reload();
-        org.spigotmc.CustomTimingsHandler.reload(); // Spigot
     }
 
     /**
@@ -1003,87 +965,12 @@ public final class Bukkit {
      *                       Must not contain more than 9 items.
      * @param world The world the crafting takes place in.
      * @param player The player to imitate the crafting event on.
-     * @return resulting {@link ItemCraftResult} containing the resulting item, matrix and any overflow items.
-     */
-    @NotNull
-    public static ItemCraftResult craftItemResult(@NotNull ItemStack[] craftingMatrix, @NotNull World world, @NotNull Player player) {
-        return server.craftItemResult(craftingMatrix, world, player);
-    }
-
-    /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @return resulting {@link ItemCraftResult} containing the resulting item, matrix and any overflow items.
-     */
-    @NotNull
-    public static ItemCraftResult craftItemResult(@NotNull ItemStack[] craftingMatrix, @NotNull World world) {
-        return server.craftItemResult(craftingMatrix, world);
-    }
-
-
-    /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * <p>The {@link World} and {@link Player} arguments are required to fulfill the Bukkit Crafting
-     * events.</p>
-     *
-     * <p>Calls {@link org.bukkit.event.inventory.PrepareItemCraftEvent} to imitate the {@link Player}
-     * initiating the crafting event.</p>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @param player The player to imitate the crafting event on.
      * @return the {@link ItemStack} resulting from the given crafting matrix, if no recipe is found
      * an ItemStack of {@link Material#AIR} is returned.
      */
     @NotNull
     public static ItemStack craftItem(@NotNull ItemStack[] craftingMatrix, @NotNull World world, @NotNull Player player) {
         return server.craftItem(craftingMatrix, world, player);
-    }
-
-    /**
-     * Get the crafted item using the list of {@link ItemStack} provided.
-     *
-     * <p>The list is formatted as a crafting matrix where the index follow
-     * the pattern below:</p>
-     *
-     * <pre>
-     * [ 0 1 2 ]
-     * [ 3 4 5 ]
-     * [ 6 7 8 ]
-     * </pre>
-     *
-     * @param craftingMatrix list of items to be crafted from.
-     *                       Must not contain more than 9 items.
-     * @param world The world the crafting takes place in.
-     * @return the {@link ItemStack} resulting from the given crafting matrix, if no recipe is found
-     * an ItemStack of {@link Material#AIR} is returned.
-     */
-    @NotNull
-    public static ItemStack craftItem(@NotNull ItemStack[] craftingMatrix, @NotNull World world) {
-        return server.craftItem(craftingMatrix, world);
     }
 
     /**
@@ -1172,16 +1059,6 @@ public final class Bukkit {
      */
     public static boolean isEnforcingSecureProfiles() {
         return server.isEnforcingSecureProfiles();
-    }
-
-    /**
-     * Gets whether this server is allowing connections transferred from other
-     * servers.
-     *
-     * @return true if the server accepts transfers, false otherwise
-     */
-    public static boolean isAcceptingTransfers() {
-        return server.isAcceptingTransfers();
     }
 
     /**
@@ -1349,6 +1226,7 @@ public final class Bukkit {
     public static void unbanIP(@NotNull String address) {
         server.unbanIP(address);
     }
+
 
     /**
      * Bans the specified address from the server.
@@ -1700,17 +1578,6 @@ public final class Bukkit {
     }
 
     /**
-     * Gets the server links which will be sent to clients
-     *
-     * @return the server's links
-     */
-    @NotNull
-    @ApiStatus.Experimental
-    public static ServerLinks getServerLinks() {
-        return server.getServerLinks();
-    }
-
-    /**
      * Gets the default message that is displayed when the server is stopped.
      *
      * @return the shutdown message
@@ -1739,17 +1606,6 @@ public final class Bukkit {
     @NotNull
     public static ItemFactory getItemFactory() {
         return server.getItemFactory();
-    }
-
-    /**
-     * Gets the instance of the entity factory (for {@link EntitySnapshot}).
-     *
-     * @return the entity factory
-     * @see EntityFactory
-     */
-    @NotNull
-    public static EntityFactory getEntityFactory() {
-        return server.getEntityFactory();
     }
 
     /**
@@ -1963,6 +1819,16 @@ public final class Bukkit {
         return server.getEntity(uuid);
     }
 
+    // Paper start
+    /**
+     * Gets the current server TPS
+     * @return current server TPS (1m, 5m, 15m in Paper-Server)
+     */
+    @NotNull
+    public static double[] getTPS() {
+        return server.getTPS();
+    }
+
     /**
      * Get the advancement specified by this key.
      *
@@ -2006,7 +1872,7 @@ public final class Bukkit {
      * @return new data instance
      */
     @NotNull
-    public static BlockData createBlockData(@NotNull Material material, @Nullable Consumer<? super BlockData> consumer) {
+    public static BlockData createBlockData(@NotNull Material material, @Nullable Consumer<BlockData> consumer) {
         return server.createBlockData(material, consumer);
     }
 

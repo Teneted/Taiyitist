@@ -1,103 +1,107 @@
 package com.taiyitistmc.mixin.server.network;
 
-import com.destroystokyo.paper.proxy.VelocitySupport;
-import com.google.gson.Gson;
-import com.mojang.authlib.properties.Property;
-import com.mojang.util.UndashedUuid;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.HashMap;
+import net.minecraft.SharedConstants;
 import net.minecraft.network.Connection;
+import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
-import net.minecraft.network.protocol.handshake.ServerHandshakePacketListener;
 import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
+import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
-import org.apache.logging.log4j.LogManager;
-import org.bukkit.Bukkit;
-import org.spigotmc.SpigotConfig;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
+import net.minecraft.server.network.ServerStatusPacketListenerImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Unique;
 
 //TODO fixed
 @Mixin(ServerHandshakePacketListenerImpl.class)
-public abstract class MixinServerHandshakePacketListenerImpl implements ServerHandshakePacketListener {
+public class MixinServerHandshakePacketListenerImpl {
 
-    // CraftBukkit start - add fields
-    private static final HashMap<InetAddress, Long> throttleTracker = new HashMap<InetAddress, Long>();
-    // CraftBukkit end
-    private static final Gson gson = new Gson();
-    private static final java.util.regex.Pattern HOST_PATTERN = java.util.regex.Pattern.compile("[0-9a-f\\.:]{0,45}");
+    @Unique
+    private static final HashMap<InetAddress, Long> throttleTracker = new HashMap<>();
+    @Unique
     private static int throttleCounter = 0;
-    @Shadow
-    @Final
-    private Connection connection;
-    @Shadow
-    @Final
-    private MinecraftServer server;
 
-    @Inject(method = "handleIntention", at = @At("HEAD"))
-    private void banner$setHostName(ClientIntentionPacket packet, CallbackInfo ci) {
-        this.connection.banner$setHostName(packet.hostName() + ":" + packet.port()); // CraftBukkit  - set hostname
-    }
+    @Shadow @Final private Connection connection;
+    @Shadow @Final private MinecraftServer server;
+    @Shadow @Final private static Component IGNORE_STATUS_REASON;
 
-    @Inject(method = "beginLogin", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/network/Connection;setupOutboundProtocol(Lnet/minecraft/network/ProtocolInfo;)V"))
-    private void banner$throttler(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
-        try {
-            long currentTime = System.currentTimeMillis();
-            long connectionThrottle = Bukkit.getServer().getConnectionThrottle();
-            InetAddress address = ((InetSocketAddress) this.connection.getRemoteAddress()).getAddress();
-            synchronized (throttleTracker) {
-                if (throttleTracker.containsKey(address) && !"127.0.0.1".equals(address.getHostAddress()) && currentTime - throttleTracker.get(address) < connectionThrottle) {
-                    throttleTracker.put(address, currentTime);
-                    var component = Component.literal("Connection throttled! Please wait before reconnecting.");
+    /**
+     * @author wdog5
+     * @reason
+     */
+    @Overwrite
+    public void handleIntention(ClientIntentionPacket packet) {
+        this.connection.banner$setHostName(packet.hostName + ":" + packet.port); // CraftBukkit  - set hostname
+        switch (packet.getIntention()) {
+            case LOGIN -> {
+                this.connection.setProtocol(ConnectionProtocol.LOGIN);
+                // CraftBukkit start - Connection throttle
+                try {
+                    long currentTime = System.currentTimeMillis();
+                    long connectionThrottle = this.server.bridge$server().getConnectionThrottle();
+                    InetAddress address = ((java.net.InetSocketAddress) this.connection.getRemoteAddress()).getAddress();
+
+                    synchronized (throttleTracker) {
+                        if (throttleTracker.containsKey(address) && !"127.0.0.1".equals(address.getHostAddress()) && currentTime - throttleTracker.get(address) < connectionThrottle) {
+                            throttleTracker.put(address, currentTime);
+                            MutableComponent chatmessage = Component.literal("Connection throttled! Please wait before reconnecting.");
+                            this.connection.send(new ClientboundLoginDisconnectPacket(chatmessage));
+                            this.connection.disconnect(chatmessage);
+                            return;
+                        }
+
+                        throttleTracker.put(address, currentTime);
+                        throttleCounter++;
+                        if (throttleCounter > 200) {
+                            throttleCounter = 0;
+
+                            // Cleanup stale entries
+                            java.util.Iterator iter = throttleTracker.entrySet().iterator();
+                            while (iter.hasNext()) {
+                                java.util.Map.Entry<InetAddress, Long> entry = (java.util.Map.Entry) iter.next();
+                                if (entry.getValue() > connectionThrottle) {
+                                    iter.remove();
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    org.apache.logging.log4j.LogManager.getLogger().debug("Failed to check connection throttle", t);
+                }
+                // CraftBukkit end
+                if (packet.getProtocolVersion() != SharedConstants.getCurrentVersion().getProtocolVersion()) {
+                    MutableComponent component;
+                    if (packet.getProtocolVersion() < 754) {
+                        component = Component.translatable("multiplayer.disconnect.outdated_client", new Object[]{SharedConstants.getCurrentVersion().getName()});
+                    } else {
+                        component = Component.translatable("multiplayer.disconnect.incompatible", new Object[]{SharedConstants.getCurrentVersion().getName()});
+                    }
+
                     this.connection.send(new ClientboundLoginDisconnectPacket(component));
                     this.connection.disconnect(component);
-                    ci.cancel();
-                    return;
-                }
-                throttleTracker.put(address, currentTime);
-                ++throttleCounter;
-                if (throttleCounter > 200) {
-                    throttleCounter = 0;
-                    throttleTracker.entrySet().removeIf(entry -> entry.getValue() > connectionThrottle);
-                }
-            }
-        } catch (Throwable t) {
-            LogManager.getLogger().debug("Failed to check connection throttle", t);
-        }
-    }
-
-    @Inject(method = "beginLogin", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
-    private void banner$proxySupport(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
-        if (!VelocitySupport.isEnabled()) {
-            String[] split = packet.hostName().split("\00");
-            if (SpigotConfig.bungee) {
-                if ((split.length == 3 || split.length == 4) && (HOST_PATTERN.matcher(split[1]).matches())) {
-                    this.connection.banner$setHostName(split[0]);
-                    this.connection.address = new InetSocketAddress(split[1], ((InetSocketAddress) this.connection.getRemoteAddress()).getPort());
-                    this.connection.banner$setSpoofedUUID(UndashedUuid.fromStringLenient(split[2]));
                 } else {
-                    var component = Component.literal("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
-                    this.connection.send(new ClientboundLoginDisconnectPacket(component));
-                    this.connection.disconnect(component);
-                    ci.cancel();
-                    return;
+                    this.connection.setListener(new ServerLoginPacketListenerImpl(this.server, this.connection));
                 }
-                if (split.length == 4) {
-                    this.connection.bridge$setSpoofedProfile(gson.fromJson(split[3], Property[].class));
-                }
-            } else if ((split.length == 3 || split.length == 4) && (HOST_PATTERN.matcher(split[1]).matches())) {
-                Component component = Component.literal("Unknown data in login hostname, did you forget to enable BungeeCord in spigot.yml?");
-                this.connection.send(new ClientboundLoginDisconnectPacket(component));
-                this.connection.disconnect(component);
-                ci.cancel();
             }
+            case STATUS -> {
+                ServerStatus serverStatus = this.server.getStatus();
+                if (this.server.repliesToStatus() && serverStatus != null) {
+                    this.connection.setProtocol(ConnectionProtocol.STATUS);
+                    this.connection.setListener(new ServerStatusPacketListenerImpl(serverStatus, this.connection));
+                } else {
+                    this.connection.disconnect(IGNORE_STATUS_REASON);
+                }
+            }
+            default -> throw new UnsupportedOperationException("Invalid intention " + packet.getIntention());
         }
+
     }
 }

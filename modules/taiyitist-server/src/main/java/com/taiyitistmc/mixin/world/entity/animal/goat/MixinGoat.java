@@ -12,10 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -25,11 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Goat.class)
 public abstract class MixinGoat extends Animal {
 
-    private final AtomicReference<PlayerBucketFillEvent> banner$event = new AtomicReference<>();
-
     protected MixinGoat(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
+
+    @Unique
+    private AtomicReference<PlayerBucketFillEvent> banner$event = new AtomicReference<>();
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/player/Player;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"),

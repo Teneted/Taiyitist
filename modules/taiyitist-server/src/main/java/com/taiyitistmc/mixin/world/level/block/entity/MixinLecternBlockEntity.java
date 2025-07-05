@@ -23,12 +23,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.command.CraftBlockCommandSender;
+import org.bukkit.craftbukkit.v1_20_R1.command.CraftBlockCommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -45,7 +46,7 @@ public abstract class MixinLecternBlockEntity extends BlockEntity implements Cle
     }
     // @formatter:on
 
-    @Redirect(method = "createCommandSourceStack", at = @At(value = "NEW", args = "class=net/minecraft/commands/CommandSourceStack"))
+    @Redirect(method = "createCommandSourceStack", at = @At(value = "NEW", target = "(Lnet/minecraft/commands/CommandSource;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec2;Lnet/minecraft/server/level/ServerLevel;ILjava/lang/String;Lnet/minecraft/network/chat/Component;Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/commands/CommandSourceStack;"))
     private CommandSourceStack banner$source(CommandSource source, Vec3 vec3d, Vec2 vec2f, ServerLevel world, int i, String s, Component component, MinecraftServer server, @Nullable Entity entity) {
         return new CommandSourceStack(this, vec3d, vec2f, world, i, s, component, server, entity);
     }
@@ -57,7 +58,7 @@ public abstract class MixinLecternBlockEntity extends BlockEntity implements Cle
     @Overwrite
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player entity) {
         LecternMenu container = new LecternMenu(i, this.bookAccess, this.dataAccess);
-        container.bridge$setPlayerInventory(playerInventory);
+         container.bridge$setPlayerInventory(playerInventory);
         return container;
     }
 
@@ -80,8 +81,9 @@ public abstract class MixinLecternBlockEntity extends BlockEntity implements Cle
         return false;
     }
 
+    @Unique
     public CommandSender getBukkitSender(CommandSourceStack wrapper) {
-        return wrapper.getEntity() != null ? wrapper.getEntity().banner$getBukkitSender(wrapper) : new CraftBlockCommandSender(wrapper, (BlockEntity) this);
+        return wrapper.getEntity() != null ?  wrapper.getEntity().banner$getBukkitSender(wrapper) : new CraftBlockCommandSender(wrapper, (BlockEntity) (Object) this);
     }
 
     @Override

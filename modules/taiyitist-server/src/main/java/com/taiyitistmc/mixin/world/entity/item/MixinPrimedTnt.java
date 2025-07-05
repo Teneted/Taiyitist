@@ -10,12 +10,12 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Level;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Explosive;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,17 +24,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, InjectionPrimedTnt {
 
 
-    public float yield;
-    public boolean isIncendiary;
     public MixinPrimedTnt(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
-    // @formatter:on
 
     // @formatter:off
     @Shadow public abstract int getFuse();
-
     @Shadow public abstract void setFuse(int p_32086_);
+    // @formatter:on
+
+    @Unique
+    public float yield;
+    @Unique
+    public boolean isIncendiary;
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
     private void banner$init(EntityType<? extends PrimedTnt> type, Level worldIn, CallbackInfo ci) {
@@ -87,8 +89,7 @@ public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, 
      */
     @Overwrite
     private void explode() {
-        ExplosionPrimeEvent event = new ExplosionPrimeEvent((Explosive) this.getBukkitEntity());
-        Bukkit.getPluginManager().callEvent(event);
+        ExplosionPrimeEvent event = CraftEventFactory.callExplosionPrimeEvent((org.bukkit.entity.Explosive)this.getBukkitEntity());
         if (!event.isCancelled()) {
             this.level().explode((PrimedTnt) (Object) this, this.getX(), this.getY(0.0625), this.getZ(), event.getRadius(), event.getFire(), Level.ExplosionInteraction.TNT);
         }

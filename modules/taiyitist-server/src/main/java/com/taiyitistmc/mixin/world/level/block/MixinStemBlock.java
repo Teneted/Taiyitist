@@ -1,30 +1,47 @@
 package com.taiyitistmc.mixin.world.level.block;
 
-import com.llamalad7.mixinextras.sugar.Cancellable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.StemGrownBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(StemBlock.class)
 public class MixinStemBlock {
 
-    @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean banner$handleBlockGrowEvent(ServerLevel instance, BlockPos blockPos, BlockState blockState, int i) {
-        return CraftEventFactory.handleBlockGrowEvent(instance, blockPos, blockState, 2); // CraftBukkit
+    @Shadow @Final private StemGrownBlock fruit;
+
+    @Redirect(method = "randomTick", at = @At (value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+    private boolean banner$growEvent(ServerLevel level, BlockPos pos, BlockState state, int flags) {
+        return CraftEventFactory.handleBlockGrowEvent(level, pos, state, flags);
     }
 
-    @Redirect(method = "randomTick", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public boolean banner$cropGrow2(ServerLevel world, BlockPos pos, BlockState state, @Cancellable CallbackInfo ci) {
-        if (!CraftEventFactory.handleBlockGrowEvent(world, pos, state)) {
-            ci.cancel();
-        }
-        return true;
+    @Inject(method = "randomTick", at = @At (value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
+            ordinal = 0),
+            cancellable = true,
+            locals = LocalCapture.CAPTURE_FAILHARD)
+    private void banner$growEvent0(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci, float f, int i, Direction direction, BlockPos blockPos) {
+        if (!CraftEventFactory.handleBlockGrowEvent(level, blockPos, this.fruit.defaultBlockState())) { ci.cancel(); }
+    }
+
+    @Redirect(method = "randomTick", at = @At (value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
+            ordinal = 0))
+    private boolean banner$growEvent(ServerLevel instance, BlockPos pos, BlockState state) {
+        return false;
     }
 
     @Redirect(method = "performBonemeal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))

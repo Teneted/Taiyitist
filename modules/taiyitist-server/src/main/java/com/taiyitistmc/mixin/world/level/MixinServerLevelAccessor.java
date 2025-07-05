@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ServerLevelAccessor.class)
 public interface MixinServerLevelAccessor extends LevelAccessor, InjectionServerLevelAccessor {
 
-    @Shadow
-    ServerLevel getLevel();
+    @Shadow ServerLevel getLevel();
 
     @Override
     default ServerLevel getMinecraftWorld() {

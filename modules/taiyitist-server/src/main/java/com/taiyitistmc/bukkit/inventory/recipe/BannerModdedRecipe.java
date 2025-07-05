@@ -1,13 +1,11 @@
 package com.taiyitistmc.bukkit.inventory.recipe;
 
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.inventory.CraftComplexRecipe;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftComplexRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,18 +13,23 @@ public class BannerModdedRecipe extends CraftComplexRecipe {
 
     private final Recipe<?> recipe;
 
-    public BannerModdedRecipe(NamespacedKey id, Recipe<?> recipe) {
-        super(id, (ItemStack) null, (CustomRecipe) recipe);
+    public BannerModdedRecipe(Recipe<?> recipe) {
+        super(null);
         this.recipe = recipe;
     }
 
     @Override
     public @NotNull ItemStack getResult() {
-        return CraftItemStack.asCraftMirror(new RecipeHolder<>(CraftNamespacedKey.toMinecraft(this.getKey()), this.recipe).value().getResultItem(BukkitMethodHooks.getServer().registryAccess()));
+        return CraftItemStack.asCraftMirror(this.recipe.getResultItem(BukkitMethodHooks.getServer().registryAccess()));
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return CraftNamespacedKey.fromMinecraft(this.recipe.getId());
     }
 
     @Override
     public void addToCraftingManager() {
-        BukkitMethodHooks.getServer().getRecipeManager().addRecipe((new RecipeHolder<>(CraftNamespacedKey.toMinecraft(this.getKey()), this.recipe)));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(this.recipe);
     }
 }

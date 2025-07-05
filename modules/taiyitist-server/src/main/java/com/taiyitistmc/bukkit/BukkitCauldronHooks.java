@@ -7,9 +7,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.block.CraftBlockState;
-import org.bukkit.craftbukkit.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlockStates;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 public class BukkitCauldronHooks {
 

@@ -11,5 +11,5 @@ import org.spongepowered.asm.mixin.Mixin;
 public class LootParametersMixin {
 
     @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL)
-    private static final LootContextParam<Integer> LOOTING_MOD = new LootContextParam<>(ResourceLocation.parse("bukkit:looting_mod")); // CraftBukkit
+    private static final LootContextParam<Integer> LOOTING_MOD = new LootContextParam<>(new ResourceLocation("bukkit:looting_mod")); // CraftBukkit
 }

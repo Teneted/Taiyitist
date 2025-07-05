@@ -1,6 +1,7 @@
 package org.bukkit.command;
 
 import java.net.SocketAddress;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public interface RemoteConsoleCommandSender extends CommandSender {
@@ -11,5 +12,6 @@ public interface RemoteConsoleCommandSender extends CommandSender {
      * @return the remote sender's address
      */
     @NotNull
+    @ApiStatus.Experimental
     public SocketAddress getAddress();
 }

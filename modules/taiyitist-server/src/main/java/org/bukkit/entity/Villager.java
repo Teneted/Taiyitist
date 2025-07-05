@@ -1,13 +1,9 @@
 package org.bukkit.entity;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import java.util.Locale;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
-import org.bukkit.util.OldEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,42 +118,25 @@ public interface Villager extends AbstractVillager {
      * Represents Villager type, usually corresponding to what biome they spawn
      * in.
      */
-    interface Type extends OldEnum<Type>, Keyed {
+    public enum Type implements Keyed {
 
-        Type DESERT = getType("desert");
-        Type JUNGLE = getType("jungle");
-        Type PLAINS = getType("plains");
-        Type SAVANNA = getType("savanna");
-        Type SNOW = getType("snow");
-        Type SWAMP = getType("swamp");
-        Type TAIGA = getType("taiga");
+        DESERT,
+        JUNGLE,
+        PLAINS,
+        SAVANNA,
+        SNOW,
+        SWAMP,
+        TAIGA;
+        private final NamespacedKey key;
 
-        @NotNull
-        private static Type getType(@NotNull String key) {
-            return Registry.VILLAGER_TYPE.getOrThrow(NamespacedKey.minecraft(key));
+        private Type() {
+            this.key = NamespacedKey.minecraft(this.name().toLowerCase(Locale.ROOT));
         }
 
-        /**
-         * @param name of the villager type.
-         * @return the villager type with the given name.
-         * @deprecated only for backwards compatibility, use {@link Registry#get(NamespacedKey)} instead.
-         */
         @NotNull
-        @Deprecated(since = "1.21")
-        static Type valueOf(@NotNull String name) {
-            Type type = Registry.VILLAGER_TYPE.get(NamespacedKey.fromString(name.toLowerCase(Locale.ROOT)));
-            Preconditions.checkArgument(type != null, "No villager type found with the name %s", name);
-            return type;
-        }
-
-        /**
-         * @return an array of all known villager types.
-         * @deprecated use {@link Registry#iterator()}.
-         */
-        @NotNull
-        @Deprecated(since = "1.21")
-        static Type[] values() {
-            return Lists.newArrayList(Registry.VILLAGER_TYPE).toArray(new Type[0]);
+        @Override
+        public NamespacedKey getKey() {
+            return key;
         }
     }
 
@@ -165,106 +144,88 @@ public interface Villager extends AbstractVillager {
      * Represents the various different Villager professions there may be.
      * Villagers have different trading options depending on their profession,
      */
-    interface Profession extends OldEnum<Profession>, Keyed {
-
-        Profession NONE = getProfession("none");
+    public enum Profession implements Keyed {
+        NONE,
         /**
          * Armorer profession. Wears a black apron. Armorers primarily trade for
          * iron armor, chainmail armor, and sometimes diamond armor.
          */
-        Profession ARMORER = getProfession("armorer");
+        ARMORER,
         /**
          * Butcher profession. Wears a white apron. Butchers primarily trade for
          * raw and cooked food.
          */
-        Profession BUTCHER = getProfession("butcher");
+        BUTCHER,
         /**
          * Cartographer profession. Wears a white robe. Cartographers primarily
          * trade for explorer maps and some paper.
          */
-        Profession CARTOGRAPHER = getProfession("cartographer");
+        CARTOGRAPHER,
         /**
          * Cleric profession. Wears a purple robe. Clerics primarily trade for
          * rotten flesh, gold ingot, redstone, lapis, ender pearl, glowstone,
          * and bottle o' enchanting.
          */
-        Profession CLERIC = getProfession("cleric");
+        CLERIC,
         /**
          * Farmer profession. Wears a brown robe. Farmers primarily trade for
          * food-related items.
          */
-        Profession FARMER = getProfession("farmer");
+        FARMER,
         /**
          * Fisherman profession. Wears a brown robe. Fisherman primarily trade
          * for fish, as well as possibly selling string and/or coal.
          */
-        Profession FISHERMAN = getProfession("fisherman");
+        FISHERMAN,
         /**
          * Fletcher profession. Wears a brown robe. Fletchers primarily trade
          * for string, bows, and arrows.
          */
-        Profession FLETCHER = getProfession("fletcher");
+        FLETCHER,
         /**
          * Leatherworker profession. Wears a white apron. Leatherworkers
          * primarily trade for leather, and leather armor, as well as saddles.
          */
-        Profession LEATHERWORKER = getProfession("leatherworker");
+        LEATHERWORKER,
         /**
          * Librarian profession. Wears a white robe. Librarians primarily trade
          * for paper, books, and enchanted books.
          */
-        Profession LIBRARIAN = getProfession("librarian");
+        LIBRARIAN,
         /**
          * Mason profession.
          */
-        Profession MASON = getProfession("mason");
+        MASON,
         /**
          * Nitwit profession. Wears a green apron, cannot trade. Nitwit
          * villagers do not do anything. They do not have any trades by default.
          */
-        Profession NITWIT = getProfession("nitwit");
+        NITWIT,
         /**
          * Sheperd profession. Wears a brown robe. Shepherds primarily trade for
          * wool items, and shears.
          */
-        Profession SHEPHERD = getProfession("shepherd");
+        SHEPHERD,
         /**
          * Toolsmith profession. Wears a black apron. Tool smiths primarily
          * trade for iron and diamond tools.
          */
-        Profession TOOLSMITH = getProfession("toolsmith");
+        TOOLSMITH,
         /**
          * Weaponsmith profession. Wears a black apron. Weapon smiths primarily
          * trade for iron and diamond weapons, sometimes enchanted.
          */
-        Profession WEAPONSMITH = getProfession("weaponsmith");
+        WEAPONSMITH;
+        private final NamespacedKey key;
 
-        @NotNull
-        private static Profession getProfession(@NotNull String key) {
-            return Registry.VILLAGER_PROFESSION.getOrThrow(NamespacedKey.minecraft(key));
+        private Profession() {
+            this.key = NamespacedKey.minecraft(this.name().toLowerCase(Locale.ROOT));
         }
 
-        /**
-         * @param name of the villager profession.
-         * @return the villager profession with the given name.
-         * @deprecated only for backwards compatibility, use {@link Registry#get(NamespacedKey)} instead.
-         */
         @NotNull
-        @Deprecated(since = "1.21")
-        static Profession valueOf(@NotNull String name) {
-            Profession profession = Registry.VILLAGER_PROFESSION.get(NamespacedKey.fromString(name.toLowerCase(Locale.ROOT)));
-            Preconditions.checkArgument(profession != null, "No villager profession found with the name %s", name);
-            return profession;
-        }
-
-        /**
-         * @return an array of all known villager professions.
-         * @deprecated use {@link Registry#iterator()}.
-         */
-        @NotNull
-        @Deprecated(since = "1.21")
-        static Profession[] values() {
-            return Lists.newArrayList(Registry.VILLAGER_PROFESSION).toArray(new Profession[0]);
+        @Override
+        public NamespacedKey getKey() {
+            return key;
         }
     }
 }

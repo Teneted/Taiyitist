@@ -9,63 +9,63 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 
 public interface InjectionPlayer extends InjectionLivingEntity {
 
     default boolean bridge$affectsSpawning() {
-        throw new IllegalStateException("Not implemented");
+        return true;
     }
 
     default void banner$setAffectsSpawning(boolean affectsSpawning) {
-        throw new IllegalStateException("Not implemented");
+
     }
 
     @Override
     default CraftHumanEntity getBukkitEntity() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void pushExhaustReason(EntityExhaustionEvent.ExhaustionReason reason) {
     }
 
     default ItemEntity drop(ItemStack itemstack, boolean flag, boolean flag1, boolean callEvent) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default Either<Player.BedSleepingProblem, Unit> startSleepInBed(BlockPos blockposition, boolean force) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default void causeFoodExhaustion(float f, EntityExhaustionEvent.ExhaustionReason reason) {
+
     }
 
     default boolean spawnEntityFromShoulder(CompoundTag nbttagcompound) { // CraftBukkit void->boolean
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default boolean bridge$fauxSleeping() {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default void banner$setFauxSleeping(boolean fauxSleeping) {
-        throw new IllegalStateException("Not implemented");
     }
 
     default int bridge$oldLevel() {
-        throw new IllegalStateException("Not implemented");
+        return 0;
     }
 
     default void banner$setOldLevel(int oldLevel) {
-        throw new IllegalStateException("Not implemented");
     }
 
+
     default Player forceSleepInBed(boolean force) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 
     default AtomicBoolean bridge$startSleepInBed_force() {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

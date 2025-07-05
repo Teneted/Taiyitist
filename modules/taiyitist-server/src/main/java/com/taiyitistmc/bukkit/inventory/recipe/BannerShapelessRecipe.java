@@ -1,12 +1,11 @@
 package com.taiyitistmc.bukkit.inventory.recipe;
 
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.inventory.CraftShapelessRecipe;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftShapelessRecipe;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +13,8 @@ public class BannerShapelessRecipe extends CraftShapelessRecipe {
 
     private final ShapelessRecipe recipe;
 
-    public BannerShapelessRecipe(NamespacedKey id, ShapelessRecipe recipe) {
-        super(id, null);
+    public BannerShapelessRecipe(ShapelessRecipe recipe) {
+        super(null, recipe);
         this.recipe = recipe;
     }
 
@@ -25,7 +24,12 @@ public class BannerShapelessRecipe extends CraftShapelessRecipe {
     }
 
     @Override
+    public @NotNull NamespacedKey getKey() {
+        return CraftNamespacedKey.fromMinecraft(this.recipe.getId());
+    }
+
+    @Override
     public void addToCraftingManager() {
-        BukkitMethodHooks.getServer().getRecipeManager().addRecipe((new RecipeHolder<>(CraftNamespacedKey.toMinecraft(this.getKey()), this.recipe)));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(this.recipe);
     }
 }

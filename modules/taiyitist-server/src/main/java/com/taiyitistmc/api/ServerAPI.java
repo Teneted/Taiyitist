@@ -27,7 +27,7 @@ public class ServerAPI {
     public static Map<String, String> fabriccmdper = new ConcurrentHashMap<>();
     public static List<Command> fabriccmd = new ArrayList<>();
     public static Map<net.minecraft.world.entity.EntityType<?>, String> entityTypeMap = new ConcurrentHashMap<>();
-    public static Map<net.minecraft.world.entity.EntityType<?>, EntityType> entity_minecraftToBukkit = new ConcurrentHashMap<>();
+    public static Map<EntityType, net.minecraft.world.entity.EntityType<?>> entityTypeMap0 = new ConcurrentHashMap<>();
     public static Map<Integer, EnderDragon.Phase> phasetypeMap = new ConcurrentHashMap<>();
 
     static {

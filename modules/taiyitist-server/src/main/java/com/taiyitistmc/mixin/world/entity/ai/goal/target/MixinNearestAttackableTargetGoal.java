@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(NearestAttackableTargetGoal.class)
 public abstract class MixinNearestAttackableTargetGoal extends TargetGoal {
 
-    @Shadow
-    protected LivingEntity target;
+    @Shadow protected LivingEntity target;
 
     public MixinNearestAttackableTargetGoal(Mob mob, boolean bl) {
         super(mob, bl);

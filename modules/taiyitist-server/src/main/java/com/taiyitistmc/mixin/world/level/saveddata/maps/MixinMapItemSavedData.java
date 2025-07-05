@@ -4,18 +4,17 @@ import com.taiyitistmc.injection.world.level.saveddata.maps.InjectionMapItemSave
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.map.CraftMapView;
-import org.spongepowered.asm.mixin.Final;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.map.CraftMapView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -25,13 +24,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MapItemSavedData.class)
 public class MixinMapItemSavedData implements InjectionMapItemSavedData {
 
-    @Shadow
-    @Final
-    public ResourceKey<Level> dimension;
+    @Shadow public ResourceKey<Level> dimension;
+    @Unique
     public CraftMapView mapView;
-    public UUID uniqueId = null;
-    public String id;
+    @Unique
     private CraftServer server;
+    @Unique
+    public UUID uniqueId = null;
+    @Unique
+    public String id;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void banner$init(int i, int j, byte b, boolean bl, boolean bl2, boolean bl3, ResourceKey resourceKey, CallbackInfo ci) {
+        this.mapView = new CraftMapView((MapItemSavedData) (Object) this);
+        this.server = (CraftServer) Bukkit.getServer();
+    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Redirect(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/Optional;orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;"))
@@ -50,14 +57,8 @@ public class MixinMapItemSavedData implements InjectionMapItemSavedData {
         });
     }
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void banner$init(int i, int j, byte b, boolean bl, boolean bl2, boolean bl3, ResourceKey resourceKey, CallbackInfo ci) {
-        this.mapView = new CraftMapView((MapItemSavedData) (Object) this);
-        this.server = (CraftServer) Bukkit.getServer();
-    }
-
     @Inject(method = "save", at = @At("HEAD"))
-    public void banner$storeDimension(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir) {
+    public void banner$storeDimension(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
         if (this.uniqueId == null) {
             for (org.bukkit.World world : this.server.getWorlds()) {
                 CraftWorld cWorld = (CraftWorld) world;
@@ -67,8 +68,8 @@ public class MixinMapItemSavedData implements InjectionMapItemSavedData {
             }
         }
         if (this.uniqueId != null) {
-            compoundTag.putLong("UUIDLeast", this.uniqueId.getLeastSignificantBits());
-            compoundTag.putLong("UUIDMost", this.uniqueId.getMostSignificantBits());
+            compound.putLong("UUIDLeast", this.uniqueId.getLeastSignificantBits());
+            compound.putLong("UUIDMost", this.uniqueId.getMostSignificantBits());
         }
     }
 

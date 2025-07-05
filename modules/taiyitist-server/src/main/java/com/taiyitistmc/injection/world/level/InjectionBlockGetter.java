@@ -7,6 +7,6 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface InjectionBlockGetter {
 
     default BlockHitResult clip(ClipContext raytrace1, BlockPos blockposition) {
-        throw new IllegalStateException("Not implemented");
+        return null;
     }
 }

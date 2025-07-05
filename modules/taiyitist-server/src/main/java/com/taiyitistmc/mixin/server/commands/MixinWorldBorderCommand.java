@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinWorldBorderCommand {
 
     @Unique
-    private static final AtomicReference<CommandSourceStack> banner$source = new AtomicReference<>();
+    private static AtomicReference<CommandSourceStack> banner$source = new AtomicReference<>();
 
     @Inject(method = "setDamageBuffer", at = @At("HEAD"))
     private static void banner$setSource(CommandSourceStack source, float distance, CallbackInfoReturnable<Integer> cir) {

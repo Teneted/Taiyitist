@@ -13,17 +13,17 @@ import org.jetbrains.annotations.NotNull;
  * {@code
  * public class UUIDTagType implements PersistentDataType<byte[], UUID> {
  *
- *         @Override
+ *         {@literal @Override}
  *         public Class<byte[]> getPrimitiveType() {
  *             return byte[].class;
  *         }
  *
- *         @Override
+ *         {@literal @Override}
  *         public Class<UUID> getComplexType() {
  *             return UUID.class;
  *         }
  *
- *         @Override
+ *         {@literal @Override}
  *         public byte[] toPrimitive(UUID complex, PersistentDataAdapterContext context) {
  *             ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
  *             bb.putLong(complex.getMostSignificantBits());
@@ -31,24 +31,19 @@ import org.jetbrains.annotations.NotNull;
  *             return bb.array();
  *         }
  *
- *         @Override
+ *         {@literal @Override}
  *         public UUID fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
  *             ByteBuffer bb = ByteBuffer.wrap(primitive);
  *             long firstLong = bb.getLong();
  *             long secondLong = bb.getLong();
  *             return new UUID(firstLong, secondLong);
  *         }
- *     }
- *}</pre>
+ *     }}</pre>
  *
- * Any plugin owned implementation of this interface is required to define one
- * of the existing primitive types found in this interface. Notably
- * {@link #BOOLEAN} is not a primitive type but a convenience type.
- *
- * @param <P> the primary object type that is stored in the given tag
- * @param <C> the retrieved object type when applying this tag type
+ * @param <T> the primary object type that is stored in the given tag
+ * @param <Z> the retrieved object type when applying this tag type
  */
-public interface PersistentDataType<P, C> {
+public interface PersistentDataType<T, Z> {
 
     /*
         The primitive one value types.
@@ -60,7 +55,7 @@ public interface PersistentDataType<P, C> {
     PersistentDataType<Float, Float> FLOAT = new PrimitivePersistentDataType<>(Float.class);
     PersistentDataType<Double, Double> DOUBLE = new PrimitivePersistentDataType<>(Double.class);
 
-    /*
+     /*
         Boolean.
      */
     /**
@@ -85,12 +80,6 @@ public interface PersistentDataType<P, C> {
     /*
         Complex Arrays.
      */
-    /**
-     * @deprecated Use {@link #LIST}'s {@link ListPersistentDataTypeProvider#dataContainers()} instead as
-     * {@link ListPersistentDataType}s offer full support for primitive types, such as the
-     * {@link PersistentDataContainer}.
-     */
-    @Deprecated
     PersistentDataType<PersistentDataContainer[], PersistentDataContainer[]> TAG_CONTAINER_ARRAY = new PrimitivePersistentDataType<>(PersistentDataContainer[].class);
 
     /*
@@ -99,28 +88,12 @@ public interface PersistentDataType<P, C> {
     PersistentDataType<PersistentDataContainer, PersistentDataContainer> TAG_CONTAINER = new PrimitivePersistentDataType<>(PersistentDataContainer.class);
 
     /**
-     * A data type provider type that itself cannot be used as a
-     * {@link PersistentDataType}.
-     *
-     * {@link ListPersistentDataTypeProvider} exposes shared persistent data
-     * types for storing lists of other data types, however.
-     * <p>
-     * Its existence in the {@link PersistentDataType} interface does not permit
-     * {@link java.util.List} as a primitive type in combination with a plain
-     * {@link PersistentDataType}. {@link java.util.List}s are only valid
-     * primitive types when used via a {@link ListPersistentDataType}.
-     *
-     * @see ListPersistentDataTypeProvider
-     */
-    ListPersistentDataTypeProvider LIST = new ListPersistentDataTypeProvider();
-
-    /**
      * Returns the primitive data type of this tag.
      *
      * @return the class
      */
     @NotNull
-    Class<P> getPrimitiveType();
+    Class<T> getPrimitiveType();
 
     /**
      * Returns the complex object type the primitive value resembles.
@@ -128,7 +101,7 @@ public interface PersistentDataType<P, C> {
      * @return the class type
      */
     @NotNull
-    Class<C> getComplexType();
+    Class<Z> getComplexType();
 
     /**
      * Returns the primitive data that resembles the complex object passed to
@@ -139,7 +112,7 @@ public interface PersistentDataType<P, C> {
      * @return the primitive value
      */
     @NotNull
-    P toPrimitive(@NotNull C complex, @NotNull PersistentDataAdapterContext context);
+    T toPrimitive(@NotNull Z complex, @NotNull PersistentDataAdapterContext context);
 
     /**
      * Creates a complex object based of the passed primitive value
@@ -149,7 +122,7 @@ public interface PersistentDataType<P, C> {
      * @return the complex object instance
      */
     @NotNull
-    C fromPrimitive(@NotNull P primitive, @NotNull PersistentDataAdapterContext context);
+    Z fromPrimitive(@NotNull T primitive, @NotNull PersistentDataAdapterContext context);
 
     /**
      * A default implementation that simply exists to pass on the retrieved or
@@ -158,37 +131,37 @@ public interface PersistentDataType<P, C> {
      * This implementation does not add any kind of logic, but is used to
      * provide default implementations for the primitive types.
      *
-     * @param <P> the generic type of the primitive objects
+     * @param <T> the generic type of the primitive objects
      */
-    class PrimitivePersistentDataType<P> implements PersistentDataType<P, P> {
+    class PrimitivePersistentDataType<T> implements PersistentDataType<T, T> {
 
-        private final Class<P> primitiveType;
+        private final Class<T> primitiveType;
 
-        PrimitivePersistentDataType(@NotNull Class<P> primitiveType) {
+        PrimitivePersistentDataType(@NotNull Class<T> primitiveType) {
             this.primitiveType = primitiveType;
         }
 
         @NotNull
         @Override
-        public Class<P> getPrimitiveType() {
+        public Class<T> getPrimitiveType() {
             return primitiveType;
         }
 
         @NotNull
         @Override
-        public Class<P> getComplexType() {
+        public Class<T> getComplexType() {
             return primitiveType;
         }
 
         @NotNull
         @Override
-        public P toPrimitive(@NotNull P complex, @NotNull PersistentDataAdapterContext context) {
+        public T toPrimitive(@NotNull T complex, @NotNull PersistentDataAdapterContext context) {
             return complex;
         }
 
         @NotNull
         @Override
-        public P fromPrimitive(@NotNull P primitive, @NotNull PersistentDataAdapterContext context) {
+        public T fromPrimitive(@NotNull T primitive, @NotNull PersistentDataAdapterContext context) {
             return primitive;
         }
     }

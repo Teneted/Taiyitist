@@ -6,11 +6,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 public interface InjectionLevelWriter {
 
     default boolean addFreshEntity(Entity entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason reason) {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default boolean addEntity(Entity entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason reason) {
-        throw new IllegalStateException("Not implemented");
+        return false;
     }
 
     default CreatureSpawnEvent.SpawnReason getAddEntityReason() {

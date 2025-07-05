@@ -6,22 +6,20 @@ import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(CompoundContainer.class)
 public abstract class MixinCompoundContainer implements Container {
 
-    @Shadow
-    @Final
-    public Container container1;
-    @Shadow
-    @Final
-    public Container container2;
+    @Shadow @Final public Container container1;
+    @Shadow @Final public Container container2;
+    @Unique
     public List<HumanEntity> transaction = new java.util.ArrayList<>();
 
     @Override
@@ -54,9 +52,7 @@ public abstract class MixinCompoundContainer implements Container {
     }
 
     @Override
-    public InventoryHolder getOwner() {
-        return null;
-    }
+    public InventoryHolder getOwner() { return null; }
 
     @Override
     public int getMaxStackSize() {

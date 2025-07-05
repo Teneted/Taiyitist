@@ -6,31 +6,35 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.HorseInventoryMenu;
 import net.minecraft.world.inventory.MenuType;
-import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HorseInventoryMenu.class)
-public abstract class MixinHorseInventoryMenu extends AbstractContainerMenu {
+public abstract class MixinHorseInventoryMenu extends AbstractContainerMenu{
 
-    CraftInventoryView bukkitEntity;
-    // @formatter:on
-    Inventory playerInventory;
     // @formatter:off
     @Shadow @Final private Container horseContainer;
+    // @formatter:on
+
+    @Unique
+    CraftInventoryView bukkitEntity;
+    @Unique
+    Inventory playerInventory;
 
     protected MixinHorseInventoryMenu(@Nullable MenuType<?> menuType, int i) {
         super(menuType, i);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    public void banner$init(int i, Inventory inventory, Container container, AbstractHorse abstractHorse, int j, CallbackInfo ci) {
-        this.playerInventory = inventory;
+    public void banner$init(int id, Inventory playerInventory, Container horseInventory, AbstractHorse horse, CallbackInfo ci) {
+        this.playerInventory = playerInventory;
     }
 
     @Override
@@ -39,6 +43,6 @@ public abstract class MixinHorseInventoryMenu extends AbstractContainerMenu {
             return bukkitEntity;
         }
         return bukkitEntity = new CraftInventoryView(playerInventory.player.getBukkitEntity(),
-                this.horseContainer.getOwner().getInventory(), (AbstractContainerMenu) this);
+                 this.horseContainer.getOwner().getInventory(), (AbstractContainerMenu) (Object) this);
     }
 }

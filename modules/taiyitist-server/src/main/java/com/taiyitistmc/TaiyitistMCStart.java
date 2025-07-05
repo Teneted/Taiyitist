@@ -5,6 +5,7 @@ import com.taiyitistmc.util.EulaUtil;
 import com.taiyitistmc.util.I18n;
 import com.mohistmc.i18n.i18n;
 import java.util.Scanner;
+
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 public class TaiyitistMCStart {
 
     public static i18n I18N;
-    public static final Logger LOGGER = LogManager.getLogger("TaiyitistMC");
+    public static final Logger LOGGER = LogManager.getLogger("BannerMC");
     public static final float javaVersion = Float.parseFloat(System.getProperty("java.class.version"));
 
     public static void run() throws Exception {
@@ -41,6 +42,6 @@ public class TaiyitistMCStart {
     }
 
     public static String getVersion() {
-      return FabricLoader.getInstance().getModContainer("taiyitist").get().getMetadata().getVersion().getFriendlyString();
+        return FabricLoader.getInstance().getModContainer("taiyitist").get().getMetadata().getVersion().getFriendlyString();
     }
 }
