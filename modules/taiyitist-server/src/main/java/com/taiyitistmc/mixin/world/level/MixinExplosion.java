@@ -1,10 +1,14 @@
 package com.taiyitistmc.mixin.world.level;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.injection.world.level.InjectionExplosion;
 import com.mojang.datafixers.util.Pair;
 import io.izzel.arclight.mixin.Decorate;
 import io.izzel.arclight.mixin.DecorationOps;
+
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Explosion.class)
 public abstract class MixinExplosion implements InjectionExplosion {
@@ -93,45 +98,24 @@ public abstract class MixinExplosion implements InjectionExplosion {
         return (boolean) DecorationOps.callsite().invoke(entity, damageSource, f);
     }
 
-    @Redirect(
+    @Inject(
             method = "explode",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/Entity;setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V"
             )
     )
-    private void banner$setDeltaMovement(Entity instance, Vec3 vec3) {
-        float q = this.radius * 2.0F;
-        double v = Math.sqrt(instance.distanceToSqr(vec3)) / (double)q;
-        double aa = ((double)1.0F - v) * (double)Explosion.getSeenPercent(vec3, instance) * (double)this.damageCalculator.getKnockbackMultiplier(instance);
-        double ab;
-        if (instance instanceof LivingEntity livingEntity) {
-            ab = aa * ((double)1.0F - livingEntity.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
-        } else {
-            ab = aa;
+    private void banner$setDeltaMovement(CallbackInfo ci, @Local Entity entity, @Local(ordinal = 6) double ab, @Local(ordinal = 1) Vec3 vec32) {
+        // CraftBukkit start - Call EntityKnockbackEvent
+        if (entity instanceof LivingEntity) {
+            Vec3 result = entity.getDeltaMovement().add(vec32);
+            org.bukkit.event.entity.EntityKnockbackEvent event = CraftEventFactory.callEntityKnockbackEvent((org.bukkit.craftbukkit.entity.CraftLivingEntity) entity.getBukkitEntity(), source, org.bukkit.event.entity.EntityKnockbackEvent.KnockbackCause.EXPLOSION, ab, vec32, result.x, result.y, result.z);
+            // SPIGOT-7640: Need to subtract entity movement from the event result,
+            // since the code below (the setDeltaMovement call as well as the hitPlayers map)
+            // want the vector to be the relative velocity will the event provides the absolute velocity
+            vec32 = (event.isCancelled()) ? Vec3.ZERO : new Vec3(event.getFinalKnockback().getX(), event.getFinalKnockback().getY(), event.getFinalKnockback().getZ()).subtract(entity.getDeltaMovement());
         }
-        double dx = instance.getX() - this.x;
-        double dy = instance.getEyeY() - this.y;
-        double dz = instance.getZ() - this.z;
-        dx *= ab;
-        dy *= ab;
-        dz *= ab;
-        Vec3 vec31 = new Vec3(dx, dy, dz);
-        Vec3 result = instance.getDeltaMovement().add(vec31);
-        if (instance instanceof LivingEntity livingEntity) {
-            EntityKnockbackEvent event = CraftEventFactory.callEntityKnockbackEvent(
-                    (CraftLivingEntity) livingEntity.getBukkitEntity(),
-                    ((Explosion) (Object) this).getDirectSourceEntity(),
-                    EntityKnockbackEvent.KnockbackCause.EXPLOSION,
-                    ab,
-                    vec31,
-                    result.x,
-                    result.y,
-                    result.z
-            );
-            vec31 = (event.isCancelled()) ? Vec3.ZERO : new Vec3(event.getFinalKnockback().getX(), event.getFinalKnockback().getY(), event.getFinalKnockback().getZ());
-        }
-        instance.setDeltaMovement(vec31);
+        // CraftBukkit end
     }
 
     @Decorate(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;onExplosionHit(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Explosion;Ljava/util/function/BiConsumer;)V"))
