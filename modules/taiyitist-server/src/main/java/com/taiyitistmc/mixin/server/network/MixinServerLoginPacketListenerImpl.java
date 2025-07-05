@@ -3,6 +3,8 @@ package com.taiyitistmc.mixin.server.network;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
 import com.mojang.authlib.GameProfile;
+
+import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.DefaultUncaughtExceptionHandler;
 import net.minecraft.core.UUIDUtil;
@@ -12,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.login.ServerLoginPacketListener;
 import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
@@ -28,7 +29,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -63,12 +63,12 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
         listener.banner$setPlayer(this.player);
     }
 
-    @Inject(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;", shift = Shift.AFTER))
-    private void banner$canLogin(GameProfile gameProfile, CallbackInfo ci, @Local PlayerList playerList) {
-        playerList.banner$putHandler((ServerLoginPacketListenerImpl) (Object) this);
+    @Redirect(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;"))
+    private Component taiyitist$canLogin(PlayerList instance, SocketAddress socketAddress, GameProfile gameProfile, @Local PlayerList playerList) {
         if (this.player == null) {
-            this.player = playerList.getPlayerForLogin(gameProfile, ClientInformation.createDefault());
+            this.player = playerList.taiyitist$canPlayerLogin(socketAddress, gameProfile, (ServerLoginPacketListenerImpl) (Object) this);
         }
+        return null;
     }
 
     @Override

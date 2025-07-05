@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.server.players;
 
+import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.TaiyitistMod;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
@@ -90,6 +91,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer.TransferCookieConnection;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -97,6 +99,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSpawnChangeEvent;
 import org.jetbrains.annotations.Nullable;
+import org.spigotmc.SpigotConfig;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -301,57 +304,54 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         this.handler.set(handler);
     }
 
-    /**
-     * @author Mgazul
-     * @reason bukkit
-     */
-    @Overwrite
-    public Component canPlayerLogin(SocketAddress socketaddress, GameProfile gameProfile) {
-        ServerPlayer serverPlayer = getPlayerForLogin(gameProfile, ClientInformation.createDefault());
-        entity.set(serverPlayer);
-        org.bukkit.entity.Player player = serverPlayer.getBukkitEntity();
-        ServerLoginPacketListenerImpl handleR = handler.getAndSet(null);
-        serverPlayer.bridge$transferCookieConnection((TransferCookieConnection) handleR);
-        String hostname = handleR == null ? "" : handleR.connection.bridge$hostname();
-        InetAddress realAddress = handleR == null ? ((InetSocketAddress) socketaddress).getAddress() : ((InetSocketAddress) handleR.connection.channel.remoteAddress()).getAddress();
-        PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((InetSocketAddress) socketaddress).getAddress(), realAddress);
-
-        if (getBans().isBanned(gameProfile) && !getBans().get(gameProfile).hasExpired()) {
-            UserBanListEntry userbanlistentry = this.bans.get(gameProfile);
-            MutableComponent mutablecomponent1 = Component.translatable("multiplayer.disconnect.banned.reason", userbanlistentry.getReason());
-            if (userbanlistentry.getExpires() != null) {
-                mutablecomponent1.append(Component.translatable("multiplayer.disconnect.banned.expiration", BAN_DATE_FORMAT.format(userbanlistentry.getExpires())));
+    @Override
+    public ServerPlayer taiyitist$canPlayerLogin(SocketAddress socketAddress, GameProfile gameProfile, ServerLoginPacketListenerImpl handler) {
+        UUID uuid = gameProfile.getId();
+        List<ServerPlayer> list = Lists.newArrayList();
+        for (ServerPlayer player : this.players) {
+            if (player.getUUID().equals(uuid)) {
+                list.add(player);
             }
+        }
+        for (ServerPlayer player : list) {
+            this.save(player);
+            player.connection.disconnect(Component.translatable("multiplayer.disconnect.duplicate_login"));
+        }
+        ServerPlayer entity = new ServerPlayer(this.server, this.server.getLevel(Level.OVERWORLD), gameProfile, ClientInformation.createDefault());
+        ((ServerPlayer) entity).taiyitist$setTransferCookieConnection((CraftPlayer.TransferCookieConnection) handler);
+        Player player = ((ServerPlayer) entity).getBukkitEntity();
 
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot
+        String hostname = handler == null ? "" : handler.connection.bridge$hostname();
+        InetAddress realAddress = handler == null ? ((InetSocketAddress) socketAddress).getAddress() : ((InetSocketAddress) handler.connection.channel.remoteAddress()).getAddress();
+
+        PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((InetSocketAddress) socketAddress).getAddress(), realAddress);
+        if (this.getBans().isBanned(gameProfile) && this.getBans().get(gameProfile) != null && !this.getBans().get(gameProfile).hasExpired()) {
+            UserBanListEntry entry = this.bans.get(gameProfile);
+            var message = Component.translatable("multiplayer.disconnect.banned.reason", entry.getReason());
+            if (entry.getExpires() != null) {
+                message.append(Component.translatable("multiplayer.disconnect.banned.expiration", BAN_DATE_FORMAT.format(entry.getExpires())));
+            }
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, CraftChatMessage.fromComponent(message));
         } else if (!this.isWhiteListed(gameProfile)) {
-            MutableComponent mutablecomponent1 = Component.translatable("multiplayer.disconnect.not_whitelisted");
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, CraftChatMessage.fromComponent(mutablecomponent1));
-        } else if (getIpBans().isBanned(socketaddress) && !getIpBans().get(socketaddress).hasExpired()) {
-            IpBanListEntry ipbanlistentry = this.ipBans.get(socketaddress);
-            MutableComponent mutablecomponent1 = Component.translatable("multiplayer.disconnect.banned_ip.reason", ipbanlistentry.getReason());
-            if (ipbanlistentry.getExpires() != null) {
-                mutablecomponent1.append(Component.translatable("multiplayer.disconnect.banned_ip.expiration", BAN_DATE_FORMAT.format(ipbanlistentry.getExpires())));
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, SpigotConfig.whitelistMessage);
+        } else if (this.getIpBans().isBanned(socketAddress) && this.getIpBans().get(socketAddress) != null && !this.getIpBans().get(socketAddress).hasExpired()) {
+            IpBanListEntry entry = this.ipBans.get(socketAddress);
+            var message = Component.translatable("multiplayer.disconnect.banned_ip.reason", entry.getReason());
+            if (entry.getExpires() != null) {
+                message.append(Component.translatable("multiplayer.disconnect.banned_ip.expiration", BAN_DATE_FORMAT.format(entry.getExpires())));
             }
-
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, CraftChatMessage.fromComponent(mutablecomponent1));
-        } else {
-            if (this.players.size() >= this.maxPlayers && !this.canBypassPlayerLimit(gameProfile)) {
-                event.disallow(PlayerLoginEvent.Result.KICK_FULL, org.spigotmc.SpigotConfig.serverFullMessage); // Spigot
-            }
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, CraftChatMessage.fromComponent(message));
+        } else if (this.players.size() >= this.maxPlayers && !this.canBypassPlayerLimit(gameProfile)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_FULL, SpigotConfig.serverFullMessage);
         }
-
-        cserver.getPluginManager().callEvent(event);
+        this.cserver.getPluginManager().callEvent(event);
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
-            return Component.literal(event.getKickMessage());
+            if (handler != null) {
+                handler.disconnect(CraftChatMessage.fromStringOrNull(event.getKickMessage()));
+            }
+            return null;
         }
-        // Banner start - TODO
-        /*
-        if (!LuckPerms.perCache.containsKey(player.getUniqueId())) {
-            LuckPerms.perCache.put(player.getUniqueId(), ((CraftPlayer)player).perm);
-        }*/
-        // Banner end
-        return null;
+        return entity;
     }
 
     @Inject(method = "respawn", at = @At("HEAD"))

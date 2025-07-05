@@ -196,7 +196,7 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
     public abstract void setRespawnPosition(ResourceKey<Level> resourceKey, @Nullable BlockPos blockPos, float f, boolean bl, boolean bl2);
 
     @Override
-    public void bridge$transferCookieConnection(CraftPlayer.TransferCookieConnection transferCookieConnection) {
+    public void taiyitist$setTransferCookieConnection(CraftPlayer.TransferCookieConnection transferCookieConnection) {
         this.transferCookieConnection = transferCookieConnection;
     }
 
