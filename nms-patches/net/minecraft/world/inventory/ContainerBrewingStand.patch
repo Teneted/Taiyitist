@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/ContainerBrewingStand.java
 +++ b/net/minecraft/world/inventory/ContainerBrewingStand.java
-@@ -15,6 +15,11 @@
+@@ -17,6 +17,11 @@
  import net.minecraft.world.item.alchemy.PotionContents;
  import net.minecraft.world.item.alchemy.PotionRegistry;
  
@@ -11,8 +11,8 @@
 +
  public class ContainerBrewingStand extends Container {
  
-     private static final int BOTTLE_SLOT_START = 0;
-@@ -31,12 +36,18 @@
+     static final MinecraftKey EMPTY_SLOT_FUEL = MinecraftKey.withDefaultNamespace("container/slot/brewing_fuel");
+@@ -35,12 +40,18 @@
      private final IContainerProperties brewingStandData;
      private final Slot ingredientSlot;
  
@@ -31,7 +31,7 @@
          checkContainerSize(iinventory, 5);
          checkContainerDataCount(icontainerproperties, 2);
          this.brewingStand = iinventory;
-@@ -66,6 +77,7 @@
+@@ -58,6 +69,7 @@
  
      @Override
      public boolean stillValid(EntityHuman entityhuman) {
@@ -39,8 +39,8 @@
          return this.brewingStand.stillValid(entityhuman);
      }
  
-@@ -196,4 +208,17 @@
-             return itemstack.is(Items.BLAZE_POWDER);
+@@ -198,4 +210,17 @@
+             return ContainerBrewingStand.EMPTY_SLOT_FUEL;
          }
      }
 +

@@ -1,10 +1,11 @@
 --- a/net/minecraft/world/item/ItemLeash.java
 +++ b/net/minecraft/world/item/ItemLeash.java
-@@ -19,6 +19,12 @@
+@@ -14,6 +14,13 @@
  import net.minecraft.world.level.gameevent.GameEvent;
- import net.minecraft.world.phys.AxisAlignedBB;
+ import net.minecraft.world.phys.Vec3D;
  
 +// CraftBukkit start
++import java.util.Iterator;
 +import org.bukkit.craftbukkit.CraftEquipmentSlot;
 +import org.bukkit.craftbukkit.block.CraftBlock;
 +import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -13,31 +14,29 @@
  public class ItemLeash extends Item {
  
      public ItemLeash(Item.Info item_info) {
-@@ -35,7 +41,7 @@
+@@ -30,27 +37,47 @@
              EntityHuman entityhuman = itemactioncontext.getPlayer();
  
              if (!world.isClientSide && entityhuman != null) {
--                bindPlayerMobs(entityhuman, world, blockposition);
-+                bindPlayerMobs(entityhuman, world, blockposition, itemactioncontext.getHand()); // CraftBukkit - Pass hand
+-                return bindPlayerMobs(entityhuman, world, blockposition);
++                return bindPlayerMobs(entityhuman, world, blockposition, itemactioncontext.getHand()); // CraftBukkit - Pass hand
              }
- 
-             return EnumInteractionResult.sidedSuccess(world.isClientSide);
-@@ -44,7 +50,7 @@
          }
+ 
+         return EnumInteractionResult.PASS;
      }
  
 -    public static EnumInteractionResult bindPlayerMobs(EntityHuman entityhuman, World world, BlockPosition blockposition) {
 +    public static EnumInteractionResult bindPlayerMobs(EntityHuman entityhuman, World world, BlockPosition blockposition, net.minecraft.world.EnumHand enumhand) { // CraftBukkit - Add EnumHand
          EntityLeash entityleash = null;
-         List<Leashable> list = leashableInArea(world, blockposition, (leashable) -> {
+         List<Leashable> list = Leashable.leashableInArea(world, Vec3D.atCenterOf(blockposition), (leashable) -> {
              return leashable.getLeashHolder() == entityhuman;
-@@ -52,22 +58,55 @@
+         });
+         boolean flag = false;
  
-         Leashable leashable;
- 
--        for (Iterator iterator = list.iterator(); iterator.hasNext(); leashable.setLeashedTo(entityleash, true)) {
+-        for (Leashable leashable : list) {
 +        for (Iterator iterator = list.iterator(); iterator.hasNext();) { // CraftBukkit - handle setLeashedTo at end of loop
-             leashable = (Leashable) iterator.next();
++            Leashable leashable = (Leashable) iterator.next();
              if (entityleash == null) {
                  entityleash = EntityLeash.getOrCreateKnot(world, blockposition);
 +
@@ -53,22 +52,22 @@
 +                // CraftBukkit end
                  entityleash.playPlacementSound();
              }
-+
-+            // CraftBukkit start
-+            if (leashable instanceof Entity leashed) {
-+                if (org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerLeashEntityEvent(leashed, entityleash, entityhuman, enumhand).isCancelled()) {
-+                    iterator.remove();
-+                    continue;
-+                }
-+            }
-+
-+            leashable.setLeashedTo(entityleash, true);
-+            // CraftBukkit end
-         }
  
-         if (!list.isEmpty()) {
-             world.gameEvent((Holder) GameEvent.BLOCK_ATTACH, blockposition, GameEvent.a.of((Entity) entityhuman));
-             return EnumInteractionResult.SUCCESS;
+             if (leashable.canHaveALeashAttachedTo(entityleash)) {
++                // CraftBukkit start
++                if (leashable instanceof Entity leashed) {
++                    if (org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerLeashEntityEvent(leashed, entityleash, entityhuman, enumhand).isCancelled()) {
++                        iterator.remove();
++                        continue;
++                    }
++                }
++                // CraftBukkit end
+                 leashable.setLeashedTo(entityleash, true);
+                 flag = true;
+             }
+@@ -60,7 +87,18 @@
+             world.gameEvent(GameEvent.BLOCK_ATTACH, blockposition, GameEvent.a.of((Entity) entityhuman));
+             return EnumInteractionResult.SUCCESS_SERVER;
          } else {
 +            // CraftBukkit start- remove leash if we do not leash any entity because of the cancelled event
 +            if (entityleash != null) {
@@ -78,13 +77,10 @@
              return EnumInteractionResult.PASS;
          }
      }
- 
++
 +    // CraftBukkit start
 +    public static EnumInteractionResult bindPlayerMobs(EntityHuman entityhuman, World world, BlockPosition blockposition) {
 +        return bindPlayerMobs(entityhuman, world, blockposition, net.minecraft.world.EnumHand.MAIN_HAND);
 +    }
 +    // CraftBukkit end
-+
-     public static List<Leashable> leashableInArea(World world, BlockPosition blockposition, Predicate<Leashable> predicate) {
-         double d0 = 7.0D;
-         int i = blockposition.getX();
+ }

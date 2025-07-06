@@ -1,15 +1,15 @@
 --- a/net/minecraft/server/commands/CommandGamerule.java
 +++ b/net/minecraft/server/commands/CommandGamerule.java
-@@ -31,7 +31,7 @@
+@@ -32,7 +32,7 @@
  
      static <T extends GameRules.GameRuleValue<T>> int setRule(CommandContext<CommandListenerWrapper> commandcontext, GameRules.GameRuleKey<T> gamerules_gamerulekey) {
          CommandListenerWrapper commandlistenerwrapper = (CommandListenerWrapper) commandcontext.getSource();
 -        T t0 = commandlistenerwrapper.getServer().getGameRules().getRule(gamerules_gamerulekey);
 +        T t0 = commandlistenerwrapper.getLevel().getGameRules().getRule(gamerules_gamerulekey); // CraftBukkit
  
-         t0.setFromArgument(commandcontext, "value");
+         ((GameRules.GameRuleValue) t0).setFromArgument(commandcontext, "value");
          commandlistenerwrapper.sendSuccess(() -> {
-@@ -41,7 +41,7 @@
+@@ -42,7 +42,7 @@
      }
  
      static <T extends GameRules.GameRuleValue<T>> int queryRule(CommandListenerWrapper commandlistenerwrapper, GameRules.GameRuleKey<T> gamerules_gamerulekey) {

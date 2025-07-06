@@ -1,11 +1,11 @@
 --- a/net/minecraft/server/commands/CommandSpawnpoint.java
 +++ b/net/minecraft/server/commands/CommandSpawnpoint.java
-@@ -41,7 +41,7 @@
-         while (iterator.hasNext()) {
-             EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+@@ -35,7 +35,7 @@
+         ResourceKey<World> resourcekey = commandlistenerwrapper.getLevel().dimension();
  
--            entityplayer.setRespawnPosition(resourcekey, blockposition, f, true, false);
-+            entityplayer.setRespawnPosition(resourcekey, blockposition, f, true, false, org.bukkit.event.player.PlayerSpawnChangeEvent.Cause.COMMAND); // CraftBukkit
+         for (EntityPlayer entityplayer : collection) {
+-            entityplayer.setRespawnPosition(new EntityPlayer.RespawnConfig(resourcekey, blockposition, f, true), false);
++            entityplayer.setRespawnPosition(new EntityPlayer.RespawnConfig(resourcekey, blockposition, f, true), false, org.bukkit.event.player.PlayerSpawnChangeEvent.Cause.COMMAND); // CraftBukkit
          }
  
          String s = resourcekey.location().toString();

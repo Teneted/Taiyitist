@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityBanner.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityBanner.java
 @@ -19,6 +19,10 @@
- import net.minecraft.world.level.block.state.IBlockData;
- import org.slf4j.Logger;
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import java.util.List;
@@ -10,28 +10,28 @@
 +
  public class TileEntityBanner extends TileEntity implements INamableTileEntity {
  
-     private static final Logger LOGGER = LogUtils.getLogger();
-@@ -80,7 +84,7 @@
-             BannerPatternLayers.CODEC.parse(holderlookup_a.createSerializationContext(DynamicOpsNBT.INSTANCE), nbttagcompound.get("patterns")).resultOrPartial((s) -> {
-                 TileEntityBanner.LOGGER.error("Failed to parse banner patterns: '{}'", s);
-             }).ifPresent((bannerpatternlayers) -> {
--                this.patterns = bannerpatternlayers;
-+                this.setPatterns(bannerpatternlayers); // CraftBukkit - apply limits
-             });
-         }
- 
-@@ -114,7 +118,7 @@
-     @Override
-     protected void applyImplicitComponents(TileEntity.b tileentity_b) {
-         super.applyImplicitComponents(tileentity_b);
--        this.patterns = (BannerPatternLayers) tileentity_b.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
-+        this.setPatterns((BannerPatternLayers) tileentity_b.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)); // CraftBukkit - apply limits
-         this.name = (IChatBaseComponent) tileentity_b.get(DataComponents.CUSTOM_NAME);
+     public static final int MAX_PATTERNS = 6;
+@@ -63,7 +67,7 @@
+     protected void loadAdditional(ValueInput valueinput) {
+         super.loadAdditional(valueinput);
+         this.name = parseCustomNameSafe(valueinput, "CustomName");
+-        this.patterns = (BannerPatternLayers) valueinput.read("patterns", BannerPatternLayers.CODEC).orElse(BannerPatternLayers.EMPTY);
++        this.setPatterns((BannerPatternLayers) valueinput.read("patterns", BannerPatternLayers.CODEC).orElse(BannerPatternLayers.EMPTY)); // CraftBukkit - apply limits
      }
  
-@@ -130,4 +134,13 @@
-         nbttagcompound.remove("patterns");
-         nbttagcompound.remove("CustomName");
+     @Override
+@@ -94,7 +98,7 @@
+     @Override
+     protected void applyImplicitComponents(DataComponentGetter datacomponentgetter) {
+         super.applyImplicitComponents(datacomponentgetter);
+-        this.patterns = (BannerPatternLayers) datacomponentgetter.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
++        this.setPatterns((BannerPatternLayers) datacomponentgetter.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)); // CraftBukkit - apply limits
+         this.name = (IChatBaseComponent) datacomponentgetter.get(DataComponents.CUSTOM_NAME);
+     }
+ 
+@@ -110,4 +114,13 @@
+         valueoutput.discard("patterns");
+         valueoutput.discard("CustomName");
      }
 +
 +    // CraftBukkit start

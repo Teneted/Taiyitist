@@ -1,15 +1,15 @@
 --- a/net/minecraft/server/players/JsonList.java
 +++ b/net/minecraft/server/players/JsonList.java
-@@ -54,7 +54,7 @@
-     @Nullable
-     public V get(K k0) {
-         this.removeExpired();
--        return (JsonListEntry) this.map.get(this.getKeyForUser(k0));
-+        return (V) this.map.get(this.getKeyForUser(k0)); // CraftBukkit - fix decompile error
+@@ -40,7 +40,7 @@
      }
  
-     public void remove(K k0) {
-@@ -85,6 +85,7 @@
+     public void add(V v0) {
+-        this.map.put(this.getKeyForUser(((JsonListEntry) v0).getUser()), v0);
++        this.map.put(this.getKeyForUser((v0).getUser()), v0); // CraftBukkit - decompile error
+ 
+         try {
+             this.save();
+@@ -84,6 +84,7 @@
      }
  
      protected boolean contains(K k0) {
@@ -17,25 +17,16 @@
          return this.map.containsKey(this.getKeyForUser(k0));
      }
  
-@@ -93,7 +94,7 @@
-         Iterator iterator = this.map.values().iterator();
+@@ -92,7 +93,7 @@
  
-         while (iterator.hasNext()) {
--            V v0 = (JsonListEntry) iterator.next();
-+            V v0 = (V) iterator.next(); // CraftBukkit - decompile error
- 
+         for (V v0 : this.map.values()) {
              if (v0.hasExpired()) {
-                 list.add(v0.getUser());
-@@ -103,7 +104,7 @@
-         iterator = list.iterator();
- 
-         while (iterator.hasNext()) {
--            K k0 = iterator.next();
-+            K k0 = (K) iterator.next(); // CraftBukkit - decompile error
- 
-             this.map.remove(this.getKeyForUser(k0));
+-                list.add(((JsonListEntry) v0).getUser());
++                list.add((v0).getUser()); // CraftBukkit - decompile error
+             }
          }
-@@ -118,7 +119,7 @@
+ 
+@@ -110,7 +111,7 @@
  
      public void save() throws IOException {
          JsonArray jsonarray = new JsonArray();
@@ -44,12 +35,12 @@
              JsonObject jsonobject = new JsonObject();
  
              Objects.requireNonNull(jsonlistentry);
-@@ -171,7 +172,7 @@
-                         JsonListEntry<K> jsonlistentry = this.createEntry(jsonobject);
+@@ -141,7 +142,7 @@
+                     JsonListEntry<K> jsonlistentry = this.createEntry(jsonobject);
  
-                         if (jsonlistentry.getUser() != null) {
--                            this.map.put(this.getKeyForUser(jsonlistentry.getUser()), jsonlistentry);
-+                            this.map.put(this.getKeyForUser(jsonlistentry.getUser()), (V) jsonlistentry); // CraftBukkit - decompile error
-                         }
+                     if (jsonlistentry.getUser() != null) {
+-                        this.map.put(this.getKeyForUser(jsonlistentry.getUser()), jsonlistentry);
++                        this.map.put(this.getKeyForUser(jsonlistentry.getUser()), (V) jsonlistentry); // CraftBukkit - decompile error
                      }
-                 } catch (Throwable throwable) {
+                 }
+             }

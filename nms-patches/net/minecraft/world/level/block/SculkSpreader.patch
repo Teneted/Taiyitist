@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/SculkSpreader.java
 +++ b/net/minecraft/world/level/block/SculkSpreader.java
-@@ -41,6 +41,14 @@
- import net.minecraft.world.level.block.state.IBlockData;
- import org.slf4j.Logger;
+@@ -36,6 +36,14 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import net.minecraft.nbt.NBTBase;
@@ -15,33 +15,24 @@
  public class SculkSpreader {
  
      public static final int MAX_GROWTH_RATE_RADIUS = 24;
-@@ -56,6 +64,7 @@
+@@ -51,6 +59,7 @@
+     private final int chargeDecayRate;
      private final int additionalDecayRate;
      private List<SculkSpreader.a> cursors = new ArrayList();
-     private static final Logger LOGGER = LogUtils.getLogger();
 +    public World level; // CraftBukkit
  
      public SculkSpreader(boolean flag, TagKey<Block> tagkey, int i, int j, int k, int l) {
          this.isWorldGeneration = flag;
-@@ -110,7 +119,7 @@
-     public void load(NBTTagCompound nbttagcompound) {
-         if (nbttagcompound.contains("cursors", 9)) {
-             this.cursors.clear();
--            DataResult dataresult = SculkSpreader.a.CODEC.listOf().parse(new Dynamic(DynamicOpsNBT.INSTANCE, nbttagcompound.getList("cursors", 10)));
-+            DataResult<List<SculkSpreader.a>> dataresult = SculkSpreader.a.CODEC.listOf().parse(new Dynamic<>(DynamicOpsNBT.INSTANCE, nbttagcompound.getList("cursors", 10))); // CraftBukkit - decompile error
-             Logger logger = SculkSpreader.LOGGER;
+@@ -104,7 +113,7 @@
  
-             Objects.requireNonNull(logger);
-@@ -125,7 +134,7 @@
+     public void load(ValueInput valueinput) {
+         this.cursors.clear();
+-        ((List) valueinput.read("cursors", SculkSpreader.a.CODEC.sizeLimitedListOf(32)).orElse(List.of())).forEach(this::addCursor);
++        (valueinput.read("cursors", SculkSpreader.a.CODEC.sizeLimitedListOf(32)).orElse(List.of())).forEach(this::addCursor); // CraftBukkit - decompile error
      }
  
-     public void save(NBTTagCompound nbttagcompound) {
--        DataResult dataresult = SculkSpreader.a.CODEC.listOf().encodeStart(DynamicOpsNBT.INSTANCE, this.cursors);
-+        DataResult<NBTBase> dataresult = SculkSpreader.a.CODEC.listOf().encodeStart(DynamicOpsNBT.INSTANCE, this.cursors); // CraftBukkit - decompile error
-         Logger logger = SculkSpreader.LOGGER;
- 
-         Objects.requireNonNull(logger);
-@@ -146,6 +155,19 @@
+     public void save(ValueOutput valueoutput) {
+@@ -123,6 +132,19 @@
  
      private void addCursor(SculkSpreader.a sculkspreader_a) {
          if (this.cursors.size() < 32) {
@@ -61,7 +52,7 @@
              this.cursors.add(sculkspreader_a);
          }
      }
-@@ -241,7 +263,7 @@
+@@ -215,7 +237,7 @@
              this.charge = i;
              this.decayDelay = j;
              this.updateDelay = k;

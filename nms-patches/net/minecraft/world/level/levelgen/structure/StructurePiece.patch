@@ -1,45 +1,27 @@
 --- a/net/minecraft/world/level/levelgen/structure/StructurePiece.java
 +++ b/net/minecraft/world/level/levelgen/structure/StructurePiece.java
-@@ -51,7 +51,7 @@
+@@ -45,7 +45,7 @@
      private EnumBlockRotation rotation;
      protected int genDepth;
      private final WorldGenFeatureStructurePieceType type;
--    private static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
-+    public static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();  // CraftBukkit - decompile error / PAIL private -> public
+-    private static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.PALE_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
++    public static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.PALE_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build(); // CraftBukkit - decompile error / PAIL private -> public
  
      protected StructurePiece(WorldGenFeatureStructurePieceType worldgenfeaturestructurepiecetype, int i, StructureBoundingBox structureboundingbox) {
          this.type = worldgenfeaturestructurepiecetype;
-@@ -80,13 +80,11 @@
-         NBTTagCompound nbttagcompound = new NBTTagCompound();
- 
-         nbttagcompound.putString("id", BuiltInRegistries.STRUCTURE_PIECE.getKey(this.getType()).toString());
--        DataResult dataresult = StructureBoundingBox.CODEC.encodeStart(DynamicOpsNBT.INSTANCE, this.boundingBox);
--        Logger logger = StructurePiece.LOGGER;
--
--        Objects.requireNonNull(logger);
--        dataresult.resultOrPartial(logger::error).ifPresent((nbtbase) -> {
--            nbttagcompound.put("BB", nbtbase);
-+        // CraftBukkit start - decompile error
-+        StructureBoundingBox.CODEC.encodeStart(DynamicOpsNBT.INSTANCE, this.boundingBox).resultOrPartial(Objects.requireNonNull(StructurePiece.LOGGER)::error).ifPresent((nbtbase) -> {
-+             nbttagcompound.put("BB", nbtbase);
-         });
-+        // CraftBukkit end
-         EnumDirection enumdirection = this.getOrientation();
- 
-         nbttagcompound.putInt("O", enumdirection == null ? -1 : enumdirection.get2DDataValue());
-@@ -186,6 +184,11 @@
+@@ -172,6 +172,11 @@
                  }
  
-                 generatoraccessseed.setBlock(blockposition_mutableblockposition, iblockdata, 2);
+                 generatoraccessseed.setBlock(blockposition, iblockdata, 2);
 +                // CraftBukkit start - fluid handling is already done if we have a transformer generator access
 +                if (generatoraccessseed instanceof org.bukkit.craftbukkit.util.TransformerGeneratorAccess) {
 +                    return;
 +                }
 +                // CraftBukkit end
-                 Fluid fluid = generatoraccessseed.getFluidState(blockposition_mutableblockposition);
+                 Fluid fluid = generatoraccessseed.getFluidState(blockposition);
  
                  if (!fluid.isEmpty()) {
-@@ -200,6 +203,38 @@
+@@ -186,6 +191,38 @@
          }
      }
  
@@ -51,7 +33,7 @@
 +        boolean result = worldAccess.setBlock(position, craftBlockEntityState.getHandle(), i);
 +        TileEntity tileEntity = worldAccess.getBlockEntity(position);
 +        if (tileEntity != null) {
-+            tileEntity.loadWithComponents(craftBlockEntityState.getSnapshotNBT(), worldAccess.registryAccess());
++            tileEntity.loadWithComponents(craftBlockEntityState.getSnapshotInput());
 +        }
 +        return result;
 +    }
@@ -78,7 +60,7 @@
      protected boolean canBeReplaced(IWorldReader iworldreader, int i, int j, int k, StructureBoundingBox structureboundingbox) {
          return true;
      }
-@@ -393,12 +428,20 @@
+@@ -377,12 +414,20 @@
                  iblockdata = reorient(worldaccess, blockposition, Blocks.CHEST.defaultBlockState());
              }
  
@@ -99,14 +81,14 @@
  
              return true;
          } else {
-@@ -410,12 +453,31 @@
-         BlockPosition.MutableBlockPosition blockposition_mutableblockposition = this.getWorldPos(i, j, k);
+@@ -394,12 +439,31 @@
+         BlockPosition blockposition = this.getWorldPos(i, j, k);
  
-         if (structureboundingbox.isInside(blockposition_mutableblockposition) && !generatoraccessseed.getBlockState(blockposition_mutableblockposition).is(Blocks.DISPENSER)) {
+         if (structureboundingbox.isInside(blockposition) && !generatoraccessseed.getBlockState(blockposition).is(Blocks.DISPENSER)) {
 +            // CraftBukkit start
 +            /*
              this.placeBlock(generatoraccessseed, (IBlockData) Blocks.DISPENSER.defaultBlockState().setValue(BlockDispenser.FACING, enumdirection), i, j, k, structureboundingbox);
-             TileEntity tileentity = generatoraccessseed.getBlockEntity(blockposition_mutableblockposition);
+             TileEntity tileentity = generatoraccessseed.getBlockEntity(blockposition);
  
              if (tileentity instanceof TileEntityDispenser) {
                  ((TileEntityDispenser) tileentity).setLootTable(resourcekey, randomsource.nextLong());
@@ -123,15 +105,15 @@
 +                iblockdata = iblockdata.rotate(this.rotation);
 +            }
 +
-+            org.bukkit.craftbukkit.block.CraftDispenser dispenserState = (org.bukkit.craftbukkit.block.CraftDispenser) org.bukkit.craftbukkit.block.CraftBlockStates.getBlockState(generatoraccessseed, blockposition_mutableblockposition, iblockdata, null);
++            org.bukkit.craftbukkit.block.CraftDispenser dispenserState = (org.bukkit.craftbukkit.block.CraftDispenser) org.bukkit.craftbukkit.block.CraftBlockStates.getBlockState(generatoraccessseed, blockposition, iblockdata, null);
 +            dispenserState.setLootTable(org.bukkit.craftbukkit.CraftLootTable.minecraftToBukkit(resourcekey));
 +            dispenserState.setSeed(randomsource.nextLong());
-+            placeCraftBlockEntity(generatoraccessseed, blockposition_mutableblockposition, dispenserState, 2);
++            placeCraftBlockEntity(generatoraccessseed, blockposition, dispenserState, 2);
 +            // CraftBukkit end
  
              return true;
          } else {
-@@ -428,7 +490,7 @@
+@@ -412,7 +476,7 @@
      }
  
      public static StructureBoundingBox createBoundingBox(Stream<StructurePiece> stream) {

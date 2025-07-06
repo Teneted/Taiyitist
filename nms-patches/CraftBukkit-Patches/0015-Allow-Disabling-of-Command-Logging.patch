@@ -1,0 +1,36 @@
+From ff0d3dd883e4950ee58abbe439f0e11cc912c46e Mon Sep 17 00:00:00 2001
+From: md_5 <git@md-5.net>
+Date: Fri, 21 Jun 2013 18:01:29 +1000
+Subject: [PATCH] Allow Disabling of Command Logging
+
+
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index b73736621..5fe90762a 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -2281,6 +2281,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+ 
+     private void handleCommand(String s) {
+         org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.startTiming(); // Spigot
++        if ( org.spigotmc.SpigotConfig.logCommands ) // Spigot
+         this.LOGGER.info(this.player.getScoreboardName() + " issued server command: " + s);
+ 
+         CraftPlayer player = this.getCraftPlayer();
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 7f14cbc63..bc9fbcc58 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -150,4 +150,10 @@ public class SpigotConfig
+         config.addDefault( path, def );
+         return config.getDouble( path, config.getDouble( path ) );
+     }
++
++    public static boolean logCommands;
++    private static void logCommands()
++    {
++        logCommands = getBoolean( "commands.log", true );
++    }
+ }
+-- 
+2.49.0
+

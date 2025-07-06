@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/levelgen/structure/structures/ShipwreckPieces.java
 +++ b/net/minecraft/world/level/levelgen/structure/structures/ShipwreckPieces.java
-@@ -79,7 +79,12 @@
+@@ -78,7 +78,12 @@
              ResourceKey<LootTable> resourcekey = (ResourceKey) ShipwreckPieces.MARKERS_TO_LOOT.get(s);
  
              if (resourcekey != null) {

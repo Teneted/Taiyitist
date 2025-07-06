@@ -28,19 +28,19 @@
  
          for (int i = -2; i <= 2; ++i) {
 @@ -29,16 +42,36 @@
-                     BlockPosition.MutableBlockPosition blockposition_mutableblockposition1 = blockposition_mutableblockposition.set(blockposition).move(j, k, i);
+                     BlockPosition blockposition1 = blockposition_mutableblockposition.set(blockposition).move(j, k, i);
                      Block block = k == -1 ? Blocks.OBSIDIAN : Blocks.AIR;
  
--                    if (!worldaccess.getBlockState(blockposition_mutableblockposition1).is(block)) {
+-                    if (!worldaccess.getBlockState(blockposition1).is(block)) {
 +                    // CraftBukkit start
-+                    if (!blockList.getBlockState(blockposition_mutableblockposition1).is(block)) {
++                    if (!blockList.getBlockState(blockposition1).is(block)) {
                          if (flag) {
--                            worldaccess.destroyBlock(blockposition_mutableblockposition1, true, (Entity) null);
-+                            blockList.destroyBlock(blockposition_mutableblockposition1, true, (Entity) null);
+-                            worldaccess.destroyBlock(blockposition1, true, (Entity) null);
++                            blockList.destroyBlock(blockposition1, true, (Entity) null);
                          }
  
--                        worldaccess.setBlock(blockposition_mutableblockposition1, block.defaultBlockState(), 3);
-+                        blockList.setBlock(blockposition_mutableblockposition1, block.defaultBlockState(), 3);
+-                        worldaccess.setBlock(blockposition1, block.defaultBlockState(), 3);
++                        blockList.setBlock(blockposition1, block.defaultBlockState(), 3);
 +                        // CraftBukkit end
                      }
                  }

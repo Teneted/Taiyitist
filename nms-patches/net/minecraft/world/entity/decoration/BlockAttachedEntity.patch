@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/decoration/BlockAttachedEntity.java
 +++ b/net/minecraft/world/entity/decoration/BlockAttachedEntity.java
-@@ -15,6 +15,15 @@
+@@ -19,6 +19,15 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
@@ -16,7 +16,7 @@
  public abstract class BlockAttachedEntity extends Entity {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -39,7 +48,25 @@
+@@ -45,7 +54,25 @@
              if (this.checkInterval++ == 100) {
                  this.checkInterval = 0;
                  if (!this.isRemoved() && !this.survives()) {
@@ -40,13 +40,13 @@
 +                    }
 +                    // CraftBukkit end
 +                    this.discard(EntityRemoveEvent.Cause.DROP); // CraftBukkit - add Bukkit remove cause
-                     this.dropItem((Entity) null);
+                     this.dropItem(worldserver, (Entity) null);
                  }
              }
-@@ -69,6 +96,22 @@
+@@ -82,6 +109,22 @@
              return false;
          } else {
-             if (!this.isRemoved() && !this.level().isClientSide) {
+             if (!this.isRemoved()) {
 +                // CraftBukkit start - fire break events
 +                Entity damager = (damagesource.isDirect()) ? damagesource.getDirectEntity() : damagesource.getEntity();
 +                HangingBreakEvent event;
@@ -63,49 +63,57 @@
 +                }
 +                // CraftBukkit end
 +
-                 this.kill();
+                 this.kill(worldserver);
                  this.markHurt();
-                 this.dropItem(damagesource.getEntity());
-@@ -81,6 +124,18 @@
-     @Override
-     public void move(EnumMoveType enummovetype, Vec3D vec3d) {
-         if (!this.level().isClientSide && !this.isRemoved() && vec3d.lengthSqr() > 0.0D) {
-+            if (this.isRemoved()) return; // CraftBukkit
-+
-+            // CraftBukkit start - fire break events
-+            // TODO - Does this need its own cause? Seems to only be triggered by pistons
-+            HangingBreakEvent event = new HangingBreakEvent((Hanging) this.getBukkitEntity(), HangingBreakEvent.RemoveCause.PHYSICS);
-+            this.level().getCraftServer().getPluginManager().callEvent(event);
-+
-+            if (this.isRemoved() || event.isCancelled()) {
-+                return;
-+            }
-+            // CraftBukkit end
-+
-             this.kill();
-             this.dropItem((Entity) null);
-         }
-@@ -89,13 +144,22 @@
+                 this.dropItem(worldserver, damagesource.getEntity());
+@@ -104,6 +147,16 @@
  
-     @Override
-     public void push(double d0, double d1, double d2) {
--        if (!this.level().isClientSide && !this.isRemoved() && d0 * d0 + d1 * d1 + d2 * d2 > 0.0D) {
-+        if (false && !this.level().isClientSide && !this.isRemoved() && d0 * d0 + d1 * d1 + d2 * d2 > 0.0D) { // CraftBukkit - not needed
-             this.kill();
-             this.dropItem((Entity) null);
-         }
+         if (world instanceof WorldServer worldserver) {
+             if (!this.isRemoved() && vec3d.lengthSqr() > 0.0D) {
++                // CraftBukkit start - fire break events
++                // TODO - Does this need its own cause? Seems to only be triggered by pistons
++                HangingBreakEvent event = new HangingBreakEvent((Hanging) this.getBukkitEntity(), HangingBreakEvent.RemoveCause.PHYSICS);
++                this.level().getCraftServer().getPluginManager().callEvent(event);
++
++                if (this.isRemoved() || event.isCancelled()) {
++                    return;
++                }
++                // CraftBukkit end
++
+                 this.kill(worldserver);
+                 this.dropItem(worldserver, (Entity) null);
+             }
+@@ -116,7 +169,7 @@
+         World world = this.level();
+ 
+         if (world instanceof WorldServer worldserver) {
+-            if (!this.isRemoved() && d0 * d0 + d1 * d1 + d2 * d2 > 0.0D) {
++            if (false && !this.isRemoved() && d0 * d0 + d1 * d1 + d2 * d2 > 0.0D) { // CraftBukkit - not needed
+                 this.kill(worldserver);
+                 this.dropItem(worldserver, (Entity) null);
+             }
+@@ -124,6 +177,15 @@
  
      }
  
 +    // CraftBukkit start - selectively save tile position
 +    @Override
-+    public void addAdditionalSaveData(NBTTagCompound nbttagcompound, boolean includeAll) {
++    protected void addAdditionalSaveData(ValueOutput valueoutput, boolean includeAll) {
 +        if (includeAll) {
-+            addAdditionalSaveData(nbttagcompound);
++            addAdditionalSaveData(valueoutput);
 +        }
 +    }
 +    // CraftBukkit end
 +
      @Override
-     public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
-         BlockPosition blockposition = this.getPos();
+     protected void addAdditionalSaveData(ValueOutput valueoutput) {
+         valueoutput.store("block_pos", BlockPosition.CODEC, this.getPos());
+@@ -131,7 +193,7 @@
+ 
+     @Override
+     protected void readAdditionalSaveData(ValueInput valueinput) {
+-        BlockPosition blockposition = (BlockPosition) valueinput.read("block_pos", BlockPosition.CODEC).orElse((Object) null);
++        BlockPosition blockposition = (BlockPosition) valueinput.read("block_pos", BlockPosition.CODEC).orElse(null); // CraftBukkit - decompile error
+ 
+         if (blockposition != null && blockposition.closerThan(this.blockPosition(), 16.0D)) {
+             this.pos = blockposition;

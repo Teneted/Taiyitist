@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/players/NameReferencingFileConverter.java
 +++ b/net/minecraft/server/players/NameReferencingFileConverter.java
-@@ -27,6 +27,12 @@
+@@ -26,6 +26,12 @@
  import net.minecraft.world.level.storage.SavedFile;
  import org.slf4j.Logger;
  
@@ -13,7 +13,7 @@
  public class NameReferencingFileConverter {
  
      static final Logger LOGGER = LogUtils.getLogger();
-@@ -85,7 +91,7 @@
+@@ -76,7 +82,7 @@
                  try {
                      gameprofilebanlist.load();
                  } catch (IOException ioexception) {
@@ -22,7 +22,7 @@
                  }
              }
  
-@@ -143,7 +149,7 @@
+@@ -134,7 +140,7 @@
                  try {
                      ipbanlist.load();
                  } catch (IOException ioexception) {
@@ -31,7 +31,7 @@
                  }
              }
  
-@@ -184,7 +190,7 @@
+@@ -173,7 +179,7 @@
                  try {
                      oplist.load();
                  } catch (IOException ioexception) {
@@ -40,7 +40,7 @@
                  }
              }
  
-@@ -228,7 +234,7 @@
+@@ -217,7 +223,7 @@
                  try {
                      whitelist.load();
                  } catch (IOException ioexception) {
@@ -49,7 +49,7 @@
                  }
              }
  
-@@ -347,6 +353,30 @@
+@@ -333,6 +339,30 @@
                          File file5 = new File(file, s2 + ".dat");
                          File file6 = new File(file4, s3 + ".dat");
  
@@ -66,7 +66,7 @@
 +                            if (!root.contains("bukkit")) {
 +                                root.put("bukkit", new NBTTagCompound());
 +                            }
-+                            NBTTagCompound data = root.getCompound("bukkit");
++                            NBTTagCompound data = root.getCompoundOrEmpty("bukkit");
 +                            data.putString("lastKnownName", s2);
 +
 +                            try {

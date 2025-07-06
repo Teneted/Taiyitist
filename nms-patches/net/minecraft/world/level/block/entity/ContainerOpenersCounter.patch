@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
 +++ b/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
-@@ -17,6 +17,7 @@
+@@ -16,6 +16,7 @@
      private static final int CHECK_TICK_DELAY = 5;
      private int openCount;
      private double maxInteractionRange;
@@ -8,7 +8,7 @@
  
      public ContainerOpenersCounter() {}
  
-@@ -26,11 +27,36 @@
+@@ -25,11 +26,36 @@
  
      protected abstract void openerCountChanged(World world, BlockPosition blockposition, IBlockData iblockdata, int i, int j);
  
@@ -44,8 +44,8 @@
 +
          if (i == 0) {
              this.onOpen(world, blockposition, iblockdata);
-             world.gameEvent((Entity) entityhuman, (Holder) GameEvent.CONTAINER_OPEN, blockposition);
-@@ -42,8 +68,19 @@
+             world.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_OPEN, blockposition);
+@@ -41,8 +67,19 @@
      }
  
      public void decrementOpeners(EntityHuman entityhuman, World world, BlockPosition blockposition, IBlockData iblockdata) {
@@ -64,8 +64,8 @@
 +
          if (this.openCount == 0) {
              this.onClose(world, blockposition, iblockdata);
-             world.gameEvent((Entity) entityhuman, (Holder) GameEvent.CONTAINER_CLOSE, blockposition);
-@@ -72,6 +109,7 @@
+             world.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_CLOSE, blockposition);
+@@ -69,6 +106,7 @@
          }
  
          int i = list.size();

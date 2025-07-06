@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/LayeredCauldronBlock.java
 +++ b/net/minecraft/world/level/block/LayeredCauldronBlock.java
-@@ -17,6 +17,12 @@
- import net.minecraft.world.level.material.FluidType;
- import net.minecraft.world.level.material.FluidTypes;
+@@ -23,6 +23,12 @@
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.block.CraftBlockState;
@@ -13,24 +13,37 @@
  public class LayeredCauldronBlock extends AbstractCauldronBlock {
  
      public static final MapCodec<LayeredCauldronBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -62,10 +68,14 @@
-     @Override
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity) {
-         if (!world.isClientSide && entity.isOnFire() && this.isEntityInsideContent(iblockdata, blockposition, entity)) {
--            entity.clearFire();
-+            // CraftBukkit start
-             if (entity.mayInteract(world, blockposition)) {
--                this.handleEntityOnFireInside(iblockdata, world, blockposition);
-+                if (!lowerFillLevel(iblockdata, world, blockposition, entity, CauldronLevelChangeEvent.ChangeReason.EXTINGUISH)) {
-+                    return;
-+                }
-             }
-+            entity.clearFire();
+@@ -86,39 +92,67 @@
+ 
+             insideblockeffectapplier.runBefore(InsideBlockEffectType.EXTINGUISH, (entity1) -> {
+                 if (entity1.isOnFire() && entity1.mayInteract(worldserver, blockposition1)) {
+-                    this.handleEntityOnFireInside(iblockdata, world, blockposition1);
++                    // CraftBukkit start
++                    if (this.handleEntityOnFireInside(iblockdata, world, blockposition1, entity)) {
++                        insideblockeffectapplier.apply(InsideBlockEffectType.EXTINGUISH);
++                    }
++                    // CraftBukkit end
+                 }
+ 
+             });
+         }
+ 
+-        insideblockeffectapplier.apply(InsideBlockEffectType.EXTINGUISH);
++        // insideblockeffectapplier.apply(InsideBlockEffectType.EXTINGUISH); // CraftBukkit start - moved up
+     }
+ 
+-    private void handleEntityOnFireInside(IBlockData iblockdata, World world, BlockPosition blockposition) {
++    // CraftBukkit start
++    private boolean handleEntityOnFireInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity) {
+         if (this.precipitationType == BiomeBase.Precipitation.SNOW) {
+-            lowerFillLevel((IBlockData) Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, (Integer) iblockdata.getValue(LayeredCauldronBlock.LEVEL)), world, blockposition);
++            return lowerFillLevel((IBlockData) Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, (Integer) iblockdata.getValue(LayeredCauldronBlock.LEVEL)), world, blockposition, entity, CauldronLevelChangeEvent.ChangeReason.EXTINGUISH);
+         } else {
+-            lowerFillLevel(iblockdata, world, blockposition);
++            return lowerFillLevel(iblockdata, world, blockposition, entity, CauldronLevelChangeEvent.ChangeReason.EXTINGUISH);
 +            // CraftBukkit end
          }
  
-     }
-@@ -80,20 +90,42 @@
      }
  
      public static void lowerFillLevel(IBlockData iblockdata, World world, BlockPosition blockposition) {
@@ -43,7 +56,7 @@
          IBlockData iblockdata1 = i == 0 ? Blocks.CAULDRON.defaultBlockState() : (IBlockData) iblockdata.setValue(LayeredCauldronBlock.LEVEL, i);
  
 -        world.setBlockAndUpdate(blockposition, iblockdata1);
--        world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-        world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +        return changeLevel(iblockdata, world, blockposition, iblockdata1, entity, reason);
      }
  
@@ -61,7 +74,7 @@
 +            return false;
 +        }
 +        newState.update(true);
-+        world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(newBlock));
++        world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(newBlock));
 +        return true;
 +    }
 +    // CraftBukkit end
@@ -72,17 +85,17 @@
              IBlockData iblockdata1 = (IBlockData) iblockdata.cycle(LayeredCauldronBlock.LEVEL);
  
 -            world.setBlockAndUpdate(blockposition, iblockdata1);
--            world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-            world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +            changeLevel(iblockdata, world, blockposition, iblockdata1, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL); // CraftBukkit
          }
      }
  
-@@ -112,8 +144,11 @@
+@@ -137,8 +171,11 @@
          if (!this.isFull(iblockdata)) {
              IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(LayeredCauldronBlock.LEVEL, (Integer) iblockdata.getValue(LayeredCauldronBlock.LEVEL) + 1);
  
 -            world.setBlockAndUpdate(blockposition, iblockdata1);
--            world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-            world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +            // CraftBukkit start
 +            if (!changeLevel(iblockdata, world, blockposition, iblockdata1, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL)) {
 +                return;

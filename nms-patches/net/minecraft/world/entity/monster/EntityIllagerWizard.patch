@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/monster/EntityIllagerWizard.java
 +++ b/net/minecraft/world/entity/monster/EntityIllagerWizard.java
-@@ -17,6 +17,10 @@
- import net.minecraft.world.entity.ai.goal.PathfinderGoal;
- import net.minecraft.world.level.World;
+@@ -19,6 +19,10 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
@@ -10,8 +10,8 @@
 +
  public abstract class EntityIllagerWizard extends EntityIllagerAbstract {
  
-     private static final DataWatcherObject<Byte> DATA_SPELL_CASTING_ID = DataWatcher.defineId(EntityIllagerWizard.class, DataWatcherRegistry.BYTE);
-@@ -158,6 +162,11 @@
+     private static final DataWatcherObject<Byte> DATA_SPELL_CASTING_ID = DataWatcher.<Byte>defineId(EntityIllagerWizard.class, DataWatcherRegistry.BYTE);
+@@ -173,6 +177,11 @@
          public void tick() {
              --this.attackWarmupDelay;
              if (this.attackWarmupDelay == 0) {

@@ -1,0 +1,54 @@
+From b02bf51e554f1808ccaf2580f6fc5f9f8ff91a05 Mon Sep 17 00:00:00 2001
+From: md_5 <git@md-5.net>
+Date: Fri, 9 Jun 2017 16:29:31 +1000
+Subject: [PATCH] Configurable Advancement Disabling
+
+Allow disabling any (or all) inbuilt advancements with a configuration option.
+
+diff --git a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+index 1197e9cfd..94a7be017 100644
+--- a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
++++ b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+@@ -135,6 +135,7 @@ public class AdvancementDataPlayer {
+     }
+ 
+     public void save() {
++        if (org.spigotmc.SpigotConfig.disableAdvancementSaving) return; // Spigot
+         JsonElement jsonelement = (JsonElement) this.codec.encodeStart(JsonOps.INSTANCE, this.asData()).getOrThrow();
+ 
+         try {
+diff --git a/src/main/java/net/minecraft/server/AdvancementDataWorld.java b/src/main/java/net/minecraft/server/AdvancementDataWorld.java
+index 1809010ac..0b70f52a8 100644
+--- a/src/main/java/net/minecraft/server/AdvancementDataWorld.java
++++ b/src/main/java/net/minecraft/server/AdvancementDataWorld.java
+@@ -39,6 +39,11 @@ public class AdvancementDataWorld extends ResourceDataJson<Advancement> {
+         ImmutableMap.Builder<MinecraftKey, AdvancementHolder> immutablemap_builder = ImmutableMap.builder();
+ 
+         map.forEach((minecraftkey, advancement) -> {
++            // Spigot start
++            if (org.spigotmc.SpigotConfig.disabledAdvancements != null && (org.spigotmc.SpigotConfig.disabledAdvancements.contains("*") || org.spigotmc.SpigotConfig.disabledAdvancements.contains(minecraftkey.toString()) || org.spigotmc.SpigotConfig.disabledAdvancements.contains(minecraftkey.getNamespace()))) {
++                return;
++            }
++            // Spigot end
+             this.validate(minecraftkey, advancement);
+             immutablemap_builder.put(minecraftkey, new AdvancementHolder(minecraftkey, advancement));
+         });
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 11a716f91..c17d58142 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -382,4 +382,11 @@ public class SpigotConfig
+             Bukkit.getLogger().info( "Debug logging is disabled" );
+         }
+     }
++
++    public static boolean disableAdvancementSaving;
++    public static List<String> disabledAdvancements;
++    private static void disabledAdvancements() {
++        disableAdvancementSaving = getBoolean("advancements.disable-saving", false);
++        disabledAdvancements = getList("advancements.disabled", Arrays.asList(new String[]{"minecraft:story/disabled"}));
++    }
+ }
+-- 
+2.49.0
+

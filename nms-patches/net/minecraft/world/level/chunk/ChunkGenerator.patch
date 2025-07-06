@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -311,7 +311,7 @@
+@@ -285,7 +285,7 @@
          }
      }
  
@@ -9,16 +9,25 @@
          ChunkCoordIntPair chunkcoordintpair = ichunkaccess.getPos();
  
          if (!SharedConstants.debugVoidTerrain(chunkcoordintpair)) {
-@@ -333,7 +333,7 @@
+@@ -304,7 +304,7 @@
+                 IChunkAccess ichunkaccess1 = generatoraccessseed.getChunk(chunkcoordintpair1.x, chunkcoordintpair1.z);
  
-                 for (int k = 0; k < j; ++k) {
-                     ChunkSection chunksection = achunksection[k];
+                 for (ChunkSection chunksection : ichunkaccess1.getSections()) {
 -                    PalettedContainerRO palettedcontainerro = chunksection.getBiomes();
 +                    PalettedContainerRO<Holder<BiomeBase>> palettedcontainerro = chunksection.getBiomes(); // CraftBukkit - decompile error
  
                      Objects.requireNonNull(set);
                      palettedcontainerro.getAll(set::add);
-@@ -444,6 +444,33 @@
+@@ -322,7 +322,7 @@
+                     int i1 = 0;
+ 
+                     if (structuremanager.shouldGenerateStructures()) {
+-                        for (Structure structure : (List) map.getOrDefault(l, Collections.emptyList())) {
++                        for (Structure structure : map.getOrDefault(l, Collections.emptyList())) { // CraftBukkit - decompile error
+                             seededrandom.setFeatureSeed(i, i1, l);
+                             Supplier<String> supplier = () -> {
+                                 Optional optional = iregistry.getResourceKey(structure).map(Object::toString);
+@@ -408,6 +408,33 @@
          }
      }
  
@@ -52,8 +61,8 @@
      private static StructureBoundingBox getWritableArea(IChunkAccess ichunkaccess) {
          ChunkCoordIntPair chunkcoordintpair = ichunkaccess.getPos();
          int i = chunkcoordintpair.getMinBlockX();
-@@ -581,6 +608,14 @@
-         StructureStart structurestart = structure.generate(iregistrycustom, this, this.biomeSource, randomstate, structuretemplatemanager, i, chunkcoordintpair, j, ichunkaccess, predicate);
+@@ -534,6 +561,14 @@
+         StructureStart structurestart = structure.generate(structureset_a.structure(), resourcekey, iregistrycustom, this, this.biomeSource, randomstate, structuretemplatemanager, i, chunkcoordintpair, j, ichunkaccess, predicate);
  
          if (structurestart.isValid()) {
 +            // CraftBukkit start

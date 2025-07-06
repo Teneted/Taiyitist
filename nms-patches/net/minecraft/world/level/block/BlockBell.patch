@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockBell.java
 +++ b/net/minecraft/world/level/block/BlockBell.java
-@@ -146,6 +146,11 @@
+@@ -150,6 +150,11 @@
              if (enumdirection == null) {
                  enumdirection = (EnumDirection) world.getBlockState(blockposition).getValue(BlockBell.FACING);
              }
@@ -11,4 +11,4 @@
 +            // CraftBukkit end
  
              ((TileEntityBell) tileentity).onHit(enumdirection);
-             world.playSound((EntityHuman) null, blockposition, SoundEffects.BELL_BLOCK, SoundCategory.BLOCKS, 2.0F, 1.0F);
+             world.playSound((Entity) null, blockposition, SoundEffects.BELL_BLOCK, SoundCategory.BLOCKS, 2.0F, 1.0F);

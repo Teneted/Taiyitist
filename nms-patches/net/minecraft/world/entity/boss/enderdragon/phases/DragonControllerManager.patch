@@ -32,11 +32,3 @@
              this.currentPhase = this.getPhase(dragoncontrollerphase);
              if (!this.dragon.level().isClientSide) {
                  this.dragon.getEntityData().set(EntityEnderDragon.DATA_PHASE, dragoncontrollerphase.getId());
-@@ -45,6 +63,6 @@
-             this.phases[i] = dragoncontrollerphase.createInstance(this.dragon);
-         }
- 
--        return this.phases[i];
-+        return (T) this.phases[i]; // CraftBukkit - decompile error
-     }
- }

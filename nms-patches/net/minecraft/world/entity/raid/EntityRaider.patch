@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/entity/raid/EntityRaider.java
 +++ b/net/minecraft/world/entity/raid/EntityRaider.java
-@@ -38,6 +38,10 @@
- import net.minecraft.world.level.WorldAccess;
+@@ -41,6 +41,10 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
  
 +// CraftBukkit start
@@ -10,8 +10,8 @@
 +
  public abstract class EntityRaider extends EntityMonsterPatrolling {
  
-     protected static final DataWatcherObject<Boolean> IS_CELEBRATING = DataWatcher.defineId(EntityRaider.class, DataWatcherRegistry.BOOLEAN);
-@@ -233,7 +237,7 @@
+     protected static final DataWatcherObject<Boolean> IS_CELEBRATING = DataWatcher.<Boolean>defineId(EntityRaider.class, DataWatcherRegistry.BOOLEAN);
+@@ -254,7 +258,7 @@
              this.onItemPickup(entityitem);
              this.setItemSlot(enumitemslot, itemstack);
              this.take(entityitem, itemstack.getCount());
@@ -20,39 +20,30 @@
              this.getCurrentRaid().setLeader(this.getWave(), this);
              this.setPatrolLeader(true);
          } else {
-@@ -282,7 +286,7 @@
+@@ -308,7 +312,7 @@
+         @Nullable
+         private EntityItem pursuedBannerItemEntity;
  
-         private final T mob;
- 
--        public b(final EntityRaider entityraider, final EntityRaider entityraider1) {
-+        public b(final EntityRaider entityraider, final T entityraider1) { // CraftBukkit - decompile error
-             this.mob = entityraider1;
+-        public b(final EntityRaider entityraider) {
++        public b(final T entityraider) { // CraftBukkit - decompile error
+             this.mob = entityraider;
              this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
          }
-@@ -475,7 +479,7 @@
-         private final float hostileRadiusSqr;
-         public final PathfinderTargetCondition shoutTargeting = PathfinderTargetCondition.forNonCombat().range(8.0D).ignoreLineOfSight().ignoreInvisibilityTesting();
+@@ -452,7 +456,7 @@
+             this.mob.getNavigation().stop();
  
--        public a(final EntityRaider entityraider, final EntityIllagerAbstract entityillagerabstract, final float f) {
-+        public a(final EntityIllagerAbstract entityillagerabstract, final float f) { // CraftBukkit - decompile error
-             this.mob = entityillagerabstract;
-             this.hostileRadiusSqr = f * f;
-             this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE, PathfinderGoal.Type.LOOK));
-@@ -498,7 +502,7 @@
-             while (iterator.hasNext()) {
-                 EntityRaider entityraider = (EntityRaider) iterator.next();
- 
+             for (EntityRaider entityraider : getServerLevel((Entity) this.mob).getNearbyEntities(EntityRaider.class, this.shoutTargeting, this.mob, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D))) {
 -                entityraider.setTarget(this.mob.getTarget());
 +                entityraider.setTarget(this.mob.getTarget(), org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
              }
  
          }
-@@ -515,7 +519,7 @@
-                 while (iterator.hasNext()) {
-                     EntityRaider entityraider = (EntityRaider) iterator.next();
+@@ -464,7 +468,7 @@
  
+             if (entityliving != null) {
+                 for (EntityRaider entityraider : getServerLevel((Entity) this.mob).getNearbyEntities(EntityRaider.class, this.shoutTargeting, this.mob, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D))) {
 -                    entityraider.setTarget(entityliving);
-+                    entityraider.setTarget(this.mob.getTarget(), org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
++                    entityraider.setTarget(entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
                      entityraider.setAggressive(true);
                  }
  

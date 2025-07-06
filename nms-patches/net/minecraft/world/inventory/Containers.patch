@@ -20,3 +20,17 @@
      });
      public static final Containers<ContainerLoom> LOOM = register("loom", ContainerLoom::new);
      public static final Containers<ContainerMerchant> MERCHANT = register("merchant", ContainerMerchant::new);
+@@ -41,11 +45,11 @@
+     private final Containers.Supplier<T> constructor;
+ 
+     private static <T extends Container> Containers<T> register(String s, Containers.Supplier<T> containers_supplier) {
+-        return (Containers) IRegistry.register(BuiltInRegistries.MENU, s, new Containers(containers_supplier, FeatureFlags.VANILLA_SET));
++        return (Containers) IRegistry.register(BuiltInRegistries.MENU, s, new Containers<>(containers_supplier, FeatureFlags.VANILLA_SET)); // CraftBukkit - decompile error
+     }
+ 
+     private static <T extends Container> Containers<T> register(String s, Containers.Supplier<T> containers_supplier, FeatureFlag... afeatureflag) {
+-        return (Containers) IRegistry.register(BuiltInRegistries.MENU, s, new Containers(containers_supplier, FeatureFlags.REGISTRY.subset(afeatureflag)));
++        return (Containers) IRegistry.register(BuiltInRegistries.MENU, s, new Containers<>(containers_supplier, FeatureFlags.REGISTRY.subset(afeatureflag))); // CraftBukkit - decompile error
+     }
+ 
+     private Containers(Containers.Supplier<T> containers_supplier, FeatureFlagSet featureflagset) {

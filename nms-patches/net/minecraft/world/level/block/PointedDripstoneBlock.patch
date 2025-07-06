@@ -1,27 +1,27 @@
 --- a/net/minecraft/world/level/block/PointedDripstoneBlock.java
 +++ b/net/minecraft/world/level/block/PointedDripstoneBlock.java
-@@ -133,6 +133,11 @@
-             BlockPosition blockposition = movingobjectpositionblock.getBlockPos();
+@@ -135,6 +135,11 @@
+                 WorldServer worldserver = (WorldServer) world;
  
-             if (iprojectile.mayInteract(world, blockposition) && iprojectile.mayBreak(world) && iprojectile instanceof EntityThrownTrident && iprojectile.getDeltaMovement().length() > 0.6D) {
-+                // CraftBukkit start
-+                if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(iprojectile, blockposition, Blocks.AIR.defaultBlockState())) {
-+                    return;
-+                }
-+                // CraftBukkit end
-                 world.destroyBlock(blockposition, true);
+                 if (iprojectile.mayInteract(worldserver, blockposition) && iprojectile.mayBreak(worldserver) && iprojectile instanceof EntityThrownTrident && iprojectile.getDeltaMovement().length() > 0.6D) {
++                    // CraftBukkit start
++                    if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(iprojectile, blockposition, Blocks.AIR.defaultBlockState())) {
++                        return;
++                    }
++                    // CraftBukkit end
+                     world.destroyBlock(blockposition, true);
+                 }
              }
- 
-@@ -142,7 +147,7 @@
+@@ -145,7 +150,7 @@
      @Override
-     public void fallOn(World world, IBlockData iblockdata, BlockPosition blockposition, Entity entity, float f) {
+     public void fallOn(World world, IBlockData iblockdata, BlockPosition blockposition, Entity entity, double d0) {
          if (iblockdata.getValue(PointedDripstoneBlock.TIP_DIRECTION) == EnumDirection.UP && iblockdata.getValue(PointedDripstoneBlock.THICKNESS) == DripstoneThickness.TIP) {
--            entity.causeFallDamage(f + 2.0F, 2.0F, world.damageSources().stalagmite());
-+            entity.causeFallDamage(f + 2.0F, 2.0F, world.damageSources().stalagmite().directBlock(world, blockposition)); // CraftBukkit
+-            entity.causeFallDamage(d0 + 2.5D, 2.0F, world.damageSources().stalagmite());
++            entity.causeFallDamage(d0 + 2.5D, 2.0F, world.damageSources().stalagmite().directBlock(world, blockposition)); // CraftBukkit
          } else {
-             super.fallOn(world, iblockdata, blockposition, entity, f);
+             super.fallOn(world, iblockdata, blockposition, entity, d0);
          }
-@@ -387,15 +392,15 @@
+@@ -393,15 +398,15 @@
          if (isUnmergedTipWithDirection(iblockdata, enumdirection.getOpposite())) {
              createMergedTips(iblockdata, worldserver, blockposition1);
          } else if (iblockdata.isAir() || iblockdata.is(Blocks.WATER)) {
@@ -40,18 +40,18 @@
      }
  
      private static void createMergedTips(IBlockData iblockdata, GeneratorAccess generatoraccess, BlockPosition blockposition) {
-@@ -410,8 +415,8 @@
-             blockposition1 = blockposition.below();
+@@ -416,8 +421,8 @@
+             blockposition2 = blockposition.below();
          }
  
--        createDripstone(generatoraccess, blockposition2, EnumDirection.DOWN, DripstoneThickness.TIP_MERGE);
--        createDripstone(generatoraccess, blockposition1, EnumDirection.UP, DripstoneThickness.TIP_MERGE);
-+        createDripstone(generatoraccess, blockposition2, EnumDirection.DOWN, DripstoneThickness.TIP_MERGE, blockposition); // CraftBukkit
-+        createDripstone(generatoraccess, blockposition1, EnumDirection.UP, DripstoneThickness.TIP_MERGE, blockposition); // CraftBukkit
+-        createDripstone(generatoraccess, blockposition1, EnumDirection.DOWN, DripstoneThickness.TIP_MERGE);
+-        createDripstone(generatoraccess, blockposition2, EnumDirection.UP, DripstoneThickness.TIP_MERGE);
++        createDripstone(generatoraccess, blockposition1, EnumDirection.DOWN, DripstoneThickness.TIP_MERGE, blockposition); // CraftBukkit
++        createDripstone(generatoraccess, blockposition2, EnumDirection.UP, DripstoneThickness.TIP_MERGE, blockposition); // CraftBukkit
      }
  
      public static void spawnDripParticle(World world, BlockPosition blockposition, IBlockData iblockdata) {
-@@ -444,7 +449,7 @@
+@@ -450,7 +455,7 @@
  
              return (BlockPosition) findBlockVertical(generatoraccess, blockposition, enumdirection.getAxisDirection(), bipredicate, (iblockdata1) -> {
                  return isTip(iblockdata1, flag);
@@ -60,7 +60,7 @@
          }
      }
  
-@@ -560,7 +565,7 @@
+@@ -566,7 +571,7 @@
              return canDripThrough(world, blockposition1, iblockdata);
          };
  
@@ -69,7 +69,7 @@
      }
  
      @Nullable
-@@ -569,7 +574,7 @@
+@@ -575,7 +580,7 @@
              return canDripThrough(world, blockposition1, iblockdata);
          };
  

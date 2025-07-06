@@ -1,0 +1,72 @@
+From d9dbdde735b6aef079861d0b4bc97374d9d85213 Mon Sep 17 00:00:00 2001
+From: md_5 <git@md-5.net>
+Date: Mon, 28 Jul 2014 16:55:51 +1000
+Subject: [PATCH] Allow Attribute Capping.
+
+Apply some sensible defaults and allow server owners to customize the maximum values of selected common attributes.
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/attributes/GenericAttributes.java b/src/main/java/net/minecraft/world/entity/ai/attributes/GenericAttributes.java
+index 946f468b2..afd72dfd7 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/attributes/GenericAttributes.java
++++ b/src/main/java/net/minecraft/world/entity/ai/attributes/GenericAttributes.java
+@@ -10,7 +10,7 @@ public class GenericAttributes {
+ 
+     public static final Holder<AttributeBase> ARMOR = register("armor", (new AttributeRanged("attribute.name.armor", 0.0D, 0.0D, 30.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> ARMOR_TOUGHNESS = register("armor_toughness", (new AttributeRanged("attribute.name.armor_toughness", 0.0D, 0.0D, 20.0D)).setSyncable(true));
+-    public static final Holder<AttributeBase> ATTACK_DAMAGE = register("attack_damage", new AttributeRanged("attribute.name.attack_damage", 2.0D, 0.0D, 2048.0D));
++    public static final Holder<AttributeBase> ATTACK_DAMAGE = register("attack_damage", new AttributeRanged("attribute.name.attack_damage", 2.0D, 0.0D, org.spigotmc.SpigotConfig.attackDamage));
+     public static final Holder<AttributeBase> ATTACK_KNOCKBACK = register("attack_knockback", new AttributeRanged("attribute.name.attack_knockback", 0.0D, 0.0D, 5.0D));
+     public static final Holder<AttributeBase> ATTACK_SPEED = register("attack_speed", (new AttributeRanged("attribute.name.attack_speed", 4.0D, 0.0D, 1024.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> BLOCK_BREAK_SPEED = register("block_break_speed", (new AttributeRanged("attribute.name.block_break_speed", 1.0D, 0.0D, 1024.0D)).setSyncable(true));
+@@ -26,11 +26,11 @@ public class GenericAttributes {
+     public static final Holder<AttributeBase> JUMP_STRENGTH = register("jump_strength", (new AttributeRanged("attribute.name.jump_strength", (double) 0.42F, 0.0D, 32.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> KNOCKBACK_RESISTANCE = register("knockback_resistance", new AttributeRanged("attribute.name.knockback_resistance", 0.0D, 0.0D, 1.0D));
+     public static final Holder<AttributeBase> LUCK = register("luck", (new AttributeRanged("attribute.name.luck", 0.0D, -1024.0D, 1024.0D)).setSyncable(true));
+-    public static final Holder<AttributeBase> MAX_ABSORPTION = register("max_absorption", (new AttributeRanged("attribute.name.max_absorption", 0.0D, 0.0D, 2048.0D)).setSyncable(true));
+-    public static final Holder<AttributeBase> MAX_HEALTH = register("max_health", (new AttributeRanged("attribute.name.max_health", 20.0D, 1.0D, 1024.0D)).setSyncable(true));
++    public static final Holder<AttributeBase> MAX_ABSORPTION = register("max_absorption", (new AttributeRanged("attribute.name.max_absorption", 0.0D, 0.0D, org.spigotmc.SpigotConfig.maxAbsorption)).setSyncable(true));
++    public static final Holder<AttributeBase> MAX_HEALTH = register("max_health", (new AttributeRanged("attribute.name.max_health", 20.0D, 1.0D, org.spigotmc.SpigotConfig.maxHealth)).setSyncable(true));
+     public static final Holder<AttributeBase> MINING_EFFICIENCY = register("mining_efficiency", (new AttributeRanged("attribute.name.mining_efficiency", 0.0D, 0.0D, 1024.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> MOVEMENT_EFFICIENCY = register("movement_efficiency", (new AttributeRanged("attribute.name.movement_efficiency", 0.0D, 0.0D, 1.0D)).setSyncable(true));
+-    public static final Holder<AttributeBase> MOVEMENT_SPEED = register("movement_speed", (new AttributeRanged("attribute.name.movement_speed", 0.7D, 0.0D, 1024.0D)).setSyncable(true));
++    public static final Holder<AttributeBase> MOVEMENT_SPEED = register("movement_speed", (new AttributeRanged("attribute.name.movement_speed", 0.7D, 0.0D, org.spigotmc.SpigotConfig.movementSpeed)).setSyncable(true));
+     public static final Holder<AttributeBase> OXYGEN_BONUS = register("oxygen_bonus", (new AttributeRanged("attribute.name.oxygen_bonus", 0.0D, 0.0D, 1024.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> SAFE_FALL_DISTANCE = register("safe_fall_distance", (new AttributeRanged("attribute.name.safe_fall_distance", 3.0D, -1024.0D, 1024.0D)).setSyncable(true));
+     public static final Holder<AttributeBase> SCALE = register("scale", (new AttributeRanged("attribute.name.scale", 1.0D, 0.0625D, 16.0D)).setSyncable(true).setSentiment(AttributeBase.a.NEUTRAL));
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 45cdda2f9..e12a5df12 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -16,6 +16,8 @@ import java.util.logging.Level;
+ import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.MinecraftKey;
+ import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.entity.ai.attributes.AttributeRanged;
++import net.minecraft.world.entity.ai.attributes.GenericAttributes;
+ import org.bukkit.Bukkit;
+ import org.bukkit.ChatColor;
+ import org.bukkit.command.Command;
+@@ -338,4 +340,20 @@ public class SpigotConfig
+     {
+         movedTooQuicklyMultiplier = getDouble( "settings.moved-too-quickly-multiplier", 10.0D );
+     }
++
++    public static double maxAbsorption = 2048;
++    public static double maxHealth = 2048;
++    public static double movementSpeed = 2048;
++    public static double attackDamage = 2048;
++    private static void attributeMaxes()
++    {
++        maxAbsorption = getDouble( "settings.attribute.maxAbsorption.max", maxAbsorption );
++        ( (AttributeRanged) GenericAttributes.MAX_ABSORPTION.value() ).maxValue = maxAbsorption;
++        maxHealth = getDouble( "settings.attribute.maxHealth.max", maxHealth );
++        ( (AttributeRanged) GenericAttributes.MAX_HEALTH.value() ).maxValue = maxHealth;
++        movementSpeed = getDouble( "settings.attribute.movementSpeed.max", movementSpeed );
++        ( (AttributeRanged) GenericAttributes.MOVEMENT_SPEED.value() ).maxValue = movementSpeed;
++        attackDamage = getDouble( "settings.attribute.attackDamage.max", attackDamage );
++        ( (AttributeRanged) GenericAttributes.ATTACK_DAMAGE.value() ).maxValue = attackDamage;
++    }
+ }
+-- 
+2.49.0
+

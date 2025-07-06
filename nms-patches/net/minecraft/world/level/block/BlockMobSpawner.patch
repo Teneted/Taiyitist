@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockMobSpawner.java
 +++ b/net/minecraft/world/level/block/BlockMobSpawner.java
-@@ -45,12 +45,20 @@
+@@ -40,11 +40,19 @@
      @Override
      protected void spawnAfterBreak(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack, boolean flag) {
          super.spawnAfterBreak(iblockdata, worldserver, blockposition, itemstack, flag);
@@ -20,5 +20,4 @@
 +        return 0;
 +        // CraftBukkit end
      }
- 
-     @Override
+ }

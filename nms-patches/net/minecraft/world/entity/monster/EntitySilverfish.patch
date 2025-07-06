@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntitySilverfish.java
 +++ b/net/minecraft/world/entity/monster/EntitySilverfish.java
-@@ -30,6 +30,11 @@
+@@ -31,6 +31,11 @@
  import net.minecraft.world.level.block.BlockMonsterEggs;
  import net.minecraft.world.level.block.state.IBlockData;
  
@@ -12,7 +12,7 @@
  public class EntitySilverfish extends EntityMonster {
  
      @Nullable
-@@ -157,6 +162,11 @@
+@@ -160,6 +165,11 @@
                              Block block = iblockdata.getBlock();
  
                              if (block instanceof BlockMonsterEggs) {
@@ -21,11 +21,11 @@
 +                                    continue;
 +                                }
 +                                // CraftBukkit end
-                                 if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+                                 if (getServerLevel(world).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
                                      world.destroyBlock(blockposition1, true, this.silverfish);
                                  } else {
-@@ -226,9 +236,14 @@
-                 IBlockData iblockdata = world.getBlockState(blockposition);
+@@ -229,9 +239,14 @@
+                 IBlockData iblockdata = generatoraccess.getBlockState(blockposition);
  
                  if (BlockMonsterEggs.isCompatibleHostBlock(iblockdata)) {
 +                    // CraftBukkit start
@@ -33,7 +33,7 @@
 +                        return;
 +                    }
 +                    // CraftBukkit end
-                     world.setBlock(blockposition, BlockMonsterEggs.infestedStateByHost(iblockdata), 3);
+                     generatoraccess.setBlock(blockposition, BlockMonsterEggs.infestedStateByHost(iblockdata), 3);
                      this.mob.spawnAnim();
 -                    this.mob.discard();
 +                    this.mob.discard(EntityRemoveEvent.Cause.ENTER_BLOCK); // CraftBukkit - add Bukkit remove cause

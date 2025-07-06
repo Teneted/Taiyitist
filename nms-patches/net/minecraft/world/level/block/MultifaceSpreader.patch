@@ -1,6 +1,15 @@
 --- a/net/minecraft/world/level/block/MultifaceSpreader.java
 +++ b/net/minecraft/world/level/block/MultifaceSpreader.java
-@@ -156,7 +156,7 @@
+@@ -95,7 +95,7 @@
+         return this.config.placeBlock(generatoraccess, multifacespreader_c, iblockdata, flag) ? Optional.of(multifacespreader_c) : Optional.empty();
+     }
+ 
+-    public static record c(BlockPosition pos, EnumDirection face) {
++    public static record c(BlockPosition pos, EnumDirection face, BlockPosition source) { // CraftBukkit
+ 
+     }
+ 
+@@ -130,7 +130,7 @@
                      generatoraccess.getChunk(multifacespreader_c.pos()).markPosForPostprocessing(multifacespreader_c.pos());
                  }
  
@@ -9,7 +18,7 @@
              } else {
                  return false;
              }
-@@ -174,19 +174,19 @@
+@@ -168,19 +168,19 @@
          SAME_POSITION {
              @Override
              public MultifaceSpreader.c getSpreadPos(BlockPosition blockposition, EnumDirection enumdirection, EnumDirection enumdirection1) {
@@ -32,12 +41,3 @@
              }
          };
  
-@@ -195,7 +195,7 @@
-         public abstract MultifaceSpreader.c getSpreadPos(BlockPosition blockposition, EnumDirection enumdirection, EnumDirection enumdirection1);
-     }
- 
--    public static record c(BlockPosition pos, EnumDirection face) {
-+    public static record c(BlockPosition pos, EnumDirection face, BlockPosition source) { // CraftBukkit
- 
-     }
- }

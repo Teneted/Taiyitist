@@ -2,7 +2,7 @@
 +++ b/net/minecraft/world/level/block/BlockPumpkinCarved.java
 @@ -24,6 +24,10 @@
  import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
- import net.minecraft.world.level.block.state.properties.BlockStateDirection;
+ import net.minecraft.world.level.block.state.properties.BlockStateEnum;
  
 +// CraftBukkit start
 +import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -17,7 +17,7 @@
      private static void spawnGolemInWorld(World world, ShapeDetector.ShapeDetectorCollection shapedetector_shapedetectorcollection, Entity entity, BlockPosition blockposition) {
 -        clearPatternBlocks(world, shapedetector_shapedetectorcollection);
 +        // clearPatternBlocks(world, shapedetector_shapedetectorcollection); // CraftBukkit - moved down
-         entity.moveTo((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.05D, (double) blockposition.getZ() + 0.5D, 0.0F, 0.0F);
+         entity.snapTo((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.05D, (double) blockposition.getZ() + 0.5D, 0.0F, 0.0F);
 -        world.addFreshEntity(entity);
 +        // CraftBukkit start
 +        if (!world.addFreshEntity(entity, (entity.getType() == EntityTypes.SNOW_GOLEM) ? SpawnReason.BUILD_SNOWMAN : SpawnReason.BUILD_IRONGOLEM)) {
@@ -25,6 +25,6 @@
 +        }
 +        clearPatternBlocks(world, shapedetector_shapedetectorcollection); // CraftBukkit - from above
 +        // CraftBukkit end
-         Iterator iterator = world.getEntitiesOfClass(EntityPlayer.class, entity.getBoundingBox().inflate(5.0D)).iterator();
  
-         while (iterator.hasNext()) {
+         for (EntityPlayer entityplayer : world.getEntitiesOfClass(EntityPlayer.class, entity.getBoundingBox().inflate(5.0D))) {
+             CriterionTriggers.SUMMONED_ENTITY.trigger(entityplayer, entity);

@@ -13,18 +13,18 @@
  public class BehaviorProfession {
  
      public BehaviorProfession() {}
-@@ -17,7 +23,14 @@
-                     VillagerData villagerdata = entityvillager.getVillagerData();
+@@ -18,7 +24,14 @@
+                     boolean flag = !villagerdata.profession().is(VillagerProfession.NONE) && !villagerdata.profession().is(VillagerProfession.NITWIT);
  
-                     if (villagerdata.getProfession() != VillagerProfession.NONE && villagerdata.getProfession() != VillagerProfession.NITWIT && entityvillager.getVillagerXp() == 0 && villagerdata.getLevel() <= 1) {
--                        entityvillager.setVillagerData(entityvillager.getVillagerData().setProfession(VillagerProfession.NONE));
+                     if (flag && entityvillager.getVillagerXp() == 0 && villagerdata.level() <= 1) {
+-                        entityvillager.setVillagerData(entityvillager.getVillagerData().withProfession(worldserver.registryAccess(), VillagerProfession.NONE));
 +                        // CraftBukkit start
-+                        VillagerCareerChangeEvent event = CraftEventFactory.callVillagerCareerChangeEvent(entityvillager, CraftVillager.CraftProfession.minecraftToBukkit(VillagerProfession.NONE), VillagerCareerChangeEvent.ChangeReason.LOSING_JOB);
++                        VillagerCareerChangeEvent event = CraftEventFactory.callVillagerCareerChangeEvent(entityvillager, CraftVillager.CraftProfession.minecraftHolderToBukkit(worldserver.registryAccess().getOrThrow(VillagerProfession.NONE)), VillagerCareerChangeEvent.ChangeReason.LOSING_JOB);
 +                        if (event.isCancelled()) {
 +                            return false;
 +                        }
 +
-+                        entityvillager.setVillagerData(entityvillager.getVillagerData().setProfession(CraftVillager.CraftProfession.bukkitToMinecraft(event.getProfession())));
++                        entityvillager.setVillagerData(entityvillager.getVillagerData().withProfession(CraftVillager.CraftProfession.bukkitToMinecraftHolder(event.getProfession())));
 +                        // CraftBukkit end
                          entityvillager.refreshBrain(worldserver);
                          return true;

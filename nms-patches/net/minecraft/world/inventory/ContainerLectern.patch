@@ -59,7 +59,7 @@
      }
  
      @Override
-@@ -59,6 +87,13 @@
+@@ -60,6 +88,13 @@
                          return false;
                      }
  
@@ -73,7 +73,7 @@
                      ItemStack itemstack = this.lectern.removeItemNoUpdate(0);
  
                      this.lectern.setChanged();
-@@ -86,6 +121,8 @@
+@@ -87,6 +122,8 @@
  
      @Override
      public boolean stillValid(EntityHuman entityhuman) {

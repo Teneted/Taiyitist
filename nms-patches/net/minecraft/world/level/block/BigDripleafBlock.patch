@@ -1,10 +1,11 @@
 --- a/net/minecraft/world/level/block/BigDripleafBlock.java
 +++ b/net/minecraft/world/level/block/BigDripleafBlock.java
-@@ -43,6 +43,11 @@
+@@ -46,6 +46,12 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
  import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +// CraftBukkit start
++import net.minecraft.world.entity.player.EntityHuman;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.event.entity.EntityInteractEvent;
 +// CraftBukkit end
@@ -12,7 +13,7 @@
  public class BigDripleafBlock extends BlockFacingHorizontal implements IBlockFragilePlantElement, IBlockWaterlogged {
  
      public static final MapCodec<BigDripleafBlock> CODEC = simpleCodec(BigDripleafBlock::new);
-@@ -117,7 +122,7 @@
+@@ -121,7 +127,7 @@
  
      @Override
      protected void onProjectileHit(World world, IBlockData iblockdata, MovingObjectPositionBlock movingobjectpositionblock, IProjectile iprojectile) {
@@ -21,8 +22,8 @@
      }
  
      @Override
-@@ -176,7 +181,20 @@
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity) {
+@@ -180,7 +186,20 @@
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
          if (!world.isClientSide) {
              if (iblockdata.getValue(BigDripleafBlock.TILT) == Tilt.NONE && canEntityTilt(blockposition, entity) && !world.hasNeighborSignal(blockposition)) {
 -                this.setTiltAndScheduleTick(iblockdata, world, blockposition, Tilt.UNSTABLE, (SoundEffect) null);
@@ -43,7 +44,7 @@
              }
  
          }
-@@ -190,9 +208,9 @@
+@@ -194,9 +213,9 @@
              Tilt tilt = (Tilt) iblockdata.getValue(BigDripleafBlock.TILT);
  
              if (tilt == Tilt.UNSTABLE) {
@@ -55,7 +56,7 @@
              } else if (tilt == Tilt.FULL) {
                  resetTilt(iblockdata, worldserver, blockposition);
              }
-@@ -218,8 +236,10 @@
+@@ -222,8 +241,10 @@
          return entity.onGround() && entity.position().y > (double) ((float) blockposition.getY() + 0.6875F);
      }
  
@@ -68,7 +69,7 @@
          if (soundeffect != null) {
              playTiltSound(world, blockposition, soundeffect);
          }
-@@ -233,14 +253,21 @@
+@@ -237,14 +258,21 @@
      }
  
      private static void resetTilt(IBlockData iblockdata, World world, BlockPosition blockposition) {
@@ -92,7 +93,7 @@
          Tilt tilt1 = (Tilt) iblockdata.getValue(BigDripleafBlock.TILT);
  
          world.setBlock(blockposition, (IBlockData) iblockdata.setValue(BigDripleafBlock.TILT, tilt), 2);
-@@ -248,6 +275,7 @@
+@@ -252,6 +280,7 @@
              world.gameEvent((Entity) null, (Holder) GameEvent.BLOCK_CHANGE, blockposition);
          }
  

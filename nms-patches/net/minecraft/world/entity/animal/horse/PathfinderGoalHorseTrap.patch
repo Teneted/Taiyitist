@@ -2,7 +2,7 @@
 +++ b/net/minecraft/world/entity/animal/horse/PathfinderGoalHorseTrap.java
 @@ -43,12 +43,12 @@
          if (entitylightning != null) {
-             entitylightning.moveTo(this.horse.getX(), this.horse.getY(), this.horse.getZ());
+             entitylightning.snapTo(this.horse.getX(), this.horse.getY(), this.horse.getZ());
              entitylightning.setVisualOnly(true);
 -            worldserver.addFreshEntity(entitylightning);
 +            worldserver.strikeLightning(entitylightning, org.bukkit.event.weather.LightningStrikeEvent.Cause.TRAP); // CraftBukkit

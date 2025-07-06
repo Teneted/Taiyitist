@@ -1,18 +1,45 @@
 --- a/net/minecraft/world/entity/animal/EntityFox.java
 +++ b/net/minecraft/world/entity/animal/EntityFox.java
-@@ -93,6 +93,10 @@
- import net.minecraft.world.level.pathfinder.PathType;
+@@ -95,6 +95,10 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
  
 +// CraftBukkit start
 +import org.bukkit.event.entity.EntityRemoveEvent;
 +// CraftBukkit end
 +
- public class EntityFox extends EntityAnimal implements VariantHolder<EntityFox.Type> {
+ public class EntityFox extends EntityAnimal {
  
-     private static final DataWatcherObject<Integer> DATA_TYPE_ID = DataWatcher.defineId(EntityFox.class, DataWatcherRegistry.INT);
-@@ -518,7 +522,8 @@
-     protected void pickUpItem(EntityItem entityitem) {
+     private static final DataWatcherObject<Integer> DATA_TYPE_ID = DataWatcher.<Integer>defineId(EntityFox.class, DataWatcherRegistry.INT);
+@@ -126,7 +130,7 @@
+     };
+     private static final int MIN_TICKS_BEFORE_EAT = 600;
+     private static final EntitySize BABY_DIMENSIONS = EntityTypes.FOX.getDimensions().scale(0.5F).withEyeHeight(0.2975F);
+-    private static final Codec<List<EntityReference<EntityLiving>>> TRUSTED_LIST_CODEC = EntityReference.codec().listOf();
++    private static final Codec<List<EntityReference<EntityLiving>>> TRUSTED_LIST_CODEC = EntityReference.<EntityLiving>codec().listOf(); // CraftBukkit - decompile error
+     private static final boolean DEFAULT_SLEEPING = false;
+     private static final boolean DEFAULT_SITTING = false;
+     private static final boolean DEFAULT_CROUCHING = false;
+@@ -172,7 +176,7 @@
+         this.goalSelector.addGoal(1, new EntityFox.b());
+         this.goalSelector.addGoal(2, new EntityFox.n(2.2D));
+         this.goalSelector.addGoal(3, new EntityFox.e(1.0D));
+-        this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget(this, EntityHuman.class, 16.0F, 1.6D, 1.4D, (entityliving) -> {
++        this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget<>(this, EntityHuman.class, 16.0F, 1.6D, 1.4D, (entityliving) -> { // CraftBukkit - decompile error
+             return EntityFox.AVOID_PLAYERS.test(entityliving) && !this.trusts(entityliving) && !this.isDefending();
+         }));
+         this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget(this, EntityWolf.class, 8.0F, 1.6D, 1.4D, (entityliving) -> {
+@@ -426,7 +430,7 @@
+     protected void readAdditionalSaveData(ValueInput valueinput) {
+         super.readAdditionalSaveData(valueinput);
+         this.clearTrusted();
+-        ((List) valueinput.read("Trusted", EntityFox.TRUSTED_LIST_CODEC).orElse(List.of())).forEach(this::addTrustedEntity);
++        (valueinput.read("Trusted", EntityFox.TRUSTED_LIST_CODEC).orElse(List.of())).forEach(this::addTrustedEntity); // CraftBukkit - decompile error
+         this.setSleeping(valueinput.getBooleanOr("Sleeping", false));
+         this.setVariant((EntityFox.Type) valueinput.read("Type", EntityFox.Type.CODEC).orElse(EntityFox.Type.DEFAULT));
+         this.setSitting(valueinput.getBooleanOr("Sitting", false));
+@@ -521,7 +525,8 @@
+     protected void pickUpItem(WorldServer worldserver, EntityItem entityitem) {
          ItemStack itemstack = entityitem.getItem();
  
 -        if (this.canHoldItem(itemstack)) {
@@ -21,7 +48,7 @@
              int i = itemstack.getCount();
  
              if (i > 1) {
-@@ -530,7 +535,7 @@
+@@ -533,7 +538,7 @@
              this.setItemSlot(EnumItemSlot.MAINHAND, itemstack.split(1));
              this.setGuaranteedDrop(EnumItemSlot.MAINHAND);
              this.take(entityitem, itemstack.getCount());
@@ -30,13 +57,13 @@
              this.ticksSinceEaten = 0;
          }
  
-@@ -868,6 +873,16 @@
+@@ -951,6 +956,16 @@
                  if (entityplayer1 != null && entityplayer != entityplayer1) {
-                     entityfox.addTrustedUUID(entityplayer1.getUUID());
+                     entityfox.addTrustedEntity(entityplayer1);
                  }
 +                // CraftBukkit start - call EntityBreedEvent
 +                entityfox.setAge(-24000);
-+                entityfox.moveTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
++                entityfox.snapTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
 +                int experience = this.animal.getRandom().nextInt(7) + 1;
 +                org.bukkit.event.entity.EntityBreedEvent entityBreedEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityBreedEvent(entityfox, animal, partner, entityplayer, this.animal.breedItem, experience);
 +                if (entityBreedEvent.isCancelled()) {
@@ -47,16 +74,16 @@
  
                  if (entityplayer2 != null) {
                      entityplayer2.awardStat(StatisticList.ANIMALS_BRED);
-@@ -878,12 +893,14 @@
+@@ -961,12 +976,14 @@
                  this.partner.setAge(6000);
                  this.animal.resetLove();
                  this.partner.resetLove();
 -                entityfox.setAge(-24000);
--                entityfox.moveTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
+-                entityfox.snapTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
 -                worldserver.addFreshEntityWithPassengers(entityfox);
 +                worldserver.addFreshEntityWithPassengers(entityfox, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // CraftBukkit - added SpawnReason
                  this.level.broadcastEntityEvent(this.animal, (byte) 18);
-                 if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                 if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
 -                    this.level.addFreshEntity(new EntityExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), this.animal.getRandom().nextInt(7) + 1));
 +                    // CraftBukkit start - use event experience
 +                    if (experience > 0) {
@@ -66,7 +93,7 @@
                  }
  
              }
-@@ -1279,6 +1296,11 @@
+@@ -1269,6 +1286,11 @@
              int i = (Integer) iblockdata.getValue(BlockSweetBerryBush.AGE);
  
              iblockdata.setValue(BlockSweetBerryBush.AGE, 1);
@@ -77,13 +104,4 @@
 +            // CraftBukkit end
              int j = 1 + EntityFox.this.level().random.nextInt(2) + (i == 3 ? 1 : 0);
              ItemStack itemstack = EntityFox.this.getItemBySlot(EnumItemSlot.MAINHAND);
- 
-@@ -1436,7 +1458,7 @@
-         private EntityLiving trustedLastHurt;
-         private int timestamp;
- 
--        public a(final Class oclass, final boolean flag, final boolean flag1, @Nullable final Predicate predicate) {
-+        public a(final Class oclass, final boolean flag, final boolean flag1, @Nullable final Predicate<EntityLiving> predicate) { // CraftBukkit - decompile error
-             super(EntityFox.this, oclass, 10, flag, flag1, predicate);
-         }
  

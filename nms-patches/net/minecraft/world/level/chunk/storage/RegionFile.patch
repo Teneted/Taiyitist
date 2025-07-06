@@ -52,16 +52,16 @@
          return bytebuffer;
      }
  
-@@ -358,7 +359,7 @@
-         FileChannel filechannel = FileChannel.open(path1, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+@@ -357,7 +358,7 @@
+         Path path1 = Files.createTempFile(this.externalFileDir, "tmp", (String) null);
  
-         try {
+         try (FileChannel filechannel = FileChannel.open(path1, StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
 -            bytebuffer.position(5);
 +            ((java.nio.Buffer) bytebuffer).position(5); // CraftBukkit - decompile error
              filechannel.write(bytebuffer);
-         } catch (Throwable throwable) {
-             if (filechannel != null) {
-@@ -382,7 +383,7 @@
+         }
+ 
+@@ -367,7 +368,7 @@
      }
  
      private void writeHeader() throws IOException {
@@ -70,7 +70,7 @@
          this.file.write(this.header, 0L);
      }
  
-@@ -418,7 +419,7 @@
+@@ -403,7 +404,7 @@
          if (i != j) {
              ByteBuffer bytebuffer = RegionFile.PADDING_BUFFER.duplicate();
  

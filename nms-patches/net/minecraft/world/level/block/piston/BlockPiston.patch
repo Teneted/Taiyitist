@@ -15,7 +15,7 @@
  public class BlockPiston extends BlockDirectional {
  
      public static final MapCodec<BlockPiston> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -152,6 +160,18 @@
+@@ -129,6 +137,18 @@
                  }
              }
  
@@ -31,10 +31,10 @@
 +            }
 +            // PAIL: checkME - what happened to setTypeAndData?
 +            // CraftBukkit end
-             world.blockEvent(blockposition, this, b0, enumdirection.get3DDataValue());
+             world.blockEvent(blockposition, this, i, enumdirection.get3DDataValue());
          }
  
-@@ -332,6 +352,48 @@
+@@ -295,6 +315,48 @@
              IBlockData[] aiblockdata = new IBlockData[list.size() + list2.size()];
              EnumDirection enumdirection1 = flag ? enumdirection : enumdirection.getOpposite();
              int i = 0;
@@ -81,5 +81,5 @@
 +            }
 +            // CraftBukkit end
  
-             BlockPosition blockposition3;
-             int j;
+             for (int j = list2.size() - 1; j >= 0; --j) {
+                 BlockPosition blockposition3 = (BlockPosition) list2.get(j);

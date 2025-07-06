@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces.java
 +++ b/net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces.java
-@@ -43,6 +43,10 @@
+@@ -38,6 +38,10 @@
+ import net.minecraft.world.level.storage.loot.LootTable;
  import net.minecraft.world.level.storage.loot.LootTables;
- import org.slf4j.Logger;
  
 +// CraftBukkit start
 +import net.minecraft.nbt.NBTBase;
@@ -10,46 +10,23 @@
 +
  public class MineshaftPieces {
  
-     static final Logger LOGGER = LogUtils.getLogger();
-@@ -515,6 +519,8 @@
+     private static final int DEFAULT_SHAFT_WIDTH = 3;
+@@ -517,6 +521,8 @@
  
-                         if (structureboundingbox.isInside(blockposition_mutableblockposition) && this.isInterior(generatoraccessseed, 1, 0, l, structureboundingbox)) {
+                         if (structureboundingbox.isInside(blockposition1) && this.isInterior(generatoraccessseed, 1, 0, i2, structureboundingbox)) {
                              this.hasPlacedSpider = true;
 +                            // CraftBukkit start
 +                            /*
-                             generatoraccessseed.setBlock(blockposition_mutableblockposition, Blocks.SPAWNER.defaultBlockState(), 2);
-                             TileEntity tileentity = generatoraccessseed.getBlockEntity(blockposition_mutableblockposition);
+                             generatoraccessseed.setBlock(blockposition1, Blocks.SPAWNER.defaultBlockState(), 2);
+                             TileEntity tileentity = generatoraccessseed.getBlockEntity(blockposition1);
  
-@@ -523,6 +529,9 @@
+@@ -525,6 +531,9 @@
  
                                  tileentitymobspawner.setEntityId(EntityTypes.CAVE_SPIDER, randomsource);
                              }
 +                            */
-+                            placeCraftSpawner(generatoraccessseed, blockposition_mutableblockposition, org.bukkit.entity.EntityType.CAVE_SPIDER, 2);
++                            placeCraftSpawner(generatoraccessseed, blockposition1, org.bukkit.entity.EntityType.CAVE_SPIDER, 2);
 +                            // CraftBukkit end
                          }
                      }
                  }
-@@ -814,11 +823,11 @@
- 
-         public d(NBTTagCompound nbttagcompound) {
-             super(WorldGenFeatureStructurePieceType.MINE_SHAFT_ROOM, nbttagcompound);
--            DataResult dataresult = StructureBoundingBox.CODEC.listOf().parse(DynamicOpsNBT.INSTANCE, nbttagcompound.getList("Entrances", 11));
-+            DataResult<List<StructureBoundingBox>> dataresult = StructureBoundingBox.CODEC.listOf().parse(DynamicOpsNBT.INSTANCE, nbttagcompound.getList("Entrances", 11)); // CraftBukkit - decompile error
-             Logger logger = MineshaftPieces.LOGGER;
- 
-             Objects.requireNonNull(logger);
--            Optional optional = dataresult.resultOrPartial(logger::error);
-+            Optional<List<StructureBoundingBox>> optional = dataresult.resultOrPartial(logger::error); // CraftBukkit - decompile error
-             List list = this.childEntranceBoxes;
- 
-             Objects.requireNonNull(this.childEntranceBoxes);
-@@ -924,7 +933,7 @@
-         @Override
-         protected void addAdditionalSaveData(StructurePieceSerializationContext structurepieceserializationcontext, NBTTagCompound nbttagcompound) {
-             super.addAdditionalSaveData(structurepieceserializationcontext, nbttagcompound);
--            DataResult dataresult = StructureBoundingBox.CODEC.listOf().encodeStart(DynamicOpsNBT.INSTANCE, this.childEntranceBoxes);
-+            DataResult<NBTBase> dataresult = StructureBoundingBox.CODEC.listOf().encodeStart(DynamicOpsNBT.INSTANCE, this.childEntranceBoxes); // CraftBukkit - decompile error
-             Logger logger = MineshaftPieces.LOGGER;
- 
-             Objects.requireNonNull(logger);

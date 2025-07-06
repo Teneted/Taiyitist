@@ -28,7 +28,7 @@
          this.client = socket;
  
          try {
-@@ -38,11 +45,14 @@
+@@ -38,6 +45,7 @@
          }
  
          this.rconPassword = s;
@@ -36,16 +36,7 @@
      }
  
      public void run() {
--        while (true) {
--            try {
-+        // CraftBukkit start - decompile error: switch try / while statement
-+        try {
-+            while (true) {
-+                // CraftBukkit end
-                 if (!this.running) {
-                     return;
-                 }
-@@ -71,7 +81,7 @@
+@@ -71,7 +79,7 @@
                                  String s = StatusChallengeUtils.stringFromByteArray(this.buf, j, i);
  
                                  try {
@@ -54,24 +45,3 @@
                                  } catch (Exception exception) {
                                      this.sendCmdResponse(l, "Error executing: " + s + " (" + exception.getMessage() + ")");
                                  }
-@@ -98,6 +108,7 @@
-                             continue;
-                     }
-                 }
-+        } // CraftBukkit - decompile error: switch try / while statement
-             } catch (IOException ioexception) {
-                 return;
-             } catch (Exception exception1) {
-@@ -109,8 +120,10 @@
-                 this.running = false;
-             }
- 
--            return;
--        }
-+            // CraftBukkit start - decompile error: switch try / while statement
-+            // return;
-+        // }
-+        // CraftBukkit end
-     }
- 
-     private void send(int i, int j, String s) throws IOException {

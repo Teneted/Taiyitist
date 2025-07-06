@@ -1,24 +1,24 @@
 --- a/net/minecraft/core/component/DataComponentPatch.java
 +++ b/net/minecraft/core/component/DataComponentPatch.java
-@@ -61,7 +61,7 @@
+@@ -60,7 +60,7 @@
              }
          }
  
 -        return reference2objectmap;
 +        return (Reference2ObjectMap) reference2objectmap; // CraftBukkit - decompile error
      });
-     public static final StreamCodec<RegistryFriendlyByteBuf, DataComponentPatch> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, DataComponentPatch>() {
-         public DataComponentPatch decode(RegistryFriendlyByteBuf registryfriendlybytebuf) {
-@@ -144,7 +144,7 @@
-         }
+     public static final StreamCodec<RegistryFriendlyByteBuf, DataComponentPatch> STREAM_CODEC = createStreamCodec(new DataComponentPatch.b() {
+         @Override
+@@ -159,7 +159,7 @@
+             }
  
-         private static <T> void encodeComponent(RegistryFriendlyByteBuf registryfriendlybytebuf, DataComponentType<T> datacomponenttype, Object object) {
--            datacomponenttype.streamCodec().encode(registryfriendlybytebuf, object);
-+            datacomponenttype.streamCodec().encode(registryfriendlybytebuf, (T) object); // CraftBukkit - decompile error
-         }
-     };
-     private static final String REMOVED_PREFIX = "!";
-@@ -271,6 +271,42 @@
+             private <T> void encodeComponent(RegistryFriendlyByteBuf registryfriendlybytebuf, DataComponentType<T> datacomponenttype, Object object) {
+-                datacomponentpatch_b.apply(datacomponenttype).encode(registryfriendlybytebuf, object);
++                datacomponentpatch_b.apply(datacomponenttype).encode(registryfriendlybytebuf, (T) object); // CraftBukkit - decompile error
+             }
+         };
+     }
+@@ -321,6 +321,42 @@
  
          a() {}
  

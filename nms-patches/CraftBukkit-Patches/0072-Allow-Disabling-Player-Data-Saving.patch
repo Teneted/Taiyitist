@@ -1,0 +1,35 @@
+From a44ee2ed9663726b0d866f371d16ce7f1339c7c1 Mon Sep 17 00:00:00 2001
+From: Sander Knauff <sanderknauff@hotmail.com>
+Date: Sat, 7 Nov 2020 18:23:42 +1100
+Subject: [PATCH] Allow Disabling Player Data Saving
+
+
+diff --git a/src/main/java/net/minecraft/world/level/storage/WorldNBTStorage.java b/src/main/java/net/minecraft/world/level/storage/WorldNBTStorage.java
+index cc88c7784..12dbf9541 100644
+--- a/src/main/java/net/minecraft/world/level/storage/WorldNBTStorage.java
++++ b/src/main/java/net/minecraft/world/level/storage/WorldNBTStorage.java
+@@ -40,6 +40,7 @@ public class WorldNBTStorage {
+     }
+ 
+     public void save(EntityHuman entityhuman) {
++        if (org.spigotmc.SpigotConfig.disablePlayerDataSaving) return; // Spigot
+         try (ProblemReporter.j problemreporter_j = new ProblemReporter.j(entityhuman.problemPath(), WorldNBTStorage.LOGGER)) {
+             TagValueOutput tagvalueoutput = TagValueOutput.createWithContext(problemreporter_j, entityhuman.registryAccess());
+ 
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 6502572f5..5e7ec9919 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -396,4 +396,9 @@ public class SpigotConfig
+         logVillagerDeaths = getBoolean("settings.log-villager-deaths", true);
+         logNamedDeaths = getBoolean("settings.log-named-deaths", true);
+     }
++
++    public static boolean disablePlayerDataSaving;
++    private static void disablePlayerDataSaving() {
++        disablePlayerDataSaving = getBoolean("players.disable-saving", false);
++    }
+ }
+-- 
+2.49.0
+

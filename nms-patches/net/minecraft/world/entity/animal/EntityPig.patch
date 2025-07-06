@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityPig.java
 +++ b/net/minecraft/world/entity/animal/EntityPig.java
-@@ -49,6 +49,11 @@
+@@ -59,6 +59,11 @@
  import net.minecraft.world.phys.AxisAlignedBB;
  import net.minecraft.world.phys.Vec3D;
  
@@ -9,23 +9,22 @@
 +import org.bukkit.event.entity.EntityRemoveEvent;
 +// CraftBukkit end
 +
- public class EntityPig extends EntityAnimal implements ISteerable, ISaddleable {
+ public class EntityPig extends EntityAnimal implements ISteerable {
  
-     private static final DataWatcherObject<Boolean> DATA_SADDLE_ID = DataWatcher.defineId(EntityPig.class, DataWatcherRegistry.BOOLEAN);
-@@ -253,8 +258,14 @@
+     private static final DataWatcherObject<Integer> DATA_BOOST_TIME = DataWatcher.<Integer>defineId(EntityPig.class, DataWatcherRegistry.INT);
+@@ -239,7 +244,14 @@
                  }
  
-                 entitypigzombie.setPersistenceRequired();
--                worldserver.addFreshEntity(entitypigzombie);
--                this.discard();
-+                // CraftBukkit start
-+                if (CraftEventFactory.callPigZapEvent(this, entitylightning, entitypigzombie).isCancelled()) {
-+                    return;
-+                }
-+                // CraftBukkit - added a reason for spawning this creature
-+                worldserver.addFreshEntity(entitypigzombie, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.LIGHTNING);
-+                // CraftBukkit end
-+                this.discard(EntityRemoveEvent.Cause.TRANSFORMATION); // CraftBukkit - add Bukkit remove cause
-             } else {
+                 entitypigzombie1.setPersistenceRequired();
+-            });
++            // CraftBukkit start
++            }, null, null);
++            if (CraftEventFactory.callPigZapEvent(this, entitylightning, entitypigzombie).isCancelled()) {
++                return;
++            }
++            worldserver.addFreshEntity(entitypigzombie, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.LIGHTNING);
++            this.discard(EntityRemoveEvent.Cause.TRANSFORMATION); // CraftBukkit - add Bukkit remove cause
++            // CraftBukkit end
+ 
+             if (entitypigzombie == null) {
                  super.thunderHit(worldserver, entitylightning);
-             }

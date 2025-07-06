@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/block/entity/TileEntity.java
 +++ b/net/minecraft/world/level/block/entity/TileEntity.java
-@@ -27,8 +27,18 @@
- import net.minecraft.world.level.block.state.IBlockData;
+@@ -35,8 +35,18 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
@@ -16,40 +16,57 @@
 +    private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
 +    public CraftPersistentDataContainer persistentDataContainer;
 +    // CraftBukkit end
+     private static final Codec<TileEntityTypes<?>> TYPE_CODEC = BuiltInRegistries.BLOCK_ENTITY_TYPE.byNameCodec();
      private static final Logger LOGGER = LogUtils.getLogger();
      private final TileEntityTypes<?> type;
-     @Nullable
-@@ -75,7 +85,16 @@
+@@ -74,7 +84,7 @@
+         int l = SectionPosition.blockToSectionCoord(i);
+         int i1 = SectionPosition.blockToSectionCoord(k);
+ 
+-        if (l != chunkcoordintpair.x || i1 != chunkcoordintpair.z) {
++        if (chunkcoordintpair != null && (l != chunkcoordintpair.x || i1 != chunkcoordintpair.z)) { // CraftBukkit - allow null
+             TileEntity.LOGGER.warn("Block entity {} found in a wrong chunk, expected position from chunk {}", nbttagcompound, chunkcoordintpair);
+             i = chunkcoordintpair.getBlockX(SectionPosition.sectionRelative(i));
+             k = chunkcoordintpair.getBlockZ(SectionPosition.sectionRelative(k));
+@@ -96,7 +106,15 @@
          return this.level != null;
      }
  
--    protected void loadAdditional(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {}
+-    protected void loadAdditional(ValueInput valueinput) {}
 +    // CraftBukkit start - read container
-+    protected void loadAdditional(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
++    protected void loadAdditional(ValueInput valueinput) {
 +        this.persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 +
-+        net.minecraft.nbt.NBTBase persistentDataTag = nbttagcompound.get("PublicBukkitValues");
-+        if (persistentDataTag instanceof NBTTagCompound) {
-+            this.persistentDataContainer.putAll((NBTTagCompound) persistentDataTag);
-+        }
++        valueinput.child("PublicBukkitValues").ifPresent((persistentDataTag) -> {
++            this.persistentDataContainer.putAll(persistentDataTag);
++        });
 +    }
 +    // CraftBukkit end
  
-     public final void loadWithComponents(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
-         this.loadAdditional(nbttagcompound, holderlookup_a);
-@@ -115,6 +134,11 @@
-         }).ifPresent((nbtbase) -> {
-             nbttagcompound.merge((NBTTagCompound) nbtbase);
-         });
+     public final void loadWithComponents(ValueInput valueinput) {
+         this.loadAdditional(valueinput);
+@@ -140,6 +158,11 @@
+     public void saveWithoutMetadata(ValueOutput valueoutput) {
+         this.saveAdditional(valueoutput);
+         valueoutput.store("components", DataComponentMap.CODEC, this.components);
 +        // CraftBukkit start - store container
 +        if (this.persistentDataContainer != null && !this.persistentDataContainer.isEmpty()) {
-+            nbttagcompound.put("PublicBukkitValues", this.persistentDataContainer.toTagCompound());
++            this.persistentDataContainer.store(valueoutput.child("PublicBukkitValues"));
 +        }
 +        // CraftBukkit end
-         return nbttagcompound;
      }
  
-@@ -276,12 +300,18 @@
+     public final NBTTagCompound saveCustomOnly(HolderLookup.a holderlookup_a) {
+@@ -172,7 +195,7 @@
+ 
+     @Nullable
+     public static TileEntity loadStatic(BlockPosition blockposition, IBlockData iblockdata, NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
+-        TileEntityTypes<?> tileentitytypes = (TileEntityTypes) nbttagcompound.read("id", TileEntity.TYPE_CODEC).orElse((Object) null);
++        TileEntityTypes<?> tileentitytypes = (TileEntityTypes) nbttagcompound.read("id", TileEntity.TYPE_CODEC).orElse(null); // CraftBukkit - decompile error
+ 
+         if (tileentitytypes == null) {
+             TileEntity.LOGGER.error("Skipping block entity with invalid type: {}", nbttagcompound.get("id"));
+@@ -297,6 +320,12 @@
      }
  
      public final void applyComponents(DataComponentMap datacomponentmap, DataComponentPatch datacomponentpatch) {
@@ -62,26 +79,28 @@
          final Set<DataComponentType<?>> set = new HashSet();
  
          set.add(DataComponents.BLOCK_ENTITY_DATA);
-         final PatchedDataComponentMap patcheddatacomponentmap = PatchedDataComponentMap.fromPatch(datacomponentmap, datacomponentpatch);
- 
--        this.applyImplicitComponents(new TileEntity.b(this) {
-+        this.applyImplicitComponents(new TileEntity.b() { // CraftBukkit - decompile error
-             @Nullable
-             @Override
-             public <T> T get(DataComponentType<T> datacomponenttype) {
-@@ -299,6 +329,10 @@
+@@ -321,6 +350,11 @@
          DataComponentPatch datacomponentpatch1 = datacomponentpatch.forget(set::contains);
  
          this.components = datacomponentpatch1.split().added();
 +        // CraftBukkit start
 +        set.remove(DataComponents.BLOCK_ENTITY_DATA); // Remove as never actually added by applyImplicitComponents
++        set.remove(DataComponents.BLOCK_STATE); // Remove as never actually added by applyImplicitComponents
 +        return set;
 +        // CraftBukkit end
      }
  
      protected void collectImplicitComponents(DataComponentMap.a datacomponentmap_a) {}
-@@ -333,6 +367,15 @@
-         }
+@@ -347,13 +381,22 @@
+ 
+     @Nullable
+     public static IChatBaseComponent parseCustomNameSafe(ValueInput valueinput, String s) {
+-        return (IChatBaseComponent) valueinput.read(s, ComponentSerialization.CODEC).orElse((Object) null);
++        return (IChatBaseComponent) valueinput.read(s, ComponentSerialization.CODEC).orElse(null); // CraftBukkit - decompile error
+     }
+ 
+     public ProblemReporter.f problemPath() {
+         return new TileEntity.a(this);
      }
  
 +    // CraftBukkit start - add method
@@ -93,6 +112,6 @@
 +    }
 +    // CraftBukkit end
 +
-     private static class a {
+     private static record a(TileEntity blockEntity) implements ProblemReporter.f {
  
-         public static final Codec<DataComponentMap> COMPONENTS_CODEC = DataComponentMap.CODEC.optionalFieldOf("components", DataComponentMap.EMPTY).codec();
+         @Override

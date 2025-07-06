@@ -10,5 +10,5 @@
 +                        }
 +                        // CraftBukkit end
                          world.addFreshEntity(entityendercrystal);
-                         world.gameEvent((Entity) itemactioncontext.getPlayer(), (Holder) GameEvent.ENTITY_PLACE, blockposition1);
+                         world.gameEvent(itemactioncontext.getPlayer(), (Holder) GameEvent.ENTITY_PLACE, blockposition1);
                          EnderDragonBattle enderdragonbattle = ((WorldServer) world).getDragonFight();

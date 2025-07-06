@@ -1,18 +1,18 @@
 --- a/net/minecraft/world/level/block/BlockDoor.java
 +++ b/net/minecraft/world/level/block/BlockDoor.java
-@@ -37,6 +37,8 @@
- import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -41,6 +41,8 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 +
  public class BlockDoor extends Block {
  
      public static final MapCodec<BlockDoor> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -220,9 +222,24 @@
+@@ -204,9 +206,24 @@
  
      @Override
-     protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, BlockPosition blockposition1, boolean flag) {
+     protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, @Nullable Orientation orientation, boolean flag) {
 -        boolean flag1 = world.hasNeighborSignal(blockposition) || world.hasNeighborSignal(blockposition.relative(iblockdata.getValue(BlockDoor.HALF) == BlockPropertyDoubleBlockHalf.LOWER ? EnumDirection.UP : EnumDirection.DOWN));
 +        // CraftBukkit start
 +        BlockPosition otherHalf = blockposition.relative(iblockdata.getValue(BlockDoor.HALF) == BlockPropertyDoubleBlockHalf.LOWER ? EnumDirection.UP : EnumDirection.DOWN);

@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/animal/horse/EntityLlamaTrader.java
 +++ b/net/minecraft/world/entity/animal/horse/EntityLlamaTrader.java
-@@ -19,6 +19,10 @@
- import net.minecraft.world.level.World;
- import net.minecraft.world.level.WorldAccess;
+@@ -23,6 +23,10 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import org.bukkit.event.entity.EntityRemoveEvent;
@@ -10,17 +10,17 @@
 +
  public class EntityLlamaTrader extends EntityLlama {
  
-     private int despawnDelay = 47999;
-@@ -87,7 +91,7 @@
+     private static final int DEFAULT_DESPAWN_DELAY = 47999;
+@@ -93,7 +97,7 @@
              this.despawnDelay = this.isLeashedToWanderingTrader() ? ((EntityVillagerTrader) this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
              if (this.despawnDelay <= 0) {
-                 this.dropLeash(true, false);
+                 this.removeLeash();
 -                this.discard();
 +                this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
              }
  
          }
-@@ -153,7 +157,7 @@
+@@ -159,7 +163,7 @@
  
          @Override
          public void start() {

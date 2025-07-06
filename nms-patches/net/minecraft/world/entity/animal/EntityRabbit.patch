@@ -1,17 +1,17 @@
 --- a/net/minecraft/world/entity/animal/EntityRabbit.java
 +++ b/net/minecraft/world/entity/animal/EntityRabbit.java
-@@ -67,6 +67,10 @@
- import net.minecraft.world.level.pathfinder.PathEntity;
+@@ -75,6 +75,10 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
  
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +// CraftBukkit end
 +
- public class EntityRabbit extends EntityAnimal implements VariantHolder<EntityRabbit.Variant> {
+ public class EntityRabbit extends EntityAnimal {
  
      public static final double STROLL_SPEED_MOD = 0.6D;
-@@ -91,7 +95,6 @@
+@@ -100,7 +104,6 @@
          super(entitytypes, world);
          this.jumpControl = new EntityRabbit.ControllerJumpRabbit(this);
          this.moveControl = new EntityRabbit.ControllerMoveRabbit(this);
@@ -19,7 +19,18 @@
      }
  
      @Override
-@@ -578,9 +581,19 @@
+@@ -499,8 +502,8 @@
+         }
+ 
+         static {
+-            PrimitiveCodec primitivecodec = Codec.INT;
+-            IntFunction intfunction = EntityRabbit.Variant.BY_ID;
++            PrimitiveCodec<Integer> primitivecodec = Codec.INT; // CraftBukkit - decompile error
++            IntFunction<EntityRabbit.Variant> intfunction = EntityRabbit.Variant.BY_ID; // CraftBukkit - decompile error
+ 
+             Objects.requireNonNull(intfunction);
+             LEGACY_CODEC = primitivecodec.xmap(intfunction::apply, EntityRabbit.Variant::id);
+@@ -644,9 +647,19 @@
                      int i = (Integer) iblockdata.getValue(BlockCarrots.AGE);
  
                      if (i == 0) {
@@ -37,5 +48,5 @@
 +                        }
 +                        // CraftBukkit end
                          world.setBlock(blockposition, (IBlockData) iblockdata.setValue(BlockCarrots.AGE, i - 1), 2);
-                         world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of((Entity) this.rabbit));
+                         world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of((Entity) this.rabbit));
                          world.levelEvent(2001, blockposition, Block.getId(iblockdata));

@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/BlockTripwireHook.java
 +++ b/net/minecraft/world/level/block/BlockTripwireHook.java
-@@ -30,6 +30,11 @@
- import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -33,6 +33,11 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.block.CraftBlock;
@@ -12,8 +12,8 @@
  public class BlockTripwireHook extends Block {
  
      public static final MapCodec<BlockTripwireHook> CODEC = simpleCodec(BlockTripwireHook::new);
-@@ -174,6 +179,15 @@
-                 emitState(world, blockposition1, flag4, flag5, flag2, flag3);
+@@ -157,6 +162,15 @@
+                 emitState(world, blockposition2, flag4, flag5, flag2, flag3);
              }
  
 +            // CraftBukkit start

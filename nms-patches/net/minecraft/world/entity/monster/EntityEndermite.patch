@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/monster/EntityEndermite.java
 +++ b/net/minecraft/world/entity/monster/EntityEndermite.java
-@@ -25,6 +25,10 @@
- import net.minecraft.world.level.World;
- import net.minecraft.world.level.block.state.IBlockData;
+@@ -26,6 +26,10 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import org.bukkit.event.entity.EntityRemoveEvent;
@@ -11,7 +11,7 @@
  public class EntityEndermite extends EntityMonster {
  
      private static final int MAX_LIFE = 2400;
-@@ -113,7 +117,7 @@
+@@ -115,7 +119,7 @@
              }
  
              if (this.life >= 2400) {

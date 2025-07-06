@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/storage/loot/LootTable.java
 +++ b/net/minecraft/world/level/storage/loot/LootTable.java
-@@ -31,6 +31,13 @@
+@@ -32,6 +32,13 @@
  import net.minecraft.world.level.storage.loot.parameters.LootContextParameterSets;
  import org.slf4j.Logger;
  
@@ -14,15 +14,23 @@
  public class LootTable {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -54,6 +61,7 @@
+@@ -51,13 +58,14 @@
+             })).apply(instance, LootTable::new);
+         });
+     });
+-    public static final Codec<Holder<LootTable>> CODEC = RegistryFileCodec.<Holder<LootTable>>create(Registries.LOOT_TABLE, LootTable.DIRECT_CODEC);
++    public static final Codec<Holder<LootTable>> CODEC = RegistryFileCodec.<LootTable>create(Registries.LOOT_TABLE, LootTable.DIRECT_CODEC); // CraftBukkit - decompile error
+     public static final LootTable EMPTY = new LootTable(LootContextParameterSets.EMPTY, Optional.empty(), List.of(), List.of());
+     private final ContextKeySet paramSet;
+     private final Optional<MinecraftKey> randomSequence;
      private final List<LootSelector> pools;
      private final List<LootItemFunction> functions;
      private final BiFunction<ItemStack, LootTableInfo, ItemStack> compositeFunction;
 +    public CraftLootTable craftLootTable; // CraftBukkit
  
-     LootTable(LootContextParameterSet lootcontextparameterset, Optional<MinecraftKey> optional, List<LootSelector> list, List<LootItemFunction> list1) {
-         this.paramSet = lootcontextparameterset;
-@@ -157,9 +165,22 @@
+     LootTable(ContextKeySet contextkeyset, Optional<MinecraftKey> optional, List<LootSelector> list, List<LootItemFunction> list1) {
+         this.paramSet = contextkeyset;
+@@ -156,9 +164,22 @@
      }
  
      public void fill(IInventory iinventory, LootParams lootparams, long i) {

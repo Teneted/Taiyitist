@@ -6,10 +6,10 @@
  
 +import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
 +
- public class BlockStem extends BlockPlant implements IBlockFragilePlantElement {
+ public class BlockStem extends VegetationBlock implements IBlockFragilePlantElement {
  
      public static final MapCodec<BlockStem> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -79,7 +81,7 @@
+@@ -80,7 +82,7 @@
  
                  if (i < 7) {
                      iblockdata = (IBlockData) iblockdata.setValue(BlockStem.AGE, i + 1);
@@ -18,7 +18,7 @@
                  } else {
                      EnumDirection enumdirection = EnumDirection.EnumDirectionLimit.HORIZONTAL.getRandomDirection(randomsource);
                      BlockPosition blockposition1 = blockposition.relative(enumdirection);
-@@ -91,7 +93,11 @@
+@@ -92,7 +94,11 @@
                          Optional<Block> optional1 = iregistry.getOptional(this.attachedStem);
  
                          if (optional.isPresent() && optional1.isPresent()) {
@@ -31,7 +31,7 @@
                              worldserver.setBlockAndUpdate(blockposition, (IBlockData) ((Block) optional1.get()).defaultBlockState().setValue(BlockFacingHorizontal.FACING, enumdirection));
                          }
                      }
-@@ -121,7 +127,7 @@
+@@ -122,7 +128,7 @@
          int i = Math.min(7, (Integer) iblockdata.getValue(BlockStem.AGE) + MathHelper.nextInt(worldserver.random, 2, 5));
          IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(BlockStem.AGE, i);
  

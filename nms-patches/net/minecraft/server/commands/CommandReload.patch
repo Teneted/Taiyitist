@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandReload.java
 +++ b/net/minecraft/server/commands/CommandReload.java
-@@ -44,6 +44,16 @@
+@@ -40,6 +40,16 @@
          return collection1;
      }
  
@@ -15,5 +15,5 @@
 +    // CraftBukkit end
 +
      public static void register(CommandDispatcher<CommandListenerWrapper> commanddispatcher) {
-         commanddispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) net.minecraft.commands.CommandDispatcher.literal("reload").requires((commandlistenerwrapper) -> {
-             return commandlistenerwrapper.hasPermission(2);
+         commanddispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) net.minecraft.commands.CommandDispatcher.literal("reload").requires(net.minecraft.commands.CommandDispatcher.hasPermission(2))).executes((commandcontext) -> {
+             CommandListenerWrapper commandlistenerwrapper = (CommandListenerWrapper) commandcontext.getSource();

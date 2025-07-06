@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/InventoryMerchant.java
 +++ b/net/minecraft/world/inventory/InventoryMerchant.java
-@@ -11,6 +11,16 @@
+@@ -10,6 +10,16 @@
  import net.minecraft.world.item.trading.MerchantRecipe;
  import net.minecraft.world.item.trading.MerchantRecipeList;
  
@@ -17,7 +17,7 @@
  public class InventoryMerchant implements IInventory {
  
      private final IMerchant merchant;
-@@ -20,6 +30,46 @@
+@@ -19,6 +29,46 @@
      public int selectionHint;
      private int futureXp;
  
@@ -62,5 +62,5 @@
 +    // CraftBukkit end
 +
      public InventoryMerchant(IMerchant imerchant) {
-         this.itemStacks = NonNullList.withSize(3, ItemStack.EMPTY);
+         this.itemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
          this.merchant = imerchant;

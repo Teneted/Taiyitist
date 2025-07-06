@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/arguments/blocks/ArgumentBlock.java
 +++ b/net/minecraft/commands/arguments/blocks/ArgumentBlock.java
-@@ -67,7 +67,7 @@
+@@ -65,7 +65,7 @@
      private final StringReader reader;
      private final boolean forTesting;
      private final boolean allowNbt;
@@ -9,16 +9,7 @@
      private final Map<String, String> vagueProperties = Maps.newHashMap();
      private MinecraftKey id = MinecraftKey.withDefaultNamespace("");
      @Nullable
-@@ -275,7 +275,7 @@
-         Iterator iterator = iblockstate.getPossibleValues().iterator();
- 
-         while (iterator.hasNext()) {
--            T t0 = (Comparable) iterator.next();
-+            T t0 = (T) iterator.next(); // CraftBukkit - decompile error
- 
-             if (t0 instanceof Integer integer) {
-                 suggestionsbuilder.suggest(integer);
-@@ -545,7 +545,7 @@
+@@ -516,7 +516,7 @@
          Optional<T> optional = iblockstate.getValue(s);
  
          if (optional.isPresent()) {
@@ -27,7 +18,7 @@
              this.properties.put(iblockstate, (Comparable) optional.get());
          } else {
              this.reader.setCursor(i);
-@@ -581,7 +581,7 @@
+@@ -551,7 +551,7 @@
      private static <T extends Comparable<T>> void appendProperty(StringBuilder stringbuilder, IBlockState<T> iblockstate, Comparable<?> comparable) {
          stringbuilder.append(iblockstate.getName());
          stringbuilder.append('=');

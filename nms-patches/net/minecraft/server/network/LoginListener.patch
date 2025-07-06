@@ -75,7 +75,15 @@
      @Override
      public boolean isAcceptingMessages() {
          return this.connection.isConnected();
-@@ -131,7 +175,27 @@
+@@ -93,6 +137,7 @@
+ 
+     public void disconnect(IChatBaseComponent ichatbasecomponent) {
+         try {
++            this.state = EnumProtocolState.DISCONNECTED; // CraftBukkit - SPIGOT-8020: prevent repetition
+             LoginListener.LOGGER.info("Disconnecting {}: {}", this.getUserName(), ichatbasecomponent.getString());
+             this.connection.send(new PacketLoginOutDisconnect(ichatbasecomponent));
+             this.connection.disconnect(ichatbasecomponent);
+@@ -131,7 +176,27 @@
                  this.state = LoginListener.EnumProtocolState.KEY;
                  this.connection.send(new PacketLoginOutEncryptionBegin("", this.server.getKeyPair().getPublic().getEncoded(), this.challenge, true));
              } else {
@@ -104,7 +112,7 @@
              }
  
          }
-@@ -144,10 +208,24 @@
+@@ -144,10 +209,24 @@
  
      private void verifyLoginAndFinishConnectionSetup(GameProfile gameprofile) {
          PlayerList playerlist = this.server.getPlayerList();
@@ -132,7 +140,7 @@
          } else {
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
                  this.connection.send(new PacketLoginOutSetCompression(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
-@@ -155,7 +233,7 @@
+@@ -155,7 +234,7 @@
                  }));
              }
  
@@ -141,7 +149,7 @@
  
              if (flag) {
                  this.state = LoginListener.EnumProtocolState.WAITING_FOR_DUPE_DISCONNECT;
-@@ -205,6 +283,12 @@
+@@ -205,6 +284,12 @@
                      if (profileresult != null) {
                          GameProfile gameprofile = profileresult.profile();
  
@@ -154,7 +162,7 @@
                          LoginListener.LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
                          LoginListener.this.startClientVerification(gameprofile);
                      } else if (LoginListener.this.server.isSingleplayer()) {
-@@ -222,6 +306,11 @@
+@@ -222,6 +307,11 @@
                          LoginListener.this.disconnect(IChatBaseComponent.translatable("multiplayer.disconnect.authservers_down"));
                          LoginListener.LOGGER.error("Couldn't verify username because servers are unavailable");
                      }
@@ -166,7 +174,7 @@
                  }
  
              }
-@@ -238,6 +327,43 @@
+@@ -238,6 +328,43 @@
          thread.start();
      }
  
@@ -210,7 +218,7 @@
      @Override
      public void handleCustomQueryPacket(ServerboundCustomQueryAnswerPacket serverboundcustomqueryanswerpacket) {
          this.disconnect(ServerCommonPacketListenerImpl.DISCONNECT_UNEXPECTED_QUERY);
-@@ -245,10 +371,11 @@
+@@ -245,10 +372,11 @@
  
      @Override
      public void handleLoginAcknowledgement(ServerboundLoginAcknowledgedPacket serverboundloginacknowledgedpacket) {
@@ -223,7 +231,7 @@
  
          this.connection.setupInboundProtocol(ConfigurationProtocols.SERVERBOUND, serverconfigurationpacketlistenerimpl);
          serverconfigurationpacketlistenerimpl.startConfiguration();
-@@ -264,12 +391,18 @@
+@@ -264,12 +392,18 @@
  
      @Override
      public void handleCookieResponse(ServerboundCookieResponsePacket serverboundcookieresponsepacket) {
@@ -239,7 +247,7 @@
      private static enum EnumProtocolState {
  
 -        HELLO, KEY, AUTHENTICATING, NEGOTIATING, VERIFYING, WAITING_FOR_DUPE_DISCONNECT, PROTOCOL_SWITCHING, ACCEPTED;
-+        HELLO, KEY, AUTHENTICATING, NEGOTIATING, VERIFYING, WAITING_FOR_COOKIES, WAITING_FOR_DUPE_DISCONNECT, PROTOCOL_SWITCHING, ACCEPTED; // CraftBukkit
++        HELLO, KEY, AUTHENTICATING, NEGOTIATING, VERIFYING, WAITING_FOR_DUPE_DISCONNECT, PROTOCOL_SWITCHING, ACCEPTED, WAITING_FOR_COOKIES, DISCONNECTED; // CraftBukkit
  
          private EnumProtocolState() {}
      }

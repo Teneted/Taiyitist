@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockSnow.java
 +++ b/net/minecraft/world/level/block/BlockSnow.java
-@@ -99,6 +99,11 @@
+@@ -91,6 +91,11 @@
      @Override
      protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
          if (worldserver.getBrightness(EnumSkyBlock.BLOCK, blockposition) > 11) {

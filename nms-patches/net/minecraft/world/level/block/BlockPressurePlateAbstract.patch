@@ -8,7 +8,7 @@
 +
  public abstract class BlockPressurePlateAbstract extends Block {
  
-     protected static final VoxelShape PRESSED_AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 0.5D, 15.0D);
+     private static final VoxelShape SHAPE_PRESSED = Block.column(14.0D, 0.0D, 0.5D);
 @@ -91,6 +93,19 @@
          boolean flag = i > 0;
          boolean flag1 = j > 0;
@@ -29,7 +29,7 @@
          if (i != j) {
              IBlockData iblockdata1 = this.setSignalForState(iblockdata, j);
  
-@@ -145,9 +160,15 @@
+@@ -142,9 +157,15 @@
      }
  
      protected static int getEntityCount(World world, AxisAlignedBB axisalignedbb, Class<? extends Entity> oclass) {

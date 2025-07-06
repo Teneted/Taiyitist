@@ -1,0 +1,161 @@
+From dada70e24de7b916a852f311a22ff1e8cc7b9aee Mon Sep 17 00:00:00 2001
+From: md_5 <git@md-5.net>
+Date: Mon, 15 May 2017 15:16:15 +1000
+Subject: [PATCH] Skeleton API Implementations
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 668d1aa2..044ec281 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -2189,4 +2189,9 @@ public final class Bukkit {
+     public static UnsafeValues getUnsafe() {
+         return server.getUnsafe();
+     }
++
++    @NotNull
++    public static Server.Spigot spigot() {
++        return server.spigot();
++    }
+ }
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index 38f444cb..2c2fbe9a 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -1864,4 +1864,13 @@ public interface Server extends PluginMessageRecipient {
+     @Deprecated(since = "1.7.2")
+     @NotNull
+     UnsafeValues getUnsafe();
++
++    // Spigot start
++    public class Spigot {
++
++    }
++
++    @NotNull
++    Spigot spigot();
++    // Spigot end
+ }
+diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
+index dff198dd..35c64636 100644
+--- a/src/main/java/org/bukkit/World.java
++++ b/src/main/java/org/bukkit/World.java
+@@ -2828,6 +2828,15 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
+     @Nullable
+     StructureSearchResult locateNearestStructure(@NotNull Location origin, @NotNull Structure structure, int radius, boolean findUnexplored);
+ 
++    // Spigot start
++    public class Spigot {
++
++    }
++
++    @NotNull
++    Spigot spigot();
++    // Spigot end
++
+     /**
+      * Find the closest nearby location with a biome matching the provided
+      * {@link Biome}(s). Finding biomes can, and will, block if the world is looking
+diff --git a/src/main/java/org/bukkit/command/CommandSender.java b/src/main/java/org/bukkit/command/CommandSender.java
+index a7a2587b..4b6b9540 100644
+--- a/src/main/java/org/bukkit/command/CommandSender.java
++++ b/src/main/java/org/bukkit/command/CommandSender.java
+@@ -53,4 +53,13 @@ public interface CommandSender extends Permissible {
+      */
+     @NotNull
+     public String getName();
++
++    // Spigot start
++    public class Spigot {
++
++    }
++
++    @NotNull
++    Spigot spigot();
++    // Spigot end
+ }
+diff --git a/src/main/java/org/bukkit/entity/Entity.java b/src/main/java/org/bukkit/entity/Entity.java
+index b57969f1..a4cf548b 100644
+--- a/src/main/java/org/bukkit/entity/Entity.java
++++ b/src/main/java/org/bukkit/entity/Entity.java
+@@ -766,4 +766,14 @@ public interface Entity extends Metadatable, CommandSender, Nameable, Persistent
+     @NotNull
+     @ApiStatus.Experimental
+     Entity copy(@NotNull Location to);
++
++    // Spigot start
++    public class Spigot extends CommandSender.Spigot {
++
++    }
++
++    @NotNull
++    @Override
++    Spigot spigot();
++    // Spigot end
+ }
+diff --git a/src/main/java/org/bukkit/entity/LightningStrike.java b/src/main/java/org/bukkit/entity/LightningStrike.java
+index 158ac20f..d913298e 100644
+--- a/src/main/java/org/bukkit/entity/LightningStrike.java
++++ b/src/main/java/org/bukkit/entity/LightningStrike.java
+@@ -2,6 +2,7 @@ package org.bukkit.entity;
+ 
+ import org.bukkit.GameEvent;
+ import org.bukkit.enchantments.Enchantment;
++import org.jetbrains.annotations.NotNull;
+ import org.jetbrains.annotations.Nullable;
+ 
+ /**
+@@ -82,4 +83,13 @@ public interface LightningStrike extends Entity {
+      */
+     public void setCausingPlayer(@Nullable Player player);
+ 
++    // Spigot start
++    public class Spigot extends Entity.Spigot {
++
++    }
++
++    @NotNull
++    @Override
++    Spigot spigot();
++    // Spigot end
+ }
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index 94142faf..24bc46a0 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -2293,4 +2293,14 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+      */
+     @ApiStatus.Experimental
+     public void clearDialog();
++
++    // Spigot start
++    public class Spigot extends Entity.Spigot {
++
++    }
++
++    @NotNull
++    @Override
++    Spigot spigot();
++    // Spigot end
+ }
+diff --git a/src/main/java/org/bukkit/inventory/meta/BookMeta.java b/src/main/java/org/bukkit/inventory/meta/BookMeta.java
+index 1be27b04..8a01c92d 100644
+--- a/src/main/java/org/bukkit/inventory/meta/BookMeta.java
++++ b/src/main/java/org/bukkit/inventory/meta/BookMeta.java
+@@ -113,4 +113,13 @@ public interface BookMeta extends WritableBookMeta {
+     @Override
+     @NotNull
+     BookMeta clone();
++
++    // Spigot start
++    public class Spigot {
++
++    }
++
++    @NotNull
++    Spigot spigot();
++    // Spigot end
+ }
+-- 
+2.49.0
+

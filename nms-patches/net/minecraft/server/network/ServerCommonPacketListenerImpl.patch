@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-@@ -28,8 +28,44 @@
+@@ -31,8 +31,44 @@
  import net.minecraft.util.thread.IAsyncTaskHandler;
  import org.slf4j.Logger;
  
@@ -20,14 +20,14 @@
 +import org.bukkit.craftbukkit.util.Waitable;
 +import org.bukkit.event.player.PlayerKickEvent;
 +import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-+
+ 
 +public abstract class ServerCommonPacketListenerImpl implements ServerCommonPacketListener, CraftPlayer.TransferCookieConnection {
 +
 +    @Override
 +    public boolean isTransferred() {
 +        return this.transferred;
 +    }
- 
++
 +    @Override
 +    public EnumProtocol getProtocol() {
 +        return protocol();
@@ -46,7 +46,7 @@
      private static final Logger LOGGER = LogUtils.getLogger();
      public static final int LATENCY_CHECK_INTERVAL = 15000;
      private static final int CLOSED_LISTENER_TIMEOUT = 15000;
-@@ -46,12 +82,24 @@
+@@ -49,12 +85,24 @@
      private int latency;
      private volatile boolean suspendFlushingOnServerThread = false;
  
@@ -72,15 +72,15 @@
      }
  
      private void close() {
-@@ -73,6 +121,7 @@
+@@ -82,6 +130,7 @@
  
      @Override
      public void handleKeepAlive(ServerboundKeepAlivePacket serverboundkeepalivepacket) {
-+        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundkeepalivepacket, this, this.player.serverLevel()); // CraftBukkit
++        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundkeepalivepacket, this, this.player.level()); // CraftBukkit
          if (this.keepAlivePending && serverboundkeepalivepacket.getId() == this.keepAliveChallenge) {
              int i = (int) (SystemUtils.getMillis() - this.keepAliveTime);
  
-@@ -87,8 +136,56 @@
+@@ -96,13 +145,61 @@
      @Override
      public void handlePong(ServerboundPongPacket serverboundpongpacket) {}
  
@@ -94,7 +94,7 @@
 +        if (!(serverboundcustompayloadpacket.payload() instanceof DiscardedPayload)) {
 +            return;
 +        }
-+        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcustompayloadpacket, this, this.player.serverLevel());
++        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcustompayloadpacket, this, this.player.level());
 +        MinecraftKey identifier = serverboundcustompayloadpacket.payload().type().id();
 +        ByteBuf payload = ((DiscardedPayload)serverboundcustompayloadpacket.payload()).data();
 +
@@ -137,8 +137,14 @@
 +    // CraftBukkit end
  
      @Override
-     public void handleResourcePackResponse(ServerboundResourcePackPacket serverboundresourcepackpacket) {
-@@ -97,11 +194,18 @@
+     public void handleCustomClickAction(ServerboundCustomClickActionPacket serverboundcustomclickactionpacket) {
+         PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcustomclickactionpacket, this, (IAsyncTaskHandler) this.server);
+-        this.server.handleCustomClickAction(serverboundcustomclickactionpacket.id(), serverboundcustomclickactionpacket.payload());
++        this.server.handleCustomClickAction(serverboundcustomclickactionpacket.id(), serverboundcustomclickactionpacket.payload(), this.player); // CraftBukkit - add player
+     }
+ 
+     @Override
+@@ -112,11 +209,18 @@
              ServerCommonPacketListenerImpl.LOGGER.info("Disconnecting {} due to resource pack {} rejection", this.playerProfile().getName(), serverboundresourcepackpacket.id());
              this.disconnect((IChatBaseComponent) IChatBaseComponent.translatable("multiplayer.requiredTexturePrompt.disconnect"));
          }
@@ -157,8 +163,8 @@
          this.disconnect(ServerCommonPacketListenerImpl.DISCONNECT_UNEXPECTED_QUERY);
      }
  
-@@ -109,7 +213,7 @@
-         this.server.getProfiler().push("keepAlive");
+@@ -124,7 +228,7 @@
+         Profiler.get().push("keepAlive");
          long i = SystemUtils.getMillis();
  
 -        if (!this.isSingleplayerOwner() && i - this.keepAliveTime >= 15000L) {
@@ -166,10 +172,10 @@
              if (this.keepAlivePending) {
                  this.disconnect(ServerCommonPacketListenerImpl.TIMEOUT_DISCONNECTION_MESSAGE);
              } else if (this.checkIfClosed(i)) {
-@@ -149,6 +253,14 @@
+@@ -164,6 +268,14 @@
      }
  
-     public void send(Packet<?> packet, @Nullable PacketSendListener packetsendlistener) {
+     public void send(Packet<?> packet, @Nullable ChannelFutureListener channelfuturelistener) {
 +        // CraftBukkit start
 +        if (packet == null) {
 +            return;
@@ -181,7 +187,7 @@
          if (packet.isTerminal()) {
              this.close();
          }
-@@ -173,15 +285,61 @@
+@@ -188,15 +300,61 @@
      }
  
      public void disconnect(DisconnectionDetails disconnectiondetails) {

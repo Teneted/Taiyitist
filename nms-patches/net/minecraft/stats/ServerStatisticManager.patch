@@ -4,23 +4,18 @@
 +// mc-dev import
  package net.minecraft.stats;
  
- import com.google.common.collect.Maps;
-@@ -158,13 +159,12 @@
-     }
+ import com.google.common.collect.Sets;
+@@ -51,11 +52,11 @@
+     private final File file;
+     private final Set<Statistic<?>> dirty = Sets.newHashSet();
  
-     private <T> Optional<Statistic<T>> getStat(StatisticWrapper<T> statisticwrapper, String s) {
--        Optional optional = Optional.ofNullable(MinecraftKey.tryParse(s));
--        IRegistry iregistry = statisticwrapper.getRegistry();
-+        // CraftBukkit - decompile error start
-+        Optional<MinecraftKey> optional = Optional.ofNullable(MinecraftKey.tryParse(s));
-+        IRegistry<T> iregistry = statisticwrapper.getRegistry();
+-    private static <T> Codec<Map<Statistic<?>, Integer>> createTypedStatsCodec(StatisticWrapper<T> statisticwrapper) {
++    private static <T> Codec<Map<Statistic<T>, Integer>> createTypedStatsCodec(StatisticWrapper<T> statisticwrapper) { // CraftBukkit - decompile error
+         Codec<T> codec = statisticwrapper.getRegistry().byNameCodec();
  
--        Objects.requireNonNull(iregistry);
--        optional = optional.flatMap(iregistry::getOptional);
--        Objects.requireNonNull(statisticwrapper);
--        return optional.map(statisticwrapper::get);
-+        return optional.flatMap(iregistry::getOptional).map(statisticwrapper::get);
-+        // CraftBukkit - decompile error end
-     }
+         Objects.requireNonNull(statisticwrapper);
+-        Codec<Statistic<?>> codec1 = codec.flatComapMap(statisticwrapper::get, (statistic) -> {
++        Codec<Statistic<T>> codec1 = codec.flatComapMap(statisticwrapper::get, (statistic) -> { // CraftBukkit - decompile error
+             return statistic.getType() == statisticwrapper ? DataResult.success(statistic.getValue()) : DataResult.error(() -> {
+                 String s = String.valueOf(statisticwrapper);
  
-     private static NBTTagCompound fromJson(JsonObject jsonobject) {

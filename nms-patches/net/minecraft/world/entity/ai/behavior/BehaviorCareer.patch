@@ -14,17 +14,17 @@
  
      public BehaviorCareer() {}
 @@ -37,7 +43,14 @@
-                                     return villagerprofession.heldJobSite().test(holder);
+                                     return ((VillagerProfession) holder_c.value()).heldJobSite().test(holder);
                                  }).findFirst();
-                             }).ifPresent((villagerprofession) -> {
--                                entityvillager.setVillagerData(entityvillager.getVillagerData().setProfession(villagerprofession));
+                             }).ifPresent((holder_c) -> {
+-                                entityvillager.setVillagerData(entityvillager.getVillagerData().withProfession(holder_c));
 +                                // CraftBukkit start - Fire VillagerCareerChangeEvent where Villager gets employed
-+                                VillagerCareerChangeEvent event = CraftEventFactory.callVillagerCareerChangeEvent(entityvillager, CraftVillager.CraftProfession.minecraftToBukkit(villagerprofession), VillagerCareerChangeEvent.ChangeReason.EMPLOYED);
++                                VillagerCareerChangeEvent event = CraftEventFactory.callVillagerCareerChangeEvent(entityvillager, CraftVillager.CraftProfession.minecraftHolderToBukkit(holder_c), VillagerCareerChangeEvent.ChangeReason.EMPLOYED);
 +                                if (event.isCancelled()) {
 +                                    return;
 +                                }
 +
-+                                entityvillager.setVillagerData(entityvillager.getVillagerData().setProfession(CraftVillager.CraftProfession.bukkitToMinecraft(event.getProfession())));
++                                entityvillager.setVillagerData(entityvillager.getVillagerData().withProfession(CraftVillager.CraftProfession.bukkitToMinecraftHolder(event.getProfession())));
 +                                // CraftBukkit end
                                  entityvillager.refreshBrain(worldserver);
                              });

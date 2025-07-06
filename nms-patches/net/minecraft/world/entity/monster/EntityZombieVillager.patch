@@ -1,11 +1,12 @@
 --- a/net/minecraft/world/entity/monster/EntityZombieVillager.java
 +++ b/net/minecraft/world/entity/monster/EntityZombieVillager.java
-@@ -51,6 +51,13 @@
- import net.minecraft.world.level.block.state.IBlockData;
- import org.slf4j.Logger;
+@@ -53,6 +53,14 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.entity.npc.EntityVillager;
 +import org.bukkit.entity.ZombieVillager;
 +import org.bukkit.event.entity.CreatureSpawnEvent;
 +import org.bukkit.event.entity.EntityTransformEvent;
@@ -13,34 +14,32 @@
 +
  public class EntityZombieVillager extends EntityZombie implements VillagerDataHolder {
  
-     private static final Logger LOGGER = LogUtils.getLogger();
-@@ -68,6 +75,7 @@
+     public static final DataWatcherObject<Boolean> DATA_CONVERTING_ID = DataWatcher.<Boolean>defineId(EntityZombieVillager.class, DataWatcherRegistry.BOOLEAN);
+@@ -71,6 +79,7 @@
      @Nullable
      private MerchantRecipeList tradeOffers;
-     private int villagerXp;
+     private int villagerXp = 0;
 +    private int lastTick = MinecraftServer.currentTick; // CraftBukkit - add field
  
      public EntityZombieVillager(EntityTypes<? extends EntityZombieVillager> entitytypes, World world) {
          super(entitytypes, world);
-@@ -86,7 +94,7 @@
-     @Override
-     public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
-         super.addAdditionalSaveData(nbttagcompound);
--        DataResult dataresult = VillagerData.CODEC.encodeStart(DynamicOpsNBT.INSTANCE, this.getVillagerData());
-+        DataResult<NBTBase> dataresult = VillagerData.CODEC.encodeStart(DynamicOpsNBT.INSTANCE, this.getVillagerData()); // CraftBukkit - decompile error
-         Logger logger = EntityZombieVillager.LOGGER;
+@@ -98,12 +107,12 @@
+     protected void readAdditionalSaveData(ValueInput valueinput) {
+         super.readAdditionalSaveData(valueinput);
+         this.entityData.set(EntityZombieVillager.DATA_VILLAGER_DATA, (VillagerData) valueinput.read("VillagerData", VillagerData.CODEC).orElseGet(EntityVillager::createDefaultVillagerData));
+-        this.tradeOffers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse((Object) null);
+-        this.gossips = (Reputation) valueinput.read("Gossips", Reputation.CODEC).orElse((Object) null);
++        this.tradeOffers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse(null); // CraftBukkit - decompile error
++        this.gossips = (Reputation) valueinput.read("Gossips", Reputation.CODEC).orElse(null); // CraftBukkit - decompile error
+         int i = valueinput.getIntOr("ConversionTime", -1);
  
-         Objects.requireNonNull(logger);
-@@ -121,7 +129,7 @@
-         }
+         if (i != -1) {
+-            UUID uuid = (UUID) valueinput.read("ConversionPlayer", UUIDUtil.CODEC).orElse((Object) null);
++            UUID uuid = (UUID) valueinput.read("ConversionPlayer", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
  
-         if (nbttagcompound.contains("Offers")) {
--            DataResult dataresult1 = MerchantRecipeList.CODEC.parse(this.registryAccess().createSerializationContext(DynamicOpsNBT.INSTANCE), nbttagcompound.get("Offers"));
-+            DataResult<MerchantRecipeList> dataresult1 = MerchantRecipeList.CODEC.parse(this.registryAccess().createSerializationContext(DynamicOpsNBT.INSTANCE), nbttagcompound.get("Offers")); // CraftBukkit - decompile error
-             Logger logger1 = EntityZombieVillager.LOGGER;
- 
-             Objects.requireNonNull(logger1);
-@@ -148,6 +156,10 @@
+             this.startConverting(uuid, i);
+         } else {
+@@ -118,6 +127,10 @@
      public void tick() {
          if (!this.level().isClientSide && this.isAlive() && this.isConverting()) {
              int i = this.getConversionProgress();
@@ -51,7 +50,7 @@
  
              this.villagerConversionTime -= i;
              if (this.villagerConversionTime <= 0) {
-@@ -156,6 +168,7 @@
+@@ -126,6 +139,7 @@
          }
  
          super.tick();
@@ -59,47 +58,46 @@
      }
  
      @Override
-@@ -196,8 +209,10 @@
+@@ -166,8 +180,10 @@
          this.conversionStarter = uuid;
          this.villagerConversionTime = i;
          this.getEntityData().set(EntityZombieVillager.DATA_CONVERTING_ID, true);
 -        this.removeEffect(MobEffects.WEAKNESS);
--        this.addEffect(new MobEffect(MobEffects.DAMAGE_BOOST, i, Math.min(this.level().getDifficulty().getId() - 1, 0)));
+-        this.addEffect(new MobEffect(MobEffects.STRENGTH, i, Math.min(this.level().getDifficulty().getId() - 1, 0)));
 +        // CraftBukkit start
 +        this.removeEffect(MobEffects.WEAKNESS, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION);
-+        this.addEffect(new MobEffect(MobEffects.DAMAGE_BOOST, i, Math.min(this.level().getDifficulty().getId() - 1, 0)), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION);
++        this.addEffect(new MobEffect(MobEffects.STRENGTH, i, Math.min(this.level().getDifficulty().getId() - 1, 0)), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION);
 +        // CraftBukkit end
          this.level().broadcastEntityEvent(this, (byte) 16);
      }
  
-@@ -214,12 +229,20 @@
+@@ -184,7 +200,8 @@
      }
  
      private void finishConversion(WorldServer worldserver) {
--        EntityVillager entityvillager = (EntityVillager) this.convertTo(EntityTypes.VILLAGER, false);
-+        // CraftBukkit start
-+        EntityVillager entityvillager = (EntityVillager) this.convertTo(EntityTypes.VILLAGER, false, EntityTransformEvent.TransformReason.CURED, CreatureSpawnEvent.SpawnReason.CURED);
-+        if (entityvillager == null) {
-+            ((ZombieVillager) getBukkitEntity()).setConversionTime(-1); // SPIGOT-5208: End conversion to stop event spam
-+            return;
-+        }
-+        // CraftBukkit end
- 
-         if (entityvillager != null) {
-+            this.forceDrops = true; // CraftBukkit
-             Iterator iterator = this.dropPreservedEquipment((itemstack) -> {
-                 return !EnchantmentManager.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
-             }).iterator();
+-        this.convertTo(EntityTypes.VILLAGER, ConversionParams.single(this, false, false), (entityvillager) -> {
++        EntityVillager converted = this.convertTo(EntityTypes.VILLAGER, ConversionParams.single(this, false, false), (entityvillager) -> { // CraftBukkit
 +            this.forceDrops = false; // CraftBukkit
- 
-             while (iterator.hasNext()) {
-                 EnumItemSlot enumitemslot = (EnumItemSlot) iterator.next();
-@@ -249,7 +272,7 @@
+             for (EnumItemSlot enumitemslot : this.dropPreservedEquipment(worldserver, (itemstack) -> {
+                 return !EnchantmentManager.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
+             })) {
+@@ -214,12 +231,16 @@
                  }
              }
  
--            entityvillager.addEffect(new MobEffect(MobEffects.CONFUSION, 200, 0));
-+            entityvillager.addEffect(new MobEffect(MobEffects.CONFUSION, 200, 0), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION); // CraftBukkit
+-            entityvillager.addEffect(new MobEffect(MobEffects.NAUSEA, 200, 0));
++            entityvillager.addEffect(new MobEffect(MobEffects.NAUSEA, 200, 0), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION); // CraftBukkit
              if (!this.isSilent()) {
-                 worldserver.levelEvent((EntityHuman) null, 1027, this.blockPosition(), 0);
+                 worldserver.levelEvent((Entity) null, 1027, this.blockPosition(), 0);
              }
+-
+-        });
++        // CraftBukkit start
++        }, EntityTransformEvent.TransformReason.CURED, CreatureSpawnEvent.SpawnReason.CURED);
++        if (converted == null) {
++            ((ZombieVillager) getBukkitEntity()).setConversionTime(-1); // SPIGOT-5208: End conversion to stop event spam
++        }
++        // CraftBukkit end
+     }
+ 
+     @VisibleForTesting

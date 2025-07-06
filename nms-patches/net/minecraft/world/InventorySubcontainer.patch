@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/InventorySubcontainer.java
 +++ b/net/minecraft/world/InventorySubcontainer.java
-@@ -14,6 +14,12 @@
- import net.minecraft.world.item.Item;
- import net.minecraft.world.item.ItemStack;
+@@ -13,6 +13,12 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import org.bukkit.Location;
@@ -13,7 +13,7 @@
  public class InventorySubcontainer implements IInventory, AutoRecipeOutput {
  
      private final int size;
-@@ -21,7 +27,59 @@
+@@ -20,7 +26,59 @@
      @Nullable
      private List<IInventoryListener> listeners;
  
@@ -71,5 +71,5 @@
 +        this.bukkitOwner = owner;
 +        // CraftBukkit end
          this.size = i;
-         this.items = NonNullList.withSize(i, ItemStack.EMPTY);
+         this.items = NonNullList.<ItemStack>withSize(i, ItemStack.EMPTY);
      }

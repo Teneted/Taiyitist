@@ -1,6 +1,6 @@
 --- a/net/minecraft/core/dispenser/DispenseBehaviorShears.java
 +++ b/net/minecraft/core/dispenser/DispenseBehaviorShears.java
-@@ -23,6 +23,13 @@
+@@ -20,6 +20,13 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.phys.AxisAlignedBB;
  
@@ -14,7 +14,7 @@
  public class DispenseBehaviorShears extends DispenseBehaviorMaybe {
  
      public DispenseBehaviorShears() {}
-@@ -30,11 +37,34 @@
+@@ -27,11 +34,34 @@
      @Override
      protected ItemStack execute(SourceBlock sourceblock, ItemStack itemstack) {
          WorldServer worldserver = sourceblock.level();
@@ -45,29 +45,29 @@
          if (!worldserver.isClientSide()) {
              BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
  
--            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearLivingEntity(worldserver, blockposition));
-+            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearLivingEntity(worldserver, blockposition, bukkitBlock, craftItem)); // CraftBukkit
+-            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearEntity(worldserver, blockposition, itemstack));
++            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearEntity(worldserver, blockposition, itemstack, bukkitBlock, craftItem)); // CraftBukkit
              if (this.isSuccess()) {
                  itemstack.hurtAndBreak(1, worldserver, (EntityPlayer) null, (item) -> {
                  });
-@@ -64,7 +94,7 @@
+@@ -61,7 +91,7 @@
          return false;
      }
  
--    private static boolean tryShearLivingEntity(WorldServer worldserver, BlockPosition blockposition) {
-+    private static boolean tryShearLivingEntity(WorldServer worldserver, BlockPosition blockposition, org.bukkit.block.Block bukkitBlock, CraftItemStack craftItem) { // CraftBukkit - add args
-         List<EntityLiving> list = worldserver.getEntitiesOfClass(EntityLiving.class, new AxisAlignedBB(blockposition), IEntitySelector.NO_SPECTATORS);
-         Iterator iterator = list.iterator();
+-    private static boolean tryShearEntity(WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack) {
++    private static boolean tryShearEntity(WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack, org.bukkit.block.Block bukkitBlock, CraftItemStack craftItem) { // CraftBukkit - add args
+         for (Entity entity : worldserver.getEntitiesOfClass(Entity.class, new AxisAlignedBB(blockposition), IEntitySelector.NO_SPECTATORS)) {
+             if (entity.shearOffAllLeashConnections((EntityHuman) null)) {
+                 return true;
+@@ -69,6 +99,11 @@
  
-@@ -73,6 +103,11 @@
- 
-             if (entityliving instanceof IShearable ishearable) {
+             if (entity instanceof IShearable ishearable) {
                  if (ishearable.readyForShearing()) {
 +                    // CraftBukkit start
-+                    if (CraftEventFactory.callBlockShearEntityEvent(entityliving, bukkitBlock, craftItem).isCancelled()) {
++                    if (CraftEventFactory.callBlockShearEntityEvent(entity, bukkitBlock, craftItem).isCancelled()) {
 +                        continue;
 +                    }
 +                    // CraftBukkit end
-                     ishearable.shear(SoundCategory.BLOCKS);
+                     ishearable.shear(worldserver, SoundCategory.BLOCKS, itemstack);
                      worldserver.gameEvent((Entity) null, (Holder) GameEvent.SHEAR, blockposition);
                      return true;

@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/projectile/EntityEvokerFangs.java
 +++ b/net/minecraft/world/entity/projectile/EntityEvokerFangs.java
-@@ -17,6 +17,10 @@
- import net.minecraft.world.item.enchantment.EnchantmentManager;
- import net.minecraft.world.level.World;
+@@ -16,6 +16,10 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import org.bukkit.event.entity.EntityRemoveEvent;
@@ -11,7 +11,7 @@
  public class EntityEvokerFangs extends Entity implements TraceableEntity {
  
      public static final int ATTACK_DURATION = 20;
-@@ -121,7 +125,7 @@
+@@ -100,7 +104,7 @@
              }
  
              if (--this.lifeTicks < 0) {
@@ -20,7 +20,7 @@
              }
          }
  
-@@ -132,7 +136,7 @@
+@@ -111,7 +115,7 @@
  
          if (entityliving.isAlive() && !entityliving.isInvulnerable() && entityliving != entityliving1) {
              if (entityliving1 == null) {

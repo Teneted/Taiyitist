@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandTime.java
 +++ b/net/minecraft/server/commands/CommandTime.java
-@@ -9,6 +9,11 @@
+@@ -8,6 +8,11 @@
  import net.minecraft.network.chat.IChatBaseComponent;
  import net.minecraft.server.level.WorldServer;
  
@@ -12,18 +12,15 @@
  public class CommandTime {
  
      public CommandTime() {}
-@@ -49,12 +54,18 @@
+@@ -46,8 +51,15 @@
      }
  
      public static int setTime(CommandListenerWrapper commandlistenerwrapper, int i) {
--        Iterator iterator = commandlistenerwrapper.getServer().getAllLevels().iterator();
-+        Iterator iterator = com.google.common.collect.Iterators.singletonIterator(commandlistenerwrapper.getLevel()); // CraftBukkit - SPIGOT-6496: Only set the time for the world the command originates in
- 
-         while (iterator.hasNext()) {
-             WorldServer worldserver = (WorldServer) iterator.next();
- 
+-        for (WorldServer worldserver : commandlistenerwrapper.getServer().getAllLevels()) {
 -            worldserver.setDayTime((long) i);
-+            // CraftBukkit start
++        // CraftBukkit start - SPIGOT-6496: Only set the time for the world the command originates in
++        {
++            WorldServer worldserver = commandlistenerwrapper.getLevel();
 +            TimeSkipEvent event = new TimeSkipEvent(worldserver.getWorld(), TimeSkipEvent.SkipReason.COMMAND, i - worldserver.getDayTime());
 +            Bukkit.getPluginManager().callEvent(event);
 +            if (!event.isCancelled()) {
@@ -32,19 +29,16 @@
 +            // CraftBukkit end
          }
  
-         commandlistenerwrapper.sendSuccess(() -> {
-@@ -64,12 +75,18 @@
+         commandlistenerwrapper.getServer().forceTimeSynchronization();
+@@ -58,8 +70,15 @@
      }
  
      public static int addTime(CommandListenerWrapper commandlistenerwrapper, int i) {
--        Iterator iterator = commandlistenerwrapper.getServer().getAllLevels().iterator();
-+        Iterator iterator = com.google.common.collect.Iterators.singletonIterator(commandlistenerwrapper.getLevel()); // CraftBukkit - SPIGOT-6496: Only set the time for the world the command originates in
- 
-         while (iterator.hasNext()) {
-             WorldServer worldserver = (WorldServer) iterator.next();
- 
+-        for (WorldServer worldserver : commandlistenerwrapper.getServer().getAllLevels()) {
 -            worldserver.setDayTime(worldserver.getDayTime() + (long) i);
-+            // CraftBukkit start
++        // CraftBukkit start - SPIGOT-6496: Only set the time for the world the command originates in
++        {
++            WorldServer worldserver = commandlistenerwrapper.getLevel();
 +            TimeSkipEvent event = new TimeSkipEvent(worldserver.getWorld(), TimeSkipEvent.SkipReason.COMMAND, i);
 +            Bukkit.getPluginManager().callEvent(event);
 +            if (!event.isCancelled()) {
@@ -53,4 +47,4 @@
 +            // CraftBukkit end
          }
  
-         int j = getDayTime(commandlistenerwrapper.getLevel());
+         commandlistenerwrapper.getServer().forceTimeSynchronization();

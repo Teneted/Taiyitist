@@ -1,32 +1,38 @@
 --- a/net/minecraft/world/level/block/BlockChest.java
 +++ b/net/minecraft/world/level/block/BlockChest.java
-@@ -90,24 +90,7 @@
+@@ -83,28 +83,11 @@
+             return Optional.empty();
+         }
+     };
+-    private static final DoubleBlockFinder.Combiner<TileEntityChest, Optional<ITileInventory>> MENU_PROVIDER_COMBINER = new DoubleBlockFinder.Combiner<TileEntityChest, Optional<ITileInventory>>() {
++    public static final DoubleBlockFinder.Combiner<TileEntityChest, Optional<ITileInventory>> MENU_PROVIDER_COMBINER = new DoubleBlockFinder.Combiner<TileEntityChest, Optional<ITileInventory>>() { // PAIL private -> public
          public Optional<ITileInventory> acceptDouble(final TileEntityChest tileentitychest, final TileEntityChest tileentitychest1) {
-             final InventoryLargeChest inventorylargechest = new InventoryLargeChest(tileentitychest, tileentitychest1);
- 
--            return Optional.of(new ITileInventory(this) {
+-            final IInventory iinventory = new InventoryLargeChest(tileentitychest, tileentitychest1);
+-
+-            return Optional.of(new ITileInventory() {
 -                @Nullable
 -                @Override
 -                public Container createMenu(int i, PlayerInventory playerinventory, EntityHuman entityhuman) {
 -                    if (tileentitychest.canOpen(entityhuman) && tileentitychest1.canOpen(entityhuman)) {
 -                        tileentitychest.unpackLootTable(playerinventory.player);
 -                        tileentitychest1.unpackLootTable(playerinventory.player);
--                        return ContainerChest.sixRows(i, playerinventory, inventorylargechest);
+-                        return ContainerChest.sixRows(i, playerinventory, iinventory);
 -                    } else {
 -                        return null;
 -                    }
 -                }
--
++            final InventoryLargeChest iinventory = new InventoryLargeChest(tileentitychest, tileentitychest1); // CraftBukkit
+ 
 -                @Override
 -                public IChatBaseComponent getDisplayName() {
 -                    return (IChatBaseComponent) (tileentitychest.hasCustomName() ? tileentitychest.getDisplayName() : (tileentitychest1.hasCustomName() ? tileentitychest1.getDisplayName() : IChatBaseComponent.translatable("container.chestDouble")));
 -                }
 -            });
-+            return Optional.of(new DoubleInventory(tileentitychest, tileentitychest1, inventorylargechest)); // CraftBukkit // CraftBukkit - decompile error
++            return Optional.of(new DoubleInventory(tileentitychest, tileentitychest1, iinventory)); // CraftBukkit
          }
  
          public Optional<ITileInventory> acceptSingle(TileEntityChest tileentitychest) {
-@@ -120,6 +103,38 @@
+@@ -117,6 +100,38 @@
          }
      };
  
@@ -65,16 +71,7 @@
      @Override
      public MapCodec<? extends BlockChest> codec() {
          return BlockChest.CODEC;
-@@ -263,7 +278,7 @@
- 
-     @Override
-     public DoubleBlockFinder.Result<? extends TileEntityChest> combine(IBlockData iblockdata, World world, BlockPosition blockposition, boolean flag) {
--        BiPredicate bipredicate;
-+        BiPredicate<GeneratorAccess, BlockPosition> bipredicate; // CraftBukkit - decompile error
- 
-         if (flag) {
-             bipredicate = (generatoraccess, blockposition1) -> {
-@@ -279,7 +294,14 @@
+@@ -268,7 +283,14 @@
      @Nullable
      @Override
      protected ITileInventory getMenuProvider(IBlockData iblockdata, World world, BlockPosition blockposition) {

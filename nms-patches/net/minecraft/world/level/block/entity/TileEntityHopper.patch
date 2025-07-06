@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityHopper.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityHopper.java
-@@ -30,6 +30,22 @@
- import net.minecraft.world.level.block.state.IBlockData;
+@@ -29,6 +29,22 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.AxisAlignedBB;
  
 +// CraftBukkit start
@@ -59,8 +59,8 @@
 +
      public TileEntityHopper(BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.HOPPER, blockposition, iblockdata);
-         this.items = NonNullList.withSize(5, ItemStack.EMPTY);
-@@ -167,7 +213,29 @@
+         this.items = NonNullList.<ItemStack>withSize(5, ItemStack.EMPTY);
+@@ -161,7 +207,29 @@
  
                      if (!itemstack.isEmpty()) {
                          int j = itemstack.getCount();
@@ -91,7 +91,7 @@
  
                          if (itemstack1.isEmpty()) {
                              iinventory.setChanged();
-@@ -279,7 +347,34 @@
+@@ -262,7 +330,34 @@
  
          if (!itemstack.isEmpty() && canTakeItemFromContainer(ihopper, iinventory, itemstack, i, enumdirection)) {
              int j = itemstack.getCount();
@@ -127,7 +127,7 @@
  
              if (itemstack1.isEmpty()) {
                  iinventory.setChanged();
-@@ -297,13 +392,20 @@
+@@ -280,13 +375,20 @@
  
      public static boolean addItem(IInventory iinventory, EntityItem entityitem) {
          boolean flag = false;
@@ -149,7 +149,7 @@
          } else {
              entityitem.setItem(itemstack1);
          }
-@@ -421,14 +523,38 @@
+@@ -402,14 +504,38 @@
          return itemstack;
      }
  

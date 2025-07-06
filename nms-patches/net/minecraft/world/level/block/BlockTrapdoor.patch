@@ -1,15 +1,15 @@
 --- a/net/minecraft/world/level/block/BlockTrapdoor.java
 +++ b/net/minecraft/world/level/block/BlockTrapdoor.java
-@@ -34,6 +34,8 @@
- import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -39,6 +39,8 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 +
  public class BlockTrapdoor extends BlockFacingHorizontal implements IBlockWaterlogged {
  
      public static final MapCodec<BlockTrapdoor> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -139,6 +141,19 @@
+@@ -124,6 +126,19 @@
              boolean flag1 = world.hasNeighborSignal(blockposition);
  
              if (flag1 != (Boolean) iblockdata.getValue(BlockTrapdoor.POWERED)) {

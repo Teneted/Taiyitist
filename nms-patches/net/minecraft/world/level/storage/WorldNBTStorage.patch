@@ -1,17 +1,19 @@
 --- a/net/minecraft/world/level/storage/WorldNBTStorage.java
 +++ b/net/minecraft/world/level/storage/WorldNBTStorage.java
-@@ -15,8 +15,10 @@
- import net.minecraft.nbt.NBTCompressedStreamTools;
- import net.minecraft.nbt.NBTReadLimiter;
- import net.minecraft.nbt.NBTTagCompound;
-+import net.minecraft.server.level.EntityPlayer;
- import net.minecraft.util.datafix.DataFixTypes;
+@@ -20,6 +20,12 @@
  import net.minecraft.world.entity.player.EntityHuman;
-+import org.bukkit.craftbukkit.entity.CraftPlayer;
  import org.slf4j.Logger;
  
++// CraftBukkit start
++import net.minecraft.core.IRegistryCustom;
++import net.minecraft.server.level.EntityPlayer;
++import org.bukkit.craftbukkit.entity.CraftPlayer;
++// CraftBukkit end
++
  public class WorldNBTStorage {
-@@ -49,34 +51,36 @@
+ 
+     private static final Logger LOGGER = LogUtils.getLogger();
+@@ -53,34 +59,36 @@
  
      }
  
@@ -55,13 +57,13 @@
              }
          }
  
-@@ -84,20 +88,44 @@
+@@ -88,22 +96,46 @@
      }
  
-     public Optional<NBTTagCompound> load(EntityHuman entityhuman) {
+     public Optional<ValueInput> load(EntityHuman entityhuman, ProblemReporter problemreporter) {
 -        Optional<NBTTagCompound> optional = this.load(entityhuman, ".dat");
 +        // CraftBukkit start
-+        return load(entityhuman.getName().getString(), entityhuman.getStringUUID()).map((nbttagcompound) -> {
++        return load(entityhuman.getName().getString(), entityhuman.getStringUUID(), problemreporter, entityhuman.registryAccess()).map((valueinput) -> {
 +            if (entityhuman instanceof EntityPlayer) {
 +                CraftPlayer player = (CraftPlayer) entityhuman.getBukkitEntity();
 +                // Only update first played if it is older than the one we have
@@ -71,12 +73,12 @@
 +                }
 +            }
 +
-+            entityhuman.load(nbttagcompound); // From below
-+            return nbttagcompound;
++            entityhuman.load(valueinput); // From below
++            return valueinput;
 +        });
 +    }
 +
-+    public Optional<NBTTagCompound> load(String name, String uuid) {
++    public Optional<ValueInput> load(String name, String uuid, ProblemReporter problemreporter, IRegistryCustom registryAccess) {
 +        // CraftBukkit end
 +        Optional<NBTTagCompound> optional = this.load(name, uuid, ".dat"); // CraftBukkit
  
@@ -92,9 +94,12 @@
              int i = GameProfileSerializer.getDataVersion(nbttagcompound, -1);
  
              nbttagcompound = DataFixTypes.PLAYER.updateToCurrentVersion(this.fixerUpper, nbttagcompound, i);
--            entityhuman.load(nbttagcompound);
-+            // entityhuman.load(nbttagcompound); // CraftBukkit - handled above
-             return nbttagcompound;
+-            ValueInput valueinput = TagValueInput.create(problemreporter, entityhuman.registryAccess(), nbttagcompound);
++            ValueInput valueinput = TagValueInput.create(problemreporter, registryAccess, nbttagcompound); // CraftBukkit
+ 
+-            entityhuman.load(valueinput);
++            // entityhuman.load(valueinput); // CraftBukkit - handled above
+             return valueinput;
          });
      }
 +

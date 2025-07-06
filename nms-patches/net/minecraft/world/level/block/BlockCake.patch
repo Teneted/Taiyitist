@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockCake.java
 +++ b/net/minecraft/world/level/block/BlockCake.java
-@@ -97,7 +97,18 @@
+@@ -98,7 +98,18 @@
              return EnumInteractionResult.PASS;
          } else {
              entityhuman.awardStat(StatisticList.EAT_CAKE_SLICE);
@@ -19,4 +19,4 @@
 +            // CraftBukkit end
              int i = (Integer) iblockdata.getValue(BlockCake.BITES);
  
-             generatoraccess.gameEvent((Entity) entityhuman, (Holder) GameEvent.EAT, blockposition);
+             generatoraccess.gameEvent(entityhuman, (Holder) GameEvent.EAT, blockposition);

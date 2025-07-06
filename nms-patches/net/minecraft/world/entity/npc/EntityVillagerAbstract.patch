@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/npc/EntityVillagerAbstract.java
 +++ b/net/minecraft/world/entity/npc/EntityVillagerAbstract.java
-@@ -40,8 +40,22 @@
+@@ -34,8 +34,22 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
- import org.slf4j.Logger;
  
 +// CraftBukkit start
 +import org.bukkit.Bukkit;
@@ -20,10 +20,10 @@
 +        return (org.bukkit.craftbukkit.entity.CraftAbstractVillager) getBukkitEntity();
 +    }
 +    // CraftBukkit end
-     private static final DataWatcherObject<Integer> DATA_UNHAPPY_COUNTER = DataWatcher.defineId(EntityVillagerAbstract.class, DataWatcherRegistry.INT);
-     private static final Logger LOGGER = LogUtils.getLogger();
+     private static final DataWatcherObject<Integer> DATA_UNHAPPY_COUNTER = DataWatcher.<Integer>defineId(EntityVillagerAbstract.class, DataWatcherRegistry.INT);
      public static final int VILLAGER_SLOT_OFFSET = 300;
-@@ -50,7 +64,7 @@
+     private static final int VILLAGER_INVENTORY_SIZE = 8;
+@@ -43,7 +57,7 @@
      private EntityHuman tradingPlayer;
      @Nullable
      protected MerchantRecipeList offers;
@@ -32,16 +32,16 @@
  
      public EntityVillagerAbstract(EntityTypes<? extends EntityVillagerAbstract> entitytypes, World world) {
          super(entitytypes, world);
-@@ -179,7 +193,7 @@
-     public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
-         super.readAdditionalSaveData(nbttagcompound);
-         if (nbttagcompound.contains("Offers")) {
--            DataResult dataresult = MerchantRecipeList.CODEC.parse(this.registryAccess().createSerializationContext(DynamicOpsNBT.INSTANCE), nbttagcompound.get("Offers"));
-+            DataResult<MerchantRecipeList> dataresult = MerchantRecipeList.CODEC.parse(this.registryAccess().createSerializationContext(DynamicOpsNBT.INSTANCE), nbttagcompound.get("Offers")); // CraftBukkit - decompile error
-             Logger logger = EntityVillagerAbstract.LOGGER;
+@@ -171,7 +185,7 @@
+     @Override
+     protected void readAdditionalSaveData(ValueInput valueinput) {
+         super.readAdditionalSaveData(valueinput);
+-        this.offers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse((Object) null);
++        this.offers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse(null); // CraftBukkit - decompile error
+         this.readInventoryFromTag(valueinput);
+     }
  
-             Objects.requireNonNull(logger);
-@@ -246,7 +260,16 @@
+@@ -230,7 +244,16 @@
              MerchantRecipe merchantrecipe = ((VillagerTrades.IMerchantRecipeOption) arraylist.remove(this.random.nextInt(arraylist.size()))).getOffer(this, this.random);
  
              if (merchantrecipe != null) {

@@ -14,21 +14,21 @@
 +
  public class TemptingSensor extends Sensor<EntityCreature> {
  
-     public static final int TEMPTATION_RANGE = 10;
+     private static final PathfinderTargetCondition TEMPT_TARGETING = PathfinderTargetCondition.forNonCombat().ignoreLineOfSight();
 @@ -30,7 +38,7 @@
- 
      protected void doTick(WorldServer worldserver, EntityCreature entitycreature) {
          BehaviorController<?> behaviorcontroller = entitycreature.getBrain();
+         PathfinderTargetCondition pathfindertargetcondition = TemptingSensor.TEMPT_TARGETING.copy().range((double) ((float) entitycreature.getAttributeValue(GenericAttributes.TEMPT_RANGE)));
 -        Stream stream = worldserver.players().stream().filter(IEntitySelector.NO_SPECTATORS).filter((entityplayer) -> {
 +        Stream<net.minecraft.server.level.EntityPlayer> stream = worldserver.players().stream().filter(IEntitySelector.NO_SPECTATORS).filter((entityplayer) -> { // CraftBukkit - decompile error
-             return TemptingSensor.TEMPT_TARGETING.test(entitycreature, entityplayer);
-         }).filter((entityplayer) -> {
-             return entitycreature.closerThan(entityplayer, 10.0D);
-@@ -44,7 +52,17 @@
+             return pathfindertargetcondition.test(worldserver, entitycreature, entityplayer);
+         }).filter(this::playerHoldingTemptation).filter((entityplayer) -> {
+             return !entitycreature.hasPassenger(entityplayer);
+@@ -42,7 +50,17 @@
          if (!list.isEmpty()) {
              EntityHuman entityhuman = (EntityHuman) list.get(0);
  
--            behaviorcontroller.setMemory(MemoryModuleType.TEMPTING_PLAYER, (Object) entityhuman);
+-            behaviorcontroller.setMemory(MemoryModuleType.TEMPTING_PLAYER, entityhuman);
 +            // CraftBukkit start
 +            EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent(entitycreature, entityhuman, EntityTargetEvent.TargetReason.TEMPT);
 +            if (event.isCancelled()) {

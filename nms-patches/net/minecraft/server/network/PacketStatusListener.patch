@@ -115,7 +115,7 @@
 +            ServerPing ping = new ServerPing(
 +                    CraftChatMessage.fromString(event.getMotd(), true)[0],
 +                    Optional.of(playerSample),
-+                    Optional.of(new ServerPing.ServerData(server.getServerModName() + " " + server.getServerVersion(), SharedConstants.getCurrentVersion().getProtocolVersion())),
++                    Optional.of(new ServerPing.ServerData(server.getServerModName() + " " + server.getServerVersion(), SharedConstants.getCurrentVersion().protocolVersion())),
 +                    (event.icon.value != null) ? Optional.of(new ServerPing.a(event.icon.value)) : Optional.empty(),
 +                    server.enforceSecureProfile()
 +            );

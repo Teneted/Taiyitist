@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/entity/item/EntityItem.java
 +++ b/net/minecraft/world/entity/item/EntityItem.java
-@@ -34,6 +34,15 @@
- import net.minecraft.world.level.portal.DimensionTransition;
+@@ -35,6 +35,15 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
  
 +// CraftBukkit start
@@ -15,8 +15,8 @@
 +
  public class EntityItem extends Entity implements TraceableEntity {
  
-     private static final DataWatcherObject<ItemStack> DATA_ITEM = DataWatcher.defineId(EntityItem.class, DataWatcherRegistry.ITEM_STACK);
-@@ -52,6 +61,7 @@
+     private static final DataWatcherObject<ItemStack> DATA_ITEM = DataWatcher.<ItemStack>defineId(EntityItem.class, DataWatcherRegistry.ITEM_STACK);
+@@ -54,6 +63,7 @@
      @Nullable
      public UUID target;
      public final float bobOffs;
@@ -24,7 +24,7 @@
  
      public EntityItem(EntityTypes<? extends EntityItem> entitytypes, World world) {
          super(entitytypes, world);
-@@ -133,12 +143,15 @@
+@@ -124,12 +134,15 @@
      @Override
      public void tick() {
          if (this.getItem().isEmpty()) {
@@ -44,7 +44,7 @@
  
              this.xo = this.getX();
              this.yo = this.getY();
-@@ -187,9 +200,11 @@
+@@ -179,9 +192,11 @@
                  this.mergeWithNeighbours();
              }
  
@@ -56,7 +56,7 @@
  
              this.hasImpulse |= this.updateInWaterStateAndDoFluidPushing();
              if (!this.level().isClientSide) {
-@@ -201,7 +216,13 @@
+@@ -193,7 +208,13 @@
              }
  
              if (!this.level().isClientSide && this.age >= 6000) {
@@ -71,7 +71,7 @@
              }
  
          }
-@@ -284,11 +305,16 @@
+@@ -273,11 +294,16 @@
      }
  
      private static void merge(EntityItem entityitem, ItemStack itemstack, EntityItem entityitem1, ItemStack itemstack1) {
@@ -89,9 +89,9 @@
          }
  
      }
-@@ -309,12 +335,17 @@
-         } else if (this.level().isClientSide) {
-             return true;
+@@ -306,12 +332,17 @@
+         } else if (!this.getItem().canBeHurtBy(damagesource)) {
+             return false;
          } else {
 +            // CraftBukkit start
 +            if (CraftEventFactory.handleNonLivingEntityDamageEvent(this, damagesource, f)) {
@@ -108,16 +108,21 @@
              }
  
              return true;
-@@ -366,7 +397,7 @@
-         }
- 
+@@ -341,11 +372,11 @@
+         this.health = valueinput.getShortOr("Health", (short) 5);
+         this.age = valueinput.getShortOr("Age", (short) 0);
+         this.pickupDelay = valueinput.getShortOr("PickupDelay", (short) 0);
+-        this.target = (UUID) valueinput.read("Owner", UUIDUtil.CODEC).orElse((Object) null);
++        this.target = (UUID) valueinput.read("Owner", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
+         this.thrower = EntityReference.<Entity>read(valueinput, "Thrower");
+         this.setItem((ItemStack) valueinput.read("Item", ItemStack.CODEC).orElse(ItemStack.EMPTY));
          if (this.getItem().isEmpty()) {
 -            this.discard();
 +            this.discard(null); // CraftBukkit - add Bukkit remove cause
          }
  
      }
-@@ -378,10 +409,50 @@
+@@ -357,10 +388,50 @@
              Item item = itemstack.getItem();
              int i = itemstack.getCount();
  

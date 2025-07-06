@@ -1,11 +1,12 @@
 --- a/net/minecraft/world/level/block/CaveVines.java
 +++ b/net/minecraft/world/level/block/CaveVines.java
-@@ -19,6 +19,13 @@
+@@ -17,6 +17,14 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.phys.shapes.VoxelShape;
  
 +// CraftBukkit start
 +import java.util.Collections;
++import net.minecraft.world.entity.player.EntityHuman;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.craftbukkit.inventory.CraftItemStack;
 +import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -13,8 +14,8 @@
 +
  public interface CaveVines {
  
-     VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
-@@ -26,7 +33,24 @@
+     VoxelShape SHAPE = Block.column(14.0D, 0.0D, 16.0D);
+@@ -24,7 +32,24 @@
  
      static EnumInteractionResult use(@Nullable Entity entity, IBlockData iblockdata, World world, BlockPosition blockposition) {
          if ((Boolean) iblockdata.getValue(CaveVines.BERRIES)) {
@@ -39,4 +40,4 @@
 +
              float f = MathHelper.randomBetween(world.random, 0.8F, 1.2F);
  
-             world.playSound((EntityHuman) null, blockposition, SoundEffects.CAVE_VINES_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, f);
+             world.playSound((Entity) null, blockposition, SoundEffects.CAVE_VINES_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, f);

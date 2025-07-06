@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/entity/EntityAccess.java
 +++ b/net/minecraft/world/level/entity/EntityAccess.java
-@@ -6,6 +6,10 @@
+@@ -5,6 +5,10 @@
  import net.minecraft.world.entity.Entity;
  import net.minecraft.world.phys.AxisAlignedBB;
  
@@ -8,10 +8,10 @@
 +import org.bukkit.event.entity.EntityRemoveEvent;
 +// CraftBukkit end
 +
- public interface EntityAccess {
+ public interface EntityAccess extends UniquelyIdentifyable {
  
      int getId();
-@@ -24,6 +28,12 @@
+@@ -21,6 +25,12 @@
  
      void setRemoved(Entity.RemovalReason entity_removalreason);
  

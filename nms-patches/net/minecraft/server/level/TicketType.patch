@@ -1,11 +1,19 @@
 --- a/net/minecraft/server/level/TicketType.java
 +++ b/net/minecraft/server/level/TicketType.java
-@@ -22,6 +22,8 @@
-     public static final TicketType<BlockPosition> PORTAL = create("portal", BaseBlockPosition::compareTo, 300);
-     public static final TicketType<Integer> POST_TELEPORT = create("post_teleport", Integer::compareTo, 5);
-     public static final TicketType<ChunkCoordIntPair> UNKNOWN = create("unknown", Comparator.comparingLong(ChunkCoordIntPair::toLong), 1);
-+    public static final TicketType<Unit> PLUGIN = create("plugin", (a, b) -> 0); // CraftBukkit
-+    public static final TicketType<org.bukkit.plugin.Plugin> PLUGIN_TICKET = create("plugin_ticket", (plugin1, plugin2) -> plugin1.getClass().getName().compareTo(plugin2.getClass().getName())); // CraftBukkit
+@@ -14,6 +14,16 @@
+     public static final TicketType PORTAL = register("portal", 300L, true, TicketType.a.LOADING_AND_SIMULATION);
+     public static final TicketType ENDER_PEARL = register("ender_pearl", 40L, false, TicketType.a.LOADING_AND_SIMULATION);
+     public static final TicketType UNKNOWN = register("unknown", 1L, false, TicketType.a.LOADING);
++    // CraftBukkit start
++    public static long pluginTimeout = 0L;
++    public static final TicketType PLUGIN = register("plugin", 0L, false, TicketType.a.LOADING_AND_SIMULATION);
++    public static final TicketType PLUGIN_TICKET = register("plugin_ticket", 0L, false, TicketType.a.LOADING_AND_SIMULATION);
++
++    @Override
++    public long timeout() {
++        return (this != TicketType.PLUGIN) ? this.timeout : TicketType.pluginTimeout;
++    }
++    // CraftBukkit end
  
-     public static <T> TicketType<T> create(String s, Comparator<T> comparator) {
-         return new TicketType<>(s, comparator, 0L);
+     private static TicketType register(String s, long i, boolean flag, TicketType.a tickettype_a) {
+         return (TicketType) IRegistry.register(BuiltInRegistries.TICKET_TYPE, s, new TicketType(i, flag, tickettype_a));

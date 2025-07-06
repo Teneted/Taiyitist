@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockRedstoneComparator.java
 +++ b/net/minecraft/world/level/block/BlockRedstoneComparator.java
-@@ -27,6 +27,8 @@
+@@ -28,6 +28,8 @@
  import net.minecraft.world.phys.MovingObjectPositionBlock;
  import net.minecraft.world.ticks.TickListPriority;
  
@@ -9,17 +9,7 @@
  public class BlockRedstoneComparator extends BlockDiodeAbstract implements ITileEntity {
  
      public static final MapCodec<BlockRedstoneComparator> CODEC = simpleCodec(BlockRedstoneComparator::new);
-@@ -109,7 +111,8 @@
- 
-     @Nullable
-     private EntityItemFrame getItemFrame(World world, EnumDirection enumdirection, BlockPosition blockposition) {
--        List<EntityItemFrame> list = world.getEntitiesOfClass(EntityItemFrame.class, new AxisAlignedBB((double) blockposition.getX(), (double) blockposition.getY(), (double) blockposition.getZ(), (double) (blockposition.getX() + 1), (double) (blockposition.getY() + 1), (double) (blockposition.getZ() + 1)), (entityitemframe) -> {
-+        // CraftBukkit - decompile error
-+        List<EntityItemFrame> list = world.getEntitiesOfClass(EntityItemFrame.class, new AxisAlignedBB((double) blockposition.getX(), (double) blockposition.getY(), (double) blockposition.getZ(), (double) (blockposition.getX() + 1), (double) (blockposition.getY() + 1), (double) (blockposition.getZ() + 1)), (java.util.function.Predicate<EntityItemFrame>) (entityitemframe) -> {
-             return entityitemframe != null && entityitemframe.getDirection() == enumdirection;
-         });
- 
-@@ -162,8 +165,18 @@
+@@ -163,8 +165,18 @@
              boolean flag1 = (Boolean) iblockdata.getValue(BlockRedstoneComparator.POWERED);
  
              if (flag1 && !flag) {

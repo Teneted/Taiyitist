@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/BlockButtonAbstract.java
 +++ b/net/minecraft/world/level/block/BlockButtonAbstract.java
-@@ -33,6 +33,11 @@
- import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -40,6 +40,11 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +// CraftBukkit start
 +import org.bukkit.event.block.BlockRedstoneEvent;
@@ -12,7 +12,7 @@
  public class BlockButtonAbstract extends BlockAttachable {
  
      public static final MapCodec<BlockButtonAbstract> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -124,6 +129,19 @@
+@@ -87,6 +92,19 @@
          if ((Boolean) iblockdata.getValue(BlockButtonAbstract.POWERED)) {
              return EnumInteractionResult.CONSUME;
          } else {
@@ -30,9 +30,9 @@
 +            }
 +            // CraftBukkit end
              this.press(iblockdata, world, blockposition, entityhuman);
-             return EnumInteractionResult.sidedSuccess(world.isClientSide);
+             return EnumInteractionResult.SUCCESS;
          }
-@@ -195,11 +213,36 @@
+@@ -155,11 +173,36 @@
      }
  
      protected void checkPressed(IBlockData iblockdata, World world, BlockPosition blockposition) {

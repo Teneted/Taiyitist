@@ -1,0 +1,42 @@
+From da3b62338056675ba80a6d36c1d7bda689dce0df Mon Sep 17 00:00:00 2001
+From: Alex Ciuba <alexciuba@gmail.com>
+Date: Tue, 11 Jun 2013 15:23:03 -0400
+Subject: [PATCH] Prevent Ghost Players Caused by Plugins
+
+Check if the player is still connected after firing event. Fixes BUKKIT-4327
+
+diff --git a/src/main/java/net/minecraft/server/level/EntityPlayer.java b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+index 134643334..4c0994b82 100644
+--- a/src/main/java/net/minecraft/server/level/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+@@ -1282,6 +1282,11 @@ public class EntityPlayer extends EntityHuman {
+ 
+         PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(respawnPlayer, location, isBedSpawn, isAnchorSpawn, reason);
+         this.level().getCraftServer().getPluginManager().callEvent(respawnEvent);
++        // Spigot Start
++        if (this.connection.isDisconnected()) {
++            return null;
++        }
++        // Spigot End
+ 
+         location = respawnEvent.getRespawnLocation();
+ 
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index a3e0641ab..2416577dc 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -635,6 +635,11 @@ public abstract class PlayerList {
+         } else {
+             teleporttransition = new TeleportTransition(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3D.ZERO, location.getYaw(), location.getPitch(), TeleportTransition.DO_NOTHING);
+         }
++        // Spigot Start
++        if (teleporttransition == null) {
++            return entityplayer;
++        }
++        // Spigot End
+         WorldServer worldserver = teleporttransition.newLevel();
+         entityplayer1.spawnIn(worldserver, flag);
+         entityplayer1.unsetRemoved();
+-- 
+2.49.0
+

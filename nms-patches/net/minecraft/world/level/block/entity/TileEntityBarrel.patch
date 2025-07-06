@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityBarrel.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityBarrel.java
-@@ -21,8 +21,49 @@
- import net.minecraft.world.level.block.BlockBarrel;
- import net.minecraft.world.level.block.state.IBlockData;
+@@ -22,8 +22,49 @@
+ import net.minecraft.world.level.storage.ValueInput;
+ import net.minecraft.world.level.storage.ValueOutput;
  
 +// CraftBukkit start
 +import java.util.ArrayList;

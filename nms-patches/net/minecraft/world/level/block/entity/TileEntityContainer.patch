@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityContainer.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityContainer.java
-@@ -178,4 +178,12 @@
-         nbttagcompound.remove("Lock");
-         nbttagcompound.remove("Items");
+@@ -167,4 +167,12 @@
+         valueoutput.discard("lock");
+         valueoutput.discard("Items");
      }
 +
 +    // CraftBukkit start

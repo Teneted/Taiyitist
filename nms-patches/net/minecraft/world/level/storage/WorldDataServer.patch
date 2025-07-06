@@ -39,7 +39,7 @@
 +    }
 +    // CraftBukkit end
  
-     private WorldDataServer(@Nullable NBTTagCompound nbttagcompound, boolean flag, BlockPosition blockposition, float f, long i, long j, int k, int l, int i1, boolean flag1, int j1, boolean flag2, boolean flag3, boolean flag4, WorldBorder.c worldborder_c, int k1, int l1, @Nullable UUID uuid, Set<String> set, Set<String> set1, CustomFunctionCallbackTimerQueue<MinecraftServer> customfunctioncallbacktimerqueue, @Nullable NBTTagCompound nbttagcompound1, EnderDragonBattle.a enderdragonbattle_a, WorldSettings worldsettings, WorldOptions worldoptions, WorldDataServer.a worlddataserver_a, Lifecycle lifecycle) {
+     private WorldDataServer(@Nullable NBTTagCompound nbttagcompound, boolean flag, BlockPosition blockposition, float f, long i, long j, int k, int l, int i1, boolean flag1, int j1, boolean flag2, boolean flag3, boolean flag4, WorldBorder.d worldborder_d, int k1, int l1, @Nullable UUID uuid, Set<String> set, Set<String> set1, CustomFunctionCallbackTimerQueue<MinecraftServer> customfunctioncallbacktimerqueue, @Nullable NBTTagCompound nbttagcompound1, EnderDragonBattle.a enderdragonbattle_a, WorldSettings worldsettings, WorldOptions worldoptions, WorldDataServer.a worlddataserver_a, Lifecycle lifecycle) {
          this.wasModded = flag;
 @@ -116,7 +143,7 @@
  
@@ -51,7 +51,7 @@
  
          Objects.requireNonNull(codec);
 @@ -136,7 +163,7 @@
-         WorldBorder.c worldborder_c = WorldBorder.c.read(dynamic, WorldBorder.DEFAULT_SETTINGS);
+         WorldBorder.d worldborder_d = WorldBorder.d.read(dynamic, WorldBorder.DEFAULT_SETTINGS);
          int k1 = dynamic.get("WanderingTraderSpawnDelay").asInt(0);
          int l1 = dynamic.get("WanderingTraderSpawnChance").asInt(0);
 -        UUID uuid = (UUID) dynamic.get("WanderingTraderId").read(UUIDUtil.CODEC).result().orElse((Object) null);
@@ -61,7 +61,7 @@
          }).collect(Collectors.toCollection(Sets::newLinkedHashSet));
 @@ -145,7 +172,7 @@
          }).collect(Collectors.toSet());
-         CustomFunctionCallbackTimerQueue customfunctioncallbacktimerqueue = new CustomFunctionCallbackTimerQueue<>(CustomFunctionCallbackTimers.SERVER_CALLBACKS, dynamic.get("ScheduledEvents").asStream());
+         CustomFunctionCallbackTimerQueue customfunctioncallbacktimerqueue = new CustomFunctionCallbackTimerQueue(CustomFunctionCallbackTimers.SERVER_CALLBACKS, dynamic.get("ScheduledEvents").asStream());
          NBTTagCompound nbttagcompound1 = (NBTTagCompound) dynamic.get("CustomBossEvents").orElseEmptyMap().getValue();
 -        DataResult dataresult = dynamic.get("DragonFight").read(EnderDragonBattle.a.CODEC);
 +        DataResult<EnderDragonBattle.a> dataresult = dynamic.get("DragonFight").read(EnderDragonBattle.a.CODEC); // CraftBukkit - decompile error
@@ -71,16 +71,16 @@
 @@ -180,7 +207,7 @@
          nbttagcompound.put("Version", nbttagcompound2);
          GameProfileSerializer.addCurrentDataVersion(nbttagcompound);
-         DynamicOps<NBTBase> dynamicops = iregistrycustom.createSerializationContext(DynamicOpsNBT.INSTANCE);
+         DynamicOps<NBTBase> dynamicops = iregistrycustom.<NBTBase>createSerializationContext(DynamicOpsNBT.INSTANCE);
 -        DataResult dataresult = GeneratorSettings.encode(dynamicops, this.worldOptions, iregistrycustom);
-+        DataResult<NBTBase> dataresult = GeneratorSettings.encode(dynamicops, this.worldOptions, new WorldDimensions(this.customDimensions != null ? this.customDimensions : iregistrycustom.registryOrThrow(Registries.LEVEL_STEM))); // CraftBukkit
++        DataResult<NBTBase> dataresult = GeneratorSettings.encode(dynamicops, this.worldOptions, new WorldDimensions(this.customDimensions != null ? this.customDimensions : iregistrycustom.lookupOrThrow(Registries.LEVEL_STEM))); // CraftBukkit
          Logger logger = WorldDataServer.LOGGER;
  
          Objects.requireNonNull(logger);
-@@ -230,11 +257,13 @@
-             nbttagcompound.putUUID("WanderingTraderId", this.wanderingTraderId);
-         }
- 
+@@ -223,11 +250,13 @@
+         nbttagcompound.putInt("WanderingTraderSpawnDelay", this.wanderingTraderSpawnDelay);
+         nbttagcompound.putInt("WanderingTraderSpawnChance", this.wanderingTraderSpawnChance);
+         nbttagcompound.storeNullable("WanderingTraderId", UUIDUtil.CODEC, this.wanderingTraderId);
 +        nbttagcompound.putString("Bukkit.Version", Bukkit.getName() + "/" + Bukkit.getVersion() + "/" + Bukkit.getBukkitVersion()); // CraftBukkit
 +        world.getWorld().storeBukkitValues(nbttagcompound); // CraftBukkit - add pdc
      }
@@ -92,7 +92,7 @@
  
          Objects.requireNonNull(nbttaglist);
          stream.forEach(nbttaglist::add);
-@@ -310,6 +339,20 @@
+@@ -303,6 +332,20 @@
  
      @Override
      public void setThundering(boolean flag) {
@@ -113,7 +113,7 @@
          this.thundering = flag;
      }
  
-@@ -330,6 +373,20 @@
+@@ -323,6 +366,20 @@
  
      @Override
      public void setRaining(boolean flag) {
@@ -134,7 +134,7 @@
          this.raining = flag;
      }
  
-@@ -396,6 +453,12 @@
+@@ -389,6 +446,12 @@
      @Override
      public void setDifficulty(EnumDifficulty enumdifficulty) {
          this.settings = this.settings.withDifficulty(enumdifficulty);
@@ -147,7 +147,7 @@
      }
  
      @Override
-@@ -532,6 +595,14 @@
+@@ -525,6 +588,14 @@
          return this.settings.copy();
      }
  

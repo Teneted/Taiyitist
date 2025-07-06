@@ -28,10 +28,10 @@
 +            return null;
 +        }
 +        // CraftBukkit end
-         DataInputStream datainputstream = regionfile.getChunkDataInputStream(chunkcoordintpair);
  
-         NBTTagCompound nbttagcompound;
-@@ -96,7 +102,12 @@
+         try (DataInputStream datainputstream = regionfile.getChunkDataInputStream(chunkcoordintpair)) {
+             if (datainputstream == null) {
+@@ -68,7 +74,12 @@
      }
  
      public void scanChunk(ChunkCoordIntPair chunkcoordintpair, StreamTagVisitor streamtagvisitor) throws IOException {
@@ -42,10 +42,10 @@
 +            return;
 +        }
 +        // CraftBukkit end
-         DataInputStream datainputstream = regionfile.getChunkDataInputStream(chunkcoordintpair);
  
-         try {
-@@ -122,7 +133,7 @@
+         try (DataInputStream datainputstream = regionfile.getChunkDataInputStream(chunkcoordintpair)) {
+             if (datainputstream != null) {
+@@ -79,7 +90,7 @@
      }
  
      protected void write(ChunkCoordIntPair chunkcoordintpair, @Nullable NBTTagCompound nbttagcompound) throws IOException {

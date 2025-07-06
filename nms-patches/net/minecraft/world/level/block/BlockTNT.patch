@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/block/BlockTNT.java
 +++ b/net/minecraft/world/level/block/BlockTNT.java
-@@ -27,6 +27,11 @@
- import net.minecraft.world.level.gameevent.GameEvent;
+@@ -31,6 +31,11 @@
+ import net.minecraft.world.level.redstone.Orientation;
  import net.minecraft.world.phys.MovingObjectPositionBlock;
  
 +// CraftBukkit start
@@ -12,54 +12,52 @@
  public class BlockTNT extends Block {
  
      public static final MapCodec<BlockTNT> CODEC = simpleCodec(BlockTNT::new);
-@@ -45,7 +50,7 @@
+@@ -49,7 +54,7 @@
      @Override
      protected void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag) {
          if (!iblockdata1.is(iblockdata.getBlock())) {
--            if (world.hasNeighborSignal(blockposition)) {
-+            if (world.hasNeighborSignal(blockposition) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.REDSTONE, null, null)) { // CraftBukkit - TNTPrimeEvent
-                 explode(world, blockposition);
+-            if (world.hasNeighborSignal(blockposition) && prime(world, blockposition)) {
++            if (world.hasNeighborSignal(blockposition) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.REDSTONE, null, null) && prime(world, blockposition)) { // CraftBukkit - TNTPrimeEvent
                  world.removeBlock(blockposition, false);
              }
-@@ -55,7 +60,7 @@
+ 
+@@ -58,7 +63,7 @@
  
      @Override
-     protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, BlockPosition blockposition1, boolean flag) {
--        if (world.hasNeighborSignal(blockposition)) {
-+        if (world.hasNeighborSignal(blockposition) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.REDSTONE, null, blockposition1)) { // CraftBukkit - TNTPrimeEvent
-             explode(world, blockposition);
+     protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, @Nullable Orientation orientation, boolean flag) {
+-        if (world.hasNeighborSignal(blockposition) && prime(world, blockposition)) {
++        if (world.hasNeighborSignal(blockposition) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.REDSTONE, null, null) && prime(world, blockposition)) { // CraftBukkit - TNTPrimeEvent
              world.removeBlock(blockposition, false);
          }
-@@ -64,7 +69,7 @@
+ 
+@@ -66,7 +71,7 @@
  
      @Override
      public IBlockData playerWillDestroy(World world, BlockPosition blockposition, IBlockData iblockdata, EntityHuman entityhuman) {
--        if (!world.isClientSide() && !entityhuman.isCreative() && (Boolean) iblockdata.getValue(BlockTNT.UNSTABLE)) {
-+        if (!world.isClientSide() && !entityhuman.isCreative() && (Boolean) iblockdata.getValue(BlockTNT.UNSTABLE) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.BLOCK_BREAK, entityhuman, null)) { // CraftBukkit - TNTPrimeEvent
-             explode(world, blockposition);
+-        if (!world.isClientSide() && !entityhuman.getAbilities().instabuild && (Boolean) iblockdata.getValue(BlockTNT.UNSTABLE)) {
++        if (!world.isClientSide() && !entityhuman.getAbilities().instabuild && (Boolean) iblockdata.getValue(BlockTNT.UNSTABLE) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.BLOCK_BREAK, entityhuman, null)) { // CraftBukkit - TNTPrimeEvent
+             prime(world, blockposition);
          }
  
-@@ -101,6 +106,11 @@
+@@ -108,6 +113,11 @@
          if (!itemstack.is(Items.FLINT_AND_STEEL) && !itemstack.is(Items.FIRE_CHARGE)) {
              return super.useItemOn(itemstack, iblockdata, world, blockposition, entityhuman, enumhand, movingobjectpositionblock);
          } else {
 +            // CraftBukkit start - TNTPrimeEvent
 +            if (!CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.PLAYER, entityhuman, null)) {
-+                return ItemInteractionResult.CONSUME;
++                return EnumInteractionResult.CONSUME;
 +            }
 +            // CraftBukkit end
-             explode(world, blockposition, entityhuman);
-             world.setBlock(blockposition, Blocks.AIR.defaultBlockState(), 11);
-             Item item = itemstack.getItem();
-@@ -123,6 +133,11 @@
+             if (prime(world, blockposition, entityhuman)) {
+                 world.setBlock(blockposition, Blocks.AIR.defaultBlockState(), 11);
+                 Item item = itemstack.getItem();
+@@ -138,7 +148,8 @@
+             BlockPosition blockposition = movingobjectpositionblock.getBlockPos();
              Entity entity = iprojectile.getOwner();
  
-             if (iprojectile.isOnFire() && iprojectile.mayInteract(world, blockposition)) {
-+                // CraftBukkit start
-+                if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(iprojectile, blockposition, Blocks.AIR.defaultBlockState()) || !CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.PROJECTILE, iprojectile, null)) {
-+                    return;
-+                }
-+                // CraftBukkit end
-                 explode(world, blockposition, entity instanceof EntityLiving ? (EntityLiving) entity : null);
+-            if (iprojectile.isOnFire() && iprojectile.mayInteract(worldserver, blockposition) && prime(world, blockposition, entity instanceof EntityLiving ? (EntityLiving) entity : null)) {
++            // CraftBukkit - TNTPrimeEvent
++            if (iprojectile.isOnFire() && iprojectile.mayInteract(worldserver, blockposition) && org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(iprojectile, blockposition, Blocks.AIR.defaultBlockState()) && CraftEventFactory.callTNTPrimeEvent(world, blockposition, PrimeCause.PROJECTILE, iprojectile, null) && prime(world, blockposition, entity instanceof EntityLiving ? (EntityLiving) entity : null)) {
                  world.removeBlock(blockposition, false);
              }
+         }

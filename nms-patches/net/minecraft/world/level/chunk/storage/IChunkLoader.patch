@@ -16,7 +16,7 @@
  public class IChunkLoader implements AutoCloseable {
  
      public static final int LAST_MONOLYTH_STRUCTURE_DATA_VERSION = 1493;
-@@ -39,13 +48,57 @@
+@@ -39,13 +48,56 @@
          return this.worker.isOldChunkAround(chunkcoordintpair, i);
      }
  
@@ -25,7 +25,6 @@
 +    private boolean check(ChunkProviderServer cps, int x, int z) {
 +        ChunkCoordIntPair pos = new ChunkCoordIntPair(x, z);
 +        if (cps != null) {
-+            com.google.common.base.Preconditions.checkState(org.bukkit.Bukkit.isPrimaryThread(), "primary thread");
 +            if (cps.hasChunk(x, z)) {
 +                return true;
 +            }
@@ -38,12 +37,12 @@
 +            throw new RuntimeException(ex);
 +        }
 +        if (nbt != null) {
-+            NBTTagCompound level = nbt.getCompound("Level");
-+            if (level.getBoolean("TerrainPopulated")) {
++            NBTTagCompound level = nbt.getCompoundOrEmpty("Level");
++            if (level.getBooleanOr("TerrainPopulated", false)) {
 +                return true;
 +            }
 +
-+            ChunkStatus status = ChunkStatus.byName(level.getString("Status"));
++            ChunkStatus status = ChunkStatus.byName(level.getStringOr("Status", ""));
 +            if (status != null && status.isOrAfter(ChunkStatus.FEATURES)) {
 +                return true;
 +            }
@@ -56,14 +55,14 @@
 +        // CraftBukkit end
          int i = getVersion(nbttagcompound);
  
-         if (i == SharedConstants.getCurrentVersion().getDataVersion().getVersion()) {
+         if (i == SharedConstants.getCurrentVersion().dataVersion().version()) {
              return nbttagcompound;
          } else {
              try {
 +                // CraftBukkit start
 +                if (i < 1466) {
-+                    NBTTagCompound level = nbttagcompound.getCompound("Level");
-+                    if (level.getBoolean("TerrainPopulated") && !level.getBoolean("LightPopulated")) {
++                    NBTTagCompound level = nbttagcompound.getCompoundOrEmpty("Level");
++                    if (level.getBooleanOr("TerrainPopulated", false) && !level.getBooleanOr("LightPopulated", false)) {
 +                        ChunkProviderServer cps = (generatoraccess == null) ? null : ((WorldServer) generatoraccess).getChunkSource();
 +                        if (check(cps, pos.x - 1, pos.z) && check(cps, pos.x - 1, pos.z - 1) && check(cps, pos.x, pos.z - 1)) {
 +                            level.putBoolean("LightPopulated", true);
@@ -74,8 +73,8 @@
 +
                  if (i < 1493) {
                      nbttagcompound = DataFixTypes.CHUNK.update(this.fixerUpper, nbttagcompound, i, 1493);
-                     if (nbttagcompound.getCompound("Level").getBoolean("hasLegacyStructureData")) {
-@@ -70,7 +123,7 @@
+                     if ((Boolean) nbttagcompound.getCompound("Level").flatMap((nbttagcompound1) -> {
+@@ -72,7 +124,7 @@
          }
      }
  
@@ -84,7 +83,7 @@
          PersistentStructureLegacy persistentstructurelegacy = this.legacyStructureHandler;
  
          if (persistentstructurelegacy == null) {
-@@ -85,7 +138,7 @@
+@@ -87,7 +139,7 @@
          return persistentstructurelegacy;
      }
  

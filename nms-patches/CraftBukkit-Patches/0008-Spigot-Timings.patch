@@ -1,0 +1,831 @@
+From 5b1144f403019592885bb05589367a2849cb2e58 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Thu, 10 Jan 2013 00:18:11 -0500
+Subject: [PATCH] Spigot Timings
+
+Overhauls the Timings System adding performance tracking all around the Minecraft Server
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 032d0e228..86eb082da 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -203,6 +203,8 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.event.server.ServerLoadEvent;
+ // CraftBukkit end
+ 
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
++
+ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements ServerInfo, ChunkIOErrorReporter, ICommandListener {
+ 
+     public static final Logger LOGGER = LogUtils.getLogger();
+@@ -1321,6 +1323,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             }
+         }
+ 
++        SpigotTimings.serverTickTimer.startTiming(); // Spigot
+         ++this.tickCount;
+         this.tickRateManager.tick();
+         this.tickChildren(booleansupplier);
+@@ -1346,10 +1349,13 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         this.smoothedTickTimeMillis = this.smoothedTickTimeMillis * 0.8F + (float) k / (float) TimeRange.NANOSECONDS_PER_MILLISECOND * 0.19999999F;
+         this.logTickMethodTime(i);
+         gameprofilerfiller.pop();
++        SpigotTimings.serverTickTimer.stopTiming(); // Spigot
++        org.spigotmc.CustomTimingsHandler.tick(); // Spigot
+     }
+ 
+     private void autoSave() {
+         this.ticksUntilAutosave = this.autosavePeriod; // CraftBukkit
++        SpigotTimings.worldSaveTimer.startTiming(); // Spigot
+         MinecraftServer.LOGGER.debug("Autosave started");
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+@@ -1357,6 +1363,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         this.saveEverything(true, false, false);
+         gameprofilerfiller.pop();
+         MinecraftServer.LOGGER.debug("Autosave finished");
++        SpigotTimings.worldSaveTimer.stopTiming(); // Spigot
+     }
+ 
+     private void logTickMethodTime(long i) {
+@@ -1429,17 +1436,24 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         this.getPlayerList().getPlayers().forEach((entityplayer) -> {
+             entityplayer.connection.suspendFlushing();
+         });
++        SpigotTimings.schedulerTimer.startTiming(); // Spigot
+         this.server.getScheduler().mainThreadHeartbeat(); // CraftBukkit
++        SpigotTimings.schedulerTimer.stopTiming(); // Spigot
+         gameprofilerfiller.push("commandFunctions");
++        SpigotTimings.commandFunctionsTimer.startTiming(); // Spigot
+         this.getFunctions().tick();
++        SpigotTimings.commandFunctionsTimer.stopTiming(); // Spigot
+         gameprofilerfiller.popPush("levels");
+ 
+         // CraftBukkit start
+         // Run tasks that are waiting on processing
++        SpigotTimings.processQueueTimer.startTiming(); // Spigot
+         while (!processQueue.isEmpty()) {
+             processQueue.remove().run();
+         }
++        SpigotTimings.processQueueTimer.stopTiming(); // Spigot
+ 
++        SpigotTimings.timeUpdateTimer.startTiming(); // Spigot
+         // Send time updates to everyone, it will get the right time from the world the player is in.
+         if (this.tickCount % 20 == 0) {
+             for (int i = 0; i < this.getPlayerList().players.size(); ++i) {
+@@ -1447,6 +1461,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+                 entityplayer.connection.send(new PacketPlayOutUpdateTime(entityplayer.level().getGameTime(), entityplayer.getPlayerTime(), entityplayer.level().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT))); // Add support for per player time
+             }
+         }
++        SpigotTimings.timeUpdateTimer.stopTiming(); // Spigot
+ 
+         for (WorldServer worldserver : this.getAllLevels()) {
+             gameprofilerfiller.push(() -> {
+@@ -1465,7 +1480,9 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             gameprofilerfiller.push("tick");
+ 
+             try {
++                worldserver.timings.doTick.startTiming(); // Spigot
+                 worldserver.tick(booleansupplier);
++                worldserver.timings.doTick.stopTiming(); // Spigot
+             } catch (Throwable throwable) {
+                 CrashReport crashreport = CrashReport.forThrowable(throwable, "Exception ticking world");
+ 
+@@ -1478,18 +1495,24 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         }
+ 
+         gameprofilerfiller.popPush("connection");
++        SpigotTimings.connectionTimer.startTiming(); // Spigot
+         this.tickConnection();
++        SpigotTimings.connectionTimer.stopTiming(); // Spigot
+         gameprofilerfiller.popPush("players");
++        SpigotTimings.playerListTimer.startTiming(); // Spigot
+         this.playerList.tick();
++        SpigotTimings.playerListTimer.stopTiming(); // Spigot
+         if (this.tickRateManager.runsNormally()) {
+             GameTestHarnessTicker.SINGLETON.tick();
+         }
+ 
+         gameprofilerfiller.popPush("server gui refresh");
+ 
++        SpigotTimings.tickablesTimer.startTiming(); // Spigot
+         for (int i = 0; i < this.tickables.size(); ++i) {
+             ((Runnable) this.tickables.get(i)).run();
+         }
++        SpigotTimings.tickablesTimer.stopTiming(); // Spigot
+ 
+         gameprofilerfiller.popPush("send chunks");
+ 
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index 4d0dc0cb3..c8fe1455e 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -65,6 +65,7 @@ import org.apache.logging.log4j.Level;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.io.IoBuilder;
+ import org.bukkit.command.CommandSender;
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
+ import org.bukkit.craftbukkit.util.TerminalCompletionHandler;
+ import org.bukkit.craftbukkit.util.TerminalConsoleWriterThread;
+ import org.bukkit.event.server.ServerCommandEvent;
+@@ -376,6 +377,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+     }
+ 
+     public void handleConsoleInputs() {
++        SpigotTimings.serverCommandTimer.startTiming(); // Spigot
+         while (!this.consoleInput.isEmpty()) {
+             ServerCommand servercommand = (ServerCommand) this.consoleInput.remove(0);
+ 
+@@ -390,6 +392,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+             // CraftBukkit end
+         }
+ 
++        SpigotTimings.serverCommandTimer.stopTiming(); // Spigot
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
+index 6120ebd1b..196e383e6 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
+@@ -160,11 +160,13 @@ public class ChunkProviderServer extends IChunkProvider {
+             }
+ 
+             gameprofilerfiller.incrementCounter("getChunkCacheMiss");
++            level.timings.syncChunkLoadTimer.startTiming(); // Spigot
+             CompletableFuture<ChunkResult<IChunkAccess>> completablefuture = this.getChunkFutureMainThread(i, j, chunkstatus, flag);
+             ChunkProviderServer.a chunkproviderserver_a = this.mainThreadProcessor;
+ 
+             Objects.requireNonNull(completablefuture);
+             chunkproviderserver_a.managedBlock(completablefuture::isDone);
++            level.timings.syncChunkLoadTimer.stopTiming(); // Spigot
+             ChunkResult<IChunkAccess> chunkresult = (ChunkResult) completablefuture.join();
+             IChunkAccess ichunkaccess1 = chunkresult.orElse(null); // CraftBukkit - decompile error
+ 
+@@ -365,19 +367,25 @@ public class ChunkProviderServer extends IChunkProvider {
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+         gameprofilerfiller.push("purge");
++        this.level.timings.doChunkMap.startTiming(); // Spigot
+         if (this.level.tickRateManager().runsNormally() || !flag) {
+             this.ticketStorage.purgeStaleTickets(this.chunkMap);
+         }
+ 
+         this.runDistanceManagerUpdates();
++        this.level.timings.doChunkMap.stopTiming(); // Spigot
+         gameprofilerfiller.popPush("chunks");
+         if (flag) {
+             this.tickChunks();
++            this.level.timings.tracker.startTiming(); // Spigot
+             this.chunkMap.tick();
++            this.level.timings.tracker.stopTiming(); // Spigot
+         }
+ 
++        this.level.timings.doChunkUnload.startTiming(); // Spigot
+         gameprofilerfiller.popPush("unload");
+         this.chunkMap.tick(booleansupplier);
++        this.level.timings.doChunkUnload.stopTiming(); // Spigot
+         gameprofilerfiller.pop();
+         this.clearCache();
+     }
+@@ -454,7 +462,9 @@ public class ChunkProviderServer extends IChunkProvider {
+ 
+         gameprofilerfiller.popPush("tickTickingChunks");
+         this.chunkMap.forEachBlockTickingChunk((chunk1) -> {
++            this.level.timings.doTickTiles.startTiming(); // Spigot
+             this.level.tickChunk(chunk1, k);
++            this.level.timings.doTickTiles.stopTiming(); // Spigot
+         });
+         gameprofilerfiller.pop();
+         gameprofilerfiller.popPush("customSpawners");
+diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
+index 4697d3aa1..56e92fadd 100644
+--- a/src/main/java/net/minecraft/server/level/WorldServer.java
++++ b/src/main/java/net/minecraft/server/level/WorldServer.java
+@@ -180,6 +180,7 @@ import net.minecraft.world.level.levelgen.ChunkProviderFlat;
+ import net.minecraft.world.level.storage.WorldDataServer;
+ import org.bukkit.Bukkit;
+ import org.bukkit.WeatherType;
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.craftbukkit.generator.CustomWorldChunkManager;
+ import org.bukkit.craftbukkit.util.CraftLocation;
+@@ -385,6 +386,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+         }
+ 
+         gameprofilerfiller.push("tickPending");
++        timings.doTickPending.startTiming(); // Spigot
+         if (!this.isDebug() && flag) {
+             long k = this.getGameTime();
+ 
+@@ -394,6 +396,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+             this.fluidTicks.tick(k, 65536, this::tickFluid);
+             gameprofilerfiller.pop();
+         }
++        timings.doTickPending.stopTiming(); // Spigot
+ 
+         gameprofilerfiller.popPush("raid");
+         if (flag) {
+@@ -404,7 +407,9 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+         this.getChunkSource().tick(booleansupplier, true);
+         gameprofilerfiller.popPush("blockEvents");
+         if (flag) {
++            timings.doSounds.startTiming(); // Spigot
+             this.runBlockEvents();
++            timings.doSounds.stopTiming(); // Spigot
+         }
+ 
+         this.handlingTick = false;
+@@ -417,12 +422,14 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+ 
+         if (flag1 || this.emptyTime++ < 300) {
+             gameprofilerfiller.push("entities");
++            timings.tickEntities.startTiming(); // Spigot
+             if (this.dragonFight != null && flag) {
+                 gameprofilerfiller.push("dragonFight");
+                 this.dragonFight.tick();
+                 gameprofilerfiller.pop();
+             }
+ 
++            timings.entityTick.startTiming(); // Spigot
+             this.entityTickList.forEach((entity) -> {
+                 if (!entity.isRemoved()) {
+                     if (!tickratemanager.isEntityFrozen(entity)) {
+@@ -447,6 +454,8 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+                     }
+                 }
+             });
++            timings.entityTick.stopTiming(); // Spigot
++            timings.tickEntities.stopTiming(); // Spigot
+             gameprofilerfiller.pop();
+             this.tickBlockEntities();
+         }
+@@ -857,6 +866,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+     }
+ 
+     public void tickNonPassenger(Entity entity) {
++        entity.tickTimer.startTiming(); // Spigot
+         entity.setOldPosAndRot();
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+@@ -872,6 +882,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
+         for (Entity entity1 : entity.getPassengers()) {
+             this.tickPassenger(entity, entity1);
+         }
++        entity.tickTimer.stopTiming(); // Spigot
+ 
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 9ced30746..b73736621 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -359,6 +359,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+ 
+     @Override
+     public void tick() {
++        org.bukkit.craftbukkit.SpigotTimings.playerConnectionTimer.startTiming(); // Spigot
+         if (this.ackBlockChangesUpTo > -1) {
+             this.send(new ClientboundBlockChangedAckPacket(this.ackBlockChangesUpTo));
+             this.ackBlockChangesUpTo = -1;
+@@ -414,6 +415,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+             this.player.resetLastActionTime(); // CraftBukkit - SPIGOT-854
+             this.disconnect((IChatBaseComponent) IChatBaseComponent.translatable("multiplayer.disconnect.idling"));
+         }
++        org.bukkit.craftbukkit.SpigotTimings.playerConnectionTimer.stopTiming(); // Spigot
+ 
+     }
+ 
+@@ -2278,6 +2280,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+     }
+ 
+     private void handleCommand(String s) {
++        org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.startTiming(); // Spigot
+         this.LOGGER.info(this.player.getScoreboardName() + " issued server command: " + s);
+ 
+         CraftPlayer player = this.getCraftPlayer();
+@@ -2286,6 +2289,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+         this.cserver.getPluginManager().callEvent(event);
+ 
+         if (event.isCancelled()) {
++            org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
+             return;
+         }
+ 
+@@ -2297,6 +2301,8 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements
+             player.sendMessage(org.bukkit.ChatColor.RED + "An internal error occurred while attempting to perform this command");
+             java.util.logging.Logger.getLogger(PlayerConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+             return;
++        } finally {
++            org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
+         }
+     }
+     // CraftBukkit end
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 5eb61f57d..a1b0bb2a1 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -163,6 +163,7 @@ import org.bukkit.command.CommandSender;
+ import org.bukkit.entity.Hanging;
+ import org.bukkit.entity.LivingEntity;
+ import org.bukkit.entity.Vehicle;
++import org.spigotmc.CustomTimingsHandler; // Spigot
+ import org.bukkit.event.entity.EntityCombustByEntityEvent;
+ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+ import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
+@@ -360,6 +361,7 @@ public abstract class Entity implements SyncedDataHolder, INamableTileEntity, En
+     // Marks an entity, that it was removed by a plugin via Entity#remove
+     // Main use case currently is for SPIGOT-7487, preventing dropping of leash when leash is removed
+     public boolean pluginRemoved = false;
++    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getEntityTimings(this); // Spigot
+ 
+     public float getBukkitYaw() {
+         return this.yRot;
+@@ -892,6 +894,7 @@ public abstract class Entity implements SyncedDataHolder, INamableTileEntity, En
+     }
+ 
+     public void move(EnumMoveType enummovetype, Vec3D vec3d) {
++        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
+         if (this.noPhysics) {
+             this.setPos(this.getX() + vec3d.x, this.getY() + vec3d.y, this.getZ() + vec3d.z);
+         } else {
+@@ -1009,6 +1012,7 @@ public abstract class Entity implements SyncedDataHolder, INamableTileEntity, En
+                 gameprofilerfiller.pop();
+             }
+         }
++        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
+     }
+ 
+     private void applyMovementEmissionAndPlaySound(Entity.MovementEmission entity_movementemission, Vec3D vec3d, BlockPosition blockposition, IBlockData iblockdata) {
+diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+index e2ee7ca32..00461fce3 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
++++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+@@ -167,6 +167,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
+ import org.bukkit.event.player.PlayerItemConsumeEvent;
+ // CraftBukkit end
+ 
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
++
+ public abstract class EntityLiving extends Entity implements Attackable, WaypointTransmitter {
+ 
+     private static final Logger LOGGER = LogUtils.getLogger();
+@@ -3223,6 +3225,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+ 
+     @Override
+     public void tick() {
++        SpigotTimings.timerEntityBaseTick.startTiming(); // Spigot
+         super.tick();
+         this.updatingUsingItem();
+         this.updateSwimAmount();
+@@ -3264,7 +3267,9 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+         }
+ 
+         if (!this.isRemoved()) {
++            SpigotTimings.timerEntityBaseTick.stopTiming(); // Spigot
+             this.aiStep();
++            SpigotTimings.timerEntityTickRest.startTiming(); // Spigot
+         }
+ 
+         double d0 = this.getX() - this.xo;
+@@ -3339,6 +3344,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+ 
+         this.refreshDirtyAttributes();
+         this.elytraAnimationState.tick();
++        SpigotTimings.timerEntityTickRest.stopTiming(); // Spigot
+     }
+ 
+     public void detectEquipmentUpdatesPublic() { // CraftBukkit
+@@ -3496,6 +3502,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+         gameprofilerfiller.push("ai");
++        SpigotTimings.timerEntityAI.startTiming(); // Spigot
+         this.applyInput();
+         if (this.isImmobile()) {
+             this.jumping = false;
+@@ -3506,6 +3513,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+             this.serverAiStep();
+             gameprofilerfiller.pop();
+         }
++        SpigotTimings.timerEntityAI.stopTiming(); // Spigot
+ 
+         gameprofilerfiller.pop();
+         gameprofilerfiller.push("jump");
+@@ -3550,6 +3558,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+             this.resetFallDistance();
+         }
+ 
++        SpigotTimings.timerEntityAIMove.startTiming(); // Spigot
+         label124:
+         {
+             EntityLiving entityliving = this.getControllingPassenger();
+@@ -3565,6 +3574,7 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+                 this.travel(vec3d1);
+             }
+         }
++        SpigotTimings.timerEntityAIMove.stopTiming(); // Spigot
+ 
+         if (!this.level().isClientSide() || this.isLocalInstanceAuthoritative()) {
+             this.applyEffectsFromBlocks();
+@@ -3598,7 +3608,9 @@ public abstract class EntityLiving extends Entity implements Attackable, Waypoin
+             this.checkAutoSpinAttack(axisalignedbb, this.getBoundingBox());
+         }
+ 
++        SpigotTimings.timerEntityAICollision.startTiming(); // Spigot
+         this.pushEntities();
++        SpigotTimings.timerEntityAICollision.stopTiming(); // Spigot
+         gameprofilerfiller.pop();
+         world = this.level();
+         if (world instanceof WorldServer worldserver1) {
+diff --git a/src/main/java/net/minecraft/world/level/SpawnerCreature.java b/src/main/java/net/minecraft/world/level/SpawnerCreature.java
+index 1dc65bcb3..d93940fb5 100644
+--- a/src/main/java/net/minecraft/world/level/SpawnerCreature.java
++++ b/src/main/java/net/minecraft/world/level/SpawnerCreature.java
+@@ -144,6 +144,7 @@ public final class SpawnerCreature {
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+         gameprofilerfiller.push("spawner");
++        worldserver.timings.mobSpawn.startTiming(); // Spigot
+ 
+         for (EnumCreatureType enumcreaturetype : list) {
+             if (spawnercreature_d.canSpawnForCategoryLocal(enumcreaturetype, chunk.getPos())) {
+@@ -155,6 +156,7 @@ public final class SpawnerCreature {
+             }
+         }
+ 
++        worldserver.timings.mobSpawn.stopTiming(); // Spigot
+         gameprofilerfiller.pop();
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/World.java b/src/main/java/net/minecraft/world/level/World.java
+index 26d5241d6..6cba4e205 100644
+--- a/src/main/java/net/minecraft/world/level/World.java
++++ b/src/main/java/net/minecraft/world/level/World.java
+@@ -100,6 +100,7 @@ import net.minecraft.world.level.dimension.WorldDimension;
+ import org.bukkit.Bukkit;
+ import org.bukkit.craftbukkit.CraftServer;
+ import org.bukkit.craftbukkit.CraftWorld;
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
+ import org.bukkit.craftbukkit.block.CapturedBlockState;
+ import org.bukkit.craftbukkit.block.data.CraftBlockData;
+ import org.bukkit.craftbukkit.util.CraftSpawnCategory;
+@@ -162,6 +163,8 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
+     public boolean populating;
+     public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
+ 
++    public final SpigotTimings.WorldTimingsHandler timings; // Spigot
++
+     public CraftWorld getWorld() {
+         return this.world;
+     }
+@@ -249,6 +252,7 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
+             public void onBorderSetDamageSafeZOne(WorldBorder worldborder, double d0) {}
+         });
+         // CraftBukkit end
++        timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
+     }
+ 
+     @Override
+@@ -630,12 +634,15 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+         gameprofilerfiller.push("blockEntities");
++        timings.tileEntityPending.startTiming(); // Spigot
+         this.tickingBlockEntities = true;
+         if (!this.pendingBlockEntityTickers.isEmpty()) {
+             this.blockEntityTickers.addAll(this.pendingBlockEntityTickers);
+             this.pendingBlockEntityTickers.clear();
+         }
++        timings.tileEntityPending.stopTiming(); // Spigot
+ 
++        timings.tileEntityTick.startTiming(); // Spigot
+         Iterator<TickingBlockEntity> iterator = this.blockEntityTickers.iterator();
+         boolean flag = this.tickRateManager().runsNormally();
+ 
+@@ -649,13 +656,16 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
+             }
+         }
+ 
++        timings.tileEntityTick.stopTiming(); // Spigot
+         this.tickingBlockEntities = false;
+         gameprofilerfiller.pop();
+     }
+ 
+     public <T extends Entity> void guardEntityTick(Consumer<T> consumer, T t0) {
+         try {
++            SpigotTimings.tickEntityTimer.startTiming(); // Spigot
+             consumer.accept(t0);
++            SpigotTimings.tickEntityTimer.stopTiming(); // Spigot
+         } catch (Throwable throwable) {
+             CrashReport crashreport = CrashReport.forThrowable(throwable, "Ticking entity");
+             CrashReportSystemDetails crashreportsystemdetails = crashreport.addCategory("Entity being ticked");
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntity.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntity.java
+index 20c09a7fa..c690b9e52 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/TileEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntity.java
+@@ -41,8 +41,11 @@ import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
+ import org.bukkit.inventory.InventoryHolder;
+ // CraftBukkit end
+ 
++import org.spigotmc.CustomTimingsHandler; // Spigot
++
+ public abstract class TileEntity {
+ 
++    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getTileEntityTimings(this); // Spigot
+     // CraftBukkit start - data containers
+     private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
+     public CraftPersistentDataContainer persistentDataContainer;
+diff --git a/src/main/java/net/minecraft/world/level/chunk/Chunk.java b/src/main/java/net/minecraft/world/level/chunk/Chunk.java
+index d821b57b8..ab0477d02 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/Chunk.java
++++ b/src/main/java/net/minecraft/world/level/chunk/Chunk.java
+@@ -873,6 +873,7 @@ public class Chunk extends IChunkAccess {
+                         GameProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+                         gameprofilerfiller.push(this::getType);
++                        this.blockEntity.tickTimer.startTiming(); // Spigot
+                         IBlockData iblockdata = Chunk.this.getBlockState(blockposition);
+ 
+                         if (this.blockEntity.getType().isValid(iblockdata)) {
+@@ -890,6 +891,10 @@ public class Chunk extends IChunkAccess {
+ 
+                         this.blockEntity.fillCrashReportCategory(crashreportsystemdetails);
+                         throw new ReportedException(crashreport);
++                        // Spigot start
++                    } finally {
++                        this.blockEntity.tickTimer.stopTiming();
++                        // Spigot end
+                     }
+                 }
+             }
+diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/SerializableChunkData.java b/src/main/java/net/minecraft/world/level/chunk/storage/SerializableChunkData.java
+index 9e7d6a90b..8eb5740bb 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/storage/SerializableChunkData.java
++++ b/src/main/java/net/minecraft/world/level/chunk/storage/SerializableChunkData.java
+@@ -481,12 +481,15 @@ public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoo
+     @Nullable
+     private static Chunk.c postLoadChunk(WorldServer worldserver, List<NBTTagCompound> list, List<NBTTagCompound> list1) {
+         return list.isEmpty() && list1.isEmpty() ? null : (chunk) -> {
++            worldserver.timings.syncChunkLoadEntitiesTimer.startTiming(); // Spigot
+             if (!list.isEmpty()) {
+                 try (ProblemReporter.j problemreporter_j = new ProblemReporter.j(chunk.problemPath(), SerializableChunkData.LOGGER)) {
+                     worldserver.addLegacyChunkEntities(EntityTypes.loadEntitiesRecursive(TagValueInput.create(problemreporter_j, worldserver.registryAccess(), list), worldserver, EntitySpawnReason.LOAD));
+                 }
+             }
++            worldserver.timings.syncChunkLoadEntitiesTimer.stopTiming(); // Spigot
+ 
++            worldserver.timings.syncChunkLoadTileEntitiesTimer.startTiming(); // Spigot
+             for (NBTTagCompound nbttagcompound : list1) {
+                 boolean flag = nbttagcompound.getBooleanOr("keepPacked", false);
+ 
+@@ -501,6 +504,7 @@ public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoo
+                     }
+                 }
+             }
++            worldserver.timings.syncChunkLoadTileEntitiesTimer.stopTiming(); // Spigot
+ 
+         };
+     }
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index c3005494c..2b245f067 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -2575,6 +2575,11 @@ public final class CraftServer implements Server {
+     private final org.bukkit.Server.Spigot spigot = new org.bukkit.Server.Spigot()
+     {
+ 
++        @Override
++        public YamlConfiguration getConfig()
++        {
++            return org.spigotmc.SpigotConfig.config;
++        }
+     };
+ 
+     public org.bukkit.Server.Spigot spigot()
+diff --git a/src/main/java/org/bukkit/craftbukkit/SpigotTimings.java b/src/main/java/org/bukkit/craftbukkit/SpigotTimings.java
+new file mode 100644
+index 000000000..aff7b6b43
+--- /dev/null
++++ b/src/main/java/org/bukkit/craftbukkit/SpigotTimings.java
+@@ -0,0 +1,160 @@
++package org.bukkit.craftbukkit;
++
++import java.util.HashMap;
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.level.World;
++import net.minecraft.world.level.block.entity.TileEntity;
++import net.minecraft.world.level.storage.WorldDataServer;
++import org.bukkit.craftbukkit.scheduler.CraftTask;
++import org.bukkit.plugin.java.JavaPluginLoader;
++import org.bukkit.scheduler.BukkitTask;
++import org.spigotmc.CustomTimingsHandler;
++
++public class SpigotTimings {
++
++    public static final CustomTimingsHandler serverTickTimer = new CustomTimingsHandler("** Full Server Tick");
++    public static final CustomTimingsHandler playerListTimer = new CustomTimingsHandler("Player List");
++    public static final CustomTimingsHandler commandFunctionsTimer = new CustomTimingsHandler("Command Functions");
++    public static final CustomTimingsHandler connectionTimer = new CustomTimingsHandler("Connection Handler");
++    public static final CustomTimingsHandler playerConnectionTimer = new CustomTimingsHandler("** PlayerConnection");
++    public static final CustomTimingsHandler tickablesTimer = new CustomTimingsHandler("Tickables");
++    public static final CustomTimingsHandler schedulerTimer = new CustomTimingsHandler("Scheduler");
++    public static final CustomTimingsHandler timeUpdateTimer = new CustomTimingsHandler("Time Update");
++    public static final CustomTimingsHandler serverCommandTimer = new CustomTimingsHandler("Server Command");
++    public static final CustomTimingsHandler worldSaveTimer = new CustomTimingsHandler("World Save");
++
++    public static final CustomTimingsHandler entityMoveTimer = new CustomTimingsHandler("** entityMove");
++    public static final CustomTimingsHandler tickEntityTimer = new CustomTimingsHandler("** tickEntity");
++    public static final CustomTimingsHandler activatedEntityTimer = new CustomTimingsHandler("** activatedTickEntity");
++    public static final CustomTimingsHandler tickTileEntityTimer = new CustomTimingsHandler("** tickTileEntity");
++
++    public static final CustomTimingsHandler timerEntityBaseTick = new CustomTimingsHandler("** livingEntityBaseTick");
++    public static final CustomTimingsHandler timerEntityAI = new CustomTimingsHandler("** livingEntityAI");
++    public static final CustomTimingsHandler timerEntityAICollision = new CustomTimingsHandler("** livingEntityAICollision");
++    public static final CustomTimingsHandler timerEntityAIMove = new CustomTimingsHandler("** livingEntityAIMove");
++    public static final CustomTimingsHandler timerEntityTickRest = new CustomTimingsHandler("** livingEntityTickRest");
++
++    public static final CustomTimingsHandler processQueueTimer = new CustomTimingsHandler("processQueue");
++    public static final CustomTimingsHandler schedulerSyncTimer = new CustomTimingsHandler("** Scheduler - Sync Tasks", JavaPluginLoader.pluginParentTimer);
++
++    public static final CustomTimingsHandler playerCommandTimer = new CustomTimingsHandler("** playerCommand");
++
++    public static final HashMap<String, CustomTimingsHandler> entityTypeTimingMap = new HashMap<String, CustomTimingsHandler>();
++    public static final HashMap<String, CustomTimingsHandler> tileEntityTypeTimingMap = new HashMap<String, CustomTimingsHandler>();
++    public static final HashMap<String, CustomTimingsHandler> pluginTaskTimingMap = new HashMap<String, CustomTimingsHandler>();
++
++    /**
++     * Gets a timer associated with a plugins tasks.
++     * @param task
++     * @param period
++     * @return
++     */
++    public static CustomTimingsHandler getPluginTaskTimings(BukkitTask task, long period) {
++        if (!task.isSync()) {
++            return null;
++        }
++        String plugin;
++        final CraftTask ctask = (CraftTask) task;
++
++        if (task.getOwner() != null) {
++            plugin = task.getOwner().getDescription().getFullName();
++        } else {
++            plugin = "Unknown";
++        }
++        String taskname = ctask.getTaskName();
++
++        String name = "Task: " + plugin + " Runnable: " + taskname;
++        if (period > 0) {
++            name += "(interval:" + period + ")";
++        } else {
++            name += "(Single)";
++        }
++        CustomTimingsHandler result = pluginTaskTimingMap.get(name);
++        if (result == null) {
++            result = new CustomTimingsHandler(name, SpigotTimings.schedulerSyncTimer);
++            pluginTaskTimingMap.put(name, result);
++        }
++        return result;
++    }
++
++    /**
++     * Get a named timer for the specified entity type to track type specific timings.
++     * @param entity
++     * @return
++     */
++    public static CustomTimingsHandler getEntityTimings(Entity entity) {
++        String entityType = entity.getClass().getName();
++        CustomTimingsHandler result = entityTypeTimingMap.get(entityType);
++        if (result == null) {
++            result = new CustomTimingsHandler("** tickEntity - " + entity.getClass().getSimpleName(), activatedEntityTimer);
++            entityTypeTimingMap.put(entityType, result);
++        }
++        return result;
++    }
++
++    /**
++     * Get a named timer for the specified tile entity type to track type specific timings.
++     * @param entity
++     * @return
++     */
++    public static CustomTimingsHandler getTileEntityTimings(TileEntity entity) {
++        String entityType = entity.getClass().getName();
++        CustomTimingsHandler result = tileEntityTypeTimingMap.get(entityType);
++        if (result == null) {
++            result = new CustomTimingsHandler("** tickTileEntity - " + entity.getClass().getSimpleName(), tickTileEntityTimer);
++            tileEntityTypeTimingMap.put(entityType, result);
++        }
++        return result;
++    }
++
++    /**
++     * Set of timers per world, to track world specific timings.
++     */
++    public static class WorldTimingsHandler {
++        public final CustomTimingsHandler mobSpawn;
++        public final CustomTimingsHandler doChunkUnload;
++        public final CustomTimingsHandler doTickPending;
++        public final CustomTimingsHandler doTickTiles;
++        public final CustomTimingsHandler doChunkMap;
++        public final CustomTimingsHandler doSounds;
++        public final CustomTimingsHandler entityTick;
++        public final CustomTimingsHandler tileEntityTick;
++        public final CustomTimingsHandler tileEntityPending;
++        public final CustomTimingsHandler tracker;
++        public final CustomTimingsHandler doTick;
++        public final CustomTimingsHandler tickEntities;
++
++        public final CustomTimingsHandler syncChunkLoadTimer;
++        public final CustomTimingsHandler syncChunkLoadStructuresTimer;
++        public final CustomTimingsHandler syncChunkLoadEntitiesTimer;
++        public final CustomTimingsHandler syncChunkLoadTileEntitiesTimer;
++        public final CustomTimingsHandler syncChunkLoadTileTicksTimer;
++        public final CustomTimingsHandler syncChunkLoadPostTimer;
++
++        public WorldTimingsHandler(World server) {
++            String name = ((WorldDataServer) server.levelData).getLevelName() + " - ";
++
++            mobSpawn = new CustomTimingsHandler("** " + name + "mobSpawn");
++            doChunkUnload = new CustomTimingsHandler("** " + name + "doChunkUnload");
++            doTickPending = new CustomTimingsHandler("** " + name + "doTickPending");
++            doTickTiles = new CustomTimingsHandler("** " + name + "doTickTiles");
++            doChunkMap = new CustomTimingsHandler("** " + name + "doChunkMap");
++            doSounds = new CustomTimingsHandler("** " + name + "doSounds");
++            entityTick = new CustomTimingsHandler("** " + name + "entityTick");
++            tileEntityTick = new CustomTimingsHandler("** " + name + "tileEntityTick");
++            tileEntityPending = new CustomTimingsHandler("** " + name + "tileEntityPending");
++
++            syncChunkLoadTimer = new CustomTimingsHandler("** " + name + "syncChunkLoad");
++            syncChunkLoadStructuresTimer = new CustomTimingsHandler("** " + name + "chunkLoad - Structures");
++            syncChunkLoadEntitiesTimer = new CustomTimingsHandler("** " + name + "chunkLoad - Entities");
++            syncChunkLoadTileEntitiesTimer = new CustomTimingsHandler("** " + name + "chunkLoad - TileEntities");
++            syncChunkLoadTileTicksTimer = new CustomTimingsHandler("** " + name + "chunkLoad - TileTicks");
++            syncChunkLoadPostTimer = new CustomTimingsHandler("** " + name + "chunkLoad - Post");
++
++
++            tracker = new CustomTimingsHandler(name + "tracker");
++            doTick = new CustomTimingsHandler(name + "doTick");
++            tickEntities = new CustomTimingsHandler(name + "tickEntities");
++        }
++    }
++}
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+index 83c8e0715..323d57e01 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+@@ -411,7 +411,9 @@ public class CraftScheduler implements BukkitScheduler {
+             if (task.isSync()) {
+                 currentTask = task;
+                 try {
++                    task.timings.startTiming(); // Spigot
+                     task.run();
++                    task.timings.stopTiming(); // Spigot
+                 } catch (final Throwable throwable) {
+                     task.getOwner().getLogger().log(
+                             Level.WARNING,
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftTask.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftTask.java
+index c885bc744..70794669f 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftTask.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftTask.java
+@@ -5,7 +5,10 @@ import org.bukkit.Bukkit;
+ import org.bukkit.plugin.Plugin;
+ import org.bukkit.scheduler.BukkitTask;
+ 
+-class CraftTask implements BukkitTask, Runnable {
++import org.bukkit.craftbukkit.SpigotTimings; // Spigot
++import org.spigotmc.CustomTimingsHandler; // Spigot
++
++public class CraftTask implements BukkitTask, Runnable { // Spigot
+ 
+     private volatile CraftTask next = null;
+     public static final int ERROR = 0;
+@@ -29,6 +32,7 @@ class CraftTask implements BukkitTask, Runnable {
+     private final int id;
+     private final long createdAt = System.nanoTime();
+ 
++    final CustomTimingsHandler timings; // Spigot
+     CraftTask() {
+         this(null, null, CraftTask.NO_REPEATING, CraftTask.NO_REPEATING);
+     }
+@@ -54,6 +58,7 @@ class CraftTask implements BukkitTask, Runnable {
+         }
+         this.id = id;
+         this.period = period;
++        this.timings = this.isSync() ? SpigotTimings.getPluginTaskTimings(this, period) : null; // Spigot
+     }
+ 
+     @Override
+@@ -131,4 +136,10 @@ class CraftTask implements BukkitTask, Runnable {
+         setPeriod(CraftTask.CANCEL);
+         return true;
+     }
++
++    // Spigot start
++    public String getTaskName() {
++        return (getTaskClass() == null) ? "Unknown" : getTaskClass().getName();
++    }
++    // Spigot end
+ }
+-- 
+2.49.0
+

@@ -10,7 +10,7 @@
 +
 +    public EntitySelector parse(StringReader stringreader, boolean flag, boolean overridePermissions) throws CommandSyntaxException {
 +        // CraftBukkit end
-         boolean flag1 = false;
+         int i = 0;
          ArgumentParserSelector argumentparserselector = new ArgumentParserSelector(stringreader, flag);
 -        EntitySelector entityselector = argumentparserselector.parse();
 +        EntitySelector entityselector = argumentparserselector.parse(overridePermissions); // CraftBukkit

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/InventoryCraftResult.java
 +++ b/net/minecraft/world/inventory/InventoryCraftResult.java
-@@ -9,12 +9,51 @@
+@@ -8,12 +8,51 @@
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.crafting.RecipeHolder;
  
@@ -50,5 +50,5 @@
 +    // CraftBukkit end
 +
      public InventoryCraftResult() {
-         this.itemStacks = NonNullList.withSize(1, ItemStack.EMPTY);
+         this.itemStacks = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
      }

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/IProjectile.java
 +++ b/net/minecraft/world/entity/projectile/IProjectile.java
-@@ -30,6 +30,10 @@
+@@ -36,6 +36,10 @@
  import net.minecraft.world.phys.MovingObjectPositionEntity;
  import net.minecraft.world.phys.Vec3D;
  
@@ -10,8 +10,8 @@
 +
  public abstract class IProjectile extends Entity implements TraceableEntity {
  
-     @Nullable
-@@ -41,6 +45,10 @@
+     private static final boolean DEFAULT_LEFT_OWNER = false;
+@@ -47,6 +51,10 @@
      @Nullable
      private Entity lastDeflectedBy;
  
@@ -22,16 +22,25 @@
      IProjectile(EntityTypes<? extends IProjectile> entitytypes, World world) {
          super(entitytypes, world);
      }
-@@ -50,6 +58,7 @@
-             this.ownerUUID = entity.getUUID();
-             this.cachedOwner = entity;
-         }
-+        this.projectileSource = (entity != null && entity.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entity.getBukkitEntity() : null; // CraftBukkit
+@@ -57,6 +65,7 @@
  
+     public void setOwner(@Nullable Entity entity) {
+         this.setOwner(entity != null ? new EntityReference(entity) : null);
++        this.projectileSource = (entity != null && entity.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entity.getBukkitEntity() : null; // CraftBukkit
      }
  
-@@ -177,6 +186,17 @@
-         this.setDeltaMovement(this.getDeltaMovement().add(vec3d.x, entity.onGround() ? 0.0D : vec3d.y, vec3d.z));
+     @Nullable
+@@ -196,7 +205,7 @@
+ 
+     public static <T extends IProjectile> T spawnProjectile(T t0, WorldServer worldserver, ItemStack itemstack, Consumer<T> consumer) {
+         consumer.accept(t0);
+-        worldserver.addFreshEntity(t0);
++        if (worldserver.addFreshEntity(t0)) // CraftBukkit
+         t0.applyOnProjectileSpawned(worldserver, itemstack);
+         return t0;
+     }
+@@ -215,6 +224,17 @@
+ 
      }
  
 +    // CraftBukkit start - call projectile hit event
@@ -48,7 +57,7 @@
      protected ProjectileDeflection hitTargetOrDeflectSelf(MovingObjectPosition movingobjectposition) {
          if (movingobjectposition.getType() == MovingObjectPosition.EnumMovingObjectType.ENTITY) {
              MovingObjectPositionEntity movingobjectpositionentity = (MovingObjectPositionEntity) movingobjectposition;
-@@ -237,6 +257,11 @@
+@@ -292,6 +312,11 @@
      protected void onHitEntity(MovingObjectPositionEntity movingobjectpositionentity) {}
  
      protected void onHitBlock(MovingObjectPositionBlock movingobjectpositionblock) {

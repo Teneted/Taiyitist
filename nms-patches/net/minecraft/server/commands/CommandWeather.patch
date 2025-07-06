@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandWeather.java
 +++ b/net/minecraft/server/commands/CommandWeather.java
-@@ -34,11 +34,11 @@
+@@ -32,11 +32,11 @@
      }
  
      private static int getDuration(CommandListenerWrapper commandlistenerwrapper, int i, IntProvider intprovider) {
@@ -14,7 +14,7 @@
          commandlistenerwrapper.sendSuccess(() -> {
              return IChatBaseComponent.translatable("commands.weather.set.clear");
          }, true);
-@@ -46,7 +46,7 @@
+@@ -44,7 +44,7 @@
      }
  
      private static int setRain(CommandListenerWrapper commandlistenerwrapper, int i) {
@@ -23,7 +23,7 @@
          commandlistenerwrapper.sendSuccess(() -> {
              return IChatBaseComponent.translatable("commands.weather.set.rain");
          }, true);
-@@ -54,7 +54,7 @@
+@@ -52,7 +52,7 @@
      }
  
      private static int setThunder(CommandListenerWrapper commandlistenerwrapper, int i) {

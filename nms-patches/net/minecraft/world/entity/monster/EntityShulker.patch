@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntityShulker.java
 +++ b/net/minecraft/world/entity/monster/EntityShulker.java
-@@ -58,6 +58,12 @@
+@@ -60,6 +60,12 @@
  import net.minecraft.world.phys.Vec3D;
  import org.joml.Vector3f;
  
@@ -10,10 +10,10 @@
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +// CraftBukkit end
 +
- public class EntityShulker extends EntityGolem implements VariantHolder<Optional<EnumColor>>, IMonster {
+ public class EntityShulker extends EntityGolem implements IMonster {
  
      private static final MinecraftKey COVERED_ARMOR_MODIFIER_ID = MinecraftKey.withDefaultNamespace("covered");
-@@ -401,6 +407,14 @@
+@@ -392,6 +398,14 @@
                      EnumDirection enumdirection = this.findAttachableSurface(blockposition1);
  
                      if (enumdirection != null) {
@@ -28,10 +28,10 @@
                          this.unRide();
                          this.setAttachFace(enumdirection);
                          this.playSound(SoundEffects.SHULKER_TELEPORT, 1.0F, 1.0F);
-@@ -471,7 +485,7 @@
+@@ -460,7 +474,7 @@
                  if (entityshulker != null) {
                      entityshulker.setVariant(this.getVariant());
-                     entityshulker.moveTo(vec3d);
+                     entityshulker.snapTo(vec3d);
 -                    this.level().addFreshEntity(entityshulker);
 +                    this.level().addFreshEntity(entityshulker, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // CraftBukkit - the mysteries of life
                  }

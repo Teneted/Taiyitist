@@ -1,0 +1,44 @@
+From c6271bee2f0afce59189b3f314aab4430f6690d1 Mon Sep 17 00:00:00 2001
+From: Suddenly <suddenly@suddenly.coffee>
+Date: Tue, 8 Jul 2014 09:44:18 +1000
+Subject: [PATCH] Safer JSON Loading
+
+
+diff --git a/src/main/java/net/minecraft/server/players/JsonList.java b/src/main/java/net/minecraft/server/players/JsonList.java
+index f91786831..6a59ecafb 100644
+--- a/src/main/java/net/minecraft/server/players/JsonList.java
++++ b/src/main/java/net/minecraft/server/players/JsonList.java
+@@ -145,6 +145,14 @@ public abstract class JsonList<K, V extends JsonListEntry<K>> {
+                         this.map.put(this.getKeyForUser(jsonlistentry.getUser()), (V) jsonlistentry); // CraftBukkit - decompile error
+                     }
+                 }
++            // Spigot Start
++            } catch ( com.google.gson.JsonParseException | NullPointerException ex )
++            {
++                org.bukkit.Bukkit.getLogger().log( java.util.logging.Level.WARNING, "Unable to read file " + this.file + ", backing it up to {0}.backup and creating new copy.", ex );
++                File backup = new File( this.file + ".backup" );
++                this.file.renameTo( backup );
++                this.file.delete();
++                // Spigot End
+             }
+ 
+         }
+diff --git a/src/main/java/net/minecraft/server/players/UserCache.java b/src/main/java/net/minecraft/server/players/UserCache.java
+index 9947d1a02..29e245d14 100644
+--- a/src/main/java/net/minecraft/server/players/UserCache.java
++++ b/src/main/java/net/minecraft/server/players/UserCache.java
+@@ -205,6 +205,11 @@ public class UserCache {
+             });
+         } catch (FileNotFoundException filenotfoundexception) {
+             ;
++        // Spigot Start
++        } catch (com.google.gson.JsonSyntaxException | NullPointerException ex) {
++            UserCache.LOGGER.warn( "Usercache.json is corrupted or has bad formatting. Deleting it to prevent further issues." );
++            this.file.delete();
++        // Spigot End
+         } catch (JsonParseException | IOException ioexception) {
+             UserCache.LOGGER.warn("Failed to load profile cache {}", this.file, ioexception);
+         }
+-- 
+2.49.0
+

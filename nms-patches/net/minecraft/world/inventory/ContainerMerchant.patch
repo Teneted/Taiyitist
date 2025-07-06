@@ -34,10 +34,18 @@
          this.addSlot(new Slot(this.tradeContainer, 1, 162, 37));
          this.addSlot(new SlotMerchantResult(playerinventory.player, imerchant, this.tradeContainer, 2, 220, 37));
 +        this.player = playerinventory; // CraftBukkit - save player
+         this.addStandardInventorySlots(playerinventory, 108, 84);
+     }
  
-         int j;
+@@ -62,6 +78,7 @@
  
-@@ -155,7 +171,7 @@
+     @Override
+     public boolean stillValid(EntityHuman entityhuman) {
++        if (!checkReachable) return true; // CraftBukkit - checkReachable
+         return this.trader.stillValid(entityhuman);
+     }
+ 
+@@ -143,7 +160,7 @@
      }
  
      private void playTradeSound() {

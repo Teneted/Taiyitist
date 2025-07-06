@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/players/SleepStatus.java
 +++ b/net/minecraft/server/players/SleepStatus.java
-@@ -18,9 +18,12 @@
+@@ -17,9 +17,12 @@
      }
  
      public boolean areEnoughDeepSleeping(int i, List<EntityPlayer> list) {
@@ -15,15 +15,13 @@
      }
  
      public int sleepersNeeded(int i) {
-@@ -42,18 +45,24 @@
+@@ -40,16 +43,22 @@
+ 
          this.activePlayers = 0;
          this.sleepingPlayers = 0;
-         Iterator iterator = list.iterator();
 +        boolean anySleep = false; // CraftBukkit
  
-         while (iterator.hasNext()) {
-             EntityPlayer entityplayer = (EntityPlayer) iterator.next();
- 
+         for (EntityPlayer entityplayer : list) {
              if (!entityplayer.isSpectator()) {
                  ++this.activePlayers;
 -                if (entityplayer.isSleeping()) {

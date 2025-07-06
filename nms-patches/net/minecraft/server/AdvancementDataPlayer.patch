@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/AdvancementDataPlayer.java
 +++ b/net/minecraft/server/AdvancementDataPlayer.java
-@@ -196,6 +196,7 @@
+@@ -154,6 +154,7 @@
              AdvancementHolder advancementholder = advancementdataworld.get(minecraftkey);
  
              if (advancementholder == null) {
@@ -8,7 +8,7 @@
                  AdvancementDataPlayer.LOGGER.warn("Ignored advancement '{}' in progress file {} - it doesn't exist anymore?", minecraftkey, this.playerSavePath);
              } else {
                  this.startProgress(advancementholder, advancementprogress);
-@@ -227,6 +228,7 @@
+@@ -185,6 +186,7 @@
              this.progressChanged.add(advancementholder);
              flag = true;
              if (!flag1 && advancementprogress.isDone()) {

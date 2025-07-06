@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/SculkVeinBlock.java
 +++ b/net/minecraft/world/level/block/SculkVeinBlock.java
-@@ -108,10 +108,11 @@
+@@ -92,10 +92,11 @@
  
      @Override
      public int attemptUseCharge(SculkSpreader.a sculkspreader_a, GeneratorAccess generatoraccess, BlockPosition blockposition, RandomSource randomsource, SculkSpreader sculkspreader, boolean flag) {
@@ -13,8 +13,8 @@
 +    private boolean attemptPlaceSculk(SculkSpreader sculkspreader, GeneratorAccess generatoraccess, BlockPosition blockposition, RandomSource randomsource, BlockPosition sourceBlock) { // CraftBukkit
          IBlockData iblockdata = generatoraccess.getBlockState(blockposition);
          TagKey<Block> tagkey = sculkspreader.replaceableBlocks();
-         Iterator iterator = EnumDirection.allShuffled(randomsource).iterator();
-@@ -126,7 +127,11 @@
+ 
+@@ -107,7 +108,11 @@
                  if (iblockdata1.is(tagkey)) {
                      IBlockData iblockdata2 = Blocks.SCULK.defaultBlockState();
  
@@ -25,5 +25,5 @@
 +                    }
 +                    // CraftBukkit end
                      Block.pushEntitiesUp(iblockdata1, iblockdata2, generatoraccess, blockposition1);
-                     generatoraccess.playSound((EntityHuman) null, blockposition1, SoundEffects.SCULK_BLOCK_SPREAD, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                     generatoraccess.playSound((Entity) null, blockposition1, SoundEffects.SCULK_BLOCK_SPREAD, SoundCategory.BLOCKS, 1.0F, 1.0F);
                      this.veinSpreader.spreadAll(iblockdata2, generatoraccess, blockposition1, sculkspreader.isWorldGeneration());

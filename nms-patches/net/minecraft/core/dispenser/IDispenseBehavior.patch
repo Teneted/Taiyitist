@@ -1,6 +1,6 @@
 --- a/net/minecraft/core/dispenser/IDispenseBehavior.java
 +++ b/net/minecraft/core/dispenser/IDispenseBehavior.java
-@@ -67,6 +67,22 @@
+@@ -64,6 +64,22 @@
  import net.minecraft.world.phys.MovingObjectPositionBlock;
  import org.slf4j.Logger;
  
@@ -23,9 +23,9 @@
  public interface IDispenseBehavior {
  
      Logger LOGGER = LogUtils.getLogger();
-@@ -94,14 +110,42 @@
+@@ -93,14 +109,42 @@
                  EnumDirection enumdirection = (EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING);
-                 EntityTypes<?> entitytypes = ((ItemMonsterEgg) itemstack.getItem()).getType(itemstack);
+                 EntityTypes<?> entitytypes = ((ItemMonsterEgg) itemstack.getItem()).getType(sourceblock.level().registryAccess(), itemstack);
  
 +                // CraftBukkit start
 +                WorldServer worldserver = sourceblock.level();
@@ -55,7 +55,7 @@
 +                }
 +
                  try {
-                     entitytypes.spawn(sourceblock.level(), itemstack, (EntityHuman) null, sourceblock.pos().relative(enumdirection), EnumMobSpawn.DISPENSER, enumdirection != EnumDirection.UP, false);
+                     entitytypes.spawn(sourceblock.level(), itemstack, (EntityLiving) null, sourceblock.pos().relative(enumdirection), EntitySpawnReason.DISPENSER, enumdirection != EnumDirection.UP, false);
                  } catch (Exception exception) {
 -                    null.LOGGER.error("Error while dispensing spawn egg from dispenser at {}", sourceblock.pos(), exception);
 +                    LOGGER.error("Error while dispensing spawn egg from dispenser at {}", sourceblock.pos(), exception); // CraftBukkit - decompile error
@@ -68,7 +68,7 @@
                  sourceblock.level().gameEvent((Entity) null, (Holder) GameEvent.ENTITY_PLACE, sourceblock.pos());
                  return itemstack;
              }
-@@ -120,13 +164,41 @@
+@@ -116,13 +160,41 @@
                  EnumDirection enumdirection = (EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING);
                  BlockPosition blockposition = sourceblock.pos().relative(enumdirection);
                  WorldServer worldserver = sourceblock.level();
@@ -100,10 +100,10 @@
 +                }
 +                // CraftBukkit end
 +
-                 Consumer<EntityArmorStand> consumer = EntityTypes.appendDefaultStackConfig((entityarmorstand) -> {
+                 Consumer<EntityArmorStand> consumer = EntityTypes.<EntityArmorStand>appendDefaultStackConfig((entityarmorstand) -> {
                      entityarmorstand.setYRot(enumdirection.toYRot());
-                 }, worldserver, itemstack, (EntityHuman) null);
-                 EntityArmorStand entityarmorstand = (EntityArmorStand) EntityTypes.ARMOR_STAND.spawn(worldserver, consumer, blockposition, EnumMobSpawn.DISPENSER, false, false);
+                 }, worldserver, itemstack, (EntityLiving) null);
+                 EntityArmorStand entityarmorstand = EntityTypes.ARMOR_STAND.spawn(worldserver, consumer, blockposition, EntitySpawnReason.DISPENSER, false, false);
  
                  if (entityarmorstand != null) {
 -                    itemstack.shrink(1);
@@ -111,121 +111,51 @@
                  }
  
                  return itemstack;
-@@ -145,7 +217,34 @@
-                 });
- 
-                 if (!list.isEmpty()) {
--                    ((ISaddleable) list.get(0)).equipSaddle(itemstack.split(1), SoundCategory.BLOCKS);
-+                    // CraftBukkit start
+@@ -136,11 +208,35 @@
+                 for (EntityHorseChestedAbstract entityhorsechestedabstract : sourceblock.level().getEntitiesOfClass(EntityHorseChestedAbstract.class, new AxisAlignedBB(blockposition), (entityhorsechestedabstract1) -> {
+                     return entityhorsechestedabstract1.isAlive() && !entityhorsechestedabstract1.hasChest();
+                 })) {
+-                    if (entityhorsechestedabstract.isTamed() && entityhorsechestedabstract.getSlot(499).set(itemstack)) {
+-                        itemstack.shrink(1);
+-                        this.setSuccess(true);
 +                    ItemStack itemstack1 = itemstack.split(1);
 +                    WorldServer world = sourceblock.level();
 +                    org.bukkit.block.Block block = CraftBlock.at(world, sourceblock.pos());
 +                    CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack1);
 +
-+                    BlockDispenseArmorEvent event = new BlockDispenseArmorEvent(block, craftItem.clone(), (org.bukkit.craftbukkit.entity.CraftLivingEntity) list.get(0).getBukkitEntity());
++                    BlockDispenseArmorEvent event = new BlockDispenseArmorEvent(block, craftItem.clone(), (org.bukkit.craftbukkit.entity.CraftLivingEntity) entityhorsechestedabstract.getBukkitEntity());
 +                    if (!BlockDispenser.eventFired) {
 +                        world.getCraftServer().getPluginManager().callEvent(event);
 +                    }
 +
 +                    if (event.isCancelled()) {
-+                        itemstack.grow(1);
-+                        return itemstack;
-+                    }
+                         return itemstack;
+                     }
 +
 +                    if (!event.getItem().equals(craftItem)) {
-+                        itemstack.grow(1);
 +                        // Chain to handler for new item
 +                        ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
 +                        IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
-+                        if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != ItemArmor.DISPENSE_ITEM_BEHAVIOR) {
++                        if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != EquipmentDispenseItemBehavior.INSTANCE) {
 +                            idispensebehavior.dispense(sourceblock, eventStack);
 +                            return itemstack;
 +                        }
 +                    }
-+                    ((ISaddleable) list.get(0)).equipSaddle(itemstack1, SoundCategory.BLOCKS);
++                    entityhorsechestedabstract.getSlot(499).set(CraftItemStack.asNMSCopy(event.getItem()));
 +                    // CraftBukkit end
-                     this.setSuccess(true);
-                     return itemstack;
-                 } else {
-@@ -172,7 +271,35 @@
-                     entityhorseabstract = (EntityHorseAbstract) iterator1.next();
-                 } while (!entityhorseabstract.isBodyArmorItem(itemstack) || entityhorseabstract.isWearingBodyArmor() || !entityhorseabstract.isTamed());
- 
--                entityhorseabstract.setBodyArmorItem(itemstack.split(1));
-+                // CraftBukkit start
-+                ItemStack itemstack1 = itemstack.split(1);
-+                WorldServer world = sourceblock.level();
-+                org.bukkit.block.Block block = CraftBlock.at(world, sourceblock.pos());
-+                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack1);
 +
-+                BlockDispenseArmorEvent event = new BlockDispenseArmorEvent(block, craftItem.clone(), (org.bukkit.craftbukkit.entity.CraftLivingEntity) entityhorseabstract.getBukkitEntity());
-+                if (!BlockDispenser.eventFired) {
-+                    world.getCraftServer().getPluginManager().callEvent(event);
-+                }
-+
-+                if (event.isCancelled()) {
-+                    itemstack.grow(1);
++                    // itemstack.shrink(1); // CraftBukkit - handled above
++                    this.setSuccess(true);
 +                    return itemstack;
-+                }
-+
-+                if (!event.getItem().equals(craftItem)) {
-+                    itemstack.grow(1);
-+                    // Chain to handler for new item
-+                    ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
-+                    IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
-+                    if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != ItemArmor.DISPENSE_ITEM_BEHAVIOR) {
-+                        idispensebehavior.dispense(sourceblock, eventStack);
-+                        return itemstack;
-+                    }
-+                }
-+
-+                entityhorseabstract.setBodyArmorItem(CraftItemStack.asNMSCopy(event.getItem()));
-+                // CraftBukkit end
-                 this.setSuccess(true);
-                 return itemstack;
-             }
-@@ -215,9 +342,35 @@
-                     }
+                 }
  
-                     entityhorsechestedabstract = (EntityHorseChestedAbstract) iterator1.next();
--                } while (!entityhorsechestedabstract.isTamed() || !entityhorsechestedabstract.getSlot(499).set(itemstack));
-+                    // CraftBukkit start
-+                } while (!entityhorsechestedabstract.isTamed());
-+                ItemStack itemstack1 = itemstack.split(1);
-+                WorldServer world = sourceblock.level();
-+                org.bukkit.block.Block block = CraftBlock.at(world, sourceblock.pos());
-+                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack1);
- 
--                itemstack.shrink(1);
-+                BlockDispenseArmorEvent event = new BlockDispenseArmorEvent(block, craftItem.clone(), (org.bukkit.craftbukkit.entity.CraftLivingEntity) entityhorsechestedabstract.getBukkitEntity());
-+                if (!BlockDispenser.eventFired) {
-+                    world.getCraftServer().getPluginManager().callEvent(event);
-+                }
-+
-+                if (event.isCancelled()) {
-+                    return itemstack;
-+                }
-+
-+                if (!event.getItem().equals(craftItem)) {
-+                    // Chain to handler for new item
-+                    ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
-+                    IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
-+                    if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != ItemArmor.DISPENSE_ITEM_BEHAVIOR) {
-+                        idispensebehavior.dispense(sourceblock, eventStack);
-+                        return itemstack;
-+                    }
-+                }
-+                entityhorsechestedabstract.getSlot(499).set(CraftItemStack.asNMSCopy(event.getItem()));
-+                // CraftBukkit end
-+
-+                // itemstack.shrink(1); // CraftBukkit - handled above
-                 this.setSuccess(true);
-                 return itemstack;
-             }
-@@ -249,6 +402,38 @@
+                 return super.execute(sourceblock, itemstack);
+@@ -175,6 +271,40 @@
                  BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
-                 WorldServer worldserver = sourceblock.level();
+                 World world = sourceblock.level();
  
++                WorldServer worldserver = sourceblock.level();
++
 +                // CraftBukkit start
 +                int x = blockposition.getX();
 +                int y = blockposition.getY();
@@ -258,29 +188,29 @@
 +                }
 +                // CraftBukkit end
 +
-                 if (dispensiblecontaineritem.emptyContents((EntityHuman) null, worldserver, blockposition, (MovingObjectPositionBlock) null)) {
-                     dispensiblecontaineritem.checkExtraContent((EntityHuman) null, worldserver, itemstack, blockposition);
+                 if (dispensiblecontaineritem.emptyContents((EntityLiving) null, world, blockposition, (MovingObjectPositionBlock) null)) {
+                     dispensiblecontaineritem.checkExtraContent((EntityLiving) null, world, itemstack, blockposition);
                      return this.consumeWithRemainder(sourceblock, itemstack, new ItemStack(Items.BUCKET));
-@@ -276,7 +461,7 @@
+@@ -202,7 +332,7 @@
                  Block block = iblockdata.getBlock();
  
                  if (block instanceof IFluidSource ifluidsource) {
--                    ItemStack itemstack1 = ifluidsource.pickupBlock((EntityHuman) null, worldserver, blockposition, iblockdata);
-+                    ItemStack itemstack1 = ifluidsource.pickupBlock((EntityHuman) null, DummyGeneratorAccess.INSTANCE, blockposition, iblockdata); // CraftBukkit
+-                    ItemStack itemstack1 = ifluidsource.pickupBlock((EntityLiving) null, generatoraccess, blockposition, iblockdata);
++                    ItemStack itemstack1 = ifluidsource.pickupBlock((EntityLiving) null, DummyGeneratorAccess.INSTANCE, blockposition, iblockdata); // CraftBukkit
  
                      if (itemstack1.isEmpty()) {
                          return super.execute(sourceblock, itemstack);
-@@ -284,6 +469,32 @@
-                         worldserver.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PICKUP, blockposition);
+@@ -210,6 +340,32 @@
+                         generatoraccess.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PICKUP, blockposition);
                          Item item = itemstack1.getItem();
  
 +                        // CraftBukkit start
-+                        org.bukkit.block.Block bukkitBlock = CraftBlock.at(worldserver, sourceblock.pos());
++                        org.bukkit.block.Block bukkitBlock = CraftBlock.at(generatoraccess, sourceblock.pos());
 +                        CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack);
 +
 +                        BlockDispenseEvent event = new BlockDispenseEvent(bukkitBlock, craftItem.clone(), new org.bukkit.util.Vector(blockposition.getX(), blockposition.getY(), blockposition.getZ()));
 +                        if (!BlockDispenser.eventFired) {
-+                            worldserver.getCraftServer().getPluginManager().callEvent(event);
++                            sourceblock.level().getCraftServer().getPluginManager().callEvent(event);
 +                        }
 +
 +                        if (event.isCancelled()) {
@@ -297,13 +227,13 @@
 +                            }
 +                        }
 +
-+                        itemstack1 = ifluidsource.pickupBlock((EntityHuman) null, worldserver, blockposition, iblockdata); // From above
++                        itemstack1 = ifluidsource.pickupBlock((EntityLiving) null, generatoraccess, blockposition, iblockdata); // From above
 +                        // CraftBukkit end
 +
                          return this.consumeWithRemainder(sourceblock, itemstack, new ItemStack(item));
                      }
                  } else {
-@@ -296,16 +507,44 @@
+@@ -222,16 +378,44 @@
              protected ItemStack execute(SourceBlock sourceblock, ItemStack itemstack) {
                  WorldServer worldserver = sourceblock.level();
  
@@ -348,20 +278,20 @@
                  } else if (!BlockCampfire.canLight(iblockdata) && !CandleBlock.canLight(iblockdata) && !CandleCakeBlock.canLight(iblockdata)) {
 -                    if (iblockdata.getBlock() instanceof BlockTNT) {
 +                    if (iblockdata.getBlock() instanceof BlockTNT && org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(worldserver, blockposition, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.DISPENSER, null, sourceblock.pos())) { // CraftBukkit - TNTPrimeEvent
-                         BlockTNT.explode(worldserver, blockposition);
-                         worldserver.removeBlock(blockposition, false);
-                     } else {
-@@ -330,12 +569,62 @@
+                         if (BlockTNT.prime(worldserver, blockposition)) {
+                             worldserver.removeBlock(blockposition, false);
+                         } else {
+@@ -259,12 +443,62 @@
                  this.setSuccess(true);
-                 WorldServer worldserver = sourceblock.level();
+                 World world = sourceblock.level();
                  BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
 +                // CraftBukkit start
-+                org.bukkit.block.Block block = CraftBlock.at(worldserver, sourceblock.pos());
++                org.bukkit.block.Block block = CraftBlock.at(world, sourceblock.pos());
 +                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack);
 +
 +                BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), new org.bukkit.util.Vector(0, 0, 0));
 +                if (!BlockDispenser.eventFired) {
-+                    worldserver.getCraftServer().getPluginManager().callEvent(event);
++                    world.getCraftServer().getPluginManager().callEvent(event);
 +                }
 +
 +                if (event.isCancelled()) {
@@ -378,22 +308,22 @@
 +                    }
 +                }
 +
-+                worldserver.captureTreeGeneration = true;
++                world.captureTreeGeneration = true;
 +                // CraftBukkit end
  
-                 if (!ItemBoneMeal.growCrop(itemstack, worldserver, blockposition) && !ItemBoneMeal.growWaterPlant(itemstack, worldserver, blockposition, (EnumDirection) null)) {
+                 if (!ItemBoneMeal.growCrop(itemstack, world, blockposition) && !ItemBoneMeal.growWaterPlant(itemstack, world, blockposition, (EnumDirection) null)) {
                      this.setSuccess(false);
-                 } else if (!worldserver.isClientSide) {
-                     worldserver.levelEvent(1505, blockposition, 15);
+                 } else if (!world.isClientSide) {
+                     world.levelEvent(1505, blockposition, 15);
                  }
 +                // CraftBukkit start
-+                worldserver.captureTreeGeneration = false;
-+                if (worldserver.capturedBlockStates.size() > 0) {
++                world.captureTreeGeneration = false;
++                if (world.capturedBlockStates.size() > 0) {
 +                    TreeType treeType = BlockSapling.treeType;
 +                    BlockSapling.treeType = null;
-+                    Location location = CraftLocation.toBukkit(blockposition, worldserver.getWorld());
-+                    List<org.bukkit.block.BlockState> blocks = new java.util.ArrayList<>(worldserver.capturedBlockStates.values());
-+                    worldserver.capturedBlockStates.clear();
++                    Location location = CraftLocation.toBukkit(blockposition, world.getWorld());
++                    List<org.bukkit.block.BlockState> blocks = new java.util.ArrayList<>(world.capturedBlockStates.values());
++                    world.capturedBlockStates.clear();
 +                    StructureGrowEvent structureEvent = null;
 +                    if (treeType != null) {
 +                        structureEvent = new StructureGrowEvent(location, treeType, false, null, blocks);
@@ -414,61 +344,61 @@
  
                  return itemstack;
              }
-@@ -345,12 +634,41 @@
-             protected ItemStack execute(SourceBlock sourceblock, ItemStack itemstack) {
-                 WorldServer worldserver = sourceblock.level();
-                 BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
--                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, (double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D, (EntityLiving) null);
-+                // CraftBukkit start
-+                // EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, (double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D, (EntityLiving) null);
+@@ -279,12 +513,41 @@
+                     return itemstack;
+                 } else {
+                     BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
+-                    EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, (double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D, (EntityLiving) null);
++                    // CraftBukkit start
++                    // EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, (double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D, (EntityLiving) null);
 +
-+                ItemStack itemstack1 = itemstack.split(1);
-+                org.bukkit.block.Block block = CraftBlock.at(worldserver, sourceblock.pos());
-+                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack1);
++                    ItemStack itemstack1 = itemstack.split(1);
++                    org.bukkit.block.Block block = CraftBlock.at(worldserver, sourceblock.pos());
++                    CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack1);
 +
-+                BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), new org.bukkit.util.Vector((double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D));
-+                if (!BlockDispenser.eventFired) {
-+                   worldserver.getCraftServer().getPluginManager().callEvent(event);
-+                }
++                    BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), new org.bukkit.util.Vector((double) blockposition.getX() + 0.5D, (double) blockposition.getY(), (double) blockposition.getZ() + 0.5D));
++                    if (!BlockDispenser.eventFired) {
++                       worldserver.getCraftServer().getPluginManager().callEvent(event);
++                    }
 +
-+                if (event.isCancelled()) {
-+                    itemstack.grow(1);
-+                    return itemstack;
-+                }
-+
-+                if (!event.getItem().equals(craftItem)) {
-+                    itemstack.grow(1);
-+                    // Chain to handler for new item
-+                    ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
-+                    IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
-+                    if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != this) {
-+                        idispensebehavior.dispense(sourceblock, eventStack);
++                    if (event.isCancelled()) {
++                        itemstack.grow(1);
 +                        return itemstack;
 +                    }
-+                }
 +
-+                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ(), (EntityLiving) null);
-+                // CraftBukkit end
++                    if (!event.getItem().equals(craftItem)) {
++                        itemstack.grow(1);
++                        // Chain to handler for new item
++                        ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
++                        IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
++                        if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != this) {
++                            idispensebehavior.dispense(sourceblock, eventStack);
++                            return itemstack;
++                        }
++                    }
++
++                    EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(worldserver, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ(), (EntityLiving) null);
++                    // CraftBukkit end
  
-                 worldserver.addFreshEntity(entitytntprimed);
-                 worldserver.playSound((EntityHuman) null, entitytntprimed.getX(), entitytntprimed.getY(), entitytntprimed.getZ(), SoundEffects.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                 worldserver.gameEvent((Entity) null, (Holder) GameEvent.ENTITY_PLACE, blockposition);
--                itemstack.shrink(1);
-+                // itemstack.shrink(1); // CraftBukkit - handled above
-                 return itemstack;
-             }
-         });
-@@ -375,6 +693,30 @@
+                     worldserver.addFreshEntity(entitytntprimed);
+                     worldserver.playSound((Entity) null, entitytntprimed.getX(), entitytntprimed.getY(), entitytntprimed.getZ(), SoundEffects.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                     worldserver.gameEvent((Entity) null, (Holder) GameEvent.ENTITY_PLACE, blockposition);
+-                    itemstack.shrink(1);
++                    // itemstack.shrink(1); // CraftBukkit - handled above
+                     this.setSuccess(true);
+                     return itemstack;
+                 }
+@@ -297,6 +560,30 @@
                  EnumDirection enumdirection = (EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING);
                  BlockPosition blockposition = sourceblock.pos().relative(enumdirection);
  
 +                // CraftBukkit start
-+                org.bukkit.block.Block bukkitBlock = CraftBlock.at(worldserver, sourceblock.pos());
++                org.bukkit.block.Block bukkitBlock = CraftBlock.at(world, sourceblock.pos());
 +                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack);
 +
 +                BlockDispenseEvent event = new BlockDispenseEvent(bukkitBlock, craftItem.clone(), new org.bukkit.util.Vector(blockposition.getX(), blockposition.getY(), blockposition.getZ()));
 +                if (!BlockDispenser.eventFired) {
-+                    worldserver.getCraftServer().getPluginManager().callEvent(event);
++                    world.getCraftServer().getPluginManager().callEvent(event);
 +                }
 +
 +                if (event.isCancelled()) {
@@ -486,20 +416,20 @@
 +                }
 +                // CraftBukkit end
 +
-                 if (worldserver.isEmptyBlock(blockposition) && BlockWitherSkull.canSpawnMob(worldserver, blockposition, itemstack)) {
-                     worldserver.setBlock(blockposition, (IBlockData) Blocks.WITHER_SKELETON_SKULL.defaultBlockState().setValue(BlockSkull.ROTATION, RotationSegment.convertToSegment(enumdirection)), 3);
-                     worldserver.gameEvent((Entity) null, (Holder) GameEvent.BLOCK_PLACE, blockposition);
-@@ -400,6 +742,30 @@
+                 if (world.isEmptyBlock(blockposition) && BlockWitherSkull.canSpawnMob(world, blockposition, itemstack)) {
+                     world.setBlock(blockposition, (IBlockData) Blocks.WITHER_SKELETON_SKULL.defaultBlockState().setValue(BlockSkull.ROTATION, RotationSegment.convertToSegment(enumdirection)), 3);
+                     world.gameEvent((Entity) null, (Holder) GameEvent.BLOCK_PLACE, blockposition);
+@@ -322,6 +609,30 @@
                  BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
                  BlockPumpkinCarved blockpumpkincarved = (BlockPumpkinCarved) Blocks.CARVED_PUMPKIN;
  
 +                // CraftBukkit start
-+                org.bukkit.block.Block bukkitBlock = CraftBlock.at(worldserver, sourceblock.pos());
++                org.bukkit.block.Block bukkitBlock = CraftBlock.at(world, sourceblock.pos());
 +                CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack);
 +
 +                BlockDispenseEvent event = new BlockDispenseEvent(bukkitBlock, craftItem.clone(), new org.bukkit.util.Vector(blockposition.getX(), blockposition.getY(), blockposition.getZ()));
 +                if (!BlockDispenser.eventFired) {
-+                    worldserver.getCraftServer().getPluginManager().callEvent(event);
++                    world.getCraftServer().getPluginManager().callEvent(event);
 +                }
 +
 +                if (event.isCancelled()) {
@@ -517,10 +447,10 @@
 +                }
 +                // CraftBukkit end
 +
-                 if (worldserver.isEmptyBlock(blockposition) && blockpumpkincarved.canSpawnGolem(worldserver, blockposition)) {
-                     if (!worldserver.isClientSide) {
-                         worldserver.setBlock(blockposition, blockpumpkincarved.defaultBlockState(), 3);
-@@ -438,6 +804,30 @@
+                 if (world.isEmptyBlock(blockposition) && blockpumpkincarved.canSpawnGolem(world, blockposition)) {
+                     if (!world.isClientSide) {
+                         world.setBlock(blockposition, blockpumpkincarved.defaultBlockState(), 3);
+@@ -356,6 +667,30 @@
                  BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
                  IBlockData iblockdata = worldserver.getBlockState(blockposition);
  
@@ -551,7 +481,7 @@
                  if (iblockdata.is(TagsBlock.BEEHIVES, (blockbase_blockdata) -> {
                      return blockbase_blockdata.hasProperty(BlockBeehive.HONEY_LEVEL) && blockbase_blockdata.getBlock() instanceof BlockBeehive;
                  }) && (Integer) iblockdata.getValue(BlockBeehive.HONEY_LEVEL) >= 5) {
-@@ -487,6 +877,31 @@
+@@ -405,6 +740,31 @@
                      this.setSuccess(false);
                      return itemstack;
                  } else {
@@ -574,12 +504,12 @@
 +                        // Chain to handler for new item
 +                        ItemStack eventStack = CraftItemStack.asNMSCopy(event.getItem());
 +                        IDispenseBehavior idispensebehavior = (IDispenseBehavior) BlockDispenser.DISPENSER_REGISTRY.get(eventStack.getItem());
-+                        if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != ItemArmor.DISPENSE_ITEM_BEHAVIOR) {
++                        if (idispensebehavior != IDispenseBehavior.NOOP && idispensebehavior != EquipmentDispenseItemBehavior.INSTANCE) {
 +                            idispensebehavior.dispense(sourceblock, eventStack);
 +                            return itemstack;
 +                        }
 +                    }
 +                    // CraftBukkit end
-                     Iterator iterator1 = list.iterator();
- 
-                     Armadillo armadillo;
+                     for (Armadillo armadillo : list) {
+                         if (armadillo.brushOffScute()) {
+                             itemstack.hurtAndBreak(16, worldserver, (EntityPlayer) null, (item) -> {

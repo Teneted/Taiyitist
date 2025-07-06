@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/EntityWitherSkull.java
 +++ b/net/minecraft/world/entity/projectile/EntityWitherSkull.java
-@@ -24,6 +24,11 @@
+@@ -25,6 +25,11 @@
  import net.minecraft.world.phys.MovingObjectPositionEntity;
  import net.minecraft.world.phys.Vec3D;
  
@@ -11,8 +11,8 @@
 +
  public class EntityWitherSkull extends EntityFireball {
  
-     private static final DataWatcherObject<Boolean> DATA_DANGEROUS = DataWatcher.defineId(EntityWitherSkull.class, DataWatcherRegistry.BOOLEAN);
-@@ -69,7 +74,7 @@
+     private static final DataWatcherObject<Boolean> DATA_DANGEROUS = DataWatcher.<Boolean>defineId(EntityWitherSkull.class, DataWatcherRegistry.BOOLEAN);
+@@ -71,7 +76,7 @@
                      if (entity.isAlive()) {
                          EnchantmentManager.doPostAttackEffects(worldserver, entity, damagesource);
                      } else {
@@ -21,16 +21,16 @@
                      }
                  }
              } else {
-@@ -86,7 +91,7 @@
+@@ -88,7 +93,7 @@
                  }
  
-                 if (b0 > 0) {
--                    entityliving.addEffect(new MobEffect(MobEffects.WITHER, 20 * b0, 1), this.getEffectSource());
-+                    entityliving.addEffect(new MobEffect(MobEffects.WITHER, 20 * b0, 1), this.getEffectSource(), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
+                 if (i > 0) {
+-                    entityliving1.addEffect(new MobEffect(MobEffects.WITHER, 20 * i, 1), this.getEffectSource());
++                    entityliving1.addEffect(new MobEffect(MobEffects.WITHER, 20 * i, 1), this.getEffectSource(), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
                  }
              }
  
-@@ -97,8 +102,16 @@
+@@ -99,8 +104,16 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
          if (!this.level().isClientSide) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/DecoratedPotBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/DecoratedPotBlockEntity.java
-@@ -20,8 +20,59 @@
+@@ -23,8 +23,59 @@
  import net.minecraft.world.level.storage.loot.LootTable;
  import net.minecraft.world.ticks.ContainerSingleItem;
  

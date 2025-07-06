@@ -1,19 +1,22 @@
 --- a/net/minecraft/server/DispenserRegistry.java
 +++ b/net/minecraft/server/DispenserRegistry.java
-@@ -28,6 +28,12 @@
- import net.minecraft.world.level.block.BlockFire;
+@@ -30,7 +30,14 @@
+ import net.minecraft.world.level.block.state.BlockBase;
  import org.slf4j.Logger;
  
+-@SuppressForbidden(a = "System.out setup")
 +// CraftBukkit start
++import java.util.Map;
 +import net.minecraft.util.datafix.fixes.DataConverterFlattenData;
 +import net.minecraft.util.datafix.fixes.DataConverterMaterialId;
 +import net.minecraft.util.datafix.fixes.DataConverterSpawnEgg;
-+// CraftBukkit end
 +
++@SuppressForbidden(reason = "System.out setup")
++// CraftBukkit end
  public class DispenserRegistry {
  
      public static final PrintStream STDOUT = System.out;
-@@ -39,6 +45,23 @@
+@@ -42,6 +49,23 @@
  
      public static void bootStrap() {
          if (!DispenserRegistry.isBootstrapped) {
@@ -37,30 +40,30 @@
              DispenserRegistry.isBootstrapped = true;
              Instant instant = Instant.now();
  
-@@ -58,6 +81,69 @@
+@@ -61,6 +85,69 @@
                      wrapStreams();
                      DispenserRegistry.bootstrapDuration.set(Duration.between(instant, Instant.now()).toMillis());
                  }
 +                // CraftBukkit start - easier than fixing the decompile
-+                DataConverterFlattenData.register(1008, "{Name:'minecraft:oak_sign',Properties:{rotation:'0'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'0'}}");
-+                DataConverterFlattenData.register(1009, "{Name:'minecraft:oak_sign',Properties:{rotation:'1'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'1'}}");
-+                DataConverterFlattenData.register(1010, "{Name:'minecraft:oak_sign',Properties:{rotation:'2'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'2'}}");
-+                DataConverterFlattenData.register(1011, "{Name:'minecraft:oak_sign',Properties:{rotation:'3'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'3'}}");
-+                DataConverterFlattenData.register(1012, "{Name:'minecraft:oak_sign',Properties:{rotation:'4'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'4'}}");
-+                DataConverterFlattenData.register(1013, "{Name:'minecraft:oak_sign',Properties:{rotation:'5'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'5'}}");
-+                DataConverterFlattenData.register(1014, "{Name:'minecraft:oak_sign',Properties:{rotation:'6'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'6'}}");
-+                DataConverterFlattenData.register(1015, "{Name:'minecraft:oak_sign',Properties:{rotation:'7'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'7'}}");
-+                DataConverterFlattenData.register(1016, "{Name:'minecraft:oak_sign',Properties:{rotation:'8'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'8'}}");
-+                DataConverterFlattenData.register(1017, "{Name:'minecraft:oak_sign',Properties:{rotation:'9'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'9'}}");
-+                DataConverterFlattenData.register(1018, "{Name:'minecraft:oak_sign',Properties:{rotation:'10'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'10'}}");
-+                DataConverterFlattenData.register(1019, "{Name:'minecraft:oak_sign',Properties:{rotation:'11'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'11'}}");
-+                DataConverterFlattenData.register(1020, "{Name:'minecraft:oak_sign',Properties:{rotation:'12'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'12'}}");
-+                DataConverterFlattenData.register(1021, "{Name:'minecraft:oak_sign',Properties:{rotation:'13'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'13'}}");
-+                DataConverterFlattenData.register(1022, "{Name:'minecraft:oak_sign',Properties:{rotation:'14'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'14'}}");
-+                DataConverterFlattenData.register(1023, "{Name:'minecraft:oak_sign',Properties:{rotation:'15'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'15'}}");
++                DataConverterFlattenData.register(1008, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "0")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "0")));
++                DataConverterFlattenData.register(1009, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "1")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "1")));
++                DataConverterFlattenData.register(1010, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "2")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "2")));
++                DataConverterFlattenData.register(1011, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "3")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "3")));
++                DataConverterFlattenData.register(1012, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "4")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "4")));
++                DataConverterFlattenData.register(1013, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "5")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "5")));
++                DataConverterFlattenData.register(1014, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "6")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "6")));
++                DataConverterFlattenData.register(1015, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "7")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "7")));
++                DataConverterFlattenData.register(1016, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "8")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "8")));
++                DataConverterFlattenData.register(1017, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "9")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "9")));
++                DataConverterFlattenData.register(1018, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "10")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "10")));
++                DataConverterFlattenData.register(1019, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "11")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "11")));
++                DataConverterFlattenData.register(1020, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "12")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "12")));
++                DataConverterFlattenData.register(1021, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "13")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "13")));
++                DataConverterFlattenData.register(1022, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "14")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "14")));
++                DataConverterFlattenData.register(1023, DataConverterFlattenData.create("minecraft:oak_sign", Map.of("rotation", "15")), DataConverterFlattenData.create("minecraft:standing_sign", Map.of("rotation", "15")));
 +                DataConverterMaterialId.ITEM_NAMES.put(323, "minecraft:oak_sign");
 +
-+                DataConverterFlattenData.register(1440, "{Name:\'minecraft:portal\',Properties:{axis:\'x\'}}", new String[]{"{Name:\'minecraft:portal\',Properties:{axis:\'x\'}}"});
++                DataConverterFlattenData.register(1440, DataConverterFlattenData.create("minecraft:portal", Map.of("axis", "x")), DataConverterFlattenData.create("minecraft:portal", Map.of("axis", "x")));
 +
 +                DataConverterMaterialId.ITEM_NAMES.put(409, "minecraft:prismarine_shard");
 +                DataConverterMaterialId.ITEM_NAMES.put(410, "minecraft:prismarine_crystals");

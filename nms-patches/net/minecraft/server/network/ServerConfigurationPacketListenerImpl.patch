@@ -38,7 +38,7 @@
  
          if (!serverlinks.isEmpty()) {
              this.send(new ClientboundServerLinksPacket(serverlinks.untrust()));
-@@ -143,14 +156,14 @@
+@@ -143,14 +156,17 @@
                  return;
              }
  
@@ -50,8 +50,11 @@
                  return;
              }
  
--            EntityPlayer entityplayer = playerlist.getPlayerForLogin(this.gameProfile, this.clientInformation);
-+            EntityPlayer entityplayer = playerlist.getPlayerForLogin(this.gameProfile, this.clientInformation, this.player); // CraftBukkit
+-            EntityPlayer entityplayer = new EntityPlayer(this.server, this.server.overworld(), this.gameProfile, this.clientInformation);
++            // CraftBukkit start
++            EntityPlayer entityplayer = this.player;
++            entityplayer.updateOptions(this.clientInformation);
++            // CraftBukkit end
  
              playerlist.placeNewPlayer(this.connection, entityplayer, this.createCookie(this.clientInformation));
          } catch (Exception exception) {

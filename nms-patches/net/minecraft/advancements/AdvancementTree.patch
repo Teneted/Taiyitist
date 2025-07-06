@@ -1,6 +1,6 @@
 --- a/net/minecraft/advancements/AdvancementTree.java
 +++ b/net/minecraft/advancements/AdvancementTree.java
-@@ -77,7 +77,7 @@
+@@ -69,7 +69,7 @@
              }
          }
  

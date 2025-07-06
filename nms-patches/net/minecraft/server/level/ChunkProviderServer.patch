@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ChunkProviderServer.java
 +++ b/net/minecraft/server/level/ChunkProviderServer.java
-@@ -82,6 +82,16 @@
+@@ -100,6 +100,16 @@
          this.clearCache();
      }
  
@@ -17,7 +17,7 @@
      @Override
      public LightEngineThreaded getLightEngine() {
          return this.lightEngine;
-@@ -125,7 +135,7 @@
+@@ -143,7 +153,7 @@
                  if (k == this.lastChunkPos[l] && chunkstatus == this.lastChunkStatus[l]) {
                      IChunkAccess ichunkaccess = this.lastChunk[l];
  
@@ -26,16 +26,16 @@
                          return ichunkaccess;
                      }
                  }
-@@ -138,7 +148,7 @@
+@@ -156,7 +166,7 @@
              Objects.requireNonNull(completablefuture);
-             chunkproviderserver_b.managedBlock(completablefuture::isDone);
+             chunkproviderserver_a.managedBlock(completablefuture::isDone);
              ChunkResult<IChunkAccess> chunkresult = (ChunkResult) completablefuture.join();
--            IChunkAccess ichunkaccess1 = (IChunkAccess) chunkresult.orElse((Object) null);
-+            IChunkAccess ichunkaccess1 = (IChunkAccess) chunkresult.orElse(null); // CraftBukkit - decompile error
+-            IChunkAccess ichunkaccess1 = chunkresult.orElse((Object) null);
++            IChunkAccess ichunkaccess1 = chunkresult.orElse(null); // CraftBukkit - decompile error
  
              if (ichunkaccess1 == null && flag) {
                  throw (IllegalStateException) SystemUtils.pauseInIde(new IllegalStateException("Chunk not there when requested: " + chunkresult.getError()));
-@@ -218,7 +228,15 @@
+@@ -236,7 +246,15 @@
          int l = ChunkLevel.byStatus(chunkstatus);
          PlayerChunk playerchunk = this.getVisibleChunkIfPresent(k);
  
@@ -49,10 +49,10 @@
 +        }
 +        if (flag && !currentlyUnloading) {
 +            // CraftBukkit end
-             this.distanceManager.addTicket(TicketType.UNKNOWN, chunkcoordintpair, l, chunkcoordintpair);
+             this.addTicket(new Ticket(TicketType.UNKNOWN, l), chunkcoordintpair);
              if (this.chunkAbsent(playerchunk, l)) {
-                 GameProfilerFiller gameprofilerfiller = this.level.getProfiler();
-@@ -237,7 +255,7 @@
+                 GameProfilerFiller gameprofilerfiller = Profiler.get();
+@@ -255,7 +273,7 @@
      }
  
      private boolean chunkAbsent(@Nullable PlayerChunk playerchunk, int i) {
@@ -61,7 +61,7 @@
      }
  
      @Override
-@@ -292,11 +310,31 @@
+@@ -314,12 +332,34 @@
  
      @Override
      public void close() throws IOException {
@@ -75,40 +75,63 @@
 +            this.save(true);
 +        }
 +        // CraftBukkit end
+         this.dataStorage.close();
          this.lightEngine.close();
          this.chunkMap.close();
      }
  
 +    // CraftBukkit start - modelled on below
 +    public void purgeUnload() {
-+        this.level.getProfiler().push("purge");
-+        this.distanceManager.purgeStaleTickets();
++        GameProfilerFiller gameprofilerfiller = Profiler.get();
++
++        gameprofilerfiller.push("purge");
++        this.ticketStorage.purgeStaleTickets(this.chunkMap);
 +        this.runDistanceManagerUpdates();
-+        this.level.getProfiler().popPush("unload");
++        gameprofilerfiller.popPush("unload");
 +        this.chunkMap.tick(() -> true);
-+        this.level.getProfiler().pop();
++        gameprofilerfiller.pop();
 +        this.clearCache();
 +    }
 +    // CraftBukkit end
 +
      @Override
      public void tick(BooleanSupplier booleansupplier, boolean flag) {
-         this.level.getProfiler().push("purge");
-@@ -346,11 +384,11 @@
+         GameProfilerFiller gameprofilerfiller = Profiler.get();
+@@ -384,14 +424,14 @@
  
-                 this.lastSpawnState = spawnercreature_d;
-                 gameprofilerfiller.popPush("spawnAndTick");
--                boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);
-+                boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) && !this.level.players().isEmpty(); // CraftBukkit
+         this.lastSpawnState = spawnercreature_d;
+         gameprofilerfiller.popPush("spawnAndTick");
+-        boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);
++        boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) && !this.level.players().isEmpty(); // CraftBukkit
+         int k = this.level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
+         List<EnumCreatureType> list;
  
-                 SystemUtils.shuffle(list, this.level.random);
-                 int l = this.level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
--                boolean flag1 = this.level.getLevelData().getGameTime() % 400L == 0L;
-+                boolean flag1 = this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) != 0L && this.level.getLevelData().getGameTime() % this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) == 0L; // CraftBukkit
-                 Iterator iterator1 = list.iterator();
+         if (flag && (this.spawnEnemies || this.spawnFriendlies)) {
+-            boolean flag1 = this.level.getLevelData().getGameTime() % 400L == 0L;
++            boolean flag1 = this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) != 0L && this.level.getLevelData().getGameTime() % this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) == 0L; // CraftBukkit
  
-                 while (iterator1.hasNext()) {
-@@ -560,13 +598,19 @@
+-            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, this.spawnFriendlies, this.spawnEnemies, flag1);
++            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, this.spawnFriendlies, this.spawnEnemies, flag1, this.level); // CraftBukkit
+         } else {
+             list = List.of();
+         }
+@@ -557,8 +597,14 @@
+ 
+     @Override
+     public void setSpawnSettings(boolean flag) {
++        // CraftBukkit start
++        this.setSpawnSettings(flag, this.spawnFriendlies);
++    }
++
++    public void setSpawnSettings(boolean flag, boolean spawnFriendlies) {
+         this.spawnEnemies = flag;
+-        this.spawnFriendlies = this.spawnFriendlies;
++        this.spawnFriendlies = spawnFriendlies;
++        // CraftBukkit end
+     }
+ 
+     public String getChunkDebugData(ChunkCoordIntPair chunkcoordintpair) {
+@@ -634,13 +680,19 @@
          }
  
          @Override
@@ -128,4 +151,4 @@
 +        // CraftBukkit end
          }
      }
- 
+ }

@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity.java
-@@ -23,12 +23,54 @@
- import net.minecraft.world.level.gameevent.GameEvent;
+@@ -23,6 +23,13 @@
+ import net.minecraft.world.level.storage.ValueOutput;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
@@ -14,7 +14,8 @@
  public class ChiseledBookShelfBlockEntity extends TileEntity implements IInventory {
  
      public static final int MAX_BOOKS_IN_STORAGE = 6;
-     private static final Logger LOGGER = LogUtils.getLogger();
+@@ -30,6 +37,41 @@
+     private static final int DEFAULT_LAST_INTERACTED_SLOT = -1;
      private final NonNullList<ItemStack> items;
      public int lastInteractedSlot;
 +    // CraftBukkit start - add fields and methods
@@ -55,7 +56,7 @@
  
      public ChiseledBookShelfBlockEntity(BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.CHISELED_BOOKSHELF, blockposition, iblockdata);
-@@ -100,7 +142,7 @@
+@@ -101,7 +143,7 @@
  
          this.items.set(i, ItemStack.EMPTY);
          if (!itemstack.isEmpty()) {
@@ -64,7 +65,7 @@
          }
  
          return itemstack;
-@@ -115,7 +157,7 @@
+@@ -116,7 +158,7 @@
      public void setItem(int i, ItemStack itemstack) {
          if (itemstack.is(TagsItem.BOOKSHELF_BOOKS)) {
              this.items.set(i, itemstack);
@@ -73,7 +74,7 @@
          } else if (itemstack.isEmpty()) {
              this.removeItem(i, 1);
          }
-@@ -131,7 +173,7 @@
+@@ -132,7 +174,7 @@
  
      @Override
      public int getMaxStackSize() {

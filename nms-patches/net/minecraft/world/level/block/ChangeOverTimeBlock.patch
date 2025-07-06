@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/ChangeOverTimeBlock.java
 +++ b/net/minecraft/world/level/block/ChangeOverTimeBlock.java
-@@ -20,7 +20,7 @@
+@@ -19,7 +19,7 @@
  
          if (randomsource.nextFloat() < 0.05688889F) {
              this.getNextState(iblockdata, worldserver, blockposition, randomsource).ifPresent((iblockdata1) -> {

@@ -36,22 +36,22 @@
 +                return new Properties();
 +            }
 +            // CraftBukkit end
-             Properties properties;
-             Properties properties1;
- 
-@@ -97,6 +117,11 @@
+             try (InputStream inputstream = Files.newInputStream(path)) {
+                 CharsetDecoder charsetdecoder = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
+                 Properties properties = new Properties();
+@@ -57,6 +77,11 @@
+     }
  
      public void store(Path path) {
-         try {
-+            // CraftBukkit start - Don't attempt writing to file if it's read only
-+            if (path.toFile().exists() && !path.toFile().canWrite()) {
-+                return;
-+            }
-+            // CraftBukkit end
-             BufferedWriter bufferedwriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
- 
-             try {
-@@ -125,7 +150,7 @@
++        // CraftBukkit start - Don't attempt writing to file if it's read only
++        if (path.toFile().exists() && !path.toFile().canWrite()) {
++            return;
++        }
++        // CraftBukkit end
+         try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+             this.properties.store(writer, "Minecraft server properties");
+         } catch (IOException ioexception) {
+@@ -68,7 +93,7 @@
      private static <V extends Number> Function<String, V> wrapNumberDeserializer(Function<String, V> function) {
          return (s) -> {
              try {
@@ -60,7 +60,7 @@
              } catch (NumberFormatException numberformatexception) {
                  return null;
              }
-@@ -144,7 +169,7 @@
+@@ -87,7 +112,7 @@
  
      @Nullable
      private String getStringRaw(String s) {
@@ -69,7 +69,7 @@
      }
  
      @Nullable
-@@ -160,6 +185,16 @@
+@@ -103,6 +128,16 @@
      }
  
      protected <V> V get(String s, Function<String, V> function, Function<V, String> function1, V v0) {
@@ -84,18 +84,18 @@
 +    private <V> V get0(String s, Function<String, V> function, Function<V, String> function1, V v0) {
 +        // CraftBukkit end
          String s1 = this.getStringRaw(s);
-         V v1 = MoreObjects.firstNonNull(s1 != null ? function.apply(s1) : null, v0);
+         V v1 = (V) MoreObjects.firstNonNull(s1 != null ? function.apply(s1) : null, v0);
  
-@@ -172,7 +207,7 @@
-         V v1 = MoreObjects.firstNonNull(s1 != null ? function.apply(s1) : null, v0);
+@@ -115,7 +150,7 @@
+         V v1 = (V) MoreObjects.firstNonNull(s1 != null ? function.apply(s1) : null, v0);
  
          this.properties.put(s, function1.apply(v1));
--        return new PropertyManager.EditableProperty<>(s, v1, function1);
+-        return new PropertyManager.EditableProperty<V>(s, v1, function1);
 +        return new PropertyManager.EditableProperty(s, v1, function1); // CraftBukkit - decompile error
      }
  
      protected <V> V get(String s, Function<String, V> function, UnaryOperator<V> unaryoperator, Function<V, String> function1, V v0) {
-@@ -236,7 +271,7 @@
+@@ -179,7 +214,7 @@
          return properties;
      }
  
@@ -104,7 +104,7 @@
  
      public class EditableProperty<V> implements Supplier<V> {
  
-@@ -244,7 +279,7 @@
+@@ -187,7 +222,7 @@
          private final V value;
          private final Function<V, String> serializer;
  
@@ -113,12 +113,12 @@
              this.key = s;
              this.value = object;
              this.serializer = function;
-@@ -258,7 +293,7 @@
+@@ -201,7 +236,7 @@
              Properties properties = PropertyManager.this.cloneProperties();
  
              properties.put(this.key, this.serializer.apply(v0));
--            return PropertyManager.this.reload(iregistrycustom, properties);
-+            return PropertyManager.this.reload(iregistrycustom, properties, PropertyManager.this.options); // CraftBukkit
+-            return (T) PropertyManager.this.reload(iregistrycustom, properties);
++            return (T) PropertyManager.this.reload(iregistrycustom, properties, PropertyManager.this.options); // CraftBukkit
          }
      }
  }

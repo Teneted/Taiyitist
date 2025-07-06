@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/inventory/TransientCraftingContainer.java
 +++ b/net/minecraft/world/inventory/TransientCraftingContainer.java
-@@ -8,6 +8,16 @@
- import net.minecraft.world.entity.player.EntityHuman;
+@@ -7,6 +7,16 @@
+ import net.minecraft.world.entity.player.StackedItemContents;
  import net.minecraft.world.item.ItemStack;
  
 +// CraftBukkit start
@@ -17,7 +17,7 @@
  public class TransientCraftingContainer implements InventoryCrafting {
  
      private final NonNullList<ItemStack> items;
-@@ -15,6 +25,68 @@
+@@ -14,6 +24,68 @@
      private final int height;
      private final Container menu;
  

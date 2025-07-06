@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/HandshakeListener.java
 +++ b/net/minecraft/server/network/HandshakeListener.java
-@@ -13,8 +13,17 @@
+@@ -12,8 +12,17 @@
  import net.minecraft.network.protocol.status.StatusProtocols;
  import net.minecraft.server.MinecraftServer;
  
@@ -18,7 +18,7 @@
      private static final IChatBaseComponent IGNORE_STATUS_REASON = IChatBaseComponent.translatable("disconnect.ignoring_status_request");
      private final MinecraftServer server;
      private final NetworkManager connection;
-@@ -26,6 +35,7 @@
+@@ -25,6 +34,7 @@
  
      @Override
      public void handleIntention(PacketHandshakingInSetProtocol packethandshakinginsetprotocol) {
@@ -26,7 +26,7 @@
          switch (packethandshakinginsetprotocol.intention()) {
              case LOGIN:
                  this.beginLogin(packethandshakinginsetprotocol, false);
-@@ -59,6 +69,40 @@
+@@ -58,6 +68,40 @@
  
      private void beginLogin(PacketHandshakingInSetProtocol packethandshakinginsetprotocol, boolean flag) {
          this.connection.setupOutboundProtocol(LoginProtocols.CLIENTBOUND);
@@ -39,7 +39,7 @@
 +            synchronized (throttleTracker) {
 +                if (throttleTracker.containsKey(address) && !"127.0.0.1".equals(address.getHostAddress()) && currentTime - throttleTracker.get(address) < connectionThrottle) {
 +                    throttleTracker.put(address, currentTime);
-+                    IChatMutableComponent chatmessage = IChatBaseComponent.literal("Connection throttled! Please wait before reconnecting.");
++                    IChatBaseComponent chatmessage = IChatBaseComponent.literal("Connection throttled! Please wait before reconnecting.");
 +                    this.connection.send(new PacketLoginOutDisconnect(chatmessage));
 +                    this.connection.disconnect(chatmessage);
 +                    return;
@@ -64,6 +64,6 @@
 +            org.apache.logging.log4j.LogManager.getLogger().debug("Failed to check connection throttle", t);
 +        }
 +        // CraftBukkit end
-         if (packethandshakinginsetprotocol.protocolVersion() != SharedConstants.getCurrentVersion().getProtocolVersion()) {
-             IChatMutableComponent ichatmutablecomponent;
+         if (packethandshakinginsetprotocol.protocolVersion() != SharedConstants.getCurrentVersion().protocolVersion()) {
+             IChatBaseComponent ichatbasecomponent;
  

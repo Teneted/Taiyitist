@@ -1,0 +1,63 @@
+package org.bukkit.craftbukkit.v1_21_R5.block.impl;
+
+import com.google.common.collect.ImmutableSet;
+import java.util.Set;
+import net.minecraft.world.level.block.ChorusPlantBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.MultipleFacing;
+import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
+
+public final class CraftChorusFruit extends CraftBlockData implements MultipleFacing {
+   private static final BooleanProperty[] FACES = new BooleanProperty[]{getBoolean(ChorusPlantBlock.class, "north", true), getBoolean(ChorusPlantBlock.class, "east", true), getBoolean(ChorusPlantBlock.class, "south", true), getBoolean(ChorusPlantBlock.class, "west", true), getBoolean(ChorusPlantBlock.class, "up", true), getBoolean(ChorusPlantBlock.class, "down", true)};
+
+   public CraftChorusFruit() {
+   }
+
+   public CraftChorusFruit(BlockState state) {
+      super(state);
+   }
+
+   public boolean hasFace(BlockFace face) {
+      BooleanProperty state = FACES[face.ordinal()];
+      if (state == null) {
+         throw new IllegalArgumentException("Non-allowed face " + String.valueOf(face) + ". Check MultipleFacing.getAllowedFaces.");
+      } else {
+         return (Boolean)this.get(state);
+      }
+   }
+
+   public void setFace(BlockFace face, boolean has) {
+      BooleanProperty state = FACES[face.ordinal()];
+      if (state == null) {
+         throw new IllegalArgumentException("Non-allowed face " + String.valueOf(face) + ". Check MultipleFacing.getAllowedFaces.");
+      } else {
+         this.set(state, has);
+      }
+   }
+
+   public Set<BlockFace> getFaces() {
+      ImmutableSet.Builder<BlockFace> faces = ImmutableSet.builder();
+
+      for(int i = 0; i < FACES.length; ++i) {
+         if (FACES[i] != null && (Boolean)this.get(FACES[i])) {
+            faces.add(BlockFace.values()[i]);
+         }
+      }
+
+      return faces.build();
+   }
+
+   public Set<BlockFace> getAllowedFaces() {
+      ImmutableSet.Builder<BlockFace> faces = ImmutableSet.builder();
+
+      for(int i = 0; i < FACES.length; ++i) {
+         if (FACES[i] != null) {
+            faces.add(BlockFace.values()[i]);
+         }
+      }
+
+      return faces.build();
+   }
+}

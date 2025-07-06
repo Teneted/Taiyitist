@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ai/goal/target/PathfinderGoalHurtByTarget.java
 +++ b/net/minecraft/world/entity/ai/goal/target/PathfinderGoalHurtByTarget.java
-@@ -67,7 +67,7 @@
+@@ -62,7 +62,7 @@
  
      @Override
      public void start() {
@@ -9,7 +9,16 @@
          this.targetMob = this.mob.getTarget();
          this.timestamp = this.mob.getLastHurtByMobTimestamp();
          this.unseenMemoryTicks = 300;
-@@ -114,6 +114,6 @@
+@@ -76,7 +76,7 @@
+     protected void alertOthers() {
+         double d0 = this.getFollowDistance();
+         AxisAlignedBB axisalignedbb = AxisAlignedBB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, 10.0D, d0);
+-        List<? extends EntityInsentient> list = this.mob.level().<EntityInsentient>getEntitiesOfClass(this.mob.getClass(), axisalignedbb, IEntitySelector.NO_SPECTATORS);
++        List<? extends EntityInsentient> list = this.mob.level().getEntitiesOfClass(this.mob.getClass(), axisalignedbb, IEntitySelector.NO_SPECTATORS); // CraftBukkit - decompile error
+         Iterator iterator = list.iterator();
+ 
+         while (true) {
+@@ -113,6 +113,6 @@
      }
  
      protected void alertOther(EntityInsentient entityinsentient, EntityLiving entityliving) {

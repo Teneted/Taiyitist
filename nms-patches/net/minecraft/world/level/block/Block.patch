@@ -1,21 +1,21 @@
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
-@@ -340,7 +340,13 @@
-             EntityItem entityitem = (EntityItem) supplier.get();
+@@ -384,7 +384,13 @@
+                 EntityItem entityitem = (EntityItem) supplier.get();
  
-             entityitem.setDefaultPickUpDelay();
--            world.addFreshEntity(entityitem);
-+            // CraftBukkit start
-+            if (world.captureDrops != null) {
-+                world.captureDrops.add(entityitem);
-+            } else {
-+                world.addFreshEntity(entityitem);
-+            }
-+            // CraftBukkit end
+                 entityitem.setDefaultPickUpDelay();
+-                world.addFreshEntity(entityitem);
++                // CraftBukkit start
++                if (world.captureDrops != null) {
++                    world.captureDrops.add(entityitem);
++                } else {
++                    world.addFreshEntity(entityitem);
++                }
++                // CraftBukkit end
+                 return;
+             }
          }
-     }
- 
-@@ -366,7 +372,7 @@
+@@ -413,7 +419,7 @@
  
      public void playerDestroy(World world, EntityHuman entityhuman, BlockPosition blockposition, IBlockData iblockdata, @Nullable TileEntity tileentity, ItemStack itemstack) {
          entityhuman.awardStat(StatisticList.BLOCK_MINED.get(this));
@@ -24,7 +24,16 @@
          dropResources(iblockdata, world, blockposition, tileentity, entityhuman, itemstack);
      }
  
-@@ -499,15 +505,23 @@
+@@ -520,7 +526,7 @@
+     }
+ 
+     protected Function<IBlockData, VoxelShape> getShapeForEachState(Function<IBlockData, VoxelShape> function) {
+-        ImmutableMap immutablemap = (ImmutableMap) this.stateDefinition.getPossibleStates().stream().collect(ImmutableMap.toImmutableMap(Function.identity(), function));
++        ImmutableMap<IBlockData, VoxelShape> immutablemap = (ImmutableMap) this.stateDefinition.getPossibleStates().stream().collect(ImmutableMap.toImmutableMap(Function.identity(), function)); // CraftBukkit - decompile error
+ 
+         Objects.requireNonNull(immutablemap);
+         return immutablemap::get;
+@@ -557,14 +563,22 @@
          return this.builtInRegistryHolder;
      }
  
@@ -40,13 +49,12 @@
          }
  
 +        return 0;
-     }
- 
++    }
++
 +    public int getExpDrop(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack, boolean flag) {
 +        return 0;
-+    }
+     }
 +    // CraftBukkit end
-+
-     public static final class a {
  
-         private final IBlockData first;
+     private static record a(VoxelShape first, VoxelShape second) {
+ 

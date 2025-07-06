@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -60,6 +60,17 @@
+@@ -62,16 +62,28 @@
  import net.minecraft.world.level.storage.WorldInfo;
  import org.slf4j.Logger;
  
@@ -18,9 +18,11 @@
  public class Main {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -67,8 +78,9 @@
+ 
      public Main() {}
  
+-    @SuppressForbidden(a = "System.out needed before bootstrap")
++    @SuppressForbidden(reason = "System.out needed before bootstrap") // CraftBukkit - decompile error
      @DontObfuscate
 -    public static void main(String[] astring) {
 +    public static void main(final OptionSet optionset) { // CraftBukkit - replaces main(String[] astring)
@@ -29,7 +31,7 @@
          OptionParser optionparser = new OptionParser();
          OptionSpec<Void> optionspec = optionparser.accepts("nogui");
          OptionSpec<Void> optionspec1 = optionparser.accepts("initSettings", "Initializes 'server.properties' and 'eula.txt', then quits");
-@@ -94,15 +106,18 @@
+@@ -97,15 +109,18 @@
                  optionparser.printHelpOn(System.err);
                  return;
              }
@@ -50,7 +52,7 @@
                  JvmProfiler.INSTANCE.start(Environment.SERVER);
              }
  
-@@ -110,14 +125,27 @@
+@@ -113,14 +128,27 @@
              DispenserRegistry.validate();
              SystemUtils.startTimerHackThread();
              Path path1 = Paths.get("server.properties");
@@ -80,7 +82,7 @@
                  Main.LOGGER.info("Initialized '{}' and '{}'", path1.toAbsolutePath(), path2.toAbsolutePath());
                  return;
              }
-@@ -127,11 +155,13 @@
+@@ -130,11 +158,13 @@
                  return;
              }
  
@@ -94,10 +96,10 @@
 -            Convertable.ConversionSession convertable_conversionsession = convertable.validateAndCreateAccess(s);
 +            Convertable.ConversionSession convertable_conversionsession = convertable.validateAndCreateAccess(s, WorldDimension.OVERWORLD);
 +            // CraftBukkit end
-             Dynamic dynamic;
+             Dynamic<?> dynamic;
  
              if (convertable_conversionsession.hasWorldData()) {
-@@ -172,13 +202,31 @@
+@@ -175,13 +205,31 @@
              }
  
              Dynamic<?> dynamic1 = dynamic;
@@ -119,7 +121,7 @@
 +                com.google.common.io.Files.write("{\n"
 +                        + "    \"pack\": {\n"
 +                        + "        \"description\": \"Data pack for resources provided by Bukkit plugins\",\n"
-+                        + "        \"pack_format\": " + SharedConstants.getCurrentVersion().getPackVersion(EnumResourcePackType.SERVER_DATA) + "\n"
++                        + "        \"pack_format\": " + SharedConstants.getCurrentVersion().packVersion(EnumResourcePackType.SERVER_DATA) + "\n"
 +                        + "    }\n"
 +                        + "}\n", mcMeta, com.google.common.base.Charsets.UTF_8);
 +            } catch (java.io.IOException ex) {
@@ -130,15 +132,15 @@
  
              WorldStem worldstem;
  
-@@ -187,6 +235,7 @@
+@@ -190,6 +238,7 @@
  
                  worldstem = (WorldStem) SystemUtils.blockUntilDone((executor) -> {
                      return WorldLoader.load(worldloader_c, (worldloader_a) -> {
 +                        worldLoader.set(worldloader_a); // CraftBukkit
-                         IRegistry<WorldDimension> iregistry = worldloader_a.datapackDimensions().registryOrThrow(Registries.LEVEL_STEM);
+                         IRegistry<WorldDimension> iregistry = worldloader_a.datapackDimensions().lookupOrThrow(Registries.LEVEL_STEM);
  
                          if (dynamic1 != null) {
-@@ -199,7 +248,7 @@
+@@ -202,7 +251,7 @@
                              WorldOptions worldoptions;
                              WorldDimensions worlddimensions;
  
@@ -147,25 +149,25 @@
                                  worldsettings = MinecraftServer.DEMO_SETTINGS;
                                  worldoptions = WorldOptions.DEMO_OPTIONS;
                                  worlddimensions = WorldPresets.createNormalWorldDimensions(worldloader_a.datapackWorldgen());
-@@ -207,7 +256,7 @@
+@@ -210,7 +259,7 @@
                                  DedicatedServerProperties dedicatedserverproperties = dedicatedserversettings.getProperties();
  
-                                 worldsettings = new WorldSettings(dedicatedserverproperties.levelName, dedicatedserverproperties.gamemode, dedicatedserverproperties.hardcore, dedicatedserverproperties.difficulty, false, new GameRules(), worldloader_a.dataConfiguration());
+                                 worldsettings = new WorldSettings(dedicatedserverproperties.levelName, dedicatedserverproperties.gamemode, dedicatedserverproperties.hardcore, dedicatedserverproperties.difficulty, false, new GameRules(worldloader_a.dataConfiguration().enabledFeatures()), worldloader_a.dataConfiguration());
 -                                worldoptions = optionset.has(optionspec3) ? dedicatedserverproperties.worldOptions.withBonusChest(true) : dedicatedserverproperties.worldOptions;
 +                                worldoptions = optionset.has("bonusChest") ? dedicatedserverproperties.worldOptions.withBonusChest(true) : dedicatedserverproperties.worldOptions; // CraftBukkit
                                  worlddimensions = dedicatedserverproperties.createDimensions(worldloader_a.datapackWorldgen());
                              }
  
-@@ -223,6 +272,7 @@
+@@ -226,6 +275,7 @@
                  return;
              }
  
 +            /*
              IRegistryCustom.Dimension iregistrycustom_dimension = worldstem.registries().compositeAccess();
-             boolean flag1 = optionset.has(optionspec6);
- 
-@@ -235,20 +285,31 @@
              SaveData savedata = worldstem.worldData();
+             boolean flag1 = optionset.has(optionspec6);
+@@ -237,21 +287,32 @@
+             }
  
              convertable_conversionsession.saveDataTag(iregistrycustom_dimension, savedata);
 +            */
@@ -192,13 +194,14 @@
 +                    }
 +                }
 +
+                 GameTestHarnessTicker.SINGLETON.startTicking();
                  return dedicatedserver1;
              });
 +            /* CraftBukkit start
              Thread thread = new Thread("Server Shutdown Thread") {
                  public void run() {
                      dedicatedserver.halt(true);
-@@ -257,6 +318,7 @@
+@@ -260,6 +321,7 @@
  
              thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(Main.LOGGER));
              Runtime.getRuntime().addShutdownHook(thread);
@@ -206,12 +209,12 @@
          } catch (Exception exception1) {
              Main.LOGGER.error(LogUtils.FATAL_MARKER, "Failed to start the minecraft server", exception1);
          }
-@@ -293,7 +355,7 @@
+@@ -296,7 +358,7 @@
      }
  
-     public static void forceUpgrade(Convertable.ConversionSession convertable_conversionsession, DataFixer datafixer, boolean flag, BooleanSupplier booleansupplier, IRegistryCustom iregistrycustom, boolean flag1) {
+     public static void forceUpgrade(Convertable.ConversionSession convertable_conversionsession, SaveData savedata, DataFixer datafixer, boolean flag, BooleanSupplier booleansupplier, IRegistryCustom iregistrycustom, boolean flag1) {
 -        Main.LOGGER.info("Forcing world upgrade!");
 +        Main.LOGGER.info("Forcing world upgrade! {}", convertable_conversionsession.getLevelId()); // CraftBukkit
-         WorldUpgrader worldupgrader = new WorldUpgrader(convertable_conversionsession, datafixer, iregistrycustom, flag, flag1);
-         IChatBaseComponent ichatbasecomponent = null;
  
+         try (WorldUpgrader worldupgrader = new WorldUpgrader(convertable_conversionsession, datafixer, savedata, iregistrycustom, flag, flag1)) {
+             IChatBaseComponent ichatbasecomponent = null;

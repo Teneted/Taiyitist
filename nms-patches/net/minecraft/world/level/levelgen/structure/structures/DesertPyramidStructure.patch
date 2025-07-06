@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/levelgen/structure/structures/DesertPyramidStructure.java
 +++ b/net/minecraft/world/level/levelgen/structure/structures/DesertPyramidStructure.java
-@@ -68,6 +68,15 @@
+@@ -64,6 +64,15 @@
  
      private static void placeSuspiciousSand(StructureBoundingBox structureboundingbox, GeneratorAccessSeed generatoraccessseed, BlockPosition blockposition) {
          if (structureboundingbox.isInside(blockposition)) {

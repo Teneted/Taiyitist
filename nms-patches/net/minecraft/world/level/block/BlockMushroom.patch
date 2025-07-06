@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockMushroom.java
 +++ b/net/minecraft/world/level/block/BlockMushroom.java
-@@ -20,6 +20,10 @@
+@@ -19,6 +19,10 @@
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
  
@@ -8,10 +8,10 @@
 +import org.bukkit.TreeType;
 +// CraftBukkit end
 +
- public class BlockMushroom extends BlockPlant implements IBlockFragilePlantElement {
+ public class BlockMushroom extends VegetationBlock implements IBlockFragilePlantElement {
  
      public static final MapCodec<BlockMushroom> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -75,7 +79,7 @@
+@@ -70,7 +74,7 @@
              }
  
              if (worldserver.isEmptyBlock(blockposition2) && iblockdata.canSurvive(worldserver, blockposition2)) {
@@ -20,7 +20,7 @@
              }
          }
  
-@@ -101,6 +105,7 @@
+@@ -96,6 +100,7 @@
              return false;
          } else {
              worldserver.removeBlock(blockposition, false);

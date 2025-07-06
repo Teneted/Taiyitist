@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/IInventory.java
 +++ b/net/minecraft/world/IInventory.java
-@@ -9,6 +9,11 @@
+@@ -11,6 +11,11 @@
  import net.minecraft.world.level.World;
  import net.minecraft.world.level.block.entity.TileEntity;
  
@@ -9,10 +9,10 @@
 +import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 +// CraftBukkit end
 +
- public interface IInventory extends Clearable {
+ public interface IInventory extends Clearable, Iterable<ItemStack> {
  
      float DEFAULT_DISTANCE_BUFFER = 4.0F;
-@@ -25,9 +30,7 @@
+@@ -27,9 +32,7 @@
  
      void setItem(int i, ItemStack itemstack);
  
@@ -23,11 +23,10 @@
  
      default int getMaxStackSize(ItemStack itemstack) {
          return Math.min(this.getMaxStackSize(), itemstack.getMaxStackSize());
-@@ -91,4 +94,22 @@
- 
-         return world == null ? false : (world.getBlockEntity(blockposition) != tileentity ? false : entityhuman.canInteractWithBlock(blockposition, (double) f));
+@@ -94,6 +97,24 @@
+         return new IInventory.a(this);
      }
-+
+ 
 +    // CraftBukkit start
 +    java.util.List<ItemStack> getContents();
 +
@@ -45,4 +44,7 @@
 +
 +    int MAX_STACK = 99;
 +    // CraftBukkit end
- }
++
+     public static class a implements Iterator<ItemStack> {
+ 
+         private final IInventory container;
