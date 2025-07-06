@@ -519,7 +519,7 @@ public abstract class MixinLivingEntity extends Entity implements Attackable, In
     }
 
     @Override
-    public int getExpReward(@Nullable Entity entity) {
+    public int getExpReward(ServerLevel handle, @Nullable Entity entity) {
         if (this.level() instanceof ServerLevel serverLevel && !this.wasExperienceConsumed() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
             int exp = this.getExperienceReward(serverLevel, entity);
             return exp;

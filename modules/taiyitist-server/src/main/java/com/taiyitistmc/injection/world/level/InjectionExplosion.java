@@ -6,6 +6,10 @@ public interface InjectionExplosion {
         throw new IllegalStateException("Not implemented");
     }
 
+    default void banner$setYield(float yield) {
+        throw new IllegalStateException("Not implemented");
+    }
+
     default boolean bridge$wasCanceled() {
         throw new IllegalStateException("Not implemented");
     }

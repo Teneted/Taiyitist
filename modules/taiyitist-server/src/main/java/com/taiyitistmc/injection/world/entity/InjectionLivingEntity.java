@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -138,7 +139,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default int getExpReward(@Nullable Entity entity) {
+    default int getExpReward(ServerLevel handle, @Nullable Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 
