@@ -8,30 +8,29 @@ class CraftAsyncDebugger {
    private final Plugin plugin;
    private final Class<?> clazz;
 
-   CraftAsyncDebugger(int expiry, Plugin plugin, Class<?> clazz) {
+   CraftAsyncDebugger(final int expiry, final Plugin plugin, final Class<?> clazz) {
       this.expiry = expiry;
       this.plugin = plugin;
       this.clazz = clazz;
+
    }
 
-   final CraftAsyncDebugger getNextHead(int time) {
-      CraftAsyncDebugger next;
-      CraftAsyncDebugger current;
-      for(current = this; time > current.expiry && (next = current.next) != null; current = next) {
+   final CraftAsyncDebugger getNextHead(final int time) {
+      CraftAsyncDebugger next, current = this;
+      while (time > current.expiry && (next = current.next) != null) {
+         current = next;
       }
-
       return current;
    }
 
-   final CraftAsyncDebugger setNext(CraftAsyncDebugger next) {
+   final CraftAsyncDebugger setNext(final CraftAsyncDebugger next) {
       return this.next = next;
    }
 
-   StringBuilder debugTo(StringBuilder string) {
-      for(CraftAsyncDebugger next = this; next != null; next = next.next) {
+   StringBuilder debugTo(final StringBuilder string) {
+      for (CraftAsyncDebugger next = this; next != null; next = next.next) {
          string.append(next.plugin.getDescription().getName()).append(':').append(next.clazz.getName()).append('@').append(next.expiry).append(',');
       }
-
       return string;
    }
 }

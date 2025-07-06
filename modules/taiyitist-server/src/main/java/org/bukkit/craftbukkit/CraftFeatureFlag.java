@@ -49,6 +49,6 @@ public class CraftFeatureFlag implements FeatureFlag {
          return CraftNamespacedKey.fromMinecraft((ResourceLocation)entry.getKey()).equals(namespacedKey);
       }).findFirst().map((entry) -> {
          return new CraftFeatureFlag((ResourceLocation)entry.getKey(), (net.minecraft.world.flag.FeatureFlag)entry.getValue());
-      }).orElse((Object)null);
+      }).orElse((CraftFeatureFlag) null);
    }
 }

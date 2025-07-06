@@ -47,8 +47,7 @@ public class CraftPotionType implements PotionType.InternalPotionData {
    public static Holder<Potion> bukkitToMinecraftHolder(PotionType bukkit) {
       Preconditions.checkArgument(bukkit != null);
       Registry<Potion> registry = CraftRegistry.getMinecraftRegistry(Registries.POTION);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<Potion> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<Potion> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own sound effect with out properly registering it.");

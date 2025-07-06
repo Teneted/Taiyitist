@@ -28,8 +28,7 @@ public class CraftPatternType extends CraftOldEnumRegistryItem<PatternType, Bann
    public static Holder<BannerPattern> bukkitToMinecraftHolder(PatternType bukkit) {
       Preconditions.checkArgument(bukkit != null);
       net.minecraft.core.Registry<BannerPattern> registry = CraftRegistry.getMinecraftRegistry(Registries.BANNER_PATTERN);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<BannerPattern> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<BannerPattern> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own banner pattern without properly registering it.");

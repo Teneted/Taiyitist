@@ -57,7 +57,11 @@ public class Main {
                mainHandle.invoke(argv);
             } catch (Throwable var5) {
                Throwable t = var5;
-               Main.Thrower.INSTANCE.sneakyThrow(t);
+                try {
+                    Thrower.INSTANCE.sneakyThrow(t);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
             }
 
          }, "ServerMain");
@@ -98,7 +102,7 @@ public class Main {
          is.close();
       }
 
-      return var5;
+      return (T) var5;
    }
 
    private void readAndExtractDir(String subdir, Path outputDir, List<URL> extractedUrls, boolean readOnly) throws Exception {
@@ -251,7 +255,7 @@ public class Main {
    private static class Thrower<T extends Throwable> {
       private static final Thrower<RuntimeException> INSTANCE = new Thrower();
 
-      public void sneakyThrow(Throwable exception) throws T {
+      public void sneakyThrow(Throwable exception) throws Throwable {
          throw exception;
       }
    }

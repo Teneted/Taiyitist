@@ -11,7 +11,7 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 
 public record CraftBlockStateEnum<N extends Enum<N> & StringRepresentable, B extends Enum<B>>(EnumProperty<N> nms, Class<B> bukkit, N[] nmsValues, B[] bukkitValues) {
    public CraftBlockStateEnum(EnumProperty<N> nms, Class<B> bukkit) {
-      this(nms, bukkit, (Enum[])nms.getValueClass().getEnumConstants(), (Enum[])bukkit.getEnumConstants());
+      this(nms, bukkit, (N[]) nms.getValueClass().getEnumConstants(), (B[]) bukkit.getEnumConstants());
    }
 
    public CraftBlockStateEnum(EnumProperty<N> nms, Class<B> bukkit, N[] nmsValues, B[] bukkitValues) {
@@ -22,11 +22,11 @@ public record CraftBlockStateEnum<N extends Enum<N> & StringRepresentable, B ext
    }
 
    B toBukkit(N nms) {
-      return (Enum)(nms instanceof Direction ? CraftBlock.notchToBlockFace((Direction)nms) : this.bukkitValues[nms.ordinal()]);
+      return nms instanceof Direction ? (B) CraftBlock.notchToBlockFace((Direction) nms) : this.bukkitValues[nms.ordinal()];
    }
 
    N toNMS(B bukkit) {
-      return (Enum)(bukkit instanceof BlockFace ? CraftBlock.blockFaceToNotch((BlockFace)bukkit) : this.nmsValues[bukkit.ordinal()]);
+      return bukkit instanceof BlockFace ? (N) CraftBlock.blockFaceToNotch((BlockFace) bukkit) : this.nmsValues[bukkit.ordinal()];
    }
 
    Set<B> getValues() {
@@ -34,7 +34,7 @@ public record CraftBlockStateEnum<N extends Enum<N> & StringRepresentable, B ext
       Iterator var2 = this.nms.getPossibleValues().iterator();
 
       while(var2.hasNext()) {
-         N e = (Enum)var2.next();
+         N e = (N) var2.next();
          values.add(this.toBukkit(e));
       }
 

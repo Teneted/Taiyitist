@@ -29,13 +29,11 @@ public class CraftServerLinks implements ServerLinks {
 
    public ServerLinks.ServerLink getLink(ServerLinks.Type type) {
       Preconditions.checkArgument(type != null, "type cannot be null");
-      return (ServerLinks.ServerLink)this.getServerLinks().findKnownType(fromBukkit(type)).map(CraftServerLink::new).orElse((Object)null);
+      return (ServerLinks.ServerLink)this.getServerLinks().findKnownType(fromBukkit(type)).map(CraftServerLink::new).orElse((CraftServerLink) null);
    }
 
    public List<ServerLinks.ServerLink> getLinks() {
-      return this.getServerLinks().entries().stream().map((nms) -> {
-         return new CraftServerLink(nms);
-      }).toList();
+      return getServerLinks().entries().stream().map(nms -> (ServerLink) new CraftServerLink(nms)).toList();
    }
 
    public ServerLinks.ServerLink setLink(ServerLinks.Type type, URI url) {
@@ -112,7 +110,7 @@ public class CraftServerLinks implements ServerLinks {
       }
 
       public ServerLinks.Type getType() {
-         return (ServerLinks.Type)this.handle.type().left().map(CraftServerLinks::fromNMS).orElse((Object)null);
+         return (ServerLinks.Type)this.handle.type().left().map(CraftServerLinks::fromNMS).orElse((Type) null);
       }
 
       public String getDisplayName() {

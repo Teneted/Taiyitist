@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.UserBanList;
 import net.minecraft.server.players.UserBanListEntry;
@@ -140,10 +142,10 @@ public class CraftProfileBanList implements ProfileBanList {
    }
 
    static GameProfile getProfileByUUID(UUID uuid) {
-      return MinecraftServer.getServer() != null ? (GameProfile)MinecraftServer.getServer().getProfileCache().get(uuid).orElse((Object)null) : null;
+      return BukkitMethodHooks.getServer() != null ? (GameProfile)BukkitMethodHooks.getServer().getProfileCache().get(uuid).orElse((GameProfile) null) : null;
    }
 
    static GameProfile getProfileByName(String name) {
-      return MinecraftServer.getServer() != null ? (GameProfile)MinecraftServer.getServer().getProfileCache().get(name).orElse((Object)null) : null;
+      return BukkitMethodHooks.getServer() != null ? (GameProfile)BukkitMethodHooks.getServer().getProfileCache().get(name).orElse((GameProfile) null) : null;
    }
 }

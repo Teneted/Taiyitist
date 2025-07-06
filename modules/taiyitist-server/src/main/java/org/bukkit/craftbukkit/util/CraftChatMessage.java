@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.md_5.bungee.chat.ChatVersion;
 import net.md_5.bungee.chat.VersionedComponentSerializer;
 import net.minecraft.ChatFormatting;
@@ -86,7 +88,7 @@ public final class CraftChatMessage {
    }
 
    public static String toJSON(Component component) {
-      return CraftChatMessage.ChatSerializer.toJson(component, MinecraftServer.getDefaultRegistryAccess());
+      return CraftChatMessage.ChatSerializer.toJson(component, BukkitMethodHooks.getDefaultRegistryAccess());
    }
 
    public static String toJSONOrNull(Component component) {
@@ -94,7 +96,7 @@ public final class CraftChatMessage {
    }
 
    public static Component fromJSON(String jsonMessage) throws JsonParseException {
-      return CraftChatMessage.ChatSerializer.fromJson(jsonMessage, MinecraftServer.getDefaultRegistryAccess());
+      return CraftChatMessage.ChatSerializer.fromJson(jsonMessage, BukkitMethodHooks.getDefaultRegistryAccess());
    }
 
    public static Component fromJSONOrNull(String jsonMessage) {
@@ -173,8 +175,8 @@ public final class CraftChatMessage {
                      hadFormat = false;
                   }
                } else {
-                  if (color.format != null) {
-                     out.append(color.format);
+                  if (color.bridge$format() != null) {
+                     out.append(color.bridge$format());
                   } else {
                      out.append('§').append("x");
                      char[] var7 = color.serialize().substring(1).toCharArray();

@@ -78,7 +78,7 @@ public abstract class CraftParticle<D> implements Keyed {
 
    public static <T> T convertLegacy(T object) {
       if (object instanceof MaterialData mat) {
-         return CraftBlockData.fromData(CraftMagicNumbers.getBlock(mat));
+         return (T) CraftBlockData.fromData(CraftMagicNumbers.getBlock(mat));
       } else {
          return object;
       }
@@ -143,14 +143,14 @@ public abstract class CraftParticle<D> implements Keyed {
          BiFunction<NamespacedKey, ParticleType<?>, CraftParticle<?>> itemStackFunction = (name, particle) -> {
             return new CraftParticle<ItemStack>(name, particle, ItemStack.class) {
                public ParticleOptions createParticleParam(ItemStack data) {
-                  return new ItemParticleOption(this.getHandle(), CraftItemStack.asNMSCopy(data));
+                  return new ItemParticleOption((ParticleType<ItemParticleOption>) this.getHandle(), CraftItemStack.asNMSCopy(data));
                }
             };
          };
          BiFunction<NamespacedKey, ParticleType<?>, CraftParticle<?>> blockDataFunction = (name, particle) -> {
             return new CraftParticle<BlockData>(name, particle, BlockData.class) {
                public ParticleOptions createParticleParam(BlockData data) {
-                  return new BlockParticleOption(this.getHandle(), ((CraftBlockData)data).getState());
+                  return new BlockParticleOption((ParticleType<BlockParticleOption>) this.getHandle(), ((CraftBlockData)data).getState());
                }
             };
          };
@@ -200,7 +200,7 @@ public abstract class CraftParticle<D> implements Keyed {
          BiFunction<NamespacedKey, ParticleType<?>, CraftParticle<?>> colorFunction = (name, particle) -> {
             return new CraftParticle<Color>(name, particle, Color.class) {
                public ParticleOptions createParticleParam(Color color) {
-                  return ColorParticleOption.create(particle, color.asARGB());
+                  return ColorParticleOption.create((ParticleType<ColorParticleOption>) particle, color.asARGB());
                }
             };
          };

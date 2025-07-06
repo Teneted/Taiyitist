@@ -49,7 +49,7 @@ public class CraftMapRenderer extends MapRenderer {
          } while(other != null && !player.canSee(other));
 
          MapDecoration decoration = (MapDecoration)this.worldMap.decorations.get(key);
-         cursors.addCursor(new MapCursor(decoration.x(), decoration.y(), (byte)(decoration.rot() & 15), CraftMapCursor.CraftType.minecraftHolderToBukkit(decoration.type()), true, CraftChatMessage.fromComponent((Component)decoration.name().orElse((Object)null))));
+         cursors.addCursor(new MapCursor(decoration.x(), decoration.y(), (byte)(decoration.rot() & 15), CraftMapCursor.CraftType.minecraftHolderToBukkit(decoration.type()), true, CraftChatMessage.fromComponent((Component)decoration.name().orElse((Component) null))));
       }
    }
 }

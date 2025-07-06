@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -20,7 +22,7 @@ public class CraftCrashReport implements Supplier<String> {
       StringWriter value = new StringWriter();
 
       try {
-         value.append("\n   Running: ").append(Bukkit.getName()).append(" version ").append(Bukkit.getVersion()).append(" (Implementing API version ").append(Bukkit.getBukkitVersion()).append(") ").append(String.valueOf(MinecraftServer.getServer().usesAuthentication()));
+         value.append("\n   Running: ").append(Bukkit.getName()).append(" version ").append(Bukkit.getVersion()).append(" (Implementing API version ").append(Bukkit.getBukkitVersion()).append(") ").append(String.valueOf(BukkitMethodHooks.getServer().usesAuthentication()));
          value.append("\n   Plugins: {");
          Plugin[] var9 = Bukkit.getPluginManager().getPlugins();
          int var11 = var9.length;
@@ -33,7 +35,7 @@ public class CraftCrashReport implements Supplier<String> {
          }
 
          value.append("}\n   Warnings: ").append(Bukkit.getWarningState().name());
-         value.append("\n   Reload Count: ").append(String.valueOf(MinecraftServer.getServer().server.reloadCount));
+         value.append("\n   Reload Count: ").append(String.valueOf(BukkitMethodHooks.getServer().bridge$server().reloadCount));
          value.append("\n   Threads: {");
          Iterator var10 = Thread.getAllStackTraces().entrySet().iterator();
 

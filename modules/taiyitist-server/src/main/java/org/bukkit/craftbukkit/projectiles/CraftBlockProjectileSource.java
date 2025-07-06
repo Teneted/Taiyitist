@@ -127,13 +127,13 @@ public class CraftBlockProjectileSource implements BlockProjectileSource {
          arrow.pickup = Pickup.ALLOWED;
       }
 
-      ((net.minecraft.world.entity.projectile.Projectile)launch).projectileSource = this;
+      ((net.minecraft.world.entity.projectile.Projectile)launch).banner$setProjectileSource(this);
       projectileItem.shoot((net.minecraft.world.entity.projectile.Projectile)launch, (double)enumdirection.getStepX(), (double)enumdirection.getStepY(), (double)enumdirection.getStepZ(), dispenseConfig.power(), dispenseConfig.uncertainty());
       if (velocity != null) {
          ((Projectile)((net.minecraft.world.entity.projectile.Projectile)launch).getBukkitEntity()).setVelocity(velocity);
       }
 
       world.addFreshEntity((Entity)launch);
-      return (Projectile)((net.minecraft.world.entity.projectile.Projectile)launch).getBukkitEntity();
+      return (T) launch.getBukkitEntity();
    }
 }

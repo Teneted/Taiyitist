@@ -15,6 +15,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.Lifecycle;
+import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -371,11 +372,7 @@ public final class CraftServer implements Server {
       };
       this.console = console;
       this.playerList = (DedicatedPlayerList)playerList;
-      this.playerView = Collections.unmodifiableList(Lists.transform(playerList.players, new Function<ServerPlayer, CraftPlayer>(this) {
-         public CraftPlayer apply(ServerPlayer player) {
-            return player.getBukkitEntity();
-         }
-      }));
+      this.playerView = Collections.unmodifiableList(Lists.transform(playerList.players, player -> player.getBukkitEntity()));
       this.serverVersion = CraftServer.class.getPackage().getImplementationVersion();
       this.structureManager = new CraftStructureManager(console.getStructureManager(), console.registryAccess());
       this.dataPackManager = new CraftDataPackManager(this.getServer().getPackRepository());
@@ -433,7 +430,7 @@ public final class CraftServer implements Server {
       this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
       this.pluginManager.useTimings(this.configuration.getBoolean("settings.plugin-profiling"));
       this.overrideSpawnLimits();
-      console.autosavePeriod = this.configuration.getInt("ticks-per.autosave");
+      console.banner$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
       this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
       TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
@@ -454,11 +451,11 @@ public final class CraftServer implements Server {
    }
 
    private File getConfigFile() {
-      return (File)this.console.options.valueOf("bukkit-settings");
+      return (File)this.console.bridge$options().valueOf("bukkit-settings");
    }
 
    private File getCommandsConfigFile() {
-      return (File)this.console.options.valueOf("commands-settings");
+      return (File)this.console.bridge$options().valueOf("commands-settings");
    }
 
    private void overrideSpawnLimits() {
@@ -519,7 +516,7 @@ public final class CraftServer implements Server {
 
    public void loadPlugins() {
       this.pluginManager.registerInterface(JavaPluginLoader.class);
-      File pluginFolder = (File)this.console.options.valueOf("plugins");
+      File pluginFolder = (File)this.console.bridge$options().valueOf("plugins");
       if (pluginFolder.exists()) {
          Plugin[] plugins = this.pluginManager.loadPlugins(pluginFolder);
          Plugin[] var3 = plugins;

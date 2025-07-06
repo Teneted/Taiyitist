@@ -28,8 +28,7 @@ public class CraftArt extends CraftOldEnumRegistryItem<Art, PaintingVariant> imp
    public static Holder<PaintingVariant> bukkitToMinecraftHolder(Art bukkit) {
       Preconditions.checkArgument(bukkit != null);
       net.minecraft.core.Registry<PaintingVariant> registry = CraftRegistry.getMinecraftRegistry(Registries.PAINTING_VARIANT);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<PaintingVariant> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<PaintingVariant> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own painting variant with out properly registering it.");

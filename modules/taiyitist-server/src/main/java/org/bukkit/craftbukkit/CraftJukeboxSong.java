@@ -23,16 +23,19 @@ public class CraftJukeboxSong extends CraftRegistryItem<JukeboxSong> implements 
       return (JukeboxSong)CraftRegistry.bukkitToMinecraft(bukkit);
    }
 
-   public static Holder<JukeboxSong> bukkitToMinecraftHolder(org.bukkit.JukeboxSong bukkit) {
+   public static Holder<net.minecraft.world.item.JukeboxSong> bukkitToMinecraftHolder(org.bukkit.JukeboxSong bukkit) {
       Preconditions.checkArgument(bukkit != null);
-      net.minecraft.core.Registry<JukeboxSong> registry = CraftRegistry.getMinecraftRegistry(Registries.JUKEBOX_SONG);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<JukeboxSong> holder) {
+
+      net.minecraft.core.Registry<net.minecraft.world.item.JukeboxSong> registry = CraftRegistry.getMinecraftRegistry(Registries.JUKEBOX_SONG);
+
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<net.minecraft.world.item.JukeboxSong> holder) {
          return holder;
-      } else {
-         throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own trim pattern without properly registering it.");
       }
+
+      throw new IllegalArgumentException("No Reference holder found for " + bukkit
+              + ", this can happen if a plugin creates its own trim pattern without properly registering it.");
    }
+
 
    public CraftJukeboxSong(NamespacedKey key, Holder<JukeboxSong> handle) {
       super(key, handle);

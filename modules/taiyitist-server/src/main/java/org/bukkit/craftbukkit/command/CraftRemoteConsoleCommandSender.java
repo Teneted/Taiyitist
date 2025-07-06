@@ -17,7 +17,7 @@ public class CraftRemoteConsoleCommandSender extends ServerCommandSender impleme
    }
 
    public SocketAddress getAddress() {
-      return this.listener.socketAddress;
+      return this.listener.bridge$socketAddress();
    }
 
    public void sendMessage(String message) {

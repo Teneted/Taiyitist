@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.craftbukkit.CraftServer;
@@ -73,7 +73,7 @@ public final class CraftPlayerProfile implements PlayerProfile {
 
    @Internal
    public CraftPlayerProfile(@Nonnull ResolvableProfile resolvableProfile) {
-      this((UUID)resolvableProfile.id().orElse((Object)null), (String)resolvableProfile.name().orElse((Object)null), false);
+      this((UUID)resolvableProfile.id().orElse((UUID) null), (String)resolvableProfile.name().orElse((String) null), false);
       this.properties.putAll(resolvableProfile.properties());
    }
 

@@ -43,19 +43,27 @@ public class CraftDataPackManager implements DataPackManager {
 
    public Collection<DataPack> getEnabledDataPacks(World world) {
       Preconditions.checkArgument(world != null, "world cannot be null");
-      CraftWorld craftWorld = (CraftWorld)world;
-      return (Collection)craftWorld.getHandle().L.getDataConfiguration().dataPacks().getEnabled().stream().map((packName) -> {
+
+      CraftWorld craftWorld = ((CraftWorld) world);
+      return craftWorld.getHandle().bridge$serverLevelDataCB().getDataConfiguration().dataPacks().getEnabled().stream().map(packName -> {
          Pack resourcePackLoader = this.getHandle().getPack(packName);
-         return resourcePackLoader != null ? new CraftDataPack(resourcePackLoader) : null;
+         if (resourcePackLoader != null) {
+            return new CraftDataPack(resourcePackLoader);
+         }
+         return null;
       }).filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
    }
 
    public Collection<DataPack> getDisabledDataPacks(World world) {
       Preconditions.checkArgument(world != null, "world cannot be null");
-      CraftWorld craftWorld = (CraftWorld)world;
-      return (Collection)craftWorld.getHandle().L.getDataConfiguration().dataPacks().getDisabled().stream().map((packName) -> {
+
+      CraftWorld craftWorld = ((CraftWorld) world);
+      return craftWorld.getHandle().bridge$serverLevelDataCB().getDataConfiguration().dataPacks().getDisabled().stream().map(packName -> {
          Pack resourcePackLoader = this.getHandle().getPack(packName);
-         return resourcePackLoader != null ? new CraftDataPack(resourcePackLoader) : null;
+         if (resourcePackLoader != null) {
+            return new CraftDataPack(resourcePackLoader);
+         }
+         return null;
       }).filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
    }
 

@@ -39,8 +39,7 @@ public class CraftAttribute extends CraftOldEnumRegistryItem<Attribute, net.mine
    public static Holder<net.minecraft.world.entity.ai.attributes.Attribute> bukkitToMinecraftHolder(Attribute bukkit) {
       Preconditions.checkArgument(bukkit != null);
       net.minecraft.core.Registry<net.minecraft.world.entity.ai.attributes.Attribute> registry = CraftRegistry.getMinecraftRegistry(Registries.ATTRIBUTE);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<net.minecraft.world.entity.ai.attributes.Attribute> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<net.minecraft.world.entity.ai.attributes.Attribute> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own sound effect with out properly registering it.");

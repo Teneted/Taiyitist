@@ -62,55 +62,43 @@ public class CraftMapColorCache implements MapPalette.MapColorCache {
    }
 
    public CompletableFuture<Void> initCache() {
-      Preconditions.checkState(!this.cached && !this.running.getAndSet(true), "Cache is already build or is currently being build");
-      this.cache = new byte[16777216];
+      Preconditions.checkState(!cached && !running.getAndSet(true), "Cache is already build or is currently being build");
+
+      cache = new byte[256 * 256 * 256]; // Red, Green and Blue have each a range from 0 to 255 each mean we need space for 256 * 256 * 256 values
       if (CACHE_FILE.exists()) {
          byte[] fileContent;
-         try {
-            InputStream inputStream = new InflaterInputStream(new FileInputStream(CACHE_FILE));
 
-            try {
-               fileContent = ((InputStream)inputStream).readAllBytes();
-            } catch (Throwable var7) {
-               try {
-                  ((InputStream)inputStream).close();
-               } catch (Throwable var5) {
-                  var7.addSuppressed(var5);
-               }
-
-               throw var7;
-            }
-
-            ((InputStream)inputStream).close();
-         } catch (IOException var8) {
-            IOException e = var8;
-            this.logger.warning("Error while reading map color cache");
+         try (InputStream inputStream = new InflaterInputStream(new FileInputStream(CACHE_FILE))) {
+            fileContent = inputStream.readAllBytes();
+         } catch (IOException e) {
+            logger.warning("Error while reading map color cache");
             e.printStackTrace();
-            return CompletableFuture.completedFuture((Object)null);
+            return CompletableFuture.completedFuture(null);
          }
 
          byte[] hash;
          try {
             hash = MessageDigest.getInstance("MD5").digest(fileContent);
-         } catch (NoSuchAlgorithmException var6) {
-            NoSuchAlgorithmException e = var6;
-            this.logger.warning("Error while hashing map color cache");
+         } catch (NoSuchAlgorithmException e) {
+            logger.warning("Error while hashing map color cache");
             e.printStackTrace();
-            return CompletableFuture.completedFuture((Object)null);
+            return CompletableFuture.completedFuture(null);
          }
 
-         if (!"E88EDD068D12D39934B40E8B6B124C83".equals(bytesToString(hash))) {
-            this.logger.info("Map color cache hash invalid, rebuilding cache in the background");
-            return this.buildAndSaveCache();
+         if (!MD5_CACHE_HASH.equals(bytesToString(hash))) {
+            logger.info("Map color cache hash invalid, rebuilding cache in the background");
+            return buildAndSaveCache();
          } else {
-            System.arraycopy(fileContent, 0, this.cache, 0, fileContent.length);
-            this.cached = true;
-            return CompletableFuture.completedFuture((Object)null);
+            System.arraycopy(fileContent, 0, cache, 0, fileContent.length);
          }
+
+         cached = true;
       } else {
-         this.logger.info("Map color cache not found, building it in the background");
-         return this.buildAndSaveCache();
+         logger.info("Map color cache not found, building it in the background");
+         return buildAndSaveCache();
       }
+
+      return CompletableFuture.completedFuture(null);
    }
 
    private void buildCache() {

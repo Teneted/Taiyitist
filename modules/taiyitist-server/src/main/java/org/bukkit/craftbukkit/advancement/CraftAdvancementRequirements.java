@@ -14,8 +14,6 @@ public class CraftAdvancementRequirements implements AdvancementRequirements {
 
    @NotNull
    public List<AdvancementRequirement> getRequirements() {
-      return this.requirements.requirements().stream().map((requirement) -> {
-         return new CraftAdvancementRequirement(requirement);
-      }).toList();
+      return requirements.requirements().stream().map((requirement) -> (AdvancementRequirement) new CraftAdvancementRequirement(requirement)).toList();
    }
 }

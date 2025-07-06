@@ -121,14 +121,19 @@ public final class CraftPersistentDataTypeRegistry {
       }
    }
 
-   private <T, Z extends Tag> TagAdapter<T, Z> createAdapter(Class<T> primitiveType, Class<Z> nbtBaseType, byte nmsTypeByte, Function<T, Z> builder, Function<Z, T> extractor) {
-      return this.createAdapter(primitiveType, nbtBaseType, nmsTypeByte, (type, t) -> {
-         return (Tag)builder.apply(t);
-      }, (type, z) -> {
-         return extractor.apply(z);
-      }, (type, t) -> {
-         return nbtBaseType.isInstance(t);
-      });
+   // Plain constructor helper method.
+   private <T, Z extends Tag> TagAdapter<T, Z> createAdapter(
+           final Class<T> primitiveType, final Class<Z> nbtBaseType, final byte nmsTypeByte,
+           final Function<T, Z> builder, final Function<Z, T> extractor
+   ) {
+      return createAdapter(
+              primitiveType,
+              nbtBaseType,
+              nmsTypeByte,
+              (type, t) -> builder.apply(t),
+              (type, z) -> extractor.apply(z),
+              (type, t) -> nbtBaseType.isInstance(t)
+      );
    }
 
    private <T, Z extends Tag> TagAdapter<T, Z> createAdapter(Class<T> primitiveType, Class<Z> nbtBaseType, byte nmsTypeByte, BiFunction<PersistentDataType<T, ?>, T, Z> builder, BiFunction<PersistentDataType<T, ?>, Z, T> extractor, BiPredicate<PersistentDataType<T, ?>, Tag> matcher) {
@@ -158,18 +163,17 @@ public final class CraftPersistentDataTypeRegistry {
    }
 
    private <P, T extends List<P>> ListTag constructList(@NotNull PersistentDataType<T, ?> type, @NotNull List<P> list) {
-      Preconditions.checkArgument(type instanceof ListPersistentDataType, "The passed list cannot be written to the PDC with a %s (expected a list data type)", type.getClass().getSimpleName());
-      ListPersistentDataType<P, ?> listPersistentDataType = (ListPersistentDataType)type;
-      List<Tag> values = Lists.newArrayListWithCapacity(list.size());
-      Iterator var5 = list.iterator();
+      Preconditions.checkArgument(type instanceof ListPersistentDataType<?, ?>, "The passed list cannot be written to the PDC with a %s (expected a list data type)", type.getClass().getSimpleName());
+      final ListPersistentDataType<P, ?> listPersistentDataType = (ListPersistentDataType<P, ?>) type;
 
-      while(var5.hasNext()) {
-         P primitiveValue = var5.next();
+      final List<Tag> values = Lists.newArrayListWithCapacity(list.size());
+      for (final P primitiveValue : list) {
          values.add(this.wrap(listPersistentDataType.elementType(), primitiveValue));
       }
 
       return new ListTag(values);
    }
+
 
    private <P> List<P> extractList(@NotNull PersistentDataType<P, ?> type, @NotNull ListTag listTag) {
       Preconditions.checkArgument(type instanceof ListPersistentDataType, "The found list tag cannot be read with a %s (expected a list data type)", type.getClass().getSimpleName());
@@ -211,12 +215,12 @@ public final class CraftPersistentDataTypeRegistry {
 
       private P extract(PersistentDataType<P, ?> dataType, Tag base) {
          Preconditions.checkArgument(this.nbtBaseType.isInstance(base), "The provided NBTBase was of the type %s. Expected type %s", base.getClass().getSimpleName(), this.nbtBaseType.getSimpleName());
-         return this.extractor.apply(dataType, (Tag)this.nbtBaseType.cast(base));
+         return this.extractor.apply(dataType, this.nbtBaseType.cast(base));
       }
 
       private T build(PersistentDataType<P, ?> dataType, Object value) {
          Preconditions.checkArgument(this.primitiveType.isInstance(value), "The provided value was of the type %s. Expected type %s", value.getClass().getSimpleName(), this.primitiveType.getSimpleName());
-         return (Tag)this.builder.apply(dataType, this.primitiveType.cast(value));
+         return this.builder.apply(dataType, this.primitiveType.cast(value));
       }
 
       private boolean isInstance(PersistentDataType<P, ?> persistentDataType, Tag base) {

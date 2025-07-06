@@ -3,7 +3,6 @@ package org.bukkit.craftbukkit.legacy;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +19,6 @@ import org.bukkit.Server;
 import org.bukkit.Statistic;
 import org.bukkit.Tag;
 import org.bukkit.World;
-import org.bukkit.Statistic.Type;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DecoratedPot;
@@ -69,36 +67,53 @@ import org.bukkit.packs.DataPackManager;
 import org.bukkit.scoreboard.Criteria;
 
 public class MaterialRerouting {
+
    private static Material transformFromBlockType(Material blockType, ApiVersion version) {
       if (blockType == null) {
          return null;
-      } else {
-         return version.isOlderThan(ApiVersion.FLATTENING) ? CraftLegacy.toLegacyData(blockType, false).getItemType() : blockType;
       }
+
+      if (version.isOlderThan(ApiVersion.FLATTENING)) {
+         return CraftLegacy.toLegacyData(blockType, false).getItemType();
+      }
+
+      return blockType;
    }
 
    private static Material transformFromItemType(Material itemType, ApiVersion version) {
       if (itemType == null) {
          return null;
-      } else {
-         return version.isOlderThan(ApiVersion.FLATTENING) ? CraftLegacy.toLegacyData(itemType, true).getItemType() : itemType;
       }
+
+      if (version.isOlderThan(ApiVersion.FLATTENING)) {
+         return CraftLegacy.toLegacyData(itemType, true).getItemType();
+      }
+
+      return itemType;
    }
 
    private static Material transformToBlockType(Material material) {
       if (material == null) {
          return null;
-      } else {
-         return material.isLegacy() ? CraftLegacy.fromLegacy(new MaterialData(material), false) : material;
       }
+
+      if (material.isLegacy()) {
+         return CraftLegacy.fromLegacy(new MaterialData(material), false);
+      }
+
+      return material;
    }
 
    private static Material transformToItemType(Material material) {
       if (material == null) {
          return null;
-      } else {
-         return material.isLegacy() ? CraftLegacy.fromLegacy(new MaterialData(material), true) : material;
       }
+
+      if (material.isLegacy()) {
+         return CraftLegacy.fromLegacy(new MaterialData(material), true);
+      }
+
+      return material;
    }
 
    public static Material getMaterial(BlockData blockData, @InjectPluginVersion ApiVersion version) {
@@ -138,23 +153,17 @@ public class MaterialRerouting {
    }
 
    public static Map<DecoratedPot.Side, Material> getSherds(DecoratedPot decoratedPot, @InjectPluginVersion ApiVersion version) {
-      Map<DecoratedPot.Side, Material> result = new EnumMap(DecoratedPot.Side.class);
-      Iterator var3 = decoratedPot.getSherds().entrySet().iterator();
-
-      while(var3.hasNext()) {
-         Map.Entry<DecoratedPot.Side, Material> entry = (Map.Entry)var3.next();
-         result.put((DecoratedPot.Side)entry.getKey(), transformFromItemType((Material)entry.getValue(), version));
+      Map<DecoratedPot.Side, Material> result = new EnumMap<>(DecoratedPot.Side.class);
+      for (Map.Entry<DecoratedPot.Side, Material> entry : decoratedPot.getSherds().entrySet()) {
+         result.put(entry.getKey(), transformFromItemType(entry.getValue(), version));
       }
 
       return result;
    }
 
-   /** @deprecated */
    @Deprecated
    public static List<Material> getShards(DecoratedPot decoratedPot, @InjectPluginVersion ApiVersion version) {
-      return decoratedPot.getSherds().values().stream().map((shard) -> {
-         return transformFromItemType(shard, version);
-      }).toList();
+      return decoratedPot.getSherds().values().stream().map(shard -> transformFromItemType(shard, version)).toList();
    }
 
    public static void setPlaying(Jukebox jukebox, Material record) {
@@ -177,7 +186,6 @@ public class MaterialRerouting {
       return transformFromItemType(type.getMaterial(), version);
    }
 
-   /** @deprecated */
    @Deprecated
    public static Material getMaterial(FallingBlock fallingBlock, @InjectPluginVersion ApiVersion version) {
       return transformFromBlockType(fallingBlock.getBlockData().getMaterial(), version);
@@ -196,15 +204,27 @@ public class MaterialRerouting {
    }
 
    public static List<Block> getLineOfSight(LivingEntity livingEntity, Set<Material> transparent, int maxDistance) {
-      return transparent == null ? livingEntity.getLineOfSight((Set)null, maxDistance) : livingEntity.getLineOfSight((Set)transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
+      if (transparent == null) {
+         return livingEntity.getLineOfSight(null, maxDistance);
+      }
+
+      return livingEntity.getLineOfSight(transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
    }
 
    public static Block getTargetBlock(LivingEntity livingEntity, Set<Material> transparent, int maxDistance) {
-      return transparent == null ? livingEntity.getTargetBlock((Set)null, maxDistance) : livingEntity.getTargetBlock((Set)transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
+      if (transparent == null) {
+         return livingEntity.getTargetBlock(null, maxDistance);
+      }
+
+      return livingEntity.getTargetBlock(transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
    }
 
    public static List<Block> getLastTwoTargetBlocks(LivingEntity livingEntity, Set<Material> transparent, int maxDistance) {
-      return transparent == null ? livingEntity.getLastTwoTargetBlocks((Set)null, maxDistance) : livingEntity.getLastTwoTargetBlocks((Set)transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
+      if (transparent == null) {
+         return livingEntity.getLastTwoTargetBlocks(null, maxDistance);
+      }
+
+      return livingEntity.getLastTwoTargetBlocks(transparent.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toSet()), maxDistance);
    }
 
    public static boolean addBarterMaterial(Piglin piglin, Material material) {
@@ -224,18 +244,13 @@ public class MaterialRerouting {
    }
 
    public static Set<Material> getInterestList(Piglin piglin, @InjectPluginVersion ApiVersion version) {
-      return (Set)piglin.getInterestList().stream().map((item) -> {
-         return transformFromItemType(item, version);
-      }).collect(Collectors.toSet());
+      return piglin.getInterestList().stream().map(item -> transformFromItemType(item, version)).collect(Collectors.toSet());
    }
 
    public static Set<Material> getBarterList(Piglin piglin, @InjectPluginVersion ApiVersion version) {
-      return (Set)piglin.getBarterList().stream().map((item) -> {
-         return transformFromItemType(item, version);
-      }).collect(Collectors.toSet());
+      return piglin.getBarterList().stream().map(item -> transformFromItemType(item, version)).collect(Collectors.toSet());
    }
 
-   /** @deprecated */
    @Deprecated
    public static void sendBlockChange(Player player, Location location, Material material, byte data) {
       player.sendBlockChange(location, CraftBlockData.fromData(CraftMagicNumbers.getBlock(material, data)));
@@ -270,10 +285,14 @@ public class MaterialRerouting {
    }
 
    public static Material getMaterial(PlayerStatisticIncrementEvent playerStatisticIncrementEvent, @InjectPluginVersion ApiVersion version) {
-      if (playerStatisticIncrementEvent.getStatistic().getType() == Type.BLOCK) {
+      if (playerStatisticIncrementEvent.getStatistic().getType() == Statistic.Type.BLOCK) {
          return transformFromBlockType(playerStatisticIncrementEvent.getMaterial(), version);
+      } else if (playerStatisticIncrementEvent.getStatistic().getType() == Statistic.Type.ITEM) {
+         return transformFromItemType(playerStatisticIncrementEvent.getMaterial(), version);
       } else {
-         return playerStatisticIncrementEvent.getStatistic().getType() == Type.ITEM ? transformFromItemType(playerStatisticIncrementEvent.getMaterial(), version) : transformFromBlockType(playerStatisticIncrementEvent.getMaterial(), version);
+         // Theoretically this should be null, but just in case convert from block type
+         // Can probably check if it is not null and print a warning, but for now it should be fine without the check.
+         return transformFromBlockType(playerStatisticIncrementEvent.getMaterial(), version);
       }
    }
 
@@ -301,10 +320,9 @@ public class MaterialRerouting {
       return furnaceRecipe.setInput(transformToItemType(material));
    }
 
-   /** @deprecated */
    @Deprecated
    public static FurnaceRecipe setInput(FurnaceRecipe furnaceRecipe, Material material, int data) {
-      return furnaceRecipe.setInput(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)data)));
+      return furnaceRecipe.setInput(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) data)));
    }
 
    public static boolean contains(Inventory inventory, Material material) {
@@ -352,39 +370,34 @@ public class MaterialRerouting {
    }
 
    public static List<Material> getChoices(RecipeChoice.MaterialChoice materialChoice, @InjectPluginVersion ApiVersion version) {
-      return materialChoice.getChoices().stream().map((m) -> {
-         return transformFromItemType(m, version);
-      }).toList();
+      return materialChoice.getChoices().stream().map(m -> transformFromItemType(m, version)).toList();
    }
 
    public static ShapedRecipe setIngredient(ShapedRecipe shapedRecipe, char key, Material material) {
       return shapedRecipe.setIngredient(key, transformToItemType(material));
    }
 
-   /** @deprecated */
    @Deprecated
    public static ShapedRecipe setIngredient(ShapedRecipe shapedRecipe, char key, Material material, int raw) {
-      return shapedRecipe.setIngredient(key, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)raw)));
+      return shapedRecipe.setIngredient(key, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) raw)));
    }
 
    public static ShapelessRecipe addIngredient(ShapelessRecipe shapelessRecipe, Material material) {
       return shapelessRecipe.addIngredient(transformToItemType(material));
    }
 
-   /** @deprecated */
    @Deprecated
    public static ShapelessRecipe addIngredient(ShapelessRecipe shapelessRecipe, Material material, int raw) {
-      return shapelessRecipe.addIngredient(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)raw)));
+      return shapelessRecipe.addIngredient(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) raw)));
    }
 
    public static ShapelessRecipe addIngredient(ShapelessRecipe shapelessRecipe, int count, Material material) {
       return shapelessRecipe.addIngredient(count, transformToItemType(material));
    }
 
-   /** @deprecated */
    @Deprecated
    public static ShapelessRecipe addIngredient(ShapelessRecipe shapelessRecipe, int count, Material material, int raw) {
-      return shapelessRecipe.addIngredient(count, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)raw)));
+      return shapelessRecipe.addIngredient(count, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) raw)));
    }
 
    public static ShapelessRecipe removeIngredient(ShapelessRecipe shapelessRecipe, Material material) {
@@ -395,16 +408,14 @@ public class MaterialRerouting {
       return shapelessRecipe.removeIngredient(count, transformToItemType(material));
    }
 
-   /** @deprecated */
    @Deprecated
    public static ShapelessRecipe removeIngredient(ShapelessRecipe shapelessRecipe, Material material, int raw) {
-      return shapelessRecipe.removeIngredient(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)raw)));
+      return shapelessRecipe.removeIngredient(CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) raw)));
    }
 
-   /** @deprecated */
    @Deprecated
    public static ShapelessRecipe removeIngredient(ShapelessRecipe shapelessRecipe, int count, Material material, int raw) {
-      return shapelessRecipe.removeIngredient(count, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short)raw)));
+      return shapelessRecipe.removeIngredient(count, CraftItemType.minecraftToBukkit(CraftMagicNumbers.getItem(material, (short) raw)));
    }
 
    public static StonecuttingRecipe setInput(StonecuttingRecipe stonecuttingRecipe, Material material) {
@@ -417,10 +428,13 @@ public class MaterialRerouting {
 
    @RerouteStatic("org/bukkit/scoreboard/Criteria")
    public static Criteria statistic(Statistic statistic, Material material) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          return Criteria.statistic(statistic, transformToBlockType(material));
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
+         return Criteria.statistic(statistic, transformToItemType(material));
       } else {
-         return statistic.getType() == Type.ITEM ? Criteria.statistic(statistic, transformToItemType(material)) : Criteria.statistic(statistic, transformToBlockType(material));
+         // This is not allowed, the method will throw an error
+         return Criteria.statistic(statistic, transformToBlockType(material));
       }
    }
 
@@ -444,66 +458,69 @@ public class MaterialRerouting {
    }
 
    public static void incrementStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          offlinePlayer.incrementStatistic(statistic, transformToBlockType(material));
-      } else if (statistic.getType() == Type.ITEM) {
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
          offlinePlayer.incrementStatistic(statistic, transformToItemType(material));
       } else {
+         // This is not allowed, the method will throw an error
          offlinePlayer.incrementStatistic(statistic, transformToBlockType(material));
       }
-
    }
 
    public static void decrementStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          offlinePlayer.decrementStatistic(statistic, transformToBlockType(material));
-      } else if (statistic.getType() == Type.ITEM) {
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
          offlinePlayer.decrementStatistic(statistic, transformToItemType(material));
       } else {
+         // This is not allowed, the method will throw an error
          offlinePlayer.decrementStatistic(statistic, transformToBlockType(material));
       }
-
    }
 
    public static int getStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          return offlinePlayer.getStatistic(statistic, transformToBlockType(material));
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
+         return offlinePlayer.getStatistic(statistic, transformToItemType(material));
       } else {
-         return statistic.getType() == Type.ITEM ? offlinePlayer.getStatistic(statistic, transformToItemType(material)) : offlinePlayer.getStatistic(statistic, transformToBlockType(material));
+         // This is not allowed, the method will throw an error
+         return offlinePlayer.getStatistic(statistic, transformToBlockType(material));
       }
    }
 
    public static void incrementStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material, int amount) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          offlinePlayer.incrementStatistic(statistic, transformToBlockType(material), amount);
-      } else if (statistic.getType() == Type.ITEM) {
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
          offlinePlayer.incrementStatistic(statistic, transformToItemType(material), amount);
       } else {
+         // This is not allowed, the method will throw an error
          offlinePlayer.incrementStatistic(statistic, transformToBlockType(material), amount);
       }
-
    }
 
    public static void decrementStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material, int amount) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          offlinePlayer.decrementStatistic(statistic, transformToBlockType(material), amount);
-      } else if (statistic.getType() == Type.ITEM) {
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
          offlinePlayer.decrementStatistic(statistic, transformToItemType(material), amount);
       } else {
+         // This is not allowed, the method will throw an error
          offlinePlayer.decrementStatistic(statistic, transformToBlockType(material), amount);
       }
-
    }
 
    public static void setStatistic(OfflinePlayer offlinePlayer, Statistic statistic, Material material, int newValue) {
-      if (statistic.getType() == Type.BLOCK) {
+      if (statistic.getType() == Statistic.Type.BLOCK) {
          offlinePlayer.setStatistic(statistic, transformToBlockType(material), newValue);
-      } else if (statistic.getType() == Type.ITEM) {
+      } else if (statistic.getType() == Statistic.Type.ITEM) {
          offlinePlayer.setStatistic(statistic, transformToItemType(material), newValue);
       } else {
+         // This is not allowed, the method will throw an error
          offlinePlayer.setStatistic(statistic, transformToBlockType(material), newValue);
       }
-
    }
 
    public static Material getType(RegionAccessor regionAccessor, Location location, @InjectPluginVersion ApiVersion version) {
@@ -536,36 +553,29 @@ public class MaterialRerouting {
 
    public static <T extends Keyed> boolean isTagged(Tag<T> tag, T item) {
       if (tag instanceof CraftBlockTag) {
-         return tag.isTagged(transformToBlockType((Material)item));
-      } else {
-         return tag instanceof CraftItemTag ? tag.isTagged(transformToItemType((Material)item)) : tag.isTagged(item);
+         return tag.isTagged((T) transformToBlockType((Material) item));
+      } else if (tag instanceof CraftItemTag) {
+         return tag.isTagged((T) transformToItemType((Material) item));
       }
+
+      return tag.isTagged(item);
    }
 
    public static <T extends Keyed> Set<T> getValues(Tag<T> tag, @InjectPluginVersion ApiVersion version) {
       Set<T> values = tag.getValues();
       if (values.isEmpty()) {
          return values;
-      } else if (tag instanceof CraftBlockTag) {
-         return (Set)values.stream().map((val) -> {
-            return (Material)val;
-         }).map((val) -> {
-            return transformFromBlockType(val, version);
-         }).map((val) -> {
-            return val;
-         }).collect(Collectors.toSet());
-      } else {
-         return tag instanceof CraftItemTag ? (Set)values.stream().map((val) -> {
-            return (Material)val;
-         }).map((val) -> {
-            return transformFromItemType(val, version);
-         }).map((val) -> {
-            return val;
-         }).collect(Collectors.toSet()) : values;
       }
+
+      if (tag instanceof CraftBlockTag) {
+         return values.stream().map(val -> (Material) val).map(val -> transformFromBlockType(val, version)).map(val -> (T) val).collect(Collectors.toSet());
+      } else if (tag instanceof CraftItemTag) {
+         return values.stream().map(val -> (Material) val).map(val -> transformFromItemType(val, version)).map(val -> (T) val).collect(Collectors.toSet());
+      }
+
+      return values;
    }
 
-   /** @deprecated */
    @Deprecated
    public static FallingBlock spawnFallingBlock(World world, Location location, Material material, byte data) {
       return world.spawnFallingBlock(location, CraftBlockData.fromData(CraftMagicNumbers.getBlock(material, data)));
@@ -576,13 +586,11 @@ public class MaterialRerouting {
    }
 
    public static ToolComponent.ToolRule addRule(ToolComponent toolComponent, Collection<Material> blocks, Float speed, Boolean correctForDrops) {
-      return toolComponent.addRule((Collection)blocks.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toList()), speed, correctForDrops);
+      return toolComponent.addRule(blocks.stream().map(MaterialRerouting::transformToBlockType).collect(Collectors.toList()), speed, correctForDrops);
    }
 
    public static Collection<Material> getBlocks(ToolComponent.ToolRule toolRule, @InjectPluginVersion ApiVersion version) {
-      return toolRule.getBlocks().stream().map((val) -> {
-         return transformFromBlockType(val, version);
-      }).toList();
+      return toolRule.getBlocks().stream().map(val -> transformFromBlockType(val, version)).toList();
    }
 
    public static void setBlocks(ToolComponent.ToolRule toolRule, Material block) {

@@ -310,7 +310,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
          if (bukkitEntity != null) {
             Class<?> bukkitClass = bukkitEntity.getClass();
             if (clazz.isAssignableFrom(bukkitClass) && (!this.isNormalWorld() || bukkitEntity.isValid())) {
-               list.add(bukkitEntity);
+               list.add((T) bukkitEntity);
             }
 
          }
@@ -347,14 +347,14 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
    public <T extends Entity> T createEntity(Location location, Class<T> clazz) throws IllegalArgumentException {
       net.minecraft.world.entity.Entity entity = this.createEntity(location, clazz, true);
       if (!this.isNormalWorld()) {
-         entity.generation = true;
+         entity.banner$setGeneration(true);
       }
 
-      return entity.getBukkitEntity();
+      return (T) entity.getBukkitEntity();
    }
 
    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
-      return this.spawn(location, clazz, (Consumer)null, SpawnReason.CUSTOM);
+      return (T) this.spawn(location, clazz, (Consumer)null, SpawnReason.CUSTOM);
    }
 
    public <T extends Entity> T spawn(Location location, Class<T> clazz, Consumer<? super T> function) throws IllegalArgumentException {
@@ -371,7 +371,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
 
    public <T extends Entity> T spawn(Location location, Class<T> clazz, Consumer<? super T> function, CreatureSpawnEvent.SpawnReason reason, boolean randomizeData) throws IllegalArgumentException {
       net.minecraft.world.entity.Entity entity = this.createEntity(location, clazz, randomizeData);
-      return this.addEntity(entity, reason, function, randomizeData);
+      return this.addEntity(entity, reason, (Consumer<CraftEntity>) function, randomizeData);
    }
 
    public <T extends Entity> T addEntity(T entity) {
@@ -382,21 +382,21 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
       }
 
       this.addEntityWithPassengers(nmsEntity, SpawnReason.CUSTOM);
-      return nmsEntity.getBukkitEntity();
+      return (T) nmsEntity.getBukkitEntity();
    }
 
    public <T extends Entity> T addEntity(net.minecraft.world.entity.Entity entity, CreatureSpawnEvent.SpawnReason reason) throws IllegalArgumentException {
-      return this.addEntity(entity, reason, (Consumer)null, true);
+      return (T) this.addEntity(entity, reason, (Consumer)null, true);
    }
 
-   public <T extends Entity> T addEntity(net.minecraft.world.entity.Entity entity, CreatureSpawnEvent.SpawnReason reason, Consumer<? super T> function, boolean randomizeData) throws IllegalArgumentException {
+   public <T extends Entity> T addEntity(net.minecraft.world.entity.Entity entity, CreatureSpawnEvent.SpawnReason reason, Consumer<CraftEntity> function, boolean randomizeData) throws IllegalArgumentException {
       Preconditions.checkArgument(entity != null, "Cannot spawn null entity");
       if (randomizeData && entity instanceof Mob) {
          ((Mob)entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.COMMAND, (SpawnGroupData)null);
       }
 
       if (!this.isNormalWorld()) {
-         entity.generation = true;
+         entity.banner$setGeneration(true);
       }
 
       if (function != null) {
@@ -404,7 +404,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
       }
 
       this.addEntityToWorld(entity, reason);
-      return entity.getBukkitEntity();
+      return (T) entity.getBukkitEntity();
    }
 
    public abstract void addEntityToWorld(net.minecraft.world.entity.Entity var1, CreatureSpawnEvent.SpawnReason var2);

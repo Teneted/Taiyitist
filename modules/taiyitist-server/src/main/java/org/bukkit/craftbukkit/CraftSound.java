@@ -28,8 +28,7 @@ public class CraftSound extends CraftOldEnumRegistryItem<Sound, SoundEvent> impl
    public static Holder<SoundEvent> bukkitToMinecraftHolder(Sound bukkit) {
       Preconditions.checkArgument(bukkit != null);
       net.minecraft.core.Registry<SoundEvent> registry = CraftRegistry.getMinecraftRegistry(Registries.SOUND_EVENT);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<SoundEvent> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<SoundEvent> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own sound effect with out properly registering it.");

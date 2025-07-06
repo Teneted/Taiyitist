@@ -32,15 +32,17 @@ public class BukkitCommandWrapper implements Command<CommandSourceStack>, Predic
    }
 
    public LiteralCommandNode<CommandSourceStack> register(CommandDispatcher<CommandSourceStack> dispatcher, String label) {
-      return dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)LiteralArgumentBuilder.literal(label).requires(this)).executes(this)).then(RequiredArgumentBuilder.argument("args", StringArgumentType.greedyString()).suggests(this).executes(this)));
-   }
+      return dispatcher.register(
+              LiteralArgumentBuilder.<CommandSourceStack>literal(label).requires(this).executes(this)
+                      .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("args", StringArgumentType.greedyString()).suggests(this).executes(this))
+      );   }
 
    public boolean test(CommandSourceStack wrapper) {
-      return this.command.testPermissionSilent(wrapper.getBukkitSender());
+      return this.command.testPermissionSilent(wrapper.banner$getBukkitSender());
    }
 
    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-      CommandSender sender = ((CommandSourceStack)context.getSource()).getBukkitSender();
+      CommandSender sender = ((CommandSourceStack)context.getSource()).banner$getBukkitSender();
 
       try {
          return this.server.dispatchCommand(sender, context.getInput()) ? 1 : 0;

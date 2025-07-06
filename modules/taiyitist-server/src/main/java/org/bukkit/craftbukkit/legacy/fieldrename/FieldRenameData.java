@@ -1,7 +1,6 @@
 package org.bukkit.craftbukkit.legacy.fieldrename;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -10,66 +9,30 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.ApiVersion;
 
 public record FieldRenameData(RenameData<String> renameData, RenameData<NamespacedKey> keyRenameData) {
-   public FieldRenameData(RenameData<String> renameData, RenameData<NamespacedKey> keyRenameData) {
-      this.renameData = renameData;
-      this.keyRenameData = keyRenameData;
-   }
 
    public String getReplacement(ApiVersion apiVersion, String from) {
       if (from == null) {
          return null;
-      } else {
-         from = from.toUpperCase(Locale.ROOT);
-         return (String)this.renameData.getReplacement(apiVersion, from);
       }
+
+      from = from.toUpperCase(Locale.ROOT);
+      return renameData.getReplacement(apiVersion, from);
    }
 
    public NamespacedKey getReplacement(NamespacedKey from, ApiVersion apiVersion) {
-      return from == null ? null : (NamespacedKey)this.keyRenameData.getReplacement(apiVersion, from);
-   }
-
-   public RenameData<String> renameData() {
-      return this.renameData;
-   }
-
-   public RenameData<NamespacedKey> keyRenameData() {
-      return this.keyRenameData;
-   }
-
-   private static record RenameData<T>(NavigableMap<ApiVersion, Map<T, T>> versionData, Map<T, T> data) {
-      private RenameData(NavigableMap<ApiVersion, Map<T, T>> versionData, Map<T, T> data) {
-         this.versionData = versionData;
-         this.data = data;
+      if (from == null) {
+         return null;
       }
 
-      public T getReplacement(ApiVersion apiVersion, T from) {
-         from = this.data.getOrDefault(from, from);
-         Iterator var3 = this.versionData.entrySet().iterator();
-
-         while(var3.hasNext()) {
-            Map.Entry<ApiVersion, Map<T, T>> entry = (Map.Entry)var3.next();
-            if (!apiVersion.isNewerThanOrSameAs((ApiVersion)entry.getKey())) {
-               from = ((Map)entry.getValue()).getOrDefault(from, from);
-            }
-         }
-
-         return from;
-      }
-
-      public NavigableMap<ApiVersion, Map<T, T>> versionData() {
-         return this.versionData;
-      }
-
-      public Map<T, T> data() {
-         return this.data;
-      }
+      return keyRenameData.getReplacement(apiVersion, from);
    }
 
    public static class Builder {
-      private final Map<String, String> data = new HashMap();
-      private final NavigableMap<ApiVersion, Map<String, String>> versionData = new TreeMap();
-      private final Map<NamespacedKey, NamespacedKey> keyData = new HashMap();
-      private final NavigableMap<ApiVersion, Map<NamespacedKey, NamespacedKey>> versionKeyData = new TreeMap();
+
+      private final Map<String, String> data = new HashMap<>();
+      private final NavigableMap<ApiVersion, Map<String, String>> versionData = new TreeMap<>();
+      private final Map<NamespacedKey, NamespacedKey> keyData = new HashMap<>();
+      private final NavigableMap<ApiVersion, Map<NamespacedKey, NamespacedKey>> versionKeyData = new TreeMap<>();
       private ApiVersion currentVersion;
       private boolean keyRename = false;
 
@@ -95,31 +58,42 @@ public record FieldRenameData(RenameData<String> renameData, RenameData<Namespac
       }
 
       public Builder change(String from, String to) {
-         if (this.currentVersion != null) {
-            ((Map)this.versionData.computeIfAbsent(this.currentVersion, (d) -> {
-               return new HashMap();
-            })).put(from.replace('.', '_'), to);
+         if (currentVersion != null) {
+            versionData.computeIfAbsent(currentVersion, d -> new HashMap<>()).put(from.replace('.', '_'), to);
          } else {
-            this.data.put(from.replace('.', '_'), to);
+            data.put(from.replace('.', '_'), to);
          }
 
-         if (this.keyRename) {
+         if (keyRename) {
             NamespacedKey fromKey = NamespacedKey.minecraft(from.toLowerCase(Locale.ROOT));
             NamespacedKey toKey = NamespacedKey.minecraft(to.toLowerCase(Locale.ROOT));
-            if (this.currentVersion != null) {
-               ((Map)this.versionKeyData.computeIfAbsent(this.currentVersion, (d) -> {
-                  return new HashMap();
-               })).put(fromKey, toKey);
+            if (currentVersion != null) {
+               versionKeyData.computeIfAbsent(currentVersion, d -> new HashMap<>()).put(fromKey, toKey);
             } else {
-               this.keyData.put(fromKey, toKey);
+               keyData.put(fromKey, toKey);
             }
          }
-
          return this;
       }
 
       public FieldRenameData build() {
-         return new FieldRenameData(new RenameData(this.versionData, this.data), new RenameData(this.versionKeyData, this.keyData));
+         return new FieldRenameData(new RenameData<>(versionData, data), new RenameData<>(versionKeyData, keyData));
+      }
+   }
+
+   private record RenameData<T>(NavigableMap<ApiVersion, Map<T, T>> versionData, Map<T, T> data) {
+      public T getReplacement(ApiVersion apiVersion, T from) {
+         from = data.getOrDefault(from, from);
+
+         for (Map.Entry<ApiVersion, Map<T, T>> entry : versionData.entrySet()) {
+            if (apiVersion.isNewerThanOrSameAs(entry.getKey())) {
+               continue;
+            }
+
+            from = entry.getValue().getOrDefault(from, from);
+         }
+
+         return from;
       }
    }
 }

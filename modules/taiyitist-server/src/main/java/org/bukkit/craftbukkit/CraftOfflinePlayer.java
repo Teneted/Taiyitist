@@ -232,7 +232,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
    }
 
    public Location getLastDeathLocation() {
-      return (Location)this.getData().read("LastDeathLocation", GlobalPos.CODEC).map(CraftMemoryMapper::fromNms).orElse((Object)null);
+      return (Location)this.getData().read("LastDeathLocation", GlobalPos.CODEC).map(CraftMemoryMapper::fromNms).orElse((Location) null);
    }
 
    public Location getLocation() {
@@ -240,8 +240,8 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
       if (data == null) {
          return null;
       } else {
-         Vec3 position = (Vec3)data.read("Pos", Vec3.CODEC).orElse((Object)null);
-         Vec2 rotation = (Vec2)data.read("Rotation", Vec2.CODEC).orElse((Object)null);
+         Vec3 position = (Vec3)data.read("Pos", Vec3.CODEC).orElse((Vec3) null);
+         Vec2 rotation = (Vec2)data.read("Rotation", Vec2.CODEC).orElse((Vec2) null);
          if (position != null && rotation != null) {
             UUID uuid = new UUID(data.getLongOr("WorldUUIDMost", 0L), data.getLongOr("WorldUUIDLeast", 0L));
             return CraftLocation.toBukkit(position, this.server.getWorld(uuid), rotation.x, rotation.y);

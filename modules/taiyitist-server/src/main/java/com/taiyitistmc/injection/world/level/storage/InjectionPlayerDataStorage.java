@@ -2,7 +2,10 @@ package com.taiyitistmc.injection.world.level.storage;
 
 import java.io.File;
 import java.util.Optional;
+
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 
 public interface InjectionPlayerDataStorage {
 
@@ -23,6 +26,10 @@ public interface InjectionPlayerDataStorage {
     }
 
     default void backup(String name, String s1, String s) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default Optional<Object> load(String name, String string, ProblemReporter discarding, RegistryAccess.Frozen frozen) {
         throw new IllegalStateException("Not implemented");
     }
 }

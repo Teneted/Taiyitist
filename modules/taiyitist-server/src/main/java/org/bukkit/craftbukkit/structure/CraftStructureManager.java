@@ -35,16 +35,10 @@ public class CraftStructureManager implements StructureManager {
    }
 
    public Map<NamespacedKey, Structure> getStructures() {
-      Map<NamespacedKey, Structure> cachedStructures = new HashMap();
-      Iterator var2 = this.structureManager.structureRepository.entrySet().iterator();
-
-      while(var2.hasNext()) {
-         Map.Entry<ResourceLocation, Optional<StructureTemplate>> entry = (Map.Entry)var2.next();
-         ((Optional)entry.getValue()).ifPresent((definedStructure) -> {
-            cachedStructures.put(CraftNamespacedKey.fromMinecraft((ResourceLocation)entry.getKey()), new CraftStructure(definedStructure, this.registry));
-         });
+      Map<NamespacedKey, Structure> cachedStructures = new HashMap<>();
+      for (Map.Entry<ResourceLocation, Optional<StructureTemplate>> entry : structureManager.structureRepository.entrySet()) {
+         entry.getValue().ifPresent(definedStructure -> cachedStructures.put(CraftNamespacedKey.fromMinecraft(entry.getKey()), new CraftStructure(definedStructure, registry)));
       }
-
       return Collections.unmodifiableMap(cachedStructures);
    }
 
@@ -53,7 +47,7 @@ public class CraftStructureManager implements StructureManager {
       Optional<StructureTemplate> definedStructure = (Optional)this.structureManager.structureRepository.get(CraftNamespacedKey.toMinecraft(structureKey));
       return definedStructure == null ? null : (Structure)definedStructure.map((s) -> {
          return new CraftStructure(s, this.registry);
-      }).orElse((Object)null);
+      }).orElse((CraftStructure) null);
    }
 
    public Structure loadStructure(NamespacedKey structureKey, boolean register) {
@@ -68,7 +62,7 @@ public class CraftStructureManager implements StructureManager {
 
       return (Structure)structure.map((s) -> {
          return new CraftStructure(s, this.registry);
-      }).orElse((Object)null);
+      }).orElse((CraftStructure) null);
    }
 
    public Structure loadStructure(NamespacedKey structureKey) {
@@ -96,7 +90,7 @@ public class CraftStructureManager implements StructureManager {
       Optional<StructureTemplate> previousStructure = (Optional)this.structureManager.structureRepository.put(minecraftKey, optionalDefinedStructure);
       return previousStructure == null ? null : (Structure)previousStructure.map((s) -> {
          return new CraftStructure(s, this.registry);
-      }).orElse((Object)null);
+      }).orElse((CraftStructure) null);
    }
 
    public Structure unregisterStructure(NamespacedKey structureKey) {
@@ -105,7 +99,7 @@ public class CraftStructureManager implements StructureManager {
       Optional<StructureTemplate> previousStructure = (Optional)this.structureManager.structureRepository.remove(minecraftKey);
       return previousStructure == null ? null : (Structure)previousStructure.map((s) -> {
          return new CraftStructure(s, this.registry);
-      }).orElse((Object)null);
+      }).orElse((CraftStructure) null);
    }
 
    public void deleteStructure(NamespacedKey structureKey) throws IOException {

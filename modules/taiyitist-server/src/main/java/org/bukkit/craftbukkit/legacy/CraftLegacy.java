@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -225,160 +227,176 @@ public final class CraftLegacy {
 
    static {
       System.err.println("Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!");
-      if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isDebugging()) {
-         (new Exception()).printStackTrace();
+      if (BukkitMethodHooks.getServer() != null && BukkitMethodHooks.getServer().isDebugging()) {
+         new Exception().printStackTrace();
       }
 
-      SPAWN_EGGS.put((byte)0, Material.PIG_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.BAT.getTypeId(), Material.BAT_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.BLAZE.getTypeId(), Material.BLAZE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.CAVE_SPIDER.getTypeId(), Material.CAVE_SPIDER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.CHICKEN.getTypeId(), Material.CHICKEN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.COD.getTypeId(), Material.COD_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.COW.getTypeId(), Material.COW_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.CREEPER.getTypeId(), Material.CREEPER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.DOLPHIN.getTypeId(), Material.DOLPHIN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.DONKEY.getTypeId(), Material.DONKEY_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ELDER_GUARDIAN.getTypeId(), Material.ELDER_GUARDIAN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ENDERMAN.getTypeId(), Material.ENDERMAN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ENDERMITE.getTypeId(), Material.ENDERMITE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.EVOKER.getTypeId(), Material.EVOKER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.GHAST.getTypeId(), Material.GHAST_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.GUARDIAN.getTypeId(), Material.GUARDIAN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.HORSE.getTypeId(), Material.HORSE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.HUSK.getTypeId(), Material.HUSK_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.LLAMA.getTypeId(), Material.LLAMA_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.MAGMA_CUBE.getTypeId(), Material.MAGMA_CUBE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.MOOSHROOM.getTypeId(), Material.MOOSHROOM_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.MULE.getTypeId(), Material.MULE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.OCELOT.getTypeId(), Material.OCELOT_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.PARROT.getTypeId(), Material.PARROT_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.PIG.getTypeId(), Material.PIG_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.PHANTOM.getTypeId(), Material.PHANTOM_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.POLAR_BEAR.getTypeId(), Material.POLAR_BEAR_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.PUFFERFISH.getTypeId(), Material.PUFFERFISH_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.RABBIT.getTypeId(), Material.RABBIT_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SALMON.getTypeId(), Material.SALMON_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SHEEP.getTypeId(), Material.SHEEP_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SHULKER.getTypeId(), Material.SHULKER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SILVERFISH.getTypeId(), Material.SILVERFISH_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SKELETON.getTypeId(), Material.SKELETON_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SKELETON_HORSE.getTypeId(), Material.SKELETON_HORSE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SLIME.getTypeId(), Material.SLIME_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SPIDER.getTypeId(), Material.SPIDER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.SQUID.getTypeId(), Material.SQUID_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.STRAY.getTypeId(), Material.STRAY_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.TROPICAL_FISH.getTypeId(), Material.TROPICAL_FISH_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.TURTLE.getTypeId(), Material.TURTLE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.VEX.getTypeId(), Material.VEX_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.VILLAGER.getTypeId(), Material.VILLAGER_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.VINDICATOR.getTypeId(), Material.VINDICATOR_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.WITCH.getTypeId(), Material.WITCH_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.WITHER_SKELETON.getTypeId(), Material.WITHER_SKELETON_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.WOLF.getTypeId(), Material.WOLF_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ZOMBIE.getTypeId(), Material.ZOMBIE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ZOMBIE_HORSE.getTypeId(), Material.ZOMBIE_HORSE_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ZOMBIFIED_PIGLIN.getTypeId(), Material.ZOMBIFIED_PIGLIN_SPAWN_EGG);
-      SPAWN_EGGS.put((byte)EntityType.ZOMBIE_VILLAGER.getTypeId(), Material.ZOMBIE_VILLAGER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) 0, Material.PIG_SPAWN_EGG);
+
+      SPAWN_EGGS.put((byte) EntityType.BAT.getTypeId(), Material.BAT_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.BLAZE.getTypeId(), Material.BLAZE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.CAVE_SPIDER.getTypeId(), Material.CAVE_SPIDER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.CHICKEN.getTypeId(), Material.CHICKEN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.COD.getTypeId(), Material.COD_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.COW.getTypeId(), Material.COW_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.CREEPER.getTypeId(), Material.CREEPER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.DOLPHIN.getTypeId(), Material.DOLPHIN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.DONKEY.getTypeId(), Material.DONKEY_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ELDER_GUARDIAN.getTypeId(), Material.ELDER_GUARDIAN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ENDERMAN.getTypeId(), Material.ENDERMAN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ENDERMITE.getTypeId(), Material.ENDERMITE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.EVOKER.getTypeId(), Material.EVOKER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.GHAST.getTypeId(), Material.GHAST_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.GUARDIAN.getTypeId(), Material.GUARDIAN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.HORSE.getTypeId(), Material.HORSE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.HUSK.getTypeId(), Material.HUSK_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.LLAMA.getTypeId(), Material.LLAMA_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.MAGMA_CUBE.getTypeId(), Material.MAGMA_CUBE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.MOOSHROOM.getTypeId(), Material.MOOSHROOM_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.MULE.getTypeId(), Material.MULE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.OCELOT.getTypeId(), Material.OCELOT_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.PARROT.getTypeId(), Material.PARROT_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.PIG.getTypeId(), Material.PIG_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.PHANTOM.getTypeId(), Material.PHANTOM_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.POLAR_BEAR.getTypeId(), Material.POLAR_BEAR_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.PUFFERFISH.getTypeId(), Material.PUFFERFISH_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.RABBIT.getTypeId(), Material.RABBIT_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SALMON.getTypeId(), Material.SALMON_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SHEEP.getTypeId(), Material.SHEEP_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SHULKER.getTypeId(), Material.SHULKER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SILVERFISH.getTypeId(), Material.SILVERFISH_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SKELETON.getTypeId(), Material.SKELETON_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SKELETON_HORSE.getTypeId(), Material.SKELETON_HORSE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SLIME.getTypeId(), Material.SLIME_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SPIDER.getTypeId(), Material.SPIDER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.SQUID.getTypeId(), Material.SQUID_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.STRAY.getTypeId(), Material.STRAY_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.TROPICAL_FISH.getTypeId(), Material.TROPICAL_FISH_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.TURTLE.getTypeId(), Material.TURTLE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.VEX.getTypeId(), Material.VEX_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.VILLAGER.getTypeId(), Material.VILLAGER_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.VINDICATOR.getTypeId(), Material.VINDICATOR_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.WITCH.getTypeId(), Material.WITCH_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.WITHER_SKELETON.getTypeId(), Material.WITHER_SKELETON_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.WOLF.getTypeId(), Material.WOLF_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ZOMBIE.getTypeId(), Material.ZOMBIE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ZOMBIE_HORSE.getTypeId(), Material.ZOMBIE_HORSE_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ZOMBIFIED_PIGLIN.getTypeId(), Material.ZOMBIFIED_PIGLIN_SPAWN_EGG);
+      SPAWN_EGGS.put((byte) EntityType.ZOMBIE_VILLAGER.getTypeId(), Material.ZOMBIE_VILLAGER_SPAWN_EGG);
+
       SharedConstants.tryDetectVersion();
       Bootstrap.bootStrap();
-      Material[] var0 = Material.values();
-      int var1 = var0.length;
 
-      for(int var2 = 0; var2 < var1; ++var2) {
-         Material material = var0[var2];
-         if (material.isLegacy()) {
-            int data;
-            if (isBlock(material)) {
-               for(data = 0; data < 16; data = (byte)(data + 1)) {
-                  MaterialData matData = new MaterialData(material, (byte)data);
-                  Dynamic blockTag = BlockStateData.getTag(material.getId() << 4 | data);
-                  blockTag = DataFixers.getDataFixer().update(References.BLOCK_STATE, blockTag, 100, CraftMagicNumbers.INSTANCE.getDataVersion());
-                  if (!blockTag.get("Name").asString("").contains("%%FILTER_ME%%")) {
-                     String name = blockTag.get("Name").asString("");
-                     Block block = (Block)BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(name));
-                     if (block != null) {
-                        BlockState blockData = block.defaultBlockState();
-                        StateDefinition states = block.getStateDefinition();
-                        Optional<CompoundTag> propMap = blockTag.getElement("Properties").result();
-                        if (propMap.isPresent()) {
-                           CompoundTag properties = (CompoundTag)propMap.get();
-                           Iterator var13 = properties.keySet().iterator();
+      for (Material material : Material.values()) {
+         if (!material.isLegacy()) {
+            continue;
+         }
 
-                           label110:
-                           while(true) {
-                              while(true) {
-                                 if (!var13.hasNext()) {
-                                    break label110;
-                                 }
+         // Handle blocks
+         if (isBlock(material)) { // Use custom method instead of Material#isBlock since it relies on this being already run
+            for (byte data = 0; data < 16; data++) {
+               MaterialData matData = new MaterialData(material, data);
+               Dynamic blockTag = BlockStateData.getTag(material.getId() << 4 | data);
+               blockTag = DataFixers.getDataFixer().update(References.BLOCK_STATE, blockTag, 100, CraftMagicNumbers.INSTANCE.getDataVersion());
+               // TODO: better skull conversion, chests
+               if (blockTag.get("Name").asString("").contains("%%FILTER_ME%%")) {
+                  continue;
+               }
 
-                                 String dataKey = (String)var13.next();
-                                 Property state = states.getProperty(dataKey);
-                                 if (state == null) {
-                                    Preconditions.checkArgument(whitelistedStates.contains(dataKey), "No state for %s", dataKey);
-                                 } else {
-                                    Optional<String> propertyString = properties.getString(dataKey);
-                                    Preconditions.checkState(propertyString.isPresent() && !((String)propertyString.get()).isEmpty(), "Empty data string");
-                                    Optional opt = state.getValue((String)propertyString.get());
-                                    Preconditions.checkArgument(opt.isPresent(), "No state value %s for %s", properties.getString(dataKey), dataKey);
-                                    blockData = (BlockState)blockData.setValue(state, (Comparable)opt.get());
-                                 }
-                              }
-                           }
-                        }
+               String name = blockTag.get("Name").asString("");
+               Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(name));
+               if (block == null) {
+                  continue;
+               }
+               BlockState blockData = block.defaultBlockState();
+               StateDefinition states = block.getStateDefinition();
 
-                        if (block != Blocks.AIR) {
-                           materialToData.put(matData, blockData);
-                           if (!dataToMaterial.containsKey(blockData)) {
-                              dataToMaterial.put(blockData, matData);
-                           }
+               Optional<CompoundTag> propMap = blockTag.getElement("Properties").result();
+               if (propMap.isPresent()) {
+                  CompoundTag properties = propMap.get();
+                  for (String dataKey : properties.keySet()) {
+                     Property state = states.getProperty(dataKey);
 
-                           materialToBlock.put(matData, block);
-                           if (!blockToMaterial.containsKey(block)) {
-                              blockToMaterial.put(block, matData);
-                           }
-                        }
+                     if (state == null) {
+                        Preconditions.checkArgument(whitelistedStates.contains(dataKey), "No state for %s", dataKey);
+                        continue;
                      }
+
+                     Optional<String> propertyString = properties.getString(dataKey);
+                     Preconditions.checkState(propertyString.isPresent() && !propertyString.get().isEmpty(), "Empty data string");
+                     Optional opt = state.getValue(propertyString.get());
+                     Preconditions.checkArgument(opt.isPresent(), "No state value %s for %s", properties.getString(dataKey), dataKey);
+
+                     blockData = blockData.setValue(state, (Comparable) opt.get());
                   }
                }
-            }
 
-            data = material.getMaxDurability() == 0 ? 16 : 1;
-            if (material == Material.LEGACY_MONSTER_EGG) {
-               data = 121;
-            }
+               if (block == Blocks.AIR) {
+                  continue;
+               }
 
-            for(byte data = 0; data < data; ++data) {
-               if (material != Material.LEGACY_MONSTER_EGG && ItemIdFix.getItem(material.getId()) != null) {
-                  MaterialData matData = new MaterialData(material, data);
-                  CompoundTag stack = new CompoundTag();
-                  stack.putInt("id", material.getId());
-                  stack.putShort("Damage", (short)data);
-                  Dynamic<Tag> converted = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic(NbtOps.INSTANCE, stack), -1, CraftMagicNumbers.INSTANCE.getDataVersion());
-                  String newId = converted.get("id").asString("");
-                  if (newId.equals("minecraft:spawn_egg")) {
-                     newId = "minecraft:pig_spawn_egg";
-                  }
+               materialToData.put(matData, blockData);
+               if (!dataToMaterial.containsKey(blockData)) {
+                  dataToMaterial.put(blockData, matData);
+               }
 
-                  Item newMaterial = (Item)BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(newId));
-                  if (newMaterial != Items.AIR) {
-                     materialToItem.put(matData, newMaterial);
-                     if (!itemToMaterial.containsKey(newMaterial)) {
-                        itemToMaterial.put(newMaterial, matData);
-                     }
-                  }
+               materialToBlock.put(matData, block);
+               if (!blockToMaterial.containsKey(block)) {
+                  blockToMaterial.put(block, matData);
                }
             }
+         }
 
-            Iterator var19 = SPAWN_EGGS.entrySet().iterator();
+         // Handle items (and second fallback for blocks)
+         int maxData = material.getMaxDurability() == 0 ? 16 : 1;
+         // Manually do oldold spawn eggs
+         if (material == Material.LEGACY_MONSTER_EGG) {
+            maxData = 121; // Vilager + 1
+         }
 
-            while(var19.hasNext()) {
-               Map.Entry<Byte, Material> entry = (Map.Entry)var19.next();
-               MaterialData matData = new MaterialData(Material.LEGACY_MONSTER_EGG, (Byte)entry.getKey());
-               Item newMaterial = CraftMagicNumbers.getItem((Material)entry.getValue());
-               materialToItem.put(matData, newMaterial);
+         for (byte data = 0; data < maxData; data++) {
+            // Manually skip invalid oldold spawn
+            if (material == Material.LEGACY_MONSTER_EGG /*&& data != 0 && EntityType.fromId(data) == null*/) { // Mojang broke 18w19b
+               continue;
+            }
+            // Skip non item stacks for now (18w19b)
+            if (ItemIdFix.getItem(material.getId()) == null) {
+               continue;
+            }
+
+            MaterialData matData = new MaterialData(material, data);
+
+            CompoundTag stack = new CompoundTag();
+            stack.putInt("id", material.getId());
+            stack.putShort("Damage", data);
+
+            Dynamic<Tag> converted = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic(NbtOps.INSTANCE, stack), -1, CraftMagicNumbers.INSTANCE.getDataVersion());
+
+            String newId = converted.get("id").asString("");
+            // Recover spawn eggs with invalid data
+            if (newId.equals("minecraft:spawn_egg")) {
+               newId = "minecraft:pig_spawn_egg";
+            }
+
+            // Preconditions.checkState(newId.contains("minecraft:"), "Unknown new material for " + matData);
+            Item newMaterial = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(newId));
+
+            if (newMaterial == Items.AIR) {
+               continue;
+            }
+
+            materialToItem.put(matData, newMaterial);
+            if (!itemToMaterial.containsKey(newMaterial)) {
                itemToMaterial.put(newMaterial, matData);
             }
+         }
+
+         for (Map.Entry<Byte, Material> entry : SPAWN_EGGS.entrySet()) {
+            MaterialData matData = new MaterialData(Material.LEGACY_MONSTER_EGG, entry.getKey());
+            Item newMaterial = CraftMagicNumbers.getItem(entry.getValue());
+
+            materialToItem.put(matData, newMaterial);
+            itemToMaterial.put(newMaterial, matData);
          }
       }
 

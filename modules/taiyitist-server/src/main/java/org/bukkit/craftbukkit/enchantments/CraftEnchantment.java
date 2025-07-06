@@ -92,35 +92,33 @@ public class CraftEnchantment extends Enchantment implements Handleable<net.mine
    }
 
    public String getName() {
-      if (!this.getKey().getNamespace().equals("minecraft")) {
-         return this.getKey().toString();
-      } else {
-         String var10000;
-         switch (this.getKey().getKey().toUpperCase(Locale.ROOT)) {
-            case "PROTECTION" -> var10000 = "PROTECTION_ENVIRONMENTAL";
-            case "FIRE_PROTECTION" -> var10000 = "PROTECTION_FIRE";
-            case "FEATHER_FALLING" -> var10000 = "PROTECTION_FALL";
-            case "BLAST_PROTECTION" -> var10000 = "PROTECTION_EXPLOSIONS";
-            case "PROJECTILE_PROTECTION" -> var10000 = "PROTECTION_PROJECTILE";
-            case "RESPIRATION" -> var10000 = "OXYGEN";
-            case "AQUA_AFFINITY" -> var10000 = "WATER_WORKER";
-            case "SHARPNESS" -> var10000 = "DAMAGE_ALL";
-            case "SMITE" -> var10000 = "DAMAGE_UNDEAD";
-            case "BANE_OF_ARTHROPODS" -> var10000 = "DAMAGE_ARTHROPODS";
-            case "LOOTING" -> var10000 = "LOOT_BONUS_MOBS";
-            case "EFFICIENCY" -> var10000 = "DIG_SPEED";
-            case "UNBREAKING" -> var10000 = "DURABILITY";
-            case "FORTUNE" -> var10000 = "LOOT_BONUS_BLOCKS";
-            case "POWER" -> var10000 = "ARROW_DAMAGE";
-            case "PUNCH" -> var10000 = "ARROW_KNOCKBACK";
-            case "FLAME" -> var10000 = "ARROW_FIRE";
-            case "INFINITY" -> var10000 = "ARROW_INFINITE";
-            case "LUCK_OF_THE_SEA" -> var10000 = "LUCK";
-            default -> var10000 = keyName;
-         }
-
-         return var10000;
+      // PAIL: migration paths
+      if (!getKey().getNamespace().equals(NamespacedKey.MINECRAFT)) {
+         return getKey().toString();
       }
+      String keyName = getKey().getKey().toUpperCase(Locale.ROOT);
+      return switch (keyName) {
+         case "PROTECTION" -> "PROTECTION_ENVIRONMENTAL";
+         case "FIRE_PROTECTION" -> "PROTECTION_FIRE";
+         case "FEATHER_FALLING" -> "PROTECTION_FALL";
+         case "BLAST_PROTECTION" -> "PROTECTION_EXPLOSIONS";
+         case "PROJECTILE_PROTECTION" -> "PROTECTION_PROJECTILE";
+         case "RESPIRATION" -> "OXYGEN";
+         case "AQUA_AFFINITY" -> "WATER_WORKER";
+         case "SHARPNESS" -> "DAMAGE_ALL";
+         case "SMITE" -> "DAMAGE_UNDEAD";
+         case "BANE_OF_ARTHROPODS" -> "DAMAGE_ARTHROPODS";
+         case "LOOTING" -> "LOOT_BONUS_MOBS";
+         case "EFFICIENCY" -> "DIG_SPEED";
+         case "UNBREAKING" -> "DURABILITY";
+         case "FORTUNE" -> "LOOT_BONUS_BLOCKS";
+         case "POWER" -> "ARROW_DAMAGE";
+         case "PUNCH" -> "ARROW_KNOCKBACK";
+         case "FLAME" -> "ARROW_FIRE";
+         case "INFINITY" -> "ARROW_INFINITE";
+         case "LUCK_OF_THE_SEA" -> "LUCK";
+         default -> keyName;
+      };
    }
 
    public boolean conflictsWith(Enchantment other) {

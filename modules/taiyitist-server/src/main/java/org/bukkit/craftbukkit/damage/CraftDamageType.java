@@ -96,8 +96,7 @@ public class CraftDamageType extends CraftRegistryItem<DamageType> implements or
    public static Holder<DamageType> bukkitToMinecraftHolder(org.bukkit.damage.DamageType bukkitDamageType) {
       Preconditions.checkArgument(bukkitDamageType != null);
       Registry<DamageType> registry = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkitDamageType));
-      if (var3 instanceof Holder.Reference<DamageType> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkitDamageType)) instanceof Holder.Reference<DamageType> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkitDamageType) + ", this can happen if a plugin creates its own damage type with out properly registering it.");

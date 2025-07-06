@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +32,7 @@ public final class CraftMapView implements MapView {
    }
 
    public int getId() {
-      return this.worldMap.id.id();
+      return this.worldMap.bridge$mapView().getId();
    }
 
    public boolean isVirtual() {
@@ -47,17 +49,17 @@ public final class CraftMapView implements MapView {
 
    public World getWorld() {
       ResourceKey<Level> dimension = this.worldMap.dimension;
-      ServerLevel world = MinecraftServer.getServer().getLevel(dimension);
+      ServerLevel world = BukkitMethodHooks.getServer().getLevel(dimension);
       if (world != null) {
          return world.getWorld();
       } else {
-         return this.worldMap.uniqueId != null ? Bukkit.getServer().getWorld(this.worldMap.uniqueId) : null;
+         return this.worldMap.bridge$uniqueId() != null ? Bukkit.getServer().getWorld(this.worldMap.bridge$uniqueId()) : null;
       }
    }
 
    public void setWorld(World world) {
       this.worldMap.dimension = ((CraftWorld)world).getHandle().dimension();
-      this.worldMap.uniqueId = world.getUID();
+      this.worldMap.banner$setUniqueId(world.getUID());
    }
 
    public int getCenterX() {

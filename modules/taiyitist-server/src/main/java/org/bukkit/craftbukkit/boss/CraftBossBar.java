@@ -48,31 +48,10 @@ public class CraftBossBar implements BossBar {
    }
 
    private void initialize() {
-      this.flags = new HashMap();
-      Map var10000 = this.flags;
-      BarFlag var10001 = BarFlag.DARKEN_SKY;
-      ServerBossEvent var10005 = this.handle;
-      Objects.requireNonNull(var10005);
-      Supplier var1 = var10005::shouldDarkenScreen;
-      ServerBossEvent var10006 = this.handle;
-      Objects.requireNonNull(var10006);
-      var10000.put(var10001, new FlagContainer(this, var1, var10006::setDarkenScreen));
-      var10000 = this.flags;
-      var10001 = BarFlag.PLAY_BOSS_MUSIC;
-      var10005 = this.handle;
-      Objects.requireNonNull(var10005);
-      var1 = var10005::shouldPlayBossMusic;
-      var10006 = this.handle;
-      Objects.requireNonNull(var10006);
-      var10000.put(var10001, new FlagContainer(this, var1, var10006::setPlayBossMusic));
-      var10000 = this.flags;
-      var10001 = BarFlag.CREATE_FOG;
-      var10005 = this.handle;
-      Objects.requireNonNull(var10005);
-      var1 = var10005::shouldCreateWorldFog;
-      var10006 = this.handle;
-      Objects.requireNonNull(var10006);
-      var10000.put(var10001, new FlagContainer(this, var1, var10006::setCreateWorldFog));
+      this.flags = new HashMap<>();
+      this.flags.put(BarFlag.DARKEN_SKY, new FlagContainer(handle::shouldDarkenScreen, handle::setDarkenScreen));
+      this.flags.put(BarFlag.PLAY_BOSS_MUSIC, new FlagContainer(handle::shouldPlayBossMusic, handle::setPlayBossMusic));
+      this.flags.put(BarFlag.CREATE_FOG, new FlagContainer(handle::shouldCreateWorldFog, handle::setCreateWorldFog));
    }
 
    private BarColor convertColor(BossEvent.BossBarColor color) {
@@ -228,10 +207,11 @@ public class CraftBossBar implements BossBar {
    }
 
    private final class FlagContainer {
+
       private Supplier<Boolean> get;
       private Consumer<Boolean> set;
 
-      private FlagContainer(final CraftBossBar var1, Supplier get, Consumer set) {
+      private FlagContainer(Supplier<Boolean> get, Consumer<Boolean> set) {
          this.get = get;
          this.set = set;
       }

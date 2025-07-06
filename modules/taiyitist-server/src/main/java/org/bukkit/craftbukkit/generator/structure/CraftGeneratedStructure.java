@@ -45,6 +45,6 @@ public class CraftGeneratedStructure implements GeneratedStructure {
    }
 
    public PersistentDataContainer getPersistentDataContainer() {
-      return this.handle.persistentDataContainer;
+      return this.handle.bridge$persistentDataContainer();
    }
 }
