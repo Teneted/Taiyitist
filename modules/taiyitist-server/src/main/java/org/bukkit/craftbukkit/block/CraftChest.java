@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
+import com.taiyitistmc.bukkit.DoubleChestInventory;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest {
    public CraftChest(World world, ChestBlockEntity tileEntity) {
-      super((World)world, (RandomizableContainerBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftChest(CraftChest state, Location location) {
@@ -40,8 +41,8 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
          CraftWorld world = (CraftWorld)this.getWorld();
          ChestBlock blockChest = (ChestBlock)(this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
          MenuProvider nms = blockChest.getMenuProvider(this.data, world.getHandle(), this.getPosition(), true);
-         if (nms instanceof ChestBlock.DoubleInventory) {
-            inventory = new CraftInventoryDoubleChest((ChestBlock.DoubleInventory)nms);
+         if (nms instanceof DoubleChestInventory) {
+            inventory = new CraftInventoryDoubleChest((DoubleChestInventory) nms);
          }
 
          return (Inventory)inventory;
@@ -52,26 +53,26 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
 
    public void open() {
       this.requirePlaced();
-      if (!((ChestBlockEntity)this.getTileEntity()).openersCounter.opened && this.getWorldHandle() instanceof Level) {
+      if (!((ChestBlockEntity)this.getTileEntity()).openersCounter.bridge$opened() && this.getWorldHandle() instanceof Level) {
          BlockState block = ((ChestBlockEntity)this.getTileEntity()).getBlockState();
          int openCount = ((ChestBlockEntity)this.getTileEntity()).openersCounter.getOpenerCount();
          ((ChestBlockEntity)this.getTileEntity()).openersCounter.onAPIOpen((Level)this.getWorldHandle(), this.getPosition(), block);
          ((ChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, openCount + 1);
       }
 
-      ((ChestBlockEntity)this.getTileEntity()).openersCounter.opened = true;
+      ((ChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(true);
    }
 
    public void close() {
       this.requirePlaced();
-      if (((ChestBlockEntity)this.getTileEntity()).openersCounter.opened && this.getWorldHandle() instanceof Level) {
+      if (((ChestBlockEntity)this.getTileEntity()).openersCounter.bridge$opened() && this.getWorldHandle() instanceof Level) {
          BlockState block = ((ChestBlockEntity)this.getTileEntity()).getBlockState();
          int openCount = ((ChestBlockEntity)this.getTileEntity()).openersCounter.getOpenerCount();
          ((ChestBlockEntity)this.getTileEntity()).openersCounter.onAPIClose((Level)this.getWorldHandle(), this.getPosition(), block);
          ((ChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, 0);
       }
 
-      ((ChestBlockEntity)this.getTileEntity()).openersCounter.opened = false;
+      ((ChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(false);
    }
 
    public CraftChest copy() {

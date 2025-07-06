@@ -3,6 +3,8 @@ package org.bukkit.craftbukkit.block;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityReference;
@@ -19,7 +21,7 @@ import org.bukkit.util.BoundingBox;
 
 public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> implements Conduit {
    public CraftConduit(World world, ConduitBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftConduit(CraftConduit state, Location location) {
@@ -71,7 +73,7 @@ public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> impl
    public int getRange() {
       this.ensureNoWorldGeneration();
       ConduitBlockEntity conduit = (ConduitBlockEntity)this.getTileEntityFromWorld();
-      return conduit != null ? ConduitBlockEntity.getRange(conduit.effectBlocks) : 0;
+      return conduit != null ? BukkitMethodHooks.getRange(conduit.effectBlocks) : 0;
    }
 
    public boolean setTarget(LivingEntity target) {
@@ -95,7 +97,7 @@ public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> impl
             conduit.destroyTarget = new EntityReference(newTarget);
          }
 
-         ConduitBlockEntity.updateAndAttackTarget((ServerLevel)conduit.getLevel(), this.getPosition(), this.data, conduit, conduit.effectBlocks.size() >= 42, false);
+         ConduitBlockEntity.updateAndAttackTarget((ServerLevel) conduit.getLevel(), this.getPosition(), this.data, conduit, conduit.effectBlocks.size() >= 42/*, false*/);// Taiyitist - TODO fixme
          return true;
       }
    }

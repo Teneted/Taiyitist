@@ -10,7 +10,7 @@ import org.bukkit.block.EnderChest;
 
 public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity> implements EnderChest {
    public CraftEnderChest(World world, EnderChestBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftEnderChest(CraftEnderChest state, Location location) {
@@ -19,26 +19,26 @@ public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity
 
    public void open() {
       this.requirePlaced();
-      if (!((EnderChestBlockEntity)this.getTileEntity()).openersCounter.opened && this.getWorldHandle() instanceof Level) {
+      if (!((EnderChestBlockEntity)this.getTileEntity()).openersCounter.bridge$opened() && this.getWorldHandle() instanceof Level) {
          BlockState block = ((EnderChestBlockEntity)this.getTileEntity()).getBlockState();
          int openCount = ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.getOpenerCount();
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.onAPIOpen((Level)this.getWorldHandle(), this.getPosition(), block);
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, openCount + 1);
       }
 
-      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.opened = true;
+      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(true);
    }
 
    public void close() {
       this.requirePlaced();
-      if (((EnderChestBlockEntity)this.getTileEntity()).openersCounter.opened && this.getWorldHandle() instanceof Level) {
+      if (((EnderChestBlockEntity)this.getTileEntity()).openersCounter.bridge$opened() && this.getWorldHandle() instanceof Level) {
          BlockState block = ((EnderChestBlockEntity)this.getTileEntity()).getBlockState();
          int openCount = ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.getOpenerCount();
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.onAPIClose((Level)this.getWorldHandle(), this.getPosition(), block);
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, 0);
       }
 
-      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.opened = false;
+      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(false);
    }
 
    public CraftEnderChest copy() {

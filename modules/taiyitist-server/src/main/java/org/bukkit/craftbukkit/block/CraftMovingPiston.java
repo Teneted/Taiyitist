@@ -7,7 +7,7 @@ import org.bukkit.World;
 
 public class CraftMovingPiston extends CraftBlockEntityState<PistonMovingBlockEntity> {
    public CraftMovingPiston(World world, PistonMovingBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftMovingPiston(CraftMovingPiston state, Location location) {

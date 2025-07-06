@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftLectern extends CraftBlockEntityState<LecternBlockEntity> implements Lectern {
    public CraftLectern(World world, LecternBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftLectern(CraftLectern state, Location location) {

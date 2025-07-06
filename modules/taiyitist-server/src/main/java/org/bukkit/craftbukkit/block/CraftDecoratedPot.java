@@ -23,7 +23,7 @@ import org.bukkit.inventory.DecoratedPotInventory;
 
 public class CraftDecoratedPot extends CraftBlockEntityState<DecoratedPotBlockEntity> implements DecoratedPot {
    public CraftDecoratedPot(World world, DecoratedPotBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftDecoratedPot(CraftDecoratedPot state, Location location) {

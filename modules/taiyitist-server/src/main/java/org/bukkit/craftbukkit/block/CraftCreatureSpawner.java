@@ -34,7 +34,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEntity> implements CreatureSpawner {
    public CraftCreatureSpawner(World world, SpawnerBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftCreatureSpawner(CraftCreatureSpawner state, Location location) {
@@ -47,7 +47,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEnti
          return null;
       } else {
          Optional<net.minecraft.world.entity.EntityType<?>> type = spawnData.getEntityToSpawn().read("id", net.minecraft.world.entity.EntityType.CODEC);
-         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((Object)null);
+         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((EntityType) null);
       }
    }
 
@@ -136,7 +136,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEnti
          Weighted<SpawnData> entry = (Weighted)var2.next();
          CraftEntitySnapshot snapshot = CraftEntitySnapshot.create(((SpawnData)entry.value()).getEntityToSpawn());
          if (snapshot != null) {
-            SpawnRule rule = (SpawnRule)((SpawnData)entry.value()).customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse((Object)null);
+            SpawnRule rule = (SpawnRule)((SpawnData)entry.value()).customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse((SpawnRule) null);
             entries.add(new SpawnerEntry(snapshot, entry.weight(), rule, getEquipment(((SpawnData)entry.value()).equipment())));
          }
       }
@@ -160,7 +160,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEnti
          return null;
       } else {
          Optional<net.minecraft.world.entity.EntityType<?>> type = spawnData.getEntityToSpawn().read("id", net.minecraft.world.entity.EntityType.CODEC);
-         return (String)type.map(CraftEntityType::minecraftToBukkit).map(CraftEntityType::bukkitToString).orElse((Object)null);
+         return (String)type.map(CraftEntityType::minecraftToBukkit).map(CraftEntityType::bukkitToString).orElse((String) null);
       }
    }
 
@@ -251,6 +251,6 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEnti
          return new SpawnerEntry.Equipment(CraftLootTable.minecraftToBukkit(nms.lootTable()), new HashMap((Map)nms.slotDropChances().entrySet().stream().collect(Collectors.toMap((entry) -> {
             return CraftEquipmentSlot.getSlot((net.minecraft.world.entity.EquipmentSlot)entry.getKey());
          }, Map.Entry::getValue))));
-      }).orElse((Object)null);
+      }).orElse((SpawnerEntry.Equipment) null);
    }
 }

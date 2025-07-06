@@ -213,8 +213,14 @@ accessible method net/minecraft/world/entity/LivingEntity setLivingEntityFlag (I
 accessible method net/minecraft/world/level/block/entity/trialspawner/TrialSpawner normalConfig ()Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawnerConfig;
 accessible method net/minecraft/world/level/block/entity/trialspawner/TrialSpawner ominousConfig ()Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawnerConfig;
 accessible method net/minecraft/nbt/ListTag identifyRawElementType ()B
+accessible method net/minecraft/world/level/block/entity/ConduitBlockEntity updateAndAttackTarget (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/ConduitBlockEntity;Z)V
+accessible method net/minecraft/world/level/block/entity/vault/VaultServerData getRewardedPlayers ()Ljava/util/Set;
 
 # public fields
+accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData detectedPlayers Ljava/util/Set;
+accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData currentMobs Ljava/util/Set;
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litTimeRemaining I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity cookingTimer I
 accessible field net/minecraft/world/level/storage/TagValueInput input Lnet/minecraft/nbt/CompoundTag;
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawner stateAccessor Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawner$StateAccessor;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase destroySpeed F
@@ -305,7 +311,6 @@ accessible field net/minecraft/world/level/levelgen/structure/placement/Structur
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement exclusionZone Ljava/util/Optional;
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement locateOffset Lnet/minecraft/core/Vec3i;
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement frequency F
-accessible field net/minecraft/world/level/block/entity/BannerBlockEntity baseColor Lnet/minecraft/world/item/DyeColor;
 accessible field net/minecraft/world/level/storage/DimensionDataStorage cache Ljava/util/Map;
 accessible field net/minecraft/world/level/chunk/ChunkAccess blockEntities Ljava/util/Map;
 accessible field net/minecraft/world/level/chunk/ChunkAccess heightmaps Ljava/util/Map;
@@ -548,6 +553,9 @@ accessible field net/minecraft/world/level/levelgen/structure/templatesystem/Str
 accessible field net/minecraft/world/level/levelgen/structure/StructurePiece SHAPE_CHECK_BLOCKS Ljava/util/Set;
 accessible field net/minecraft/world/inventory/StonecutterMenu access Lnet/minecraft/world/inventory/ContainerLevelAccess;
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawner isOminous Z
+accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData nextSpawnData Ljava/util/Optional;
+accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawner config Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawner$FullConfig;
+
 # public -f fields
 accessible field net/minecraft/world/item/trading/MerchantOffer maxUses I
 mutable field net/minecraft/world/item/trading/MerchantOffer maxUses I
@@ -617,3 +625,5 @@ accessible field net/minecraft/world/entity/LivingEntity combatTracker Lnet/mine
 mutable field net/minecraft/world/entity/LivingEntity combatTracker Lnet/minecraft/world/damagesource/CombatTracker;
 accessible field net/minecraft/server/players/PlayerList maxPlayers I
 mutable field net/minecraft/server/players/PlayerList maxPlayers I
+accessible field net/minecraft/world/level/block/entity/BannerBlockEntity baseColor Lnet/minecraft/world/item/DyeColor;
+mutable field net/minecraft/world/level/block/entity/BannerBlockEntity baseColor Lnet/minecraft/world/item/DyeColor;

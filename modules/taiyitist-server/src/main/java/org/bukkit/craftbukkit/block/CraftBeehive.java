@@ -18,7 +18,7 @@ import org.bukkit.entity.Bee;
 
 public class CraftBeehive extends CraftBlockEntityState<BeehiveBlockEntity> implements Beehive {
    public CraftBeehive(World world, BeehiveBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftBeehive(CraftBeehive state, Location location) {
@@ -48,12 +48,12 @@ public class CraftBeehive extends CraftBlockEntityState<BeehiveBlockEntity> impl
    }
 
    public int getMaxEntities() {
-      return ((BeehiveBlockEntity)this.getSnapshot()).maxBees;
+      return ((BeehiveBlockEntity)this.getSnapshot()).bridge$maxBees();
    }
 
    public void setMaxEntities(int max) {
       Preconditions.checkArgument(max > 0, "Max bees must be more than 0");
-      ((BeehiveBlockEntity)this.getSnapshot()).maxBees = max;
+      ((BeehiveBlockEntity)this.getSnapshot()).banner$setMaxBees(max);
    }
 
    public List<Bee> releaseEntities() {

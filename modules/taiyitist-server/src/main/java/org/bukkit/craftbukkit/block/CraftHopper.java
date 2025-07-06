@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hopper {
    public CraftHopper(World world, HopperBlockEntity tileEntity) {
-      super((World)world, (RandomizableContainerBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftHopper(CraftHopper state, Location location) {

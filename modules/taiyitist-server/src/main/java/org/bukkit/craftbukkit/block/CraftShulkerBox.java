@@ -17,7 +17,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implements ShulkerBox {
    public CraftShulkerBox(World world, ShulkerBoxBlockEntity tileEntity) {
-      super((World)world, (RandomizableContainerBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftShulkerBox(CraftShulkerBox state, Location location) {
@@ -39,24 +39,24 @@ public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implem
 
    public void open() {
       this.requirePlaced();
-      if (!((ShulkerBoxBlockEntity)this.getTileEntity()).opened && this.getWorldHandle() instanceof Level) {
+      if (!((ShulkerBoxBlockEntity)this.getTileEntity()).bridge$opened() && this.getWorldHandle() instanceof Level) {
          Level world = ((ShulkerBoxBlockEntity)this.getTileEntity()).getLevel();
          world.blockEvent(this.getPosition(), ((ShulkerBoxBlockEntity)this.getTileEntity()).getBlockState().getBlock(), 1, 1);
          world.playSound((Entity)null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
       }
 
-      ((ShulkerBoxBlockEntity)this.getTileEntity()).opened = true;
+      ((ShulkerBoxBlockEntity)this.getTileEntity()).banner$setOpened(true);
    }
 
    public void close() {
       this.requirePlaced();
-      if (((ShulkerBoxBlockEntity)this.getTileEntity()).opened && this.getWorldHandle() instanceof Level) {
+      if (((ShulkerBoxBlockEntity)this.getTileEntity()).bridge$opened() && this.getWorldHandle() instanceof Level) {
          Level world = ((ShulkerBoxBlockEntity)this.getTileEntity()).getLevel();
          world.blockEvent(this.getPosition(), ((ShulkerBoxBlockEntity)this.getTileEntity()).getBlockState().getBlock(), 1, 0);
          world.playSound((Entity)null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
       }
 
-      ((ShulkerBoxBlockEntity)this.getTileEntity()).opened = false;
+      ((ShulkerBoxBlockEntity)this.getTileEntity()).banner$setOpened(false);
    }
 
    public CraftShulkerBox copy() {

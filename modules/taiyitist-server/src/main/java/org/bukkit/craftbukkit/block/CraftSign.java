@@ -25,7 +25,7 @@ public class CraftSign<T extends SignBlockEntity> extends CraftBlockEntityState<
    private final CraftSignSide back = new CraftSignSide(((SignBlockEntity)this.getSnapshot()).getBackText());
 
    public CraftSign(World world, T tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftSign(CraftSign<T> state, Location location) {

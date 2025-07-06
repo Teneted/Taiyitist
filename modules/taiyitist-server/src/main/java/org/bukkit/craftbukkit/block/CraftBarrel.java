@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Barrel {
    public CraftBarrel(World world, BarrelBlockEntity tileEntity) {
-      super((World)world, (RandomizableContainerBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftBarrel(CraftBarrel state, Location location) {
@@ -32,7 +32,7 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
 
    public void open() {
       this.requirePlaced();
-      if (!((BarrelBlockEntity)this.getTileEntity()).openersCounter.opened) {
+      if (!((BarrelBlockEntity)this.getTileEntity()).openersCounter.bridge$opened()) {
          BlockState blockData = ((BarrelBlockEntity)this.getTileEntity()).getBlockState();
          boolean open = (Boolean)blockData.getValue(BarrelBlock.OPEN);
          if (!open) {
@@ -43,12 +43,12 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
          }
       }
 
-      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.opened = true;
+      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(true);
    }
 
    public void close() {
       this.requirePlaced();
-      if (((BarrelBlockEntity)this.getTileEntity()).openersCounter.opened) {
+      if (((BarrelBlockEntity)this.getTileEntity()).openersCounter.bridge$opened()) {
          BlockState blockData = ((BarrelBlockEntity)this.getTileEntity()).getBlockState();
          ((BarrelBlockEntity)this.getTileEntity()).updateBlockState(blockData, false);
          if (this.getWorldHandle() instanceof Level) {
@@ -56,7 +56,7 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
          }
       }
 
-      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.opened = false;
+      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(false);
    }
 
    public CraftBarrel copy() {

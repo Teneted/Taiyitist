@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class CraftSculkShrieker extends CraftBlockEntityState<SculkShriekerBlockEntity> implements SculkShrieker {
    public CraftSculkShrieker(World world, SculkShriekerBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftSculkShrieker(CraftSculkShrieker state, Location location) {

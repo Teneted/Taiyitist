@@ -64,7 +64,7 @@ public class CraftTrialSpawnerConfiguration implements TrialSpawnerConfiguration
          return null;
       } else {
          Optional<net.minecraft.world.entity.EntityType<?>> type = ((SpawnData)((Weighted)this.spawnPotentialsDefinition.unwrap().get(0)).value()).getEntityToSpawn().read("id", net.minecraft.world.entity.EntityType.CODEC);
-         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((Object)null);
+         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((EntityType) null);
       }
    }
 
@@ -198,7 +198,7 @@ public class CraftTrialSpawnerConfiguration implements TrialSpawnerConfiguration
          Weighted<SpawnData> entry = (Weighted)var2.next();
          CraftEntitySnapshot snapshot = CraftEntitySnapshot.create(((SpawnData)entry.value()).getEntityToSpawn());
          if (snapshot != null) {
-            SpawnRule rule = (SpawnRule)((SpawnData)entry.value()).customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse((Object)null);
+            SpawnRule rule = (SpawnRule)((SpawnData)entry.value()).customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse((SpawnRule) null);
             entries.add(new SpawnerEntry(snapshot, entry.weight(), rule));
          }
       }

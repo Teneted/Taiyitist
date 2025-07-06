@@ -8,7 +8,7 @@ import org.bukkit.block.TestInstance;
 
 public class CraftTestInstance extends CraftBlockEntityState<TestInstanceBlockEntity> implements TestInstance {
    public CraftTestInstance(World world, TestInstanceBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftTestInstance(CraftTestInstance state, Location location) {

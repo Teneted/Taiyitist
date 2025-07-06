@@ -17,7 +17,7 @@ import org.bukkit.inventory.JukeboxInventory;
 
 public class CraftJukebox extends CraftBlockEntityState<JukeboxBlockEntity> implements Jukebox {
    public CraftJukebox(World world, JukeboxBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftJukebox(CraftJukebox state, Location location) {
@@ -70,7 +70,7 @@ public class CraftJukebox extends CraftBlockEntityState<JukeboxBlockEntity> impl
    public void setRecord(ItemStack record) {
       net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(record);
       JukeboxBlockEntity snapshot = (JukeboxBlockEntity)this.getSnapshot();
-      snapshot.setSongItemWithoutPlaying(nms, snapshot.getSongPlayer().getTicksSinceSongStarted());
+      snapshot.setSongItemWithoutPlaying(nms);/*, snapshot.getSongPlayer().getTicksSinceSongStarted()*/ // Taiyitist - TODO fixme);
       this.data = (BlockState)this.data.setValue(JukeboxBlock.HAS_RECORD, !nms.isEmpty());
    }
 

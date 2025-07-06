@@ -37,7 +37,7 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 public class CraftBlockType<B extends BlockData> extends CraftRegistryItem<Block> implements BlockType.Typed<B> {
-   private final Class<B> blockDataClass = CraftBlockData.fromData(((Block)this.getHandle()).defaultBlockState()).getClass().getInterfaces()[0];
+   private final Class<B> blockDataClass = (Class<B>) CraftBlockData.fromData(((Block)this.getHandle()).defaultBlockState()).getClass().getInterfaces()[0];
    private final boolean interactable = isInteractable((Block)this.getHandle());
    private static final Class<?>[] USE_WITHOUT_ITEM_ARGS = new Class[]{BlockState.class, Level.class, BlockPos.class, Player.class, BlockHitResult.class};
    private static final Class<?>[] USE_ITEM_ON_ARGS = new Class[]{ItemStack.class, BlockState.class, Level.class, BlockPos.class, Player.class, InteractionHand.class, BlockHitResult.class};
@@ -97,7 +97,7 @@ public class CraftBlockType<B extends BlockData> extends CraftRegistryItem<Block
    @NotNull
    public <Other extends BlockData> BlockType.Typed<Other> typed(@NotNull Class<Other> blockDataType) {
       if (blockDataType.isAssignableFrom(this.blockDataClass)) {
-         return this;
+         return (Typed<Other>) this;
       } else {
          String var10002 = String.valueOf(this.isRegistered() ? this.getKeyOrThrow() : this.toString());
          throw new IllegalArgumentException("Cannot type block type " + var10002 + " to blockdata type " + blockDataType.getSimpleName());
@@ -141,7 +141,7 @@ public class CraftBlockType<B extends BlockData> extends CraftRegistryItem<Block
    }
 
    public B createBlockData(String data) {
-      return CraftBlockData.newData(this, data);
+      return (B) CraftBlockData.newData(this, data);
    }
 
    public boolean isSolid() {

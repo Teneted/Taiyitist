@@ -20,7 +20,7 @@ public class CraftBanner extends CraftBlockEntityState<BannerBlockEntity> implem
    private List<Pattern> patterns;
 
    public CraftBanner(World world, BannerBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftBanner(CraftBanner state, Location location) {

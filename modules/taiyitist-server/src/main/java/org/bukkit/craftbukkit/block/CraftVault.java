@@ -24,7 +24,7 @@ public class CraftVault extends CraftBlockEntityState<VaultBlockEntity> implemen
    private CraftVaultConfiguration config;
 
    public CraftVault(World world, VaultBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftVault(CraftVault state, Location location) {
@@ -65,7 +65,7 @@ public class CraftVault extends CraftBlockEntityState<VaultBlockEntity> implemen
    }
 
    public LootTable getDisplayLootTable() {
-      return (LootTable)this.config.overrideLootTableToDisplay.map(CraftLootTable::minecraftToBukkit).orElse((Object)null);
+      return (LootTable)this.config.overrideLootTableToDisplay.map(CraftLootTable::minecraftToBukkit).orElse((LootTable) null);
    }
 
    public void setDisplayLootTable(LootTable lootTable) {

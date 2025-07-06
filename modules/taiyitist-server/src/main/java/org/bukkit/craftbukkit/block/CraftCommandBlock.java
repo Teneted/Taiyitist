@@ -9,7 +9,7 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
 
 public class CraftCommandBlock extends CraftBlockEntityState<CommandBlockEntity> implements CommandBlock {
    public CraftCommandBlock(World world, CommandBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftCommandBlock(CraftCommandBlock state, Location location) {

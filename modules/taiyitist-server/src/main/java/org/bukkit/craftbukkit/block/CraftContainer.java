@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class CraftContainer<T extends BaseContainerBlockEntity> extends CraftBlockEntityState<T> implements Container {
    public CraftContainer(World world, T tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftContainer(CraftContainer<T> state, Location location) {
@@ -56,7 +56,7 @@ public abstract class CraftContainer<T extends BaseContainerBlockEntity> extends
    }
 
    public String getCustomName() {
-      T container = (BaseContainerBlockEntity)this.getSnapshot();
+      T container = (T) this.getSnapshot();
       return container.name != null ? CraftChatMessage.fromComponent(container.getCustomName()) : null;
    }
 

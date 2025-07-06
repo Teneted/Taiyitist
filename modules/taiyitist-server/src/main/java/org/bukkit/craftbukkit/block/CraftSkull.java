@@ -3,6 +3,8 @@ package org.bukkit.craftbukkit.block;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +33,7 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
    private ResolvableProfile profile;
 
    public CraftSkull(World world, SkullBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftSkull(CraftSkull state, Location location) {
@@ -52,12 +54,12 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
    }
 
    public String getOwner() {
-      return this.hasOwner() ? (String)this.profile.name().orElse((Object)null) : null;
+      return this.hasOwner() ? (String)this.profile.name().orElse((String) null) : null;
    }
 
    public boolean setOwner(String name) {
       if (name != null && name.length() <= 16) {
-         GameProfile profile = (GameProfile)MinecraftServer.getServer().getProfileCache().get(name).orElse((Object)null);
+         GameProfile profile = (GameProfile) BukkitMethodHooks.getServer().getProfileCache().get(name).orElse((GameProfile) null);
          if (profile == null) {
             return false;
          } else {

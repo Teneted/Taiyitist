@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import javax.annotation.Nullable;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -130,7 +132,7 @@ public final class CraftBlockStates {
    /** @deprecated */
    @Deprecated
    public static org.bukkit.block.BlockState getBlockState(BlockPos blockPosition, Material material, @Nullable CompoundTag blockEntityTag) {
-      return getBlockState(MinecraftServer.getDefaultRegistryAccess(), blockPosition, material, blockEntityTag);
+      return getBlockState(BukkitMethodHooks.getDefaultRegistryAccess(), blockPosition, material, blockEntityTag);
    }
 
    public static org.bukkit.block.BlockState getBlockState(LevelReader world, BlockPos blockPosition, Material material, @Nullable CompoundTag blockEntityTag) {
@@ -146,7 +148,7 @@ public final class CraftBlockStates {
    /** @deprecated */
    @Deprecated
    public static org.bukkit.block.BlockState getBlockState(BlockState blockData, @Nullable CompoundTag blockEntityTag) {
-      return getBlockState(MinecraftServer.getDefaultRegistryAccess(), BlockPos.ZERO, blockData, blockEntityTag);
+      return getBlockState(BukkitMethodHooks.getDefaultRegistryAccess(), BlockPos.ZERO, blockData, blockEntityTag);
    }
 
    public static org.bukkit.block.BlockState getBlockState(LevelReader world, BlockPos blockPosition, BlockState blockData, @Nullable CompoundTag blockEntityTag) {
@@ -255,15 +257,15 @@ public final class CraftBlockStates {
             tileEntity = this.createTileEntity(blockPosition, blockData);
          }
 
-         return this.createBlockState(world, tileEntity);
+         return this.createBlockState(world, (T) tileEntity);
       }
 
       private T createTileEntity(BlockPos blockPosition, BlockState blockData) {
-         return (BlockEntity)this.tileEntityConstructor.apply(blockPosition, blockData);
+         return (T) this.tileEntityConstructor.apply(blockPosition, blockData);
       }
 
       private B createBlockState(World world, T tileEntity) {
-         return (CraftBlockEntityState)this.blockStateConstructor.apply(world, tileEntity);
+         return (B) this.blockStateConstructor.apply(world, tileEntity);
       }
    }
 

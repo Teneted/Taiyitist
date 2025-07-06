@@ -7,7 +7,7 @@ import org.bukkit.World;
 
 public class CraftFurnaceFurnace extends CraftFurnace<FurnaceBlockEntity> {
    public CraftFurnaceFurnace(World world, FurnaceBlockEntity tileEntity) {
-      super((World)world, (AbstractFurnaceBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftFurnaceFurnace(CraftFurnaceFurnace state, Location location) {

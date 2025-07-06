@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.advancements.critereon.DataComponentMatchers;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds.Ints;
@@ -28,7 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implements Beacon {
    public CraftBeacon(World world, BeaconBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftBeacon(CraftBeacon state, Location location) {
@@ -41,7 +43,7 @@ public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implem
       if (!(tileEntity instanceof BeaconBlockEntity beacon)) {
          return new ArrayList();
       } else {
-         Collection<Player> nms = BeaconBlockEntity.getHumansInRange(beacon.getLevel(), beacon.getBlockPos(), beacon.levels);
+         Collection<Player> nms = BukkitMethodHooks.getHumansInRange(beacon.getLevel(), beacon.getBlockPos(), beacon.levels);
          Collection<LivingEntity> bukkit = new ArrayList(nms.size());
          Iterator var5 = nms.iterator();
 

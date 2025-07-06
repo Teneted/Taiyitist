@@ -55,7 +55,7 @@ public class BukkitCommandWrapper implements Command<CommandSourceStack>, Predic
    }
 
    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-      List<String> results = this.server.tabComplete(((CommandSourceStack)context.getSource()).getBukkitSender(), builder.getInput(), ((CommandSourceStack)context.getSource()).getLevel(), ((CommandSourceStack)context.getSource()).getPosition(), true);
+      List<String> results = this.server.tabComplete(((CommandSourceStack)context.getSource()).banner$getBukkitSender(), builder.getInput(), ((CommandSourceStack)context.getSource()).getLevel(), ((CommandSourceStack)context.getSource()).getPosition(), true);
       builder = builder.createOffset(builder.getInput().lastIndexOf(32) + 1);
       Iterator var4 = results.iterator();
 

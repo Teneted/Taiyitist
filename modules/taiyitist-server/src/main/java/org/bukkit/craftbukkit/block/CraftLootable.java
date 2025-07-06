@@ -12,7 +12,7 @@ import org.bukkit.loot.Lootable;
 
 public abstract class CraftLootable<T extends RandomizableContainerBlockEntity> extends CraftContainer<T> implements Nameable, Lootable {
    public CraftLootable(World world, T tileEntity) {
-      super((World)world, (BaseContainerBlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftLootable(CraftLootable<T> state, Location location) {
@@ -20,7 +20,7 @@ public abstract class CraftLootable<T extends RandomizableContainerBlockEntity> 
    }
 
    protected void applyTo(T lootable) {
-      super.applyTo((BaseContainerBlockEntity)lootable);
+      super.applyTo((T) lootable);
       if (((RandomizableContainerBlockEntity)this.getSnapshot()).lootTable == null) {
          lootable.setLootTable((ResourceKey)null, 0L);
       }

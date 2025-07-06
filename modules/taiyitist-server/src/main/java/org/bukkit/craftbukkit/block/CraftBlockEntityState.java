@@ -1,6 +1,8 @@
 package org.bukkit.craftbukkit.block;
 
 import java.util.Set;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -48,7 +50,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
 
    protected RegistryAccess getRegistryAccess() {
       LevelAccessor worldHandle = this.getWorldHandle();
-      return worldHandle != null ? worldHandle.registryAccess() : MinecraftServer.getDefaultRegistryAccess();
+      return worldHandle != null ? worldHandle.registryAccess() : BukkitMethodHooks.getDefaultRegistryAccess();
    }
 
    private T createSnapshot(T tileEntity) {
@@ -56,7 +58,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
          return null;
       } else {
          CompoundTag nbtTagCompound = tileEntity.saveWithFullMetadata(this.getRegistryAccess());
-         T snapshot = BlockEntity.loadStatic(this.getPosition(), this.getHandle(), nbtTagCompound, this.getRegistryAccess());
+         T snapshot = (T) BlockEntity.loadStatic(this.getPosition(), this.getHandle(), nbtTagCompound, this.getRegistryAccess());
          return snapshot;
       }
    }
@@ -155,7 +157,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
       if (result && this.isPlaced()) {
          BlockEntity tile = this.getTileEntityFromWorld();
          if (this.isApplicable(tile)) {
-            this.applyTo(tile);
+            this.applyTo((T) tile);
             tile.setChanged();
          }
       }
@@ -164,7 +166,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
    }
 
    public PersistentDataContainer getPersistentDataContainer() {
-      return this.getSnapshot().persistentDataContainer;
+      return this.getSnapshot().bridge$persistentDataContainer();
    }
 
    @Nullable

@@ -24,7 +24,7 @@ public class CraftTrialSpawner extends CraftBlockEntityState<TrialSpawnerBlockEn
    private CraftTrialSpawnerConfiguration ominousConfig;
 
    public CraftTrialSpawner(World world, TrialSpawnerBlockEntity tileEntity) {
-      super((World)world, (BlockEntity)tileEntity);
+      super(world, tileEntity);
    }
 
    protected CraftTrialSpawner(CraftTrialSpawner state, Location location) {
