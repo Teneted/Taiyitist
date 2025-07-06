@@ -18,7 +18,7 @@ public class CraftEvoker extends CraftSpellcaster implements Evoker {
    }
 
    public Evoker.Spell getCurrentSpell() {
-      return Spell.values()[this.getHandle().getCurrentSpell().ordinal()];
+      return Evoker.Spell.values()[this.getHandle().getCurrentSpell().ordinal()];
    }
 
    public void setCurrentSpell(Evoker.Spell spell) {

@@ -196,7 +196,7 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
    }
 
    public PotionType getBasePotionType() {
-      return (PotionType)this.getHandle().potionContents.potion().map(CraftPotionType::minecraftHolderToBukkit).orElse((Object)null);
+      return (PotionType)this.getHandle().potionContents.potion().map(CraftPotionType::minecraftHolderToBukkit).orElse((PotionType) null);
    }
 
    public ProjectileSource getSource() {

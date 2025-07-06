@@ -16,7 +16,7 @@ public final class CraftMinecartTNT extends CraftMinecart implements ExplosiveMi
    }
 
    public boolean isIncendiary() {
-      return this.getHandle().isIncendiary;
+      return this.getHandle().bridge$isIncendiary();
    }
 
    public void setIsIncendiary(boolean isIncendiary) {

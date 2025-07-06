@@ -28,7 +28,7 @@ public class CraftFox extends CraftAnimals implements Fox {
 
    public void setFoxType(Fox.Type type) {
       Preconditions.checkArgument(type != null, "type");
-      this.getHandle().setVariant(Variant.values()[type.ordinal()]);
+      getHandle().setVariant(net.minecraft.world.entity.animal.Fox.Variant.values()[type.ordinal()]);
    }
 
    public boolean isCrouching() {
@@ -52,17 +52,17 @@ public class CraftFox extends CraftAnimals implements Fox {
    }
 
    public AnimalTamer getFirstTrustedPlayer() {
-      UUID uuid = (UUID)((Optional)this.getHandle().getEntityData().get(net.minecraft.world.entity.animal.Fox.DATA_TRUSTED_ID_0)).map(EntityReference::getUUID).orElse((Object)null);
+      UUID uuid = getHandle().getEntityData().get(net.minecraft.world.entity.animal.Fox.DATA_TRUSTED_ID_0).map(EntityReference::getUUID).orElse(null);
       if (uuid == null) {
          return null;
-      } else {
-         AnimalTamer player = this.getServer().getPlayer(uuid);
-         if (player == null) {
-            player = this.getServer().getOfflinePlayer(uuid);
-         }
-
-         return (AnimalTamer)player;
       }
+
+      AnimalTamer player = getServer().getPlayer(uuid);
+      if (player == null) {
+         player = getServer().getOfflinePlayer(uuid);
+      }
+
+      return player;
    }
 
    public void setFirstTrustedPlayer(AnimalTamer player) {
@@ -74,7 +74,7 @@ public class CraftFox extends CraftAnimals implements Fox {
    }
 
    public AnimalTamer getSecondTrustedPlayer() {
-      UUID uuid = (UUID)((Optional)this.getHandle().getEntityData().get(net.minecraft.world.entity.animal.Fox.DATA_TRUSTED_ID_1)).map(EntityReference::getUUID).orElse((Object)null);
+      UUID uuid = getHandle().getEntityData().get(net.minecraft.world.entity.animal.Fox.DATA_TRUSTED_ID_1).map(EntityReference::getUUID).orElse(null);
       if (uuid == null) {
          return null;
       } else {

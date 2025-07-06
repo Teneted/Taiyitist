@@ -83,8 +83,7 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
       public static Holder<WolfVariant> bukkitToMinecraftHolder(Wolf.Variant bukkit) {
          Preconditions.checkArgument(bukkit != null);
          net.minecraft.core.Registry<WolfVariant> registry = CraftRegistry.getMinecraftRegistry(Registries.WOLF_VARIANT);
-         Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-         if (var3 instanceof Holder.Reference<WolfVariant> holder) {
+         if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<WolfVariant> holder) {
             return holder;
          } else {
             throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own wolf variant with out properly registering it.");

@@ -51,7 +51,7 @@ public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow
    }
 
    public ProjectileSource getShooter() {
-      return this.getHandle().projectileSource;
+      return this.getHandle().bridge$projectileSource();
    }
 
    public void setShooter(ProjectileSource shooter) {
@@ -61,7 +61,7 @@ public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow
          this.getHandle().setOwner((net.minecraft.world.entity.Entity)null);
       }
 
-      this.getHandle().projectileSource = shooter;
+      this.getHandle().banner$setProjectileSource(shooter);
    }
 
    public boolean isInBlock() {

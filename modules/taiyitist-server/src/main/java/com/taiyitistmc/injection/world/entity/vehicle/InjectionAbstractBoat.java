@@ -1,6 +1,6 @@
 package com.taiyitistmc.injection.world.entity.vehicle;
 
-public interface InjectionBoat {
+public interface InjectionAbstractBoat {
 
     default double bridge$maxSpeed() {
         throw new IllegalStateException("Not implemented");

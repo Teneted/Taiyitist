@@ -23,7 +23,7 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
       Direction newDir = CraftBlock.blockFaceToNotch(face);
       Preconditions.checkArgument(newDir != null, "%s is not a valid facing direction", face);
       this.getHandle().setDirection(newDir);
-      if (!force && !this.getHandle().generation && !((HangingEntity)hanging).survives()) {
+      if (!force && !this.getHandle().bridge$generation() && !((HangingEntity)hanging).survives()) {
          ((HangingEntity)hanging).setDirection(oldDir);
          return false;
       } else {
@@ -36,7 +36,7 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
       super.update();
       this.getHandle().getEntityData().markDirty(net.minecraft.world.entity.decoration.ItemFrame.DATA_ITEM);
       this.getHandle().getEntityData().markDirty(net.minecraft.world.entity.decoration.ItemFrame.DATA_ROTATION);
-      if (!this.getHandle().generation) {
+      if (!this.getHandle().bridge$generation()) {
          this.getHandle().level().updateNeighbourForOutputSignal(this.getHandle().getPos(), Blocks.AIR);
       }
 
@@ -47,7 +47,7 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
    }
 
    public void setItem(ItemStack item, boolean playSound) {
-      this.getHandle().setItem(CraftItemStack.asNMSCopy(item), !this.getHandle().generation, !this.getHandle().generation && playSound);
+      this.getHandle().setItem(CraftItemStack.asNMSCopy(item), !this.getHandle().bridge$generation(), !this.getHandle().bridge$generation() && playSound);
    }
 
    public ItemStack getItem() {

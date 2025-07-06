@@ -19,7 +19,7 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
    }
 
    public void setTarget(LivingEntity target) {
-      Preconditions.checkState(!this.getHandle().generation, "Cannot set target during world generation");
+      Preconditions.checkState(!this.getHandle().bridge$generation(), "Cannot set target during world generation");
       net.minecraft.world.entity.Mob entity = this.getHandle();
       if (target == null) {
          entity.setTarget((net.minecraft.world.entity.LivingEntity)null, (EntityTargetEvent.TargetReason)null, false);
@@ -34,11 +34,11 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
    }
 
    public void setAware(boolean aware) {
-      this.getHandle().aware = aware;
+      this.getHandle().banner$setAware(aware);
    }
 
    public boolean isAware() {
-      return this.getHandle().aware;
+      return this.getHandle().bridge$aware();
    }
 
    public Sound getAmbientSound() {
@@ -59,7 +59,7 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
    }
 
    public LootTable getLootTable() {
-      return CraftLootTable.minecraftToBukkit((ResourceKey)this.getHandle().getLootTable().orElse((Object)null));
+      return CraftLootTable.minecraftToBukkit((ResourceKey)this.getHandle().getLootTable().orElse((ResourceKey<net.minecraft.world.level.storage.loot.LootTable>) null));
    }
 
    public void setSeed(long seed) {

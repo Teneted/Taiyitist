@@ -12,7 +12,7 @@ public class CraftShulkerBullet extends CraftProjectile implements ShulkerBullet
    }
 
    public ProjectileSource getShooter() {
-      return this.getHandle().projectileSource;
+      return this.getHandle().bridge$projectileSource();
    }
 
    public void setShooter(ProjectileSource shooter) {
@@ -22,7 +22,7 @@ public class CraftShulkerBullet extends CraftProjectile implements ShulkerBullet
          this.getHandle().setOwner((net.minecraft.world.entity.Entity)null);
       }
 
-      this.getHandle().projectileSource = shooter;
+      this.getHandle().banner$setProjectileSource(shooter);
    }
 
    public Entity getTarget() {
@@ -30,7 +30,7 @@ public class CraftShulkerBullet extends CraftProjectile implements ShulkerBullet
    }
 
    public void setTarget(Entity target) {
-      Preconditions.checkState(!this.getHandle().generation, "Cannot set target during world generation");
+      Preconditions.checkState(!this.getHandle().bridge$generation(), "Cannot set target during world generation");
       this.getHandle().setTarget(target == null ? null : ((CraftEntity)target).getHandle());
    }
 

@@ -64,7 +64,7 @@ public class CraftEntitySnapshot implements EntitySnapshot {
 
    public static CraftEntitySnapshot create(CraftEntity entity) {
       TagValueOutput tag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.getHandle().registryAccess());
-      return !entity.getHandle().saveAsPassenger(tag, false) ? null : new CraftEntitySnapshot(tag.buildResult(), entity.getType());
+      return !entity.getHandle().saveAsPassenger(tag/*, false Taiyitist - TODO fixme*/ ) ? null : new CraftEntitySnapshot(tag.buildResult(), entity.getType());
    }
 
    public static CraftEntitySnapshot create(CompoundTag tag, EntityType type) {
@@ -72,7 +72,7 @@ public class CraftEntitySnapshot implements EntitySnapshot {
    }
 
    public static CraftEntitySnapshot create(CompoundTag tag) {
-      EntityType type = (EntityType)tag.read("id", net.minecraft.world.entity.EntityType.CODEC).map(CraftEntityType::minecraftToBukkit).orElse((Object)null);
+      EntityType type = (EntityType)tag.read("id", net.minecraft.world.entity.EntityType.CODEC).map(CraftEntityType::minecraftToBukkit).orElse((EntityType) null);
       return create(tag, type);
    }
 }

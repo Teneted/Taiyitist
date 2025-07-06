@@ -31,7 +31,7 @@ public class CraftEntityFactory implements EntityFactory {
       }
 
       ValueInput value = TagValueInput.create(ProblemReporter.DISCARDING, this.registry, tag);
-      EntityType<?> type = (EntityType)EntityType.by(value).orElse((Object)null);
+      EntityType<?> type = (EntityType)EntityType.by(value).orElse((EntityType<?>) null);
       if (type == null) {
          throw new IllegalArgumentException("Could not parse Entity: " + input);
       } else {

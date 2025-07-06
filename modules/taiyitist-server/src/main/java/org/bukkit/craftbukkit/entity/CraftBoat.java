@@ -30,41 +30,41 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
    }
 
    public double getMaxSpeed() {
-      return this.getHandle().maxSpeed;
+      return this.getHandle().bridge$maxSpeed();
    }
 
    public void setMaxSpeed(double speed) {
       if (speed >= 0.0) {
-         this.getHandle().maxSpeed = speed;
+         this.getHandle().banner$setMaxSpeed(speed);
       }
 
    }
 
    public double getOccupiedDeceleration() {
-      return this.getHandle().occupiedDeceleration;
+      return this.getHandle().bridge$occupiedDeceleration();
    }
 
    public void setOccupiedDeceleration(double speed) {
       if (speed >= 0.0) {
-         this.getHandle().occupiedDeceleration = speed;
+         this.getHandle().banner$setOccupiedDeceleration(speed);
       }
 
    }
 
    public double getUnoccupiedDeceleration() {
-      return this.getHandle().unoccupiedDeceleration;
+      return this.getHandle().bridge$unoccupiedDeceleration();
    }
 
    public void setUnoccupiedDeceleration(double speed) {
-      this.getHandle().unoccupiedDeceleration = speed;
+      this.getHandle().banner$setUnoccupiedDeceleration(speed);
    }
 
    public boolean getWorkOnLand() {
-      return this.getHandle().landBoats;
+      return this.getHandle().bridge$landBoats();
    }
 
    public void setWorkOnLand(boolean workOnLand) {
-      this.getHandle().landBoats = workOnLand;
+      this.getHandle().banner$setLandBoats(workOnLand);
    }
 
    public Boat.Status getStatus() {

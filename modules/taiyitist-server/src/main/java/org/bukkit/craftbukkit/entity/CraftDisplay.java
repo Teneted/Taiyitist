@@ -125,15 +125,15 @@ public class CraftDisplay extends CraftEntity implements Display {
    }
 
    public Display.Brightness getBrightness() {
-      Brightness nms = this.getHandle().getBrightnessOverride();
+      net.minecraft.util.Brightness nms = this.getHandle().getBrightnessOverride();
       return nms != null ? new Display.Brightness(nms.block(), nms.sky()) : null;
    }
 
    public void setBrightness(Display.Brightness brightness) {
       if (brightness != null) {
-         this.getHandle().setBrightnessOverride(new Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
+         this.getHandle().setBrightnessOverride(new net.minecraft.util.Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
       } else {
-         this.getHandle().setBrightnessOverride((Brightness)null);
+         this.getHandle().setBrightnessOverride(null);
       }
 
    }

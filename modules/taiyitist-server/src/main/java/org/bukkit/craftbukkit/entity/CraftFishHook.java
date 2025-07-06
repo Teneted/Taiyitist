@@ -23,7 +23,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
    }
 
    public int getMinWaitTime() {
-      return this.getHandle().minWaitTime;
+      return this.getHandle().bridge$minWaitTime();
    }
 
    public void setMinWaitTime(int minWaitTime) {

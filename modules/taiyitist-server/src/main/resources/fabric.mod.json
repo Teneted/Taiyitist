@@ -129,7 +129,7 @@
       "net/minecraft/class_1621": ["com/taiyitistmc/injection/world/entity/monster/InjectionSlime"],
       "net/minecraft/class_1548": ["com/taiyitistmc/injection/world/entity/monster/InjectionCreeper"],
       "net/minecraft/class_1688": ["com/taiyitistmc/injection/world/entity/vehicle/InjectionAbstractMinecart"],
-      "net/minecraft/class_1690": ["com/taiyitistmc/injection/world/entity/vehicle/InjectionBoat"],
+      "net/minecraft/class_10255": ["com/taiyitistmc/injection/world/entity/vehicle/InjectionAbstractBoat"],
       "net/minecraft/class_1296": ["com/taiyitistmc/injection/world/entity/InjectionAgeableMob"],
       "net/minecraft/class_1922": ["com/taiyitistmc/injection/world/level/InjectionBlockGetter"],
       "net/minecraft/class_1945": ["com/taiyitistmc/injection/world/level/InjectionLevelWriter"],

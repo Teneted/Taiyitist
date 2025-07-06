@@ -60,7 +60,7 @@ public class CraftSniffer extends CraftAnimals implements Sniffer {
    public Location findPossibleDigLocation() {
       return (Location)this.getHandle().calculateDigPosition().map((blockPosition) -> {
          return CraftLocation.toBukkit(blockPosition, this.getLocation().getWorld());
-      }).orElse((Object)null);
+      }).orElse((Location) null);
    }
 
    public boolean canDig() {
@@ -69,18 +69,15 @@ public class CraftSniffer extends CraftAnimals implements Sniffer {
 
    private net.minecraft.world.entity.animal.sniffer.Sniffer.State stateToNMS(Sniffer.State state) {
       net.minecraft.world.entity.animal.sniffer.Sniffer.State var10000;
-      switch (state) {
-         case IDLING -> var10000 = State.IDLING;
-         case FEELING_HAPPY -> var10000 = State.FEELING_HAPPY;
-         case SCENTING -> var10000 = State.SCENTING;
-         case SNIFFING -> var10000 = State.SNIFFING;
-         case SEARCHING -> var10000 = State.SEARCHING;
-         case DIGGING -> var10000 = State.DIGGING;
-         case RISING -> var10000 = State.RISING;
-         default -> throw new MatchException((String)null, (Throwable)null);
-      }
-
-      return var10000;
+      return switch (state) {
+         case IDLING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.IDLING;
+         case FEELING_HAPPY -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.FEELING_HAPPY;
+         case SCENTING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SCENTING;
+         case SNIFFING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SNIFFING;
+         case SEARCHING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SEARCHING;
+         case DIGGING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.DIGGING;
+         case RISING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.RISING;
+      };
    }
 
    private Sniffer.State stateToBukkit(net.minecraft.world.entity.animal.sniffer.Sniffer.State state) {

@@ -4,7 +4,15 @@ import org.bukkit.util.Vector;
 
 public interface InjectionAbstractMinecart {
 
+    default double bridge$powRailAccelMult() {
+        throw new IllegalStateException("Not implemented");
+    }
+
     default double bridge$maxSpeed() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setPowRailAccelMult(double powRailAccelMult) {
         throw new IllegalStateException("Not implemented");
     }
 

@@ -31,7 +31,7 @@ public class CraftHanging extends CraftBlockAttachedEntity implements Hanging {
          default -> throw new IllegalArgumentException(String.format("%s is not a valid facing direction", face));
       }
 
-      if (!force && !this.getHandle().generation && !hanging.survives()) {
+      if (!force && !this.getHandle().bridge$generation() && !hanging.survives()) {
          hanging.setDirection(dir);
          return false;
       } else {

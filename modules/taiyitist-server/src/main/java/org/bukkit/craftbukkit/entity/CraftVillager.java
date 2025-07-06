@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -88,7 +90,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       Preconditions.checkArgument(location != null, "Location cannot be null");
       Preconditions.checkArgument(location.getWorld() != null, "Location needs to be in a world");
       Preconditions.checkArgument(location.getWorld().equals(this.getWorld()), "Cannot sleep across worlds");
-      Preconditions.checkState(!this.getHandle().generation, "Cannot sleep during world generation");
+      Preconditions.checkState(!this.getHandle().bridge$generation(), "Cannot sleep during world generation");
       BlockPos position = CraftLocation.toBlockPosition(location);
       BlockState iblockdata = this.getHandle().level().getBlockState(position);
       if (!(iblockdata.getBlock() instanceof BedBlock)) {
@@ -101,7 +103,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
 
    public void wakeup() {
       Preconditions.checkState(this.isSleeping(), "Cannot wakeup if not sleeping");
-      Preconditions.checkState(!this.getHandle().generation, "Cannot wakeup during world generation");
+      Preconditions.checkState(!this.getHandle().bridge$generation(), "Cannot wakeup during world generation");
       this.getHandle().stopSleeping();
    }
 
@@ -110,7 +112,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
    }
 
    public ZombieVillager zombify() {
-      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = Zombie.convertVillagerToZombieVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(), TransformReason.INFECTION, SpawnReason.CUSTOM);
+      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = BukkitMethodHooks.convertVillagerToZombieVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(), TransformReason.INFECTION, SpawnReason.CUSTOM);
       return entityzombievillager != null ? (ZombieVillager)entityzombievillager.getBukkitEntity() : null;
    }
 

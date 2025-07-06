@@ -26,7 +26,7 @@ public class CraftPainting extends CraftHanging implements Painting {
       Holder<PaintingVariant> oldArt = painting.getVariant();
       painting.setVariant(CraftArt.bukkitToMinecraftHolder(art));
       painting.setDirection(painting.getDirection());
-      if (!force && !this.getHandle().generation && !painting.survives()) {
+      if (!force && !this.getHandle().bridge$generation() && !painting.survives()) {
          painting.setVariant(oldArt);
          painting.setDirection(painting.getDirection());
          return false;

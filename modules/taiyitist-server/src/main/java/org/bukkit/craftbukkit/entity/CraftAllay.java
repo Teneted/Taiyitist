@@ -58,18 +58,18 @@ public class CraftAllay extends CraftCreature implements Allay {
    }
 
    public void startDancing() {
-      this.getHandle().forceDancing = true;
+      this.getHandle().banner$setForceDancing(true);
       this.getHandle().setDancing(true);
    }
 
    public void stopDancing() {
-      this.getHandle().forceDancing = false;
+      this.getHandle().banner$setForceDancing(false);
       this.getHandle().jukeboxPos = null;
       this.getHandle().setJukeboxPlaying((BlockPos)null, false);
    }
 
    public Allay duplicateAllay() {
-      net.minecraft.world.entity.animal.allay.Allay nmsAllay = this.getHandle().duplicateAllay();
+      net.minecraft.world.entity.animal.allay.Allay nmsAllay = this.getHandle().duplicateAllay0();
       return nmsAllay != null ? (Allay)nmsAllay.getBukkitEntity() : null;
    }
 

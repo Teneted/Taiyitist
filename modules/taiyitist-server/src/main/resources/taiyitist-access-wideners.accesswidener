@@ -215,8 +215,32 @@ accessible method net/minecraft/world/level/block/entity/trialspawner/TrialSpawn
 accessible method net/minecraft/nbt/ListTag identifyRawElementType ()B
 accessible method net/minecraft/world/level/block/entity/ConduitBlockEntity updateAndAttackTarget (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/ConduitBlockEntity;Z)V
 accessible method net/minecraft/world/level/block/entity/vault/VaultServerData getRewardedPlayers ()Ljava/util/Set;
+accessible method net/minecraft/world/entity/animal/Fox setVariant (Lnet/minecraft/world/entity/animal/Fox$Variant;)V
+accessible method net/minecraft/world/entity/animal/Salmon setVariant (Lnet/minecraft/world/entity/animal/Salmon$Variant;)V
+accessible method net/minecraft/world/entity/animal/horse/Llama setVariant (Lnet/minecraft/world/entity/animal/horse/Llama$Variant;)V
+accessible method net/minecraft/world/entity/projectile/AbstractArrow isInGround ()Z
+accessible method net/minecraft/world/entity/animal/Rabbit setVariant (Lnet/minecraft/world/entity/animal/Rabbit$Variant;)V
+accessible method net/minecraft/world/entity/animal/MushroomCow setVariant (Lnet/minecraft/world/entity/animal/MushroomCow$Variant;)V
+accessible method net/minecraft/world/entity/animal/axolotl/Axolotl setVariant (Lnet/minecraft/world/entity/animal/axolotl/Axolotl$Variant;)V
+accessible method net/minecraft/world/entity/animal/Cat setVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/animal/frog/Frog setVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/decoration/Painting setVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/ExperienceOrb setValue (I)V
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setCollarColor (Lnet/minecraft/world/item/DyeColor;)V
+accessible method net/minecraft/world/entity/animal/wolf/Wolf getVariant ()Lnet/minecraft/core/Holder;
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/animal/Parrot setVariant (Lnet/minecraft/world/entity/animal/Parrot$Variant;)V
+accessible method net/minecraft/world/entity/AreaEffectCloud updateParticle ()V
 
 # public fields
+accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionPowerBase F
+accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionSpeedFactor F
+accessible method net/minecraft/world/entity/animal/Pig setVariant (Lnet/minecraft/core/Holder;)V
+accessible field net/minecraft/world/entity/item/PrimedTnt explosionPower F
+accessible field net/minecraft/world/entity/animal/wolf/Wolf isWet Z
+accessible field net/minecraft/world/entity/projectile/EyeOfEnder target Lnet/minecraft/world/phys/Vec3;
+accessible field net/minecraft/world/entity/projectile/AbstractArrow baseDamage D
+accessible field net/minecraft/world/entity/LivingEntity equipment Lnet/minecraft/world/entity/EntityEquipment;
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData detectedPlayers Ljava/util/Set;
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData currentMobs Ljava/util/Set;
 accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litTimeRemaining I

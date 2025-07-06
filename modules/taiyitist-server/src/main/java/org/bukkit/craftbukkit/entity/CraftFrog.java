@@ -26,7 +26,7 @@ public class CraftFrog extends CraftAnimals implements Frog {
    }
 
    public Entity getTongueTarget() {
-      return (Entity)this.getHandle().getTongueTarget().map(net.minecraft.world.entity.Entity::getBukkitEntity).orElse((Object)null);
+      return (Entity)this.getHandle().getTongueTarget().map(net.minecraft.world.entity.Entity::getBukkitEntity).orElse((CraftEntity) null);
    }
 
    public void setTongueTarget(Entity target) {

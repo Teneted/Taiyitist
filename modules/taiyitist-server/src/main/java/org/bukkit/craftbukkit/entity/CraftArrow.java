@@ -115,7 +115,7 @@ public class CraftArrow extends CraftAbstractArrow implements Arrow {
    }
 
    public PotionType getBasePotionType() {
-      return (PotionType)this.getHandle().getPotionContents().potion().map(CraftPotionType::minecraftHolderToBukkit).orElse((Object)null);
+      return (PotionType)this.getHandle().getPotionContents().potion().map(CraftPotionType::minecraftHolderToBukkit).orElse((PotionType) null);
    }
 
    public void setColor(Color color) {

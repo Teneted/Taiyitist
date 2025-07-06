@@ -7,7 +7,7 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 
 public class CraftLightningStrike extends CraftEntity implements LightningStrike {
-   private final LightningStrike.Spigot spigot = new LightningStrike.Spigot(this) {
+   private final LightningStrike.Spigot spigot = new LightningStrike.Spigot() {
       public boolean isSilent() {
          return false;
       }

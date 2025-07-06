@@ -1,8 +1,9 @@
 package com.taiyitistmc.mixin.world.entity.vehicle;
 
-import com.taiyitistmc.injection.world.entity.vehicle.InjectionBoat;
+import com.taiyitistmc.injection.world.entity.vehicle.InjectionAbstractBoat;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
@@ -20,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Boat.class)
-public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
+@Mixin(AbstractBoat.class)
+public abstract class MixinAbstractBoat extends VehicleEntity implements InjectionAbstractBoat {
 
     public double maxSpeed = 0.4D;
     public double occupiedDeceleration = 0.2D;
@@ -29,7 +30,7 @@ public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
     public boolean landBoats = false;
     private Location lastLocation;
 
-    public MixinBoat(EntityType<?> entityType, Level level) {
+    public MixinAbstractBoat(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -45,7 +46,7 @@ public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
         }
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"))
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;tickBubbleColumn()V"))
     private void banner$updateVehicle(CallbackInfo ci) {
         org.bukkit.World bworld = this.level().getWorld();
         Location to = CraftLocation.toBukkit(this.position(), bworld, this.getYRot(), this.getXRot());
@@ -58,7 +59,8 @@ public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
         this.lastLocation = vehicle.getLocation();
     }
 
-    @Redirect(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;isRemoved()Z"))
+    /*
+    @Redirect(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FluidState;is(Lnet/minecraft/tags/TagKey;)Z"))
     private boolean banner$breakVehicle(Boat boatEntity) {
         if (!boatEntity.isRemoved()) {
             final Vehicle vehicle = (Vehicle) this.getBukkitEntity();
@@ -68,7 +70,7 @@ public abstract class MixinBoat extends VehicleEntity implements InjectionBoat {
         } else {
             return true;
         }
-    }
+    }*/
 
     @Override
     public double bridge$maxSpeed() {

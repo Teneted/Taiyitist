@@ -48,7 +48,7 @@ public class CraftWarden extends CraftMonster implements Warden {
    }
 
    public LivingEntity getEntityAngryAt() {
-      return (LivingEntity)this.getHandle().getEntityAngryAt().map(net.minecraft.world.entity.Entity::getBukkitEntity).orElse((Object)null);
+      return (LivingEntity)this.getHandle().getEntityAngryAt().map(net.minecraft.world.entity.Entity::getBukkitEntity).orElse((CraftEntity) null);
    }
 
    public void setDisturbanceLocation(Location location) {

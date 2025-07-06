@@ -18,7 +18,7 @@ public class CraftCreeper extends CraftMonster implements Creeper {
 
    public void setPowered(boolean powered) {
       CreeperPowerEvent.PowerCause cause = powered ? PowerCause.SET_ON : PowerCause.SET_OFF;
-      if (this.getHandle().generation || !this.callPowerEvent(cause)) {
+      if (this.getHandle().bridge$generation() || !this.callPowerEvent(cause)) {
          this.getHandle().setPowered(powered);
       }
 

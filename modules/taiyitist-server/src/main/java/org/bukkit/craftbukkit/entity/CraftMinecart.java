@@ -31,17 +31,17 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
 
    public void setMaxSpeed(double speed) {
       if (speed >= 0.0) {
-         this.getHandle().maxSpeed = speed;
+         this.getHandle().banner$setMaxSpeed(speed);
       }
 
    }
 
    public boolean isSlowWhenEmpty() {
-      return this.getHandle().slowWhenEmpty;
+      return this.getHandle().bridge$slowWhenEmpty();
    }
 
    public void setSlowWhenEmpty(boolean slow) {
-      this.getHandle().slowWhenEmpty = slow;
+      this.getHandle().banner$setSlowWhenEmpty(slow);
    }
 
    public Vector getFlyingVelocityMod() {
@@ -103,10 +103,10 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
    }
 
    public double getPoweredRailAccelerationMultiplier() {
-      return this.getHandle().powRailAccelMult;
+      return this.getHandle().bridge$powRailAccelMult();
    }
 
    public void setPoweredRailAccelerationMultiplier(double multiplier) {
-      this.getHandle().powRailAccelMult = multiplier;
+      this.getHandle().taiyitist$setPowRailAccelMult(multiplier);
    }
 }

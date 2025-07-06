@@ -27,7 +27,7 @@ final class CraftMinecartMobSpawner extends CraftMinecart implements SpawnerMine
          return null;
       } else {
          Optional<net.minecraft.world.entity.EntityType<?>> type = spawnData.getEntityToSpawn().read("id", net.minecraft.world.entity.EntityType.CODEC);
-         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((Object)null);
+         return (EntityType)type.map(CraftEntityType::minecraftToBukkit).orElse((EntityType) null);
       }
    }
 

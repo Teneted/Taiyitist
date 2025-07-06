@@ -12,7 +12,7 @@ public abstract class CraftProjectile extends CraftEntity implements Projectile 
    }
 
    public ProjectileSource getShooter() {
-      return this.getHandle().projectileSource;
+      return this.getHandle().bridge$projectileSource();
    }
 
    public void setShooter(ProjectileSource shooter) {
@@ -22,7 +22,7 @@ public abstract class CraftProjectile extends CraftEntity implements Projectile 
          this.getHandle().setOwner((Entity)null);
       }
 
-      this.getHandle().projectileSource = shooter;
+      this.getHandle().banner$setProjectileSource(shooter);
    }
 
    public boolean doesBounce() {
