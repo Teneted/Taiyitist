@@ -40,7 +40,7 @@ public interface CraftRecipe extends Recipe {
             throw new IllegalArgumentException("Unknown recipe stack instance " + String.valueOf(bukkit));
          }
 
-         stack = Ingredient.ofStacks(((RecipeChoice.ExactChoice)bukkit).getChoices().stream().map((mat) -> {
+         stack = Ingredient.of((ItemLike) ((RecipeChoice.ExactChoice)bukkit).getChoices().stream().map((mat) -> {
             return CraftItemStack.asNMSCopy(mat);
          }).toList());
       }
@@ -58,13 +58,13 @@ public interface CraftRecipe extends Recipe {
    }
 
    static RecipeChoice toBukkit(Optional<Ingredient> list) {
-      return (RecipeChoice)list.map(CraftRecipe::toBukkit).orElse((Object)null);
+      return (RecipeChoice)list.map(CraftRecipe::toBukkit).orElse((RecipeChoice) null);
    }
 
    static RecipeChoice toBukkit(Ingredient list) {
       if (list.isEmpty()) {
          return null;
-      } else if (!list.isExact()) {
+      } else if (!list.bridge$exact()) {
          List<Material> choices = list.items().map((ix) -> {
             return CraftItemType.minecraftToBukkit((Item)ix.value());
          }).toList();

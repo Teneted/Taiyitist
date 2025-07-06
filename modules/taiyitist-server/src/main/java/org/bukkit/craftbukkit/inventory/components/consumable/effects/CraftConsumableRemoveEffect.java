@@ -21,7 +21,7 @@ public class CraftConsumableRemoveEffect extends CraftConsumableEffect<RemoveSta
    static final ItemMetaKey POTION_TYPES = new ItemMetaKey("effects");
 
    public CraftConsumableRemoveEffect(RemoveStatusEffectsConsumeEffect consumeEffect) {
-      super((ConsumeEffect)consumeEffect);
+      super(consumeEffect);
    }
 
    public CraftConsumableRemoveEffect(CraftConsumableRemoveEffect consumeEffect) {

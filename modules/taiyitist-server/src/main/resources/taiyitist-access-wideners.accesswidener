@@ -579,6 +579,7 @@ accessible field net/minecraft/world/inventory/StonecutterMenu access Lnet/minec
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawner isOminous Z
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerStateData nextSpawnData Ljava/util/Optional;
 accessible field net/minecraft/world/level/block/entity/trialspawner/TrialSpawner config Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawner$FullConfig;
+accessible field net/minecraft/world/level/block/ChestBlock MENU_PROVIDER_COMBINER Lnet/minecraft/world/level/block/DoubleBlockCombiner$Combiner;
 
 # public -f fields
 accessible field net/minecraft/world/item/trading/MerchantOffer maxUses I

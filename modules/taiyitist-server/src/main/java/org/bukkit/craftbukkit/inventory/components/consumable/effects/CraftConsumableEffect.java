@@ -14,15 +14,15 @@ public abstract class CraftConsumableEffect<T extends ConsumeEffect> implements 
 
    public static <T extends CraftConsumableEffect<?>> T minecraftToBukkitSpecific(ConsumeEffect effect) {
       if (effect instanceof ApplyStatusEffectsConsumeEffect nmsEffect) {
-         return new CraftConsumableApplyEffects(nmsEffect);
+         return (T) new CraftConsumableApplyEffects(nmsEffect);
       } else if (effect instanceof RemoveStatusEffectsConsumeEffect nmsEffect) {
-         return new CraftConsumableRemoveEffect(nmsEffect);
+         return (T) new CraftConsumableRemoveEffect(nmsEffect);
       } else if (effect instanceof ClearAllStatusEffectsConsumeEffect nmsEffect) {
-         return new CraftConsumableClearEffects(nmsEffect);
+         return (T) new CraftConsumableClearEffects(nmsEffect);
       } else if (effect instanceof TeleportRandomlyConsumeEffect nmsEffect) {
-         return new CraftConsumableTeleportRandomly(nmsEffect);
+         return (T) new CraftConsumableTeleportRandomly(nmsEffect);
       } else if (effect instanceof PlaySoundConsumeEffect nmsEffect) {
-         return new CraftConsumablePlaySound(nmsEffect);
+         return (T) new CraftConsumablePlaySound(nmsEffect);
       } else {
          throw new IllegalStateException("Unexpected value: " + String.valueOf(effect.getType()));
       }

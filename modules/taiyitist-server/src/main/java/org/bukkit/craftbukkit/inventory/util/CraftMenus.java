@@ -47,7 +47,7 @@ import org.bukkit.inventory.view.builder.InventoryViewBuilder;
 
 public final class CraftMenus {
    public static void openMerchantMenu(ServerPlayer player, MerchantMenu merchant) {
-      Merchant minecraftMerchant = ((CraftMerchant)merchant.getBukkitView().getMerchant()).getMerchant();
+      Merchant minecraftMerchant = ((CraftMerchant)merchant.getBukkitView()).getMerchant();
       int level = 1;
       if (minecraftMerchant instanceof Villager villager) {
          level = villager.getVillagerData().level();
@@ -160,7 +160,7 @@ public final class CraftMenus {
    }
 
    private static <V extends InventoryView, B extends InventoryViewBuilder<V>> MenuTypeData<V, B> asType(MenuTypeData<?, ?> data) {
-      return data;
+      return (MenuTypeData<V, B>) data;
    }
 
    public static record MenuTypeData<V extends InventoryView, B extends InventoryViewBuilder<V>>(Class<V> viewClass, Supplier<B> viewBuilder) {

@@ -55,7 +55,7 @@ public final class CraftUseCooldownComponent implements UseCooldownComponent {
    }
 
    public NamespacedKey getCooldownGroup() {
-      return (NamespacedKey)this.handle.cooldownGroup().map(CraftNamespacedKey::fromMinecraft).orElse((Object)null);
+      return (NamespacedKey)this.handle.cooldownGroup().map(CraftNamespacedKey::fromMinecraft).orElse((NamespacedKey) null);
    }
 
    public void setCooldownGroup(NamespacedKey song) {

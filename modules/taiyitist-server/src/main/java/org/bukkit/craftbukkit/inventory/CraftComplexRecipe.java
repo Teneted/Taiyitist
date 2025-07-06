@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -17,6 +18,6 @@ public class CraftComplexRecipe extends CraftingRecipe implements CraftRecipe, C
    }
 
    public void addToCraftingManager() {
-      MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder(CraftRecipe.toMinecraft(this.getKey()), this.recipe));
+      BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder(CraftRecipe.toMinecraft(this.getKey()), this.recipe));
    }
 }

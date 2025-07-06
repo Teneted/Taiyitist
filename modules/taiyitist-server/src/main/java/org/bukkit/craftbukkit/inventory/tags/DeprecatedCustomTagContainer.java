@@ -28,7 +28,7 @@ public final class DeprecatedCustomTagContainer implements CustomItemTagContaine
    }
 
    public <T, Z> Z getCustomTag(NamespacedKey key, ItemTagType<T, Z> type) {
-      return Objects.equals(CustomItemTagContainer.class, type.getPrimitiveType()) ? this.wrapped.get(key, new DeprecatedContainerTagType(type)) : this.wrapped.get(key, new DeprecatedItemTagType(type));
+      return Objects.equals(CustomItemTagContainer.class, type.getPrimitiveType()) ? (Z) this.wrapped.get(key, new DeprecatedContainerTagType(type)) : (Z) this.wrapped.get(key, new DeprecatedItemTagType(type));
    }
 
    public void removeCustomTag(NamespacedKey key) {

@@ -112,20 +112,20 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
    }
 
    public ZombieVillager zombify() {
-      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = BukkitMethodHooks.convertVillagerToZombieVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(), TransformReason.INFECTION, SpawnReason.CUSTOM);
+      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = BukkitMethodHooks.zombifyVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(),/* TransformReason.INFECTION, TODO fixme*/ SpawnReason.CUSTOM);
       return entityzombievillager != null ? (ZombieVillager)entityzombievillager.getBukkitEntity() : null;
    }
 
    public int getReputation(UUID uuid, Villager.ReputationType reputationType) {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
-      return this.getHandle().getGossips().getReputation(uuid, Predicate.isEqual(CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType)), false);
+      return this.getHandle().getGossips().getReputation(uuid, Predicate.isEqual(CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType))/*, false TODO fixme*/);
    }
 
    public int getWeightedReputation(UUID uuid, Villager.ReputationType reputationType) {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
-      return this.getHandle().getGossips().getReputation(uuid, Predicate.isEqual(CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType)), true);
+      return this.getHandle().getGossips().getReputation(uuid, Predicate.isEqual(CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType)) /*, true TODO fixme*/);
    }
 
    public int getReputation(UUID uuid) {
@@ -165,7 +165,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
       Preconditions.checkArgument(changeReason != null, "Change reason cannot be null");
-      this.getHandle().getGossips().set(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount, changeReason);
+      this.getHandle().getGossips().add(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount, changeReason);
    }
 
    public void setGossipDecayTime(long ticks) {
@@ -194,8 +194,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       public static Holder<VillagerProfession> bukkitToMinecraftHolder(Villager.Profession bukkit) {
          Preconditions.checkArgument(bukkit != null);
          net.minecraft.core.Registry<VillagerProfession> registry = CraftRegistry.getMinecraftRegistry(Registries.VILLAGER_PROFESSION);
-         Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-         if (var3 instanceof Holder.Reference<VillagerProfession> holder) {
+         if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<VillagerProfession> holder) {
             return holder;
          } else {
             throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own villager profession without properly registering it.");

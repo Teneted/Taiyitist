@@ -12,7 +12,7 @@ public class CraftStandardInventoryViewBuilder<V extends InventoryView> extends 
    }
 
    protected AbstractContainerMenu buildContainer(ServerPlayer player) {
-      return super.handle.create(player.nextContainerCounter(), player.getInventory());
+      return super.handle.create(player.nextContainerCounterInt(), player.getInventory());
    }
 
    public InventoryViewBuilder<V> copy() {

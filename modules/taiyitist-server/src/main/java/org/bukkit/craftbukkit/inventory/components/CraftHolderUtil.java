@@ -36,7 +36,7 @@ final class CraftHolderUtil {
                parseString = parseString.substring(1);
                ResourceLocation key = ResourceLocation.tryParse(parseString);
                if (key != null) {
-                  holderSet = (HolderSet)registry.get(TagKey.create(registryKey, key)).orElse((Object)null);
+                  holderSet = (HolderSet)registry.get(TagKey.create(registryKey, key)).orElse((HolderSet.Named<T>) null);
                }
                break label38;
             }
@@ -54,9 +54,8 @@ final class CraftHolderUtil {
             Object entry = var7.next();
             ResourceLocation key = ResourceLocation.tryParse(entry.toString());
             if (key != null) {
-               Optional var10000 = registry.get(key);
                Objects.requireNonNull(holderList);
-               var10000.ifPresent(holderList::add);
+               registry.get(key).ifPresent(holderList::add);
             }
          }
 

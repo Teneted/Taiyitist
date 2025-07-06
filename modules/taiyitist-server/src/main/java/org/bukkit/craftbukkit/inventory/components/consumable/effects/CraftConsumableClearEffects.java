@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.components.consumable.effects.ConsumableClearEf
 
 public class CraftConsumableClearEffects extends CraftConsumableEffect<ClearAllStatusEffectsConsumeEffect> implements ConsumableClearEffects {
    public CraftConsumableClearEffects(ClearAllStatusEffectsConsumeEffect consumeEffect) {
-      super((ConsumeEffect)consumeEffect);
+      super(consumeEffect);
    }
 
    public CraftConsumableClearEffects(CraftConsumableClearEffects consumeEffect) {

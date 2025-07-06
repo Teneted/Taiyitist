@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.components.consumable.effects.ConsumablePlaySou
 
 public class CraftConsumablePlaySound extends CraftConsumableEffect<PlaySoundConsumeEffect> implements ConsumablePlaySound {
    public CraftConsumablePlaySound(PlaySoundConsumeEffect consumeEffect) {
-      super((ConsumeEffect)consumeEffect);
+      super(consumeEffect);
    }
 
    public CraftConsumablePlaySound(CraftConsumableEffect<PlaySoundConsumeEffect> consumeEffect) {

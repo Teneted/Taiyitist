@@ -239,7 +239,7 @@ public final class CraftToolComponent implements ToolComponent {
       }
 
       public Float getSpeed() {
-         return (Float)this.handle.speed().orElse((Object)null);
+         return (Float)this.handle.speed().orElse((Float) null);
       }
 
       public void setSpeed(Float speed) {
@@ -247,7 +247,7 @@ public final class CraftToolComponent implements ToolComponent {
       }
 
       public Boolean isCorrectForDrops() {
-         return (Boolean)this.handle.correctForDrops().orElse((Object)null);
+         return (Boolean)this.handle.correctForDrops().orElse((Boolean) null);
       }
 
       public void setCorrectForDrops(Boolean correct) {

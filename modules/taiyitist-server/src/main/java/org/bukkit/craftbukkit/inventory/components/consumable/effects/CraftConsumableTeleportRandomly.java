@@ -12,7 +12,7 @@ public class CraftConsumableTeleportRandomly extends CraftConsumableEffect<Telep
    private TeleportRandomlyConsumeEffect handle;
 
    public CraftConsumableTeleportRandomly(TeleportRandomlyConsumeEffect consumableEffect) {
-      super((ConsumeEffect)consumableEffect);
+      super(consumableEffect);
    }
 
    public CraftConsumableTeleportRandomly(CraftConsumableTeleportRandomly consumableEffect) {

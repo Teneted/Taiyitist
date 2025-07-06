@@ -127,7 +127,7 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
    }
 
    public String getOwner() {
-      return this.hasOwner() ? (String)this.profile.name().orElse((Object)null) : null;
+      return this.hasOwner() ? (String)this.profile.name().orElse((String) null) : null;
    }
 
    public OfflinePlayer getOwningPlayer() {

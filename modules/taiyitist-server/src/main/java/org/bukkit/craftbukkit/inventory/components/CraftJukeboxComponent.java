@@ -53,7 +53,7 @@ public final class CraftJukeboxComponent implements JukeboxPlayableComponent {
    }
 
    public NamespacedKey getSongKey() {
-      return (NamespacedKey)this.handle.song().key().map(ResourceKey::location).map(CraftNamespacedKey::fromMinecraft).orElse((Object)null);
+      return (NamespacedKey)this.handle.song().key().map(ResourceKey::location).map(CraftNamespacedKey::fromMinecraft).orElse((NamespacedKey) null);
    }
 
    public void setSong(JukeboxSong song) {

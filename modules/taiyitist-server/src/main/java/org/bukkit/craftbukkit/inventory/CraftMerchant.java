@@ -16,11 +16,7 @@ public interface CraftMerchant extends Merchant {
    net.minecraft.world.item.trading.Merchant getMerchant();
 
    default List<MerchantRecipe> getRecipes() {
-      return Collections.unmodifiableList(Lists.transform(this.getMerchant().getOffers(), new Function<MerchantOffer, MerchantRecipe>(this) {
-         public MerchantRecipe apply(MerchantOffer recipe) {
-            return recipe.asBukkit();
-         }
-      }));
+      return Collections.unmodifiableList(Lists.transform(this.getMerchant().getOffers(), (Function<MerchantOffer, MerchantRecipe>) recipe -> recipe.asBukkit()));
    }
 
    default void setRecipes(List<MerchantRecipe> recipes) {

@@ -128,7 +128,7 @@ public final class CraftEquippableComponent implements EquippableComponent {
    public NamespacedKey getModel() {
       return (NamespacedKey)this.handle.assetId().map((a) -> {
          return CraftNamespacedKey.fromMinecraft(a.location());
-      }).orElse((Object)null);
+      }).orElse((NamespacedKey) null);
    }
 
    public void setModel(NamespacedKey key) {
@@ -138,7 +138,7 @@ public final class CraftEquippableComponent implements EquippableComponent {
    }
 
    public NamespacedKey getCameraOverlay() {
-      return (NamespacedKey)this.handle.cameraOverlay().map(CraftNamespacedKey::fromMinecraft).orElse((Object)null);
+      return (NamespacedKey)this.handle.cameraOverlay().map(CraftNamespacedKey::fromMinecraft).orElse((NamespacedKey) null);
    }
 
    public void setCameraOverlay(NamespacedKey key) {
@@ -148,7 +148,7 @@ public final class CraftEquippableComponent implements EquippableComponent {
    public Collection<org.bukkit.entity.EntityType> getAllowedEntities() {
       return (Collection)this.handle.allowedEntities().map(HolderSet::stream).map((stream) -> {
          return (List)stream.map(Holder::value).map(CraftEntityType::minecraftToBukkit).collect(Collectors.toList());
-      }).orElse((Object)null);
+      }).orElse((List) null);
    }
 
    public void setAllowedEntities(org.bukkit.entity.EntityType entities) {

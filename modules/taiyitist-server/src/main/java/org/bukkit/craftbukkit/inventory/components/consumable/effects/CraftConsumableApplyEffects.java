@@ -20,7 +20,7 @@ public class CraftConsumableApplyEffects extends CraftConsumableEffect<ApplyStat
    static final ItemMetaKey POTIONS = new ItemMetaKey("effects");
 
    public CraftConsumableApplyEffects(ApplyStatusEffectsConsumeEffect consumeEffect) {
-      super((ConsumeEffect)consumeEffect);
+      super(consumeEffect);
    }
 
    public CraftConsumableApplyEffects(CraftConsumableApplyEffects consumeEffect) {

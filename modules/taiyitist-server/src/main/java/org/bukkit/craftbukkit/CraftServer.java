@@ -286,7 +286,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 public final class CraftServer implements Server {
-   private final String serverName = "CraftBukkit";
+   private final String serverName = "Taiyitist";
    private final String serverVersion;
    private final String bukkitVersion = Versioning.getBukkitVersion();
    private final Logger logger = Logger.getLogger("Minecraft");
@@ -496,9 +496,8 @@ public final class CraftServer implements Server {
       if (compatibilities == null) {
          this.activeCompatibilities = Collections.emptySet();
       } else {
-         Stream var10001 = compatibilities.getKeys(false).stream();
          Objects.requireNonNull(compatibilities);
-         this.activeCompatibilities = (Set)var10001.filter(compatibilities::getBoolean).collect(Collectors.toSet());
+         this.activeCompatibilities = compatibilities.getKeys(false).stream().filter(compatibilities::getBoolean).collect(Collectors.toSet());
          if (!this.activeCompatibilities.isEmpty()) {
             this.logger.info("Using following compatibilities: `" + Joiner.on("`, `").join(this.activeCompatibilities) + "`, this will affect performance and other plugins behavior.");
             this.logger.info("Only use when necessary and prefer updating plugins if possible.");
@@ -854,7 +853,7 @@ public final class CraftServer implements Server {
    }
 
    public File getUpdateFolderFile() {
-      return new File((File)this.console.options.valueOf("plugins"), this.configuration.getString("settings.update-folder", "update"));
+      return new File((File)this.console.bridge$options().valueOf("plugins"), this.configuration.getString("settings.update-folder", "update"));
    }
 
    public long getConnectionThrottle() {
@@ -966,7 +965,7 @@ public final class CraftServer implements Server {
       ++this.reloadCount;
       this.configuration = YamlConfiguration.loadConfiguration(this.getConfigFile());
       this.commandsConfiguration = YamlConfiguration.loadConfiguration(this.getCommandsConfigFile());
-      this.console.settings = new DedicatedServerSettings(this.console.options);
+      this.console.settings = new DedicatedServerSettings(this.console.bridge$options());
       DedicatedServerProperties config = this.console.settings.getProperties();
       this.console.setPvpAllowed(config.pvp);
       this.console.setFlightAllowed(config.allowFlight);
@@ -976,7 +975,7 @@ public final class CraftServer implements Server {
       TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
       this.printSaveWarning = false;
-      this.console.autosavePeriod = this.configuration.getInt("ticks-per.autosave");
+      this.console.banner$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
       this.loadIcon();
       this.loadCompatibilities();
       Commodore var10000 = CraftMagicNumbers.INSTANCE.getCommodore();
@@ -1014,14 +1013,14 @@ public final class CraftServer implements Server {
             if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
                long ticksPerCategorySpawn = (long)this.getTicksPerSpawns(spawnCategory);
                if (ticksPerCategorySpawn < 0L) {
-                  world.ticksPerSpawnCategory.put(spawnCategory, CraftSpawnCategory.getDefaultTicksPerSpawn(spawnCategory));
+                  world.bridge$ticksPerSpawnCategory().put(spawnCategory, CraftSpawnCategory.getDefaultTicksPerSpawn(spawnCategory));
                } else {
-                  world.ticksPerSpawnCategory.put(spawnCategory, ticksPerCategorySpawn);
+                  world.bridge$ticksPerSpawnCategory().put(spawnCategory, ticksPerCategorySpawn);
                }
             }
          }
 
-         world.spigotConfig.init();
+         world.bridge$spigotConfig().init();
       }
 
       this.pluginManager.clearPlugins();
@@ -1252,13 +1251,13 @@ public final class CraftServer implements Server {
          }
 
          iregistry = iregistrycustom_dimension.lookupOrThrow(Registries.LEVEL_STEM);
-         worlddata.customDimensions = iregistry;
+         worlddata.banner$setCustomDimensions(iregistry);
          worlddata.checkName(name);
          worlddata.setModdedInfo(this.console.getServerModName(), this.console.getModdedStatus().shouldReportAsModified());
-         if (this.console.options.has("forceUpgrade")) {
-            net.minecraft.server.Main.forceUpgrade(worldSession, worlddata, DataFixers.getDataFixer(), this.console.options.has("eraseCache"), () -> {
+         if (this.console.bridge$options().has("forceUpgrade")) {
+            net.minecraft.server.Main.forceUpgrade(worldSession, worlddata, DataFixers.getDataFixer(), this.console.bridge$options().has("eraseCache"), () -> {
                return true;
-            }, iregistrycustom_dimension, this.console.options.has("recreateRegionFiles"));
+            }, iregistrycustom_dimension, this.console.bridge$options().has("recreateRegionFiles"));
          }
 
          long j = BiomeManager.obfuscateSeed(creator.seed());
@@ -1326,7 +1325,7 @@ public final class CraftServer implements Server {
 
                   handle.getChunkSource().close(save);
                   handle.entityManager.close(save);
-                  handle.convertable.close();
+                  handle.bridge$convertable().close();
                } catch (Exception var6) {
                   Exception ex = var6;
                   this.getLogger().log(Level.SEVERE, (String)null, ex);

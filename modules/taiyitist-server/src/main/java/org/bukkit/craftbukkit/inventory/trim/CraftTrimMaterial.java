@@ -27,8 +27,7 @@ public class CraftTrimMaterial extends CraftRegistryItem<TrimMaterial> implement
    public static Holder<TrimMaterial> bukkitToMinecraftHolder(org.bukkit.inventory.meta.trim.TrimMaterial bukkit) {
       Preconditions.checkArgument(bukkit != null);
       net.minecraft.core.Registry<TrimMaterial> registry = CraftRegistry.getMinecraftRegistry(Registries.TRIM_MATERIAL);
-      Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-      if (var3 instanceof Holder.Reference<TrimMaterial> holder) {
+      if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<TrimMaterial> holder) {
          return holder;
       } else {
          throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own trim material without properly registering it.");

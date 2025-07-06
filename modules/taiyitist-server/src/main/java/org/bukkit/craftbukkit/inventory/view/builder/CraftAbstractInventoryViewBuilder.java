@@ -32,9 +32,9 @@ public abstract class CraftAbstractInventoryViewBuilder<V extends InventoryView>
       Preconditions.checkArgument(craftHuman.getHandle() instanceof ServerPlayer, "The given player must be an EntityPlayer");
       ServerPlayer serverPlayer = (ServerPlayer)craftHuman.getHandle();
       AbstractContainerMenu container = this.buildContainer(serverPlayer);
-      container.checkReachable = this.checkReachable;
+      container.banner$setCheckReachable(this.checkReachable);
       container.setTitle(CraftChatMessage.fromString(this.title)[0]);
-      return container.getBukkitView();
+      return (V) container.getBukkitView();
    }
 
    protected abstract AbstractContainerMenu buildContainer(ServerPlayer var1);

@@ -72,13 +72,13 @@ public final class CraftBlocksAttacksComponent implements BlocksAttacksComponent
       Holder<SoundEvent> blockSound = null;
       String blockSnd = SerializableMeta.getString(map, "block-sound", true);
       if (blockSnd != null) {
-         blockSound = (Holder)BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(blockSnd)).orElse((Object)null);
+         blockSound = (Holder)BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(blockSnd)).orElse((Holder.Reference<SoundEvent>) null);
       }
 
       Holder<SoundEvent> disableSound = null;
       String disableSnd = SerializableMeta.getString(map, "disable-sound", true);
       if (disableSnd != null) {
-         disableSound = (Holder)BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(disableSnd)).orElse((Object)null);
+         disableSound = (Holder)BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(disableSnd)).orElse((Holder.Reference<SoundEvent>) null);
       }
 
       this.handle = new BlocksAttacks(blockDelaySeconds, disableCooldownScale, reduction.build().stream().map(CraftDamageReduction::new).map(CraftDamageReduction::getHandle).toList(), new BlocksAttacks.ItemDamageFunction(itemDamageThreshold, itemDamageBase, itemDamageFactor), Optional.ofNullable(tag), Optional.ofNullable(blockSound), Optional.ofNullable(disableSound));
@@ -197,7 +197,7 @@ public final class CraftBlocksAttacksComponent implements BlocksAttacksComponent
    }
 
    public Sound getBlockSound() {
-      return (Sound)this.handle.blockSound().map(CraftSound::minecraftHolderToBukkit).orElse((Object)null);
+      return (Sound)this.handle.blockSound().map(CraftSound::minecraftHolderToBukkit).orElse((Sound) null);
    }
 
    public void setBlockSound(Sound sound) {
@@ -205,7 +205,7 @@ public final class CraftBlocksAttacksComponent implements BlocksAttacksComponent
    }
 
    public Sound getDisableSound() {
-      return (Sound)this.handle.disableSound().map(CraftSound::minecraftHolderToBukkit).orElse((Object)null);
+      return (Sound)this.handle.disableSound().map(CraftSound::minecraftHolderToBukkit).orElse((Sound) null);
    }
 
    public void setDisableSound(Sound sound) {
@@ -215,7 +215,7 @@ public final class CraftBlocksAttacksComponent implements BlocksAttacksComponent
    public Tag<org.bukkit.damage.DamageType> getBypassedBy() {
       return (Tag)this.handle.bypassedBy().map((bypassedBy) -> {
          return Bukkit.getTag("damage_types", CraftNamespacedKey.fromMinecraft(bypassedBy.location()), org.bukkit.damage.DamageType.class);
-      }).orElse((Object)null);
+      }).orElse((Tag<org.bukkit.damage.DamageType>) null);
    }
 
    public void setBypassedBy(Tag<org.bukkit.damage.DamageType> tag) {
@@ -291,7 +291,7 @@ public final class CraftBlocksAttacksComponent implements BlocksAttacksComponent
       public Collection<org.bukkit.damage.DamageType> getTypes() {
          return (Collection)this.handle.type().map((type) -> {
             return type.stream().map(CraftDamageType::minecraftHolderToBukkit).toList();
-         }).orElse((Object)null);
+         }).orElse((List<org.bukkit.damage.DamageType>) null);
       }
 
       public void setTypes(org.bukkit.damage.DamageType type) {

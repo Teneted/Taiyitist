@@ -1,5 +1,9 @@
 package com.taiyitistmc.injection.world.item.crafting;
 
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+
 public interface InjectionIngredient {
 
     default boolean bridge$exact() {
@@ -11,6 +15,10 @@ public interface InjectionIngredient {
     }
 
     default boolean isVanilla() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default List<ItemStack> itemStacks() {
         throw new IllegalStateException("Not implemented");
     }
 }
