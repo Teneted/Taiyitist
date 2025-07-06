@@ -2,6 +2,8 @@ package org.spigotmc;
 
 import java.io.File;
 import java.util.Iterator;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.ChatColor;
@@ -27,16 +29,16 @@ public class SpigotCommand extends Command {
          if (args[0].equals("reload")) {
             Command.broadcastCommandMessage(sender, String.valueOf(ChatColor.RED) + "Please note that this command is not supported and may cause issues.");
             Command.broadcastCommandMessage(sender, String.valueOf(ChatColor.RED) + "If you encounter any issues please use the /stop command to restart your server.");
-            MinecraftServer console = MinecraftServer.getServer();
-            SpigotConfig.init((File)console.options.valueOf("spigot-settings"));
+            MinecraftServer console = BukkitMethodHooks.getServer();
+            SpigotConfig.init((File)console.bridge$options().valueOf("spigot-settings"));
             Iterator var5 = console.getAllLevels().iterator();
 
             while(var5.hasNext()) {
                ServerLevel world = (ServerLevel)var5.next();
-               world.spigotConfig.init();
+               world.bridge$spigotConfig().init();
             }
 
-            ++console.server.reloadCount;
+            ++console.bridge$server().reloadCount;
             Command.broadcastCommandMessage(sender, String.valueOf(ChatColor.GREEN) + "Reload complete.");
          }
 

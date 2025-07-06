@@ -1,0 +1,52 @@
+package org.bukkit.craftbukkit.block;
+
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.BrewingStand;
+import org.bukkit.craftbukkit.inventory.CraftInventoryBrewer;
+import org.bukkit.inventory.BrewerInventory;
+
+public class CraftBrewingStand extends CraftContainer<BrewingStandBlockEntity> implements BrewingStand {
+   public CraftBrewingStand(World world, BrewingStandBlockEntity tileEntity) {
+      super((World)world, (BaseContainerBlockEntity)tileEntity);
+   }
+
+   protected CraftBrewingStand(CraftBrewingStand state, Location location) {
+      super((CraftContainer)state, (Location)location);
+   }
+
+   public BrewerInventory getSnapshotInventory() {
+      return new CraftInventoryBrewer((Container)this.getSnapshot());
+   }
+
+   public BrewerInventory getInventory() {
+      return (BrewerInventory)(!this.isPlaced() ? this.getSnapshotInventory() : new CraftInventoryBrewer((Container)this.getTileEntity()));
+   }
+
+   public int getBrewingTime() {
+      return ((BrewingStandBlockEntity)this.getSnapshot()).brewTime;
+   }
+
+   public void setBrewingTime(int brewTime) {
+      ((BrewingStandBlockEntity)this.getSnapshot()).brewTime = brewTime;
+   }
+
+   public int getFuelLevel() {
+      return ((BrewingStandBlockEntity)this.getSnapshot()).fuel;
+   }
+
+   public void setFuelLevel(int level) {
+      ((BrewingStandBlockEntity)this.getSnapshot()).fuel = level;
+   }
+
+   public CraftBrewingStand copy() {
+      return new CraftBrewingStand(this, (Location)null);
+   }
+
+   public CraftBrewingStand copy(Location location) {
+      return new CraftBrewingStand(this, location);
+   }
+}

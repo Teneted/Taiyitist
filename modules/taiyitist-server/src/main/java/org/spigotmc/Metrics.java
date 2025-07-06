@@ -20,6 +20,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -177,7 +179,7 @@ public class Metrics {
    }
 
    public File getConfigFile() {
-      return new File(new File((File)MinecraftServer.getServer().options.valueOf("plugins"), "PluginMetrics"), "config.yml");
+      return new File(new File((File) BukkitMethodHooks.getServer().bridge$options().valueOf("plugins"), "PluginMetrics"), "config.yml");
    }
 
    private void postPlugin(boolean isPing) throws IOException {

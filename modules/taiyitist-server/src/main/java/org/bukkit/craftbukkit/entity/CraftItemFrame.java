@@ -1,0 +1,159 @@
+package org.bukkit.craftbukkit.entity;
+
+import com.google.common.base.Preconditions;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.level.block.Blocks;
+import org.bukkit.Rotation;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.inventory.ItemStack;
+
+public class CraftItemFrame extends CraftHanging implements ItemFrame {
+   public CraftItemFrame(CraftServer server, net.minecraft.world.entity.decoration.ItemFrame entity) {
+      super(server, entity);
+   }
+
+   public boolean setFacingDirection(BlockFace face, boolean force) {
+      HangingEntity hanging = this.getHandle();
+      Direction oldDir = ((HangingEntity)hanging).getDirection();
+      Direction newDir = CraftBlock.blockFaceToNotch(face);
+      Preconditions.checkArgument(newDir != null, "%s is not a valid facing direction", face);
+      this.getHandle().setDirection(newDir);
+      if (!force && !this.getHandle().generation && !((HangingEntity)hanging).survives()) {
+         ((HangingEntity)hanging).setDirection(oldDir);
+         return false;
+      } else {
+         this.update();
+         return true;
+      }
+   }
+
+   protected void update() {
+      super.update();
+      this.getHandle().getEntityData().markDirty(net.minecraft.world.entity.decoration.ItemFrame.DATA_ITEM);
+      this.getHandle().getEntityData().markDirty(net.minecraft.world.entity.decoration.ItemFrame.DATA_ROTATION);
+      if (!this.getHandle().generation) {
+         this.getHandle().level().updateNeighbourForOutputSignal(this.getHandle().getPos(), Blocks.AIR);
+      }
+
+   }
+
+   public void setItem(ItemStack item) {
+      this.setItem(item, true);
+   }
+
+   public void setItem(ItemStack item, boolean playSound) {
+      this.getHandle().setItem(CraftItemStack.asNMSCopy(item), !this.getHandle().generation, !this.getHandle().generation && playSound);
+   }
+
+   public ItemStack getItem() {
+      return CraftItemStack.asBukkitCopy(this.getHandle().getItem());
+   }
+
+   public float getItemDropChance() {
+      return this.getHandle().dropChance;
+   }
+
+   public void setItemDropChance(float chance) {
+      Preconditions.checkArgument(0.0 <= (double)chance && (double)chance <= 1.0, "Chance (%s) outside range [0, 1]", chance);
+      this.getHandle().dropChance = chance;
+   }
+
+   public Rotation getRotation() {
+      return this.toBukkitRotation(this.getHandle().getRotation());
+   }
+
+   Rotation toBukkitRotation(int value) {
+      switch (value) {
+         case 0 -> {
+            return Rotation.NONE;
+         }
+         case 1 -> {
+            return Rotation.CLOCKWISE_45;
+         }
+         case 2 -> {
+            return Rotation.CLOCKWISE;
+         }
+         case 3 -> {
+            return Rotation.CLOCKWISE_135;
+         }
+         case 4 -> {
+            return Rotation.FLIPPED;
+         }
+         case 5 -> {
+            return Rotation.FLIPPED_45;
+         }
+         case 6 -> {
+            return Rotation.COUNTER_CLOCKWISE;
+         }
+         case 7 -> {
+            return Rotation.COUNTER_CLOCKWISE_45;
+         }
+         default -> throw new AssertionError("Unknown rotation " + value + " for " + String.valueOf(this.getHandle()));
+      }
+   }
+
+   public void setRotation(Rotation rotation) {
+      Preconditions.checkArgument(rotation != null, "Rotation cannot be null");
+      this.getHandle().setRotation(toInteger(rotation));
+   }
+
+   static int toInteger(Rotation rotation) {
+      switch (rotation) {
+         case NONE -> {
+            return 0;
+         }
+         case CLOCKWISE_45 -> {
+            return 1;
+         }
+         case CLOCKWISE -> {
+            return 2;
+         }
+         case CLOCKWISE_135 -> {
+            return 3;
+         }
+         case FLIPPED -> {
+            return 4;
+         }
+         case FLIPPED_45 -> {
+            return 5;
+         }
+         case COUNTER_CLOCKWISE -> {
+            return 6;
+         }
+         case COUNTER_CLOCKWISE_45 -> {
+            return 7;
+         }
+         default -> throw new IllegalArgumentException(String.valueOf(rotation) + " is not applicable to an ItemFrame");
+      }
+   }
+
+   public boolean isVisible() {
+      return !this.getHandle().isInvisible();
+   }
+
+   public void setVisible(boolean visible) {
+      this.getHandle().setInvisible(!visible);
+   }
+
+   public boolean isFixed() {
+      return this.getHandle().fixed;
+   }
+
+   public void setFixed(boolean fixed) {
+      this.getHandle().fixed = fixed;
+   }
+
+   public net.minecraft.world.entity.decoration.ItemFrame getHandle() {
+      return (net.minecraft.world.entity.decoration.ItemFrame)this.entity;
+   }
+
+   public String toString() {
+      String var10000 = String.valueOf(this.getItem());
+      return "CraftItemFrame{item=" + var10000 + ", rotation=" + String.valueOf(this.getRotation()) + "}";
+   }
+}

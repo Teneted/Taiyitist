@@ -29,7 +29,7 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.bukkit.craftbukkit.v1_21_R5.SpigotTimings;
+import org.bukkit.craftbukkit.SpigotTimings;
 
 public class ActivationRange {
    static AABB maxBB = new AABB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);

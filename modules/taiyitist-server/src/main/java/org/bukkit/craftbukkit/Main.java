@@ -16,7 +16,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.util.PathConverter;
 import joptsimple.util.PathProperties;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
 import org.fusesource.jansi.AnsiConsole;
 
 public class Main {

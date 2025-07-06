@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -99,7 +101,7 @@ public class SpigotConfig {
 
       while(var0.hasNext()) {
          Map.Entry<String, Command> entry = (Map.Entry)var0.next();
-         MinecraftServer.getServer().server.getCommandMap().register((String)entry.getKey(), "Spigot", (Command)entry.getValue());
+         BukkitMethodHooks.getServer().bridge$server().getCommandMap().register((String)entry.getKey(), "Spigot", (Command)entry.getValue());
       }
 
       if (metrics == null) {
