@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 
 public interface InjectionCombatEntry {
 
-    default void banner$setDeathMessage(Component component) {
+    default void taiyitist$setDeathMessage(Component component) {
         throw new IllegalStateException("Not implemented");
     }
 

@@ -18,7 +18,7 @@ public abstract class MixinItemCombinerMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "stillValid", at = @At("HEAD"))
-    private void banner$addCheckReachAble(Player player, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$addCheckReachAble(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (!this.bridge$checkReachable()) {
             cir.cancel();
         }

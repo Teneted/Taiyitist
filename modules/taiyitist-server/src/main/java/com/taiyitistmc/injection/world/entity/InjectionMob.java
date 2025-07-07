@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityTransformEvent;
 
 public interface InjectionMob extends InjectionNeutralMob {
 
-    default boolean getBanner$targetSuccess() {
+    default boolean gettaiyitist$targetSuccess() {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -20,7 +20,7 @@ public interface InjectionMob extends InjectionNeutralMob {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setAware(boolean aware){
+    default void taiyitist$setAware(boolean aware){
         throw new IllegalStateException("Not implemented");
     }
 

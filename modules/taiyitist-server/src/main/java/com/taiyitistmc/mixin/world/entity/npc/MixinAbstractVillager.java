@@ -35,7 +35,7 @@ public abstract class MixinAbstractVillager extends AgeableMob implements Invent
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(EntityType<? extends net.minecraft.world.entity.npc.AbstractVillager> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<? extends net.minecraft.world.entity.npc.AbstractVillager> type, Level worldIn, CallbackInfo ci) {
         this.inventory.setOwner((InventoryHolder) this.getBukkitEntity());
     }
 
@@ -45,7 +45,7 @@ public abstract class MixinAbstractVillager extends AgeableMob implements Invent
     }
 
     @Redirect(method = "addOffersFromItemListings", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffers;add(Ljava/lang/Object;)Z"))
-    private boolean banner$gainOffer(MerchantOffers merchantOffers, Object e) {
+    private boolean taiyitist$gainOffer(MerchantOffers merchantOffers, Object e) {
         MerchantOffer offer = (MerchantOffer) e;
         VillagerAcquireTradeEvent event = new VillagerAcquireTradeEvent((AbstractVillager) getBukkitEntity(), offer.asBukkit());
         if (this.bridge$valid()) {

@@ -31,7 +31,7 @@ public abstract class MixinLootTable implements InjectionLootTable {
     public abstract void fill(Container container, LootParams params, long seed);
 
     @Eject(method = "fill", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/loot/LootTable;getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"))
-    private ObjectArrayList<ItemStack> banner$nonPluginEvent(LootTable lootTable, LootContext context, CallbackInfo ci, Container inv) {
+    private ObjectArrayList<ItemStack> taiyitist$nonPluginEvent(LootTable lootTable, LootContext context, CallbackInfo ci, Container inv) {
         ObjectArrayList<ItemStack> list = this.getRandomItems(context);
         if (context.hasParam(LootContextParams.ORIGIN) && context.hasParam(LootContextParams.THIS_ENTITY)) {
             LootGenerateEvent event = CraftEventFactory.callLootGenerateEvent(inv, (LootTable) (Object) this, context, list, isPlugin.getAndSet(false));
@@ -58,7 +58,7 @@ public abstract class MixinLootTable implements InjectionLootTable {
     }
 
     @Override
-    public void banner$setCraftLootTable(CraftLootTable craftLootTable) {
+    public void taiyitist$setCraftLootTable(CraftLootTable craftLootTable) {
         this.craftLootTable = craftLootTable;
     }
 }

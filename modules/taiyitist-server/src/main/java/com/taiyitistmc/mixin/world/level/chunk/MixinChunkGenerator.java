@@ -55,7 +55,7 @@ public abstract class MixinChunkGenerator implements InjectionChunkGenerator {
     @Shadow public abstract void applyBiomeDecoration(WorldGenLevel p_187712_, ChunkAccess p_187713_, StructureManager p_187714_);
 
     @Inject(method = "applyBiomeDecoration", at = @At("RETURN"))
-    private void banner$addBukkitDecoration(WorldGenLevel level, ChunkAccess chunkAccess, StructureManager manager, CallbackInfo ci) {
+    private void taiyitist$addBukkitDecoration(WorldGenLevel level, ChunkAccess chunkAccess, StructureManager manager, CallbackInfo ci) {
         this.addDecorations(level, chunkAccess, manager);
     }
     // Banner end

@@ -26,17 +26,17 @@ public abstract class MixinLargeFireball extends Fireball {
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType entityType, Level level, CallbackInfo ci) {
-        this.banner$setIsIncendiary(level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
+    private void taiyitist$init(EntityType entityType, Level level, CallbackInfo ci) {
+        this.taiyitist$setIsIncendiary(level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/phys/Vec3;I)V", at = @At("RETURN"))
-    private void banner$init(Level level, LivingEntity livingEntity, Vec3 vec3, int i, CallbackInfo ci) {
-        this.banner$setIsIncendiary(level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
+    private void taiyitist$init(Level level, LivingEntity livingEntity, Vec3 vec3, int i, CallbackInfo ci) {
+        this.taiyitist$setIsIncendiary(level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
     }
 
     @Redirect(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;explode(Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;)Lnet/minecraft/world/level/Explosion;"))
-    private Explosion banner$explodePrime(Level world, Entity entityIn, double xIn, double yIn, double zIn, float explosionRadius, boolean causesFire, Level.ExplosionInteraction interaction) {
+    private Explosion taiyitist$explodePrime(Level world, Entity entityIn, double xIn, double yIn, double zIn, float explosionRadius, boolean causesFire, Level.ExplosionInteraction interaction) {
         ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
         event.setRadius(explosionRadius);
         event.setFire(causesFire);
@@ -50,7 +50,7 @@ public abstract class MixinLargeFireball extends Fireball {
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/CompoundTag;getByte(Ljava/lang/String;)B"))
-    private void banner$setYield(CompoundTag compound, CallbackInfo ci) {
-        this.banner$setBukkitYield(compound.getInt("ExplosionPower"));
+    private void taiyitist$setYield(CompoundTag compound, CallbackInfo ci) {
+        this.taiyitist$setBukkitYield(compound.getInt("ExplosionPower"));
     }
 }

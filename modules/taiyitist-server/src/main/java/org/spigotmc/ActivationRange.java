@@ -120,7 +120,7 @@ public class ActivationRange
 
         for ( Player player : world.players() )
         {
-            player.banner$setActivatedTick(BukkitFieldHooks.currentTick());
+            player.taiyitist$setActivatedTick(BukkitFieldHooks.currentTick());
             if ( world.bridge$spigotConfig().ignoreSpectatorActivation && player.isSpectator() )
             {
                 continue;
@@ -148,12 +148,12 @@ public class ActivationRange
         {
             if ( entity.bridge$defaultActivationState() )
             {
-                entity.banner$setActivatedTick(BukkitFieldHooks.currentTick());
+                entity.taiyitist$setActivatedTick(BukkitFieldHooks.currentTick());
                 return;
             }
             if ( entity.bridge$activationType().boundingBox.intersects( entity.getBoundingBox() ) )
             {
-                entity.banner$setActivatedTick(BukkitFieldHooks.currentTick());
+                entity.taiyitist$setActivatedTick(BukkitFieldHooks.currentTick());
             }
         }
     }
@@ -247,7 +247,7 @@ public class ActivationRange
                 if ( ActivationRange.checkEntityImmunities( entity ) )
                 {
                     // Triggered some sort of immunity, give 20 full ticks before we check again.
-                    entity.banner$setActivatedTick(BukkitFieldHooks.currentTick() + 20);
+                    entity.taiyitist$setActivatedTick(BukkitFieldHooks.currentTick() + 20);
                 }
                 isActive = true;
             }

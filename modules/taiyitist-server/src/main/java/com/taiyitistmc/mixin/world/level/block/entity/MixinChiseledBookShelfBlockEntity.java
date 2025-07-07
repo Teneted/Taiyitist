@@ -91,14 +91,14 @@ public abstract class MixinChiseledBookShelfBlockEntity extends BlockEntity impl
     }
 
     @Inject(method = "loadAdditional", at = @At("HEAD"))
-    private void banner$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    private void taiyitist$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         super.loadAdditional(compoundTag, provider); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
     }
 
     @Inject(method = "removeItem",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity;updateState(I)V"))
-    private void banner$checkWorld(int i, int j, CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$checkWorld(int i, int j, CallbackInfoReturnable<ItemStack> cir) {
         if (level == null) {
             cir.cancel(); // CraftBukkit - SPIGOT-7381: check for null world
         }
@@ -108,7 +108,7 @@ public abstract class MixinChiseledBookShelfBlockEntity extends BlockEntity impl
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity;updateState(I)V"),
             cancellable = true)
-    private void banner$checkWorld0(int i, ItemStack itemStack, CallbackInfo ci) {
+    private void taiyitist$checkWorld0(int i, ItemStack itemStack, CallbackInfo ci) {
         if (level == null) {
             ci.cancel(); // CraftBukkit - SPIGOT-7381: check for null world
         }

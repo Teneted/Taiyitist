@@ -29,24 +29,24 @@ public class MixinTextColor implements InjectionTextColor {
     }
 
     @ShadowConstructor
-    public void banner$constructor(int color) {
+    public void taiyitist$constructor(int color) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(int color, String name, ChatFormatting textFormatting) {
-        banner$constructor(color);
+    public void taiyitist$constructor(int color, String name, ChatFormatting textFormatting) {
+        taiyitist$constructor(color);
         this.name = name;
         this.format = textFormatting;
     }
 
     @Inject(method = "<init>(ILjava/lang/String;)V", at = @At("RETURN"))
-    private void banner$withFormat(int color, String name, CallbackInfo ci) {
+    private void taiyitist$withFormat(int color, String name, CallbackInfo ci) {
         this.format = ChatFormatting.getByName(name);
     }
 
     @Override
-    public void banner$setFormat(ChatFormatting format) {
+    public void taiyitist$setFormat(ChatFormatting format) {
         this.format = format;
     }
 }

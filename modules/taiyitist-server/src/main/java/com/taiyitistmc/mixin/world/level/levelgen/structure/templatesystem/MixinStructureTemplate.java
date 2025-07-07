@@ -21,7 +21,7 @@ public class MixinStructureTemplate implements InjectionStructureTemplate {
     public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 
     @Inject(method = "save", at = @At("TAIL"))
-    private void banner$putBukkitValue(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
+    private void taiyitist$putBukkitValue(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
         // CraftBukkit start - PDC
         if (!this.persistentDataContainer.isEmpty()) {
             tag.put("BukkitValues", this.persistentDataContainer.toTagCompound());
@@ -30,7 +30,7 @@ public class MixinStructureTemplate implements InjectionStructureTemplate {
     }
 
     @Inject(method = "load", at = @At("TAIL"))
-    private void banner$putBukkitVar(HolderGetter<Block> blockGetter, CompoundTag tag, CallbackInfo ci) {
+    private void taiyitist$putBukkitVar(HolderGetter<Block> blockGetter, CompoundTag tag, CallbackInfo ci) {
         // CraftBukkit start - PDC
         Tag base = tag.get("BukkitValues");
         if (base instanceof CompoundTag) {

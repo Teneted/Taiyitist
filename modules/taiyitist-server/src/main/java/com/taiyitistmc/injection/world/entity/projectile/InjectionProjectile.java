@@ -9,7 +9,7 @@ public interface InjectionProjectile {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setHitCancelled(boolean cancelled) {
+    default void taiyitist$setHitCancelled(boolean cancelled) {
         throw new IllegalStateException("Not implemented");
     }
 

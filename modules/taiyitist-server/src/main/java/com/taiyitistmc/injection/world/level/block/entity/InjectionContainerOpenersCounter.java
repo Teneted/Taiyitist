@@ -10,7 +10,7 @@ public interface InjectionContainerOpenersCounter {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setOpened(boolean opened) {
+    default void taiyitist$setOpened(boolean opened) {
         throw new IllegalStateException("Not implemented");
     }
 

@@ -44,14 +44,14 @@ public abstract class MixinFallingBlockEntity extends Entity {
     }
 
     @Inject(method = "tick", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private void banner$entityChangeBlock(CallbackInfo ci, Block block, BlockPos pos) {
+    private void taiyitist$entityChangeBlock(CallbackInfo ci, Block block, BlockPos pos) {
         if (!CraftEventFactory.callEntityChangeBlockEvent((FallingBlockEntity) (Object) this, pos, this.blockState)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void banner$addData(CompoundTag compoundTag, CallbackInfo ci) {
+    private void taiyitist$addData(CompoundTag compoundTag, CallbackInfo ci) {
         // Paper start - Try and load origin location from the old NBT tags for backwards compatibility
         if (compoundTag.contains("SourceLoc_x")) {
             int srcX = compoundTag.getInt("SourceLoc_x");

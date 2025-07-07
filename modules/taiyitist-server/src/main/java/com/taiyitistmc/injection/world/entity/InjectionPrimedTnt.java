@@ -6,7 +6,7 @@ public interface InjectionPrimedTnt {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setYield(float yield) {
+    default void taiyitist$setYield(float yield) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -14,7 +14,7 @@ public interface InjectionPrimedTnt {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setIsIncendiary(boolean isIncendiary) {
+    default void taiyitist$setIsIncendiary(boolean isIncendiary) {
         throw new IllegalStateException("Not implemented");
     }
 }

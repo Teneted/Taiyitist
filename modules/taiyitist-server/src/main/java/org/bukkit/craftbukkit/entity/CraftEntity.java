@@ -379,7 +379,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public void setPersistent(boolean persistent) {
-        this.entity.banner$setPersist(persistent);
+        this.entity.taiyitist$setPersist(persistent);
     }
 
     public Vector getMomentum() {
@@ -630,7 +630,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
                 }
             }
 
-            this.getHandle().banner$setVisibleByDefault(visible);
+            this.getHandle().taiyitist$setVisibleByDefault(visible);
         }
     }
 

@@ -46,7 +46,7 @@ public abstract class MixinCreeper extends Monster implements PowerableMob, Inje
     }
 
     @Inject(method = "thunderHit", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/monster/Creeper;entityData:Lnet/minecraft/network/syncher/SynchedEntityData;"))
-    private void banner$lightningBolt(ServerLevel world, LightningBolt lightningBolt, CallbackInfo ci) {
+    private void taiyitist$lightningBolt(ServerLevel world, LightningBolt lightningBolt, CallbackInfo ci) {
         if (CraftEventFactory.callCreeperPowerEvent((Creeper) (Object) this, lightningBolt, CreeperPowerEvent.PowerCause.LIGHTNING).isCancelled()) {
             ci.cancel();
         }
@@ -63,7 +63,7 @@ public abstract class MixinCreeper extends Monster implements PowerableMob, Inje
     }
 
     @Inject(method = "spawnLingeringCloud", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$creeperCloud(CallbackInfo ci, Collection<MobEffectInstance> collection, AreaEffectCloud areaeffectcloudentity) {
+    private void taiyitist$creeperCloud(CallbackInfo ci, Collection<MobEffectInstance> collection, AreaEffectCloud areaeffectcloudentity) {
         areaeffectcloudentity.setOwner((Creeper) (Object) this);
         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.EXPLOSION);
     }

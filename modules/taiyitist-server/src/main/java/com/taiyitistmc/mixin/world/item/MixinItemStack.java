@@ -192,24 +192,24 @@ public abstract class MixinItemStack implements InjectionItemStack {
             int oldCount = this.getCount();
             ServerLevel world = (ServerLevel) context.getLevel();
             if (!(item instanceof BucketItem || item instanceof SolidBucketItem)) { // if not bucket
-                world.banner$setCaptureBlockStates(true);
+                world.taiyitist$setCaptureBlockStates(true);
                 // special case bonemeal
                 if (item == Items.BONE_MEAL) {
-                    world.banner$setCaptureTreeGeneration(true);
+                    world.taiyitist$setCaptureTreeGeneration(true);
                 }
             }
             InteractionResult interactionResult;
             try {
                 interactionResult = item.useOn(context);
             } finally {
-                world.banner$setCaptureBlockStates(false);
+                world.taiyitist$setCaptureBlockStates(false);
             }
             PatchedDataComponentMap newData = this.getComponentsClone();
             int newCount = this.getCount();
             this.setCount(oldCount);
             this.setComponentsClone(oldData);
             if (interactionResult.consumesAction() && world.bridge$captureTreeGeneration() && !world.bridge$capturedBlockStates().isEmpty()) {
-                world.banner$setCaptureTreeGeneration(false);
+                world.taiyitist$setCaptureTreeGeneration(false);
                 Location location = CraftLocation.toBukkit(blockPos, world.getWorld());
                 TreeType treeType = BukkitFieldHooks.treeType();
                 BukkitFieldHooks.setTreeType(null);
@@ -240,7 +240,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
                 BukkitFieldHooks.setOpenSign(null); // SPIGOT-6758 - Reset on early return // Banner - cancel
                 return interactionResult;
             }
-            world.banner$setCaptureTreeGeneration(false);
+            world.taiyitist$setCaptureTreeGeneration(false);
             if (player != null && interactionResult.indicateItemUse()) {
                 InteractionHand bannerHand = context.getHand(); // Banner
                 org.bukkit.event.block.BlockPlaceEvent placeEvent = null;
@@ -257,11 +257,11 @@ public abstract class MixinItemStack implements InjectionItemStack {
                     // PAIL: Remove this when MC-99075 fixed
                     placeEvent.getPlayer().updateInventory();
                     // revert back all captured blocks
-                    world.banner$setPreventPoiUpdated(true); // CraftBukkit - SPIGOT-5710
+                    world.taiyitist$setPreventPoiUpdated(true); // CraftBukkit - SPIGOT-5710
                     for (org.bukkit.block.BlockState blockstate : blocks) {
                         blockstate.update(true, false);
                     }
-                    world.banner$setPreventPoiUpdated(false);
+                    world.taiyitist$setPreventPoiUpdated(false);
 
                     // Brute force all possible updates
                     BlockPos placedPos = ((CraftBlock) placeEvent.getBlock()).getPosition();
@@ -352,12 +352,12 @@ public abstract class MixinItemStack implements InjectionItemStack {
     }
 
     @Override
-    public void banner$fakeShrink(int count) {
+    public void taiyitist$fakeShrink(int count) {
         shrink(count);
     }
 
     @Inject(method = "shrink", cancellable = true, at = @At("HEAD"))
-    private void banner$onArrowChange(int count, CallbackInfo ci) {
+    private void taiyitist$onArrowChange(int count, CallbackInfo ci) {
         if (BukkitSnapshotCaptures.Totem.fakeShrink.getAndSet(false)) {
             ci.cancel();
         }

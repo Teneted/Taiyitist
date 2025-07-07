@@ -16,7 +16,7 @@ public interface InjectionAllay {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setForceDancing(boolean forceDancing) {
+    default void taiyitist$setForceDancing(boolean forceDancing) {
         throw new IllegalStateException("Not implemented");
     }
 }

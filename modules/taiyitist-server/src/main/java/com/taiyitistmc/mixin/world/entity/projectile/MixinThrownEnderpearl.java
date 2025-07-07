@@ -16,7 +16,7 @@ public abstract class MixinThrownEnderpearl extends ThrowableItemProjectile {
     // Banner TODO fixme
     /*
     @Inject(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$spawnEndermite(HitResult result, CallbackInfo ci) {
+    private void taiyitist$spawnEndermite(HitResult result, CallbackInfo ci) {
         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.ENDER_PEARL);
     }*/
 }

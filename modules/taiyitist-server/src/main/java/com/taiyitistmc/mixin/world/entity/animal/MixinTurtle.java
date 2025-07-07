@@ -17,12 +17,12 @@ public abstract class MixinTurtle extends Animal {
     }
 
     @Inject(method = "ageBoundaryReached", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Turtle;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;I)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$forceDrop(CallbackInfo ci) {
-        this.banner$setForceDrops(true);
+    private void taiyitist$forceDrop(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(true);
     }
 
     @Inject(method = "ageBoundaryReached", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/animal/Turtle;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;I)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$forceDropReset(CallbackInfo ci) {
-        this.banner$setForceDrops(false);
+    private void taiyitist$forceDropReset(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(false);
     }
 }

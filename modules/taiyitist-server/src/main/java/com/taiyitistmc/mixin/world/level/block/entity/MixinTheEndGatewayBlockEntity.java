@@ -24,7 +24,7 @@ public abstract class MixinTheEndGatewayBlockEntity extends TheEndPortalBlockEnt
     // Banner TODO fixme
     /*
     @Inject(method = "findOrCreateValidTeleportPos", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/TheEndGatewayBlockEntity;findValidSpawnInChunk(Lnet/minecraft/world/level/chunk/LevelChunk;)Lnet/minecraft/core/BlockPos;"))
-    private static void banner$portal(ServerLevel level, BlockPos blockPos, CallbackInfoReturnable<BlockPos> cir, BlockPos dest, Entity entityIn) {
+    private static void taiyitist$portal(ServerLevel level, BlockPos blockPos, CallbackInfoReturnable<BlockPos> cir, BlockPos dest, Entity entityIn) {
         if (entityIn instanceof ServerPlayer) {
             CraftPlayer player = ((ServerPlayer) entityIn).getBukkitEntity();
             Location location = CraftLocation.toBukkit(dest, level.getWorld()).add(0.5D, 0.5D, 0.5D);

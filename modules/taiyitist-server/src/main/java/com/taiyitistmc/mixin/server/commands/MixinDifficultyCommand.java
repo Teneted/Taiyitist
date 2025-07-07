@@ -16,24 +16,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DifficultyCommand.class)
 public class MixinDifficultyCommand {
 
-    private static final AtomicReference<ServerLevel> banner$serverLevel = new AtomicReference<>();
+    private static final AtomicReference<ServerLevel> taiyitist$serverLevel = new AtomicReference<>();
 
     @Inject(method = "setDifficulty", at = @At("HEAD"))
-    private static void banner$getServerLevel(CommandSourceStack source, Difficulty difficulty, CallbackInfoReturnable<Integer> cir) {
-        banner$serverLevel.set(source.getLevel());
+    private static void taiyitist$getServerLevel(CommandSourceStack source, Difficulty difficulty, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$serverLevel.set(source.getLevel());
     }
 
     @Redirect(method = "setDifficulty",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/storage/WorldData;getDifficulty()Lnet/minecraft/world/Difficulty;"))
-    private static Difficulty banner$getDifficult(WorldData instance) {
-        return banner$serverLevel.getAndSet(null).getDifficulty();
+    private static Difficulty taiyitist$getDifficult(WorldData instance) {
+        return taiyitist$serverLevel.getAndSet(null).getDifficulty();
     }
 
     @Redirect(method = "setDifficulty",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/MinecraftServer;setDifficulty(Lnet/minecraft/world/Difficulty;Z)V"))
-    private static void banner$resetDifficulty(MinecraftServer instance, Difficulty difficulty, boolean forced) {
-        banner$serverLevel.getAndSet(null).bridge$serverLevelDataCB().setDifficulty(difficulty);
+    private static void taiyitist$resetDifficulty(MinecraftServer instance, Difficulty difficulty, boolean forced) {
+        taiyitist$serverLevel.getAndSet(null).bridge$serverLevelDataCB().setDifficulty(difficulty);
     }
 }

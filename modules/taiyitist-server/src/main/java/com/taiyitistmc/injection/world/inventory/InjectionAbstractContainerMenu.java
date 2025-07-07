@@ -11,7 +11,7 @@ public interface InjectionAbstractContainerMenu {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCheckReachable(boolean checkReachable) {
+    default void taiyitist$setCheckReachable(boolean checkReachable) {
         throw new IllegalStateException("Not implemented");
     }
 

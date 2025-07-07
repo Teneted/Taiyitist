@@ -46,7 +46,7 @@ public abstract class MixinBlockEntity implements InjectionBlockEntity {
     protected abstract void applyImplicitComponents(BlockEntity.DataComponentInput dataComponentInput);
 
     @Inject(method = "loadAdditional", at = @At("RETURN"))
-    public void banner$loadPersistent(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    public void taiyitist$loadPersistent(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         this.persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 
         CompoundTag persistentDataTag = compoundTag.getCompound("PublicBukkitValues");
@@ -56,7 +56,7 @@ public abstract class MixinBlockEntity implements InjectionBlockEntity {
     }
 
     @Inject(method = "saveWithoutMetadata", at = @At("RETURN"))
-    private void banner$savePersistent(CallbackInfoReturnable<CompoundTag> cir) {
+    private void taiyitist$savePersistent(CallbackInfoReturnable<CompoundTag> cir) {
         if (this.persistentDataContainer != null && !this.persistentDataContainer.isEmpty()) {
             cir.getReturnValue().put("PublicBukkitValues", this.persistentDataContainer.toTagCompound());
         }
@@ -103,7 +103,7 @@ public abstract class MixinBlockEntity implements InjectionBlockEntity {
     }
 
     @Inject(method = "applyComponents", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$setRemove(DataComponentMap dataComponentMap, DataComponentPatch dataComponentPatch, CallbackInfo ci, Set set, DataComponentMap dataComponentMap2, DataComponentPatch dataComponentPatch2) {
+    private void taiyitist$setRemove(DataComponentMap dataComponentMap, DataComponentPatch dataComponentPatch, CallbackInfo ci, Set set, DataComponentMap dataComponentMap2, DataComponentPatch dataComponentPatch2) {
         // CraftBukkit start
         set.remove(DataComponents.BLOCK_ENTITY_DATA); // Remove as never actually added by applyImplicitComponents
         // CraftBukkit end

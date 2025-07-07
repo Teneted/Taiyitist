@@ -41,7 +41,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
     @Final
     private Long2ObjectMap<PersistentEntitySectionManager.ChunkLoadStatus> chunkLoadStatuses;
     @Unique
-    private boolean banner$fireEvent = false;
+    private boolean taiyitist$fireEvent = false;
 
     @Shadow
     public abstract void close() throws IOException;
@@ -75,7 +75,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
             if (list.isEmpty()) {
                 if (chunkLoadStatus == PersistentEntitySectionManager.ChunkLoadStatus.LOADED) {
                     this.permanentStorage.storeEntities(new ChunkEntities(new ChunkPos(l), ImmutableList.of()));
-                    if (banner$fireEvent) {
+                    if (taiyitist$fireEvent) {
                         CraftEventFactory.callEntitiesUnloadEvent(((EntityStorage) permanentStorage).level, new ChunkPos(l),
                                 list.stream().map(entity -> (Entity) entity).collect(Collectors.toList()));
                     }
@@ -86,7 +86,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
                 return false;
             } else {
                 this.permanentStorage.storeEntities(new ChunkEntities(new ChunkPos(l), list));
-                if (banner$fireEvent) {
+                if (taiyitist$fireEvent) {
                     CraftEventFactory.callEntitiesUnloadEvent(((EntityStorage) permanentStorage).level, new ChunkPos(l),
                             list.stream().map(entity -> (Entity) entity).collect(Collectors.toList()));
                 }
@@ -97,12 +97,12 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
     }
 
     @Inject(method = "processChunkUnload", at = @At("HEAD"))
-    private void banner$fireEvent(long pChunkPosValue, CallbackInfoReturnable<Boolean> cir) {
-        banner$fireEvent = true;
+    private void taiyitist$fireEvent(long pChunkPosValue, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$fireEvent = true;
     }
 
     @Inject(method = "processPendingLoads", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false, target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;put(JLjava/lang/Object;)Ljava/lang/Object;"))
-    private void banner$fireLoad(CallbackInfo ci, ChunkEntities<T> chunkEntities) {
+    private void taiyitist$fireLoad(CallbackInfo ci, ChunkEntities<T> chunkEntities) {
         List<Entity> entities = getEntities(chunkEntities.getPos());
         CraftEventFactory.callEntitiesLoadEvent(((EntityStorage) permanentStorage).level, chunkEntities.getPos(), entities);
     }

@@ -23,7 +23,7 @@ public abstract class MixinNearestAttackableTargetGoal extends TargetGoal {
     }
 
     @Inject(method = "start", at = @At("HEAD"))
-    public void banner$reason(CallbackInfo ci) {
+    public void taiyitist$reason(CallbackInfo ci) {
         this.mob.bridge$pushGoalTargetReason(this.target instanceof ServerPlayer ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.CLOSEST_ENTITY, true);
     }
 }

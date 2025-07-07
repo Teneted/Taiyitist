@@ -25,7 +25,7 @@ public abstract class MixinSculkCatalystBlock extends Block {
     @Override
     public int getExpDrop(BlockState blockState, ServerLevel world, BlockPos blockPos, ItemStack itemStack, boolean flag) {
         if (flag) {
-            return this.banner$tryDropExperience(world, blockPos, itemStack, this.xpRange);
+            return this.taiyitist$tryDropExperience(world, blockPos, itemStack, this.xpRange);
         }
         return 0;
     }

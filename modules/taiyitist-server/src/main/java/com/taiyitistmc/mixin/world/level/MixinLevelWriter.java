@@ -20,10 +20,10 @@ public interface MixinLevelWriter extends InjectionLevelWriter {
     // CraftBukkit end
 
     @Inject(method = "addFreshEntity", at = @At("HEAD"), cancellable = true)
-    private void banner$addEntityEvent(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        boolean banner$result = FabricEventFactory.ADD_ENTITY_EVENT.invoker().addFreshEntity(entity);
+    private void taiyitist$addEntityEvent(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        boolean taiyitist$result = FabricEventFactory.ADD_ENTITY_EVENT.invoker().addFreshEntity(entity);
 
-        if (!banner$result) {
+        if (!taiyitist$result) {
             FabricEventFactory.CANCELED_ADD_ENTITY_EVENT.invoker().canceledAddFreshEntity(entity);
 
             cir.setReturnValue(false);

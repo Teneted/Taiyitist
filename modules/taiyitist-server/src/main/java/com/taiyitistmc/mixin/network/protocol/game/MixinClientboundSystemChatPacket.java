@@ -15,13 +15,13 @@ public class MixinClientboundSystemChatPacket {
     private String a;
 
     @ShadowConstructor
-    public void banner$constructor(Component content, boolean overlay) {
+    public void taiyitist$constructor(Component content, boolean overlay) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(BaseComponent[] content, boolean overlay) {
-        banner$constructor(CraftChatMessage.fromJSON(ComponentSerializer.toString(content)), overlay);
+    public void taiyitist$constructor(BaseComponent[] content, boolean overlay) {
+        taiyitist$constructor(CraftChatMessage.fromJSON(ComponentSerializer.toString(content)), overlay);
     }
 
     public String content0() {

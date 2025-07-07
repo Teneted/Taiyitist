@@ -26,12 +26,12 @@ public abstract class MixinStructureStart implements InjectionStructureStart {
     }
 
     @Override
-    public void banner$setGenerationEventCause(AsyncStructureGenerateEvent.Cause generationEventCause) {
+    public void taiyitist$setGenerationEventCause(AsyncStructureGenerateEvent.Cause generationEventCause) {
         this.generationEventCause = generationEventCause;
     }
 
     @Override
-    public void banner$setPersistentDataContainer(DirtyCraftPersistentDataContainer persistentDataContainer) {
+    public void taiyitist$setPersistentDataContainer(DirtyCraftPersistentDataContainer persistentDataContainer) {
         this.persistentDataContainer = persistentDataContainer;
     }
 }

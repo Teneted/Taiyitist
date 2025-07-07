@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinOldUsersConverter_5 {
 
     @Inject(method = "movePlayerFile", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/OldUsersConverter;ensureDirectoryExists(Ljava/io/File;)V"))
-    private void banner$useOldName(File file, String oldFileName, String newFileName, CallbackInfo ci,
+    private void taiyitist$useOldName(File file, String oldFileName, String newFileName, CallbackInfo ci,
                                    @Local(ordinal = 1) File file2) {
         // CraftBukkit start - Use old file name to seed lastKnownName
         final File fileUnknown = new File(file.getParentFile(), "unknownplayers");

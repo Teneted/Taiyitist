@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinTrialSpawnerData {
 
     @Inject(method = "method_58713", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;remove(Lnet/minecraft/world/entity/Entity$RemovalReason;)V"))
-    private static void banner$pushDespawnCause(ServerLevel serverLevel, Entity entity, CallbackInfo ci) {
+    private static void taiyitist$pushDespawnCause(ServerLevel serverLevel, Entity entity, CallbackInfo ci) {
         entity.pushRemoveCause(org.bukkit.event.entity.EntityRemoveEvent.Cause.DESPAWN);
     }
 }

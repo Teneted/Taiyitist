@@ -22,7 +22,7 @@ public class MixinFlintAndSteelItem {
     @Inject(method = "useOn", cancellable = true, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V")
             , locals = LocalCapture.CAPTURE_FAILHARD)
-    public void banner$blockIgnite(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
+    public void taiyitist$blockIgnite(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
                                    Player player, Level level, BlockPos blockPos, BlockState blockState) {
         // CraftBukkit start - Store the clicked block
         if (CraftEventFactory.callBlockIgniteEvent(level, blockPos, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player).isCancelled()) {

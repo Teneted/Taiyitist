@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinBlockBehaviour_BlockStateBase {
 
     @Inject(method = "entityInside", at = @At("HEAD"))
-    private void banner$captureBlockCollide(Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$captureBlockCollide(Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureDamageEventBlock(pos);
     }
 
     @Inject(method = "entityInside", at = @At("RETURN"))
-    private void banner$resetBlockCollide(Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$resetBlockCollide(Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureDamageEventBlock(null);
     }
 }

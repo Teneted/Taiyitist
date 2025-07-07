@@ -17,82 +17,82 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinWorldBorderCommand {
 
     @Unique
-    private static final AtomicReference<CommandSourceStack> banner$source = new AtomicReference<>();
+    private static final AtomicReference<CommandSourceStack> taiyitist$source = new AtomicReference<>();
 
     @Inject(method = "setDamageBuffer", at = @At("HEAD"))
-    private static void banner$setSource(CommandSourceStack source, float distance, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource(CommandSourceStack source, float distance, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setDamageBuffer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "setDamageAmount", at = @At("HEAD"))
-    private static void banner$setSource0(CommandSourceStack source, float distance, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource0(CommandSourceStack source, float distance, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setDamageAmount", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder0(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder0(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "setWarningTime", at = @At("HEAD"))
-    private static void banner$setSource1(CommandSourceStack source, int time, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource1(CommandSourceStack source, int time, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setWarningTime", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder1(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder1(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "setWarningDistance", at = @At("HEAD"))
-    private static void banner$setSource2(CommandSourceStack source, int time, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource2(CommandSourceStack source, int time, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setWarningDistance", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder2(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder2(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "getSize", at = @At("HEAD"))
-    private static void banner$setSource3(CommandSourceStack source, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource3(CommandSourceStack source, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "getSize", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder3(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder3(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "setCenter", at = @At("HEAD"))
-    private static void banner$setSource4(CommandSourceStack source, Vec2 pos, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource4(CommandSourceStack source, Vec2 pos, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setCenter", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder4(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder4(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 
     @Inject(method = "setSize", at = @At("HEAD"))
-    private static void banner$setSource5(CommandSourceStack source, double newSize, long time, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$setSource5(CommandSourceStack source, double newSize, long time, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "setSize", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private static WorldBorder banner$resetBorder5(ServerLevel instance) {
-        return banner$source.get().getLevel().getWorldBorder();
+    private static WorldBorder taiyitist$resetBorder5(ServerLevel instance) {
+        return taiyitist$source.get().getLevel().getWorldBorder();
     }
 }

@@ -19,10 +19,10 @@ public class MixinCombatTracker implements InjectionCombatTracker {
     @Final
     private List<CombatEntry> entries;
 
-    private Component banner$emptyComnent;
+    private Component taiyitist$emptyComnent;
 
     @Inject(method = "getDeathMessage", cancellable = true, at = @At("HEAD"))
-    private void banner$useOverride(CallbackInfoReturnable<Component> cir) {
+    private void taiyitist$useOverride(CallbackInfoReturnable<Component> cir) {
         if (!this.entries.isEmpty()) {
             var entry = this.entries.get(this.entries.size() - 1);
             var deathMessage = entry.bridge$deathMessage();
@@ -30,19 +30,19 @@ public class MixinCombatTracker implements InjectionCombatTracker {
                 cir.setReturnValue(deathMessage);
             }
         } else {
-            if (this.banner$emptyComnent != null) {
-                cir.setReturnValue(this.banner$emptyComnent);
+            if (this.taiyitist$emptyComnent != null) {
+                cir.setReturnValue(this.taiyitist$emptyComnent);
             }
         }
-        this.banner$emptyComnent = null;
+        this.taiyitist$emptyComnent = null;
     }
 
     @Override
-    public void banner$setDeathMessage(Component component) {
-        this.banner$emptyComnent = component;
+    public void taiyitist$setDeathMessage(Component component) {
+        this.taiyitist$emptyComnent = component;
         if (!this.entries.isEmpty()) {
             var entry = this.entries.get(this.entries.size() - 1);
-            entry.banner$setDeathMessage(component);
+            entry.taiyitist$setDeathMessage(component);
         }
     }
 }

@@ -106,7 +106,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     private CraftWorld world;
     private BannerWorldConfig bannerConfig;
     private final AtomicBoolean captured = new AtomicBoolean(false);
-    private final AtomicReference<BlockState> banner$state = new AtomicReference<>();
+    private final AtomicReference<BlockState> taiyitist$state = new AtomicReference<>();
 
     @Shadow public abstract WorldBorder getWorldBorder();
 
@@ -139,24 +139,24 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     public abstract MinecraftServer getServer();
 
     @ShadowConstructor
-    public void banner$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate) {
+    public void taiyitist$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env) {
-        banner$constructor(worldInfo, dimension, registryAccess, dimensionType, profiler, isRemote, isDebug, seed, maxNeighborUpdate);
+    public void taiyitist$constructor(WritableLevelData worldInfo, ResourceKey<Level> dimension, RegistryAccess registryAccess, final Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdate, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env) {
+        taiyitist$constructor(worldInfo, dimension, registryAccess, dimensionType, profiler, isRemote, isDebug, seed, maxNeighborUpdate);
         this.generator = gen;
         this.environment = env;
         this.biomeProvider = biomeProvider;
-        banner$initWorld(null);
+        taiyitist$initWorld(null);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(WritableLevelData info, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdates, CallbackInfo ci) {
+    private void taiyitist$init(WritableLevelData info, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdates, CallbackInfo ci) {
         if ((Object) this instanceof ServerLevel) {
-            this.banner$setSpigotConfig(new SpigotWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
-            this.banner$setBannerConfig(new BannerWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
+            this.taiyitist$setSpigotConfig(new SpigotWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
+            this.taiyitist$setBannerConfig(new BannerWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
         }
         for (SpawnCategory spawnCategory : SpawnCategory.values()) {
             if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
@@ -164,7 +164,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             }
         }
         // CraftBukkit start
-        getWorldBorder().banner$setWorld(((Level) (Object) this));
+        getWorldBorder().taiyitist$setWorld(((Level) (Object) this));
         // From PlayerList.setPlayerFileData
         getWorldBorder().addListener(new BorderChangeListener() {
             @Override
@@ -205,7 +205,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Redirect(method = "<init>", at = @At(value = "NEW",
             args = "class=net/minecraft/world/level/border/WorldBorder"))
-    private WorldBorder banner$resetBorder0() {
+    private WorldBorder taiyitist$resetBorder0() {
         return new WorldBorder() {
             public double getCenterX() {
                 return super.getCenterX(); // CraftBukkit
@@ -219,12 +219,12 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
 
     @Override
     public CraftWorld getWorld() {
-        banner$initWorld(null);
+        taiyitist$initWorld(null);
         return this.world;
     }
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z", at = @At("HEAD"), cancellable = true)
-    private void banner$captureTree(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$captureTree(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start - tree generation
         if (this.captureTreeGeneration) {
             CapturedBlockState blockstate = capturedBlockStates.get(blockPos);
@@ -246,7 +246,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$captrueBlock(BlockPos blockPos, BlockState blockState, int i, int j,
+    private void taiyitist$captrueBlock(BlockPos blockPos, BlockState blockState, int i, int j,
                                      CallbackInfoReturnable<Boolean> cir, LevelChunk levelChunk, Block block) {
         // CraftBukkit start - capture blockstates
         if (this.captureBlockStates && !this.capturedBlockStates.containsKey(blockPos)) {
@@ -255,28 +255,28 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             captured.set(true);
         }
         // CraftBukkit end
-        BlockState banner$blockState2 = levelChunk.setBlockState(blockPos, blockState, (i & 64) != 0, (i & 1024) == 0); // CraftBukkit custom NO_PLACE flag
-        banner$state.set(banner$blockState2);
+        BlockState taiyitist$blockState2 = levelChunk.setBlockState(blockPos, blockState, (i & 64) != 0, (i & 1024) == 0); // CraftBukkit custom NO_PLACE flag
+        taiyitist$state.set(taiyitist$blockState2);
     }
 
     @Redirect(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"))
-    private BlockState banner$resetState(LevelChunk levelChunk, BlockPos blockPos, BlockState blockState, boolean bl) {
-        BlockState banner$state1 = banner$state.get();
-        banner$state1 = banner$state1 == null ? levelChunk.setBlockState(blockPos, blockState, bl) : banner$state1;
-        BlockState banner$state2 = banner$state1;
-        if (banner$state2 == null && captured.get()) {
+    private BlockState taiyitist$resetState(LevelChunk levelChunk, BlockPos blockPos, BlockState blockState, boolean bl) {
+        BlockState taiyitist$state1 = taiyitist$state.get();
+        taiyitist$state1 = taiyitist$state1 == null ? levelChunk.setBlockState(blockPos, blockState, bl) : taiyitist$state1;
+        BlockState taiyitist$state2 = taiyitist$state1;
+        if (taiyitist$state2 == null && captured.get()) {
             this.capturedBlockStates.remove(blockPos);
         }
-        return banner$state2;
+        return taiyitist$state2;
     }
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", shift = At.Shift.AFTER),
             cancellable = true)
-    private void banner$finalCapture(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$finalCapture(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start
         if (this.captureBlockStates) { // Don't notify clients or update physics while capturing blockstates
             cir.setReturnValue(true);
@@ -288,7 +288,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/Level;onBlockStateChange(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V"),
             cancellable = true)
-    private void banner$checkState(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$checkState(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir) {
         if (preventPoiUpdated) {
             cir.setReturnValue(true);
             cir.cancel();
@@ -299,7 +299,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/state/BlockState;updateNeighbourShapes(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;II)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$physicEvent(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir, LevelChunk levelChunk, Block block, BlockState blockState2, BlockState blockState3, int k) {
+    private void taiyitist$physicEvent(BlockPos blockPos, BlockState blockState, int i, int j, CallbackInfoReturnable<Boolean> cir, LevelChunk levelChunk, Block block, BlockState blockState2, BlockState blockState3, int k) {
         CraftWorld world = ((Level) (Object) this).getWorld();
         if (world != null) {
             BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(blockPos.getX(), blockPos.getY(), blockPos.getZ()), CraftBlockData.fromData(blockState));
@@ -366,7 +366,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Inject(method = "getBlockState", at = @At("HEAD"), cancellable = true)
-    private void banner$addCaptureCheck(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
+    private void taiyitist$addCaptureCheck(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         // CraftBukkit start - tree generation
         if (captureTreeGeneration) {
             CapturedBlockState previous = capturedBlockStates.get(pos);
@@ -378,7 +378,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Inject(method = "isThundering", at = @At("HEAD"), cancellable = true)
-    private void banner$isThundering(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$isThundering(CallbackInfoReturnable<Boolean> cir) {
         if (spigotConfig != null && spigotConfig.thunderChance <= 0) {
             cir.setReturnValue(false);
         }
@@ -389,7 +389,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
                     target = "Lnet/minecraft/world/level/Level;getChunkAt(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/chunk/LevelChunk;",
                     shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$addCaptureCheck0(BlockEntity blockEntity, CallbackInfo ci, BlockPos blockPos) {
+    private void taiyitist$addCaptureCheck0(BlockEntity blockEntity, CallbackInfo ci, BlockPos blockPos) {
         // CraftBukkit start
         if (captureBlockStates) {
             capturedTileEntities.put(blockPos.immutable(), blockEntity);
@@ -467,7 +467,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setBiomeProvider(BiomeProvider biomeProvider) {
+    public void taiyitist$setBiomeProvider(BiomeProvider biomeProvider) {
         this.biomeProvider = biomeProvider;
     }
 
@@ -477,7 +477,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setEnvironment(World.Environment environment) {
+    public void taiyitist$setEnvironment(World.Environment environment) {
         this.environment = environment;
     }
 
@@ -487,7 +487,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setPvpMode(boolean pvpMode) {
+    public void taiyitist$setPvpMode(boolean pvpMode) {
         this.pvpMode = pvpMode;
     }
 
@@ -497,7 +497,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setCaptureBlockStates(boolean captureState) {
+    public void taiyitist$setCaptureBlockStates(boolean captureState) {
         this.captureBlockStates = captureState;
     }
 
@@ -507,7 +507,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setCaptureTreeGeneration(boolean treeGeneration) {
+    public void taiyitist$setCaptureTreeGeneration(boolean treeGeneration) {
         this.captureTreeGeneration = treeGeneration;
     }
 
@@ -522,12 +522,12 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
+    public void taiyitist$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
         this.capturedTileEntities = tileEntities;
     }
 
     @Override
-    public void banner$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
+    public void taiyitist$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
         this.capturedBlockStates = capturedBlockStates;
     }
 
@@ -537,7 +537,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setCaptureDrops(List<ItemEntity> captureDrops) {
+    public void taiyitist$setCaptureDrops(List<ItemEntity> captureDrops) {
         this.captureDrops = captureDrops;
     }
 
@@ -552,7 +552,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setPopulating(boolean populating) {
+    public void taiyitist$setPopulating(boolean populating) {
         this.populating = populating;
     }
 
@@ -562,7 +562,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
+    public void taiyitist$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         this.keepSpawnInMemory = keepSpawnInMemory;
     }
 
@@ -572,12 +572,12 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setGenerator(ChunkGenerator generator) {
+    public void taiyitist$setGenerator(ChunkGenerator generator) {
         this.generator = generator;
     }
 
     @Override
-    public void banner$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
+    public void taiyitist$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
         this.spigotConfig = spigotWorldConfig;
     }
 
@@ -587,7 +587,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
+    public void taiyitist$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
         this.bannerConfig = bannerWorldConfig;
     }
 
@@ -597,12 +597,12 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public void banner$setPreventPoiUpdated(boolean preventPoiUpdated) {
+    public void taiyitist$setPreventPoiUpdated(boolean preventPoiUpdated) {
         this.preventPoiUpdated = preventPoiUpdated;
     }
 
     @Override
-    public CraftWorld banner$initWorld(@Nullable LevelStem levelStem) {
+    public CraftWorld taiyitist$initWorld(@Nullable LevelStem levelStem) {
         var newStem = levelStem;
         if (this.world == null) {
             Optional<Field> delegate = WrappedWorlds.getDelegate(this.getClass());
@@ -631,13 +631,13 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
                             generator = new NoiseBasedChunkGenerator(biomeSource, cga.settings);
                         } else if (generator instanceof FlatLevelSource cpf) {
                             var flatLevelSource = new FlatLevelSource(cpf.settings());
-                            flatLevelSource.banner$setBiomeSource(biomeSource);
+                            flatLevelSource.taiyitist$setBiomeSource(biomeSource);
                             generator = flatLevelSource;
                         }
                     }
                     if (((Level) (Object) this) instanceof ServerLevel) {
-                        var banner$gen = newStem.generator();
-                        banner$gen = new CustomChunkGenerator(serverWorld, generator, this.generator);
+                        var taiyitist$gen = newStem.generator();
+                        taiyitist$gen = new CustomChunkGenerator(serverWorld, generator, this.generator);
                     }
                 }
             }

@@ -17,14 +17,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinMultifaceSpreader {
 
     @Inject(method = "getSpreadFromFaceTowardDirection", at = @At("RETURN"))
-    private void banner$captureSource(BlockState p_221613_, BlockGetter p_221614_, BlockPos pos, Direction p_221616_, Direction p_221617_, MultifaceSpreader.SpreadPredicate p_221618_, CallbackInfoReturnable<Optional<MultifaceSpreader.SpreadPos>> cir) {
+    private void taiyitist$captureSource(BlockState p_221613_, BlockGetter p_221614_, BlockPos pos, Direction p_221616_, Direction p_221617_, MultifaceSpreader.SpreadPredicate p_221618_, CallbackInfoReturnable<Optional<MultifaceSpreader.SpreadPos>> cir) {
         if (cir.getReturnValue().isPresent()) {
             BukkitSnapshotCaptures.captureSpreadSource(pos);
         }
     }
 
     @Inject(method = "spreadToFace", at = @At("RETURN"))
-    private void banner$resetSource(LevelAccessor p_221594_, MultifaceSpreader.SpreadPos p_221595_, boolean p_221596_, CallbackInfoReturnable<Optional<MultifaceSpreader.SpreadPos>> cir) {
+    private void taiyitist$resetSource(LevelAccessor p_221594_, MultifaceSpreader.SpreadPos p_221595_, boolean p_221596_, CallbackInfoReturnable<Optional<MultifaceSpreader.SpreadPos>> cir) {
         BukkitSnapshotCaptures.resetSpreadSource();
     }
 }

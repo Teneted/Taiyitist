@@ -16,15 +16,15 @@ public interface InjectionServerCommonPacketListenerImpl {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean banner$isDisconnected() {
+    default boolean taiyitist$isDisconnected() {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPlayer(ServerPlayer player) {
+    default void taiyitist$setPlayer(ServerPlayer player) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setProcessedDisconnect(boolean processedDisconnect) {
+    default void taiyitist$setProcessedDisconnect(boolean processedDisconnect) {
         throw new IllegalStateException("Not implemented");
     }
 

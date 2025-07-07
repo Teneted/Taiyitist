@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class MixinWorldLoader {
 
     @ModifyArg(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/WorldLoader$WorldDataSupplier;get(Lnet/minecraft/server/WorldLoader$DataLoadContext;)Lnet/minecraft/server/WorldLoader$DataLoadOutput;"))
-    private static WorldLoader.DataLoadContext banner$captureContext(WorldLoader.DataLoadContext context) {
+    private static WorldLoader.DataLoadContext taiyitist$captureContext(WorldLoader.DataLoadContext context) {
         BukkitSnapshotCaptures.captureDataLoadContext(context);
         return context;
     }

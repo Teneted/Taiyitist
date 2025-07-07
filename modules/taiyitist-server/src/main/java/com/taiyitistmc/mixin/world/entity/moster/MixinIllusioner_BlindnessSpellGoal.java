@@ -16,7 +16,7 @@ public class MixinIllusioner_BlindnessSpellGoal {
     private Illusioner outerThis;
 
     @Inject(method = "performSpellCasting", at = @At("HEAD"))
-    private void banner$reason(CallbackInfo ci) {
+    private void taiyitist$reason(CallbackInfo ci) {
         outerThis.pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 }

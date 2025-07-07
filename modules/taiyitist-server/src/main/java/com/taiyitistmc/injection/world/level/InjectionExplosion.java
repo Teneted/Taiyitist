@@ -10,7 +10,7 @@ public interface InjectionExplosion {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setWasCanceled(boolean wasCanceled) {
+    default void taiyitist$setWasCanceled(boolean wasCanceled) {
         throw new IllegalStateException("Not implemented");
     }
 }

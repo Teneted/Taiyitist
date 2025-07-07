@@ -43,7 +43,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
     @Override
     public void setMaxSpeed(double speed) {
         if (speed >= 0D) {
-            this.getHandle().banner$setMaxSpeed(speed);
+            this.getHandle().taiyitist$setMaxSpeed(speed);
         }
     }
 
@@ -55,7 +55,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
     @Override
     public void setOccupiedDeceleration(double speed) {
         if (speed >= 0D) {
-            this.getHandle().banner$setOccupiedDeceleration(speed);
+            this.getHandle().taiyitist$setOccupiedDeceleration(speed);
         }
     }
 
@@ -66,7 +66,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
 
     @Override
     public void setUnoccupiedDeceleration(double speed) {
-        this.getHandle().banner$setUnoccupiedDeceleration(speed);
+        this.getHandle().taiyitist$setUnoccupiedDeceleration(speed);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
 
     @Override
     public void setWorkOnLand(boolean workOnLand) {
-        this.getHandle().banner$setLandBoats(workOnLand);
+        this.getHandle().taiyitist$setLandBoats(workOnLand);
     }
 
     @Override

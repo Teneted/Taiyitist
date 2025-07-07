@@ -66,12 +66,12 @@ public abstract class MixinBlockAttachedEntity extends Entity {
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 100))
-    private int banner$modifyTick(int constant) {
+    private int taiyitist$modifyTick(int constant) {
         return this.level().bridge$spigotConfig().hangingTickFrequency;
     }
 
     @Inject(method = "tick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/BlockAttachedEntity;discard()V"))
-    private void banner$hangingBreak(CallbackInfo ci) {
+    private void taiyitist$hangingBreak(CallbackInfo ci) {
         BlockState material = this.level().getBlockState(new BlockPos(this.blockPosition()));
         HangingBreakEvent.RemoveCause cause;
         if (!material.isAir()) {
@@ -87,7 +87,7 @@ public abstract class MixinBlockAttachedEntity extends Entity {
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/BlockAttachedEntity;kill()V"))
-    private void banner$hangingBreakByAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$hangingBreakByAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Entity damager = (source.isDirect()) ? source.getEntity() : source.getDirectEntity();
         HangingBreakEvent event;
         if (damager != null) {
@@ -102,7 +102,7 @@ public abstract class MixinBlockAttachedEntity extends Entity {
     }
 
     @Inject(method = "move", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/BlockAttachedEntity;kill()V"))
-    private void banner$hangingBreakByMove(MoverType typeIn, Vec3 pos, CallbackInfo ci) {
+    private void taiyitist$hangingBreakByMove(MoverType typeIn, Vec3 pos, CallbackInfo ci) {
         if (this.isRemoved()) {
             ci.cancel();
             return;
@@ -115,7 +115,7 @@ public abstract class MixinBlockAttachedEntity extends Entity {
     }
 
     @Inject(method = "push", cancellable = true, at = @At("HEAD"))
-    private void banner$noVelocity(double x, double y, double z, CallbackInfo ci) {
+    private void taiyitist$noVelocity(double x, double y, double z, CallbackInfo ci) {
         ci.cancel();
     }
 }

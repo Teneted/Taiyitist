@@ -20,25 +20,25 @@ public class MixinEndDragonFight implements InjectionEndDragonFight {
     @Shadow
     @Final
     public ServerBossEvent dragonEvent;
-    public boolean banner$respawnDragon = false;
+    public boolean taiyitist$respawnDragon = false;
 
     @Inject(method = "respawnDragon",
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/world/level/dimension/end/EndDragonFight;respawnCrystals:Ljava/util/List;",
                     shift = At.Shift.AFTER))
-    private void banner$setRespawnResult(List<EndCrystal> crystals, CallbackInfo ci) {
-        banner$respawnDragon = true;
+    private void taiyitist$setRespawnResult(List<EndCrystal> crystals, CallbackInfo ci) {
+        taiyitist$respawnDragon = true;
     }
 
     @Inject(method = "scanState", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;discard()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$pushNullReason(CallbackInfo ci, boolean bl, List list, EnderDragon enderDragon) {
+    private void taiyitist$pushNullReason(CallbackInfo ci, boolean bl, List list, EnderDragon enderDragon) {
         enderDragon.pushRemoveCause(null); // CraftBukkit - add Bukkit remove cause
     }
 
     @Override
     public boolean bridge$isRespawnDragon() {
-        return banner$respawnDragon;
+        return taiyitist$respawnDragon;
     }
 }

@@ -245,7 +245,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void setMaximumAir(int ticks) {
-        this.getHandle().banner$setMaxAirTicks(ticks);
+        this.getHandle().taiyitist$setMaxAirTicks(ticks);
     }
 
     @Override
@@ -501,7 +501,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
                 launch = new LargeFireball(world, this.getHandle(), vec, 1);
             }
 
-            ((AbstractHurtingProjectile) launch).banner$setProjectileSource(this);
+            ((AbstractHurtingProjectile) launch).taiyitist$setProjectileSource(this);
             launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (LlamaSpit.class.isAssignableFrom(projectile)) {
             Location location = this.getEyeLocation();
@@ -563,7 +563,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         if (this.getHandle() instanceof Mob) {
             ((Mob) this.getHandle()).setCanPickUpLoot(pickup);
         } else {
-            this.getHandle().banner$setBukkitPickUpLoot(pickup);
+            this.getHandle().taiyitist$setBukkitPickUpLoot(pickup);
         }
     }
 
@@ -727,7 +727,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void setCollidable(boolean collidable) {
-        this.getHandle().banner$setCollides(collidable);
+        this.getHandle().taiyitist$setCollides(collidable);
     }
 
     @Override
@@ -806,7 +806,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void setInvisible(boolean invisible) {
-        this.getHandle().banner$setPersistentInvisibility(invisible);
+        this.getHandle().taiyitist$setPersistentInvisibility(invisible);
         this.getHandle().setSharedFlag(5, invisible);
     }
 }

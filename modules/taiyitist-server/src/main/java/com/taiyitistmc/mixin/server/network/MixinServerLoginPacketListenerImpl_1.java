@@ -20,7 +20,7 @@ public class MixinServerLoginPacketListenerImpl_1 {
     @Inject(method = "run", at = @At(value = "INVOKE",
             target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
             remap = false, ordinal = 0), cancellable = true)
-    private void banner$callPreLoginEvent(CallbackInfo ci,
+    private void taiyitist$callPreLoginEvent(CallbackInfo ci,
                                           @Local GameProfile gameProfile) {
         // CraftBukkit start - fire PlayerPreLoginEvent
         if (!field_14176.connection.isConnected()) {

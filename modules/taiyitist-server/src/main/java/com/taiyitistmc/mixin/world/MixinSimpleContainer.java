@@ -30,13 +30,13 @@ public abstract class MixinSimpleContainer implements Container, StackedContents
     private int maxStack = MAX_STACK;
 
     @ShadowConstructor
-    public void banner$constructor(int numSlots) {
+    public void taiyitist$constructor(int numSlots) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(int numSlots, InventoryHolder owner) {
-        this.banner$constructor(numSlots);
+    public void taiyitist$constructor(int numSlots, InventoryHolder owner) {
+        this.taiyitist$constructor(numSlots);
         this.bukkitOwner = owner;
     }
 

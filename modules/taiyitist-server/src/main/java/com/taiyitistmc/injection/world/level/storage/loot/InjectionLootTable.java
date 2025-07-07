@@ -14,7 +14,7 @@ public interface InjectionLootTable {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCraftLootTable(CraftLootTable craftLootTable) {
+    default void taiyitist$setCraftLootTable(CraftLootTable craftLootTable) {
         throw new IllegalStateException("Not implemented");
     }
 }

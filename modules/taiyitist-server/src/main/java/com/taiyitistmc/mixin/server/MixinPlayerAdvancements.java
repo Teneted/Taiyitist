@@ -31,17 +31,17 @@ public abstract class MixinPlayerAdvancements {
     @Shadow
     @Final
     private Path playerSavePath;
-    private final AtomicReference<Map.Entry<ResourceLocation, AdvancementProgress>> banner$entry = new AtomicReference<>();
+    private final AtomicReference<Map.Entry<ResourceLocation, AdvancementProgress>> taiyitist$entry = new AtomicReference<>();
 
     @Inject(method = "award",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerAdvancements;getOrStartProgress(Lnet/minecraft/advancements/AdvancementHolder;)Lnet/minecraft/advancements/AdvancementProgress;"))
-    public void banner$callEvent(AdvancementHolder advancementHolder, String string, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$callEvent(AdvancementHolder advancementHolder, String string, CallbackInfoReturnable<Boolean> cir) {
         Bukkit.getPluginManager().callEvent(new org.bukkit.event.player.PlayerAdvancementDoneEvent(this.player.getBukkitEntity(), advancementHolder.toBukkit()));
     }
 
     @Inject(method = "method_48027",
             at = @At(value = "HEAD"), cancellable = true)
-    private void banner$disableAdvancementSaving(Set set, Set set2, AdvancementNode advancementNode, boolean bl, CallbackInfo ci) {
+    private void taiyitist$disableAdvancementSaving(Set set, Set set2, AdvancementNode advancementNode, boolean bl, CallbackInfo ci) {
         if (org.spigotmc.SpigotConfig.disableAdvancementSaving) ci.cancel(); // Spigot
     }
 

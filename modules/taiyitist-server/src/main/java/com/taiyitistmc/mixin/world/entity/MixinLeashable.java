@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public interface MixinLeashable {
 
     @Decorate(method = "leashTooFarBehaviour", inject = true, at = @At("HEAD"))
-    private void banner$distanceLeash() {
+    private void taiyitist$distanceLeash() {
         if (this instanceof Entity entity) {
             Bukkit.getPluginManager().callEvent(new EntityUnleashEvent(entity.getBukkitEntity(), EntityUnleashEvent.UnleashReason.DISTANCE));
         }

@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.Mixin;
 public class MixinComposterBlock_EmptyContainer extends SimpleContainer {
 
     @ShadowConstructor
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(LevelAccessor world, BlockPos blockPos) {
-        banner$constructor();
+    public void taiyitist$constructor(LevelAccessor world, BlockPos blockPos) {
+        taiyitist$constructor();
         this.setOwner(new CraftBlockInventoryHolder(world, blockPos, this));
     }
 }

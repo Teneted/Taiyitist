@@ -25,14 +25,14 @@ public class MixinEnderpearlItem extends Item {
     }
 
     @Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$cancelEntityAdd(Level instance, Entity entity) {
+    private boolean taiyitist$cancelEntityAdd(Level instance, Entity entity) {
         return false;
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z",
             shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$handleAdding(Level level, Player player, InteractionHand usedHand,
+    private void taiyitist$handleAdding(Level level, Player player, InteractionHand usedHand,
                                      CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
                                      ItemStack itemStack, ThrownEnderpearl thrownEnderpearl) {
         // CraftBukkit start - change order

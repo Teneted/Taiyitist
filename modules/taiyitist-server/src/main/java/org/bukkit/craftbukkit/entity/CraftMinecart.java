@@ -34,7 +34,7 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
     @Override
     public void setMaxSpeed(double speed) {
         if (speed >= 0D) {
-            this.getHandle().banner$setMaxSpeed(speed);
+            this.getHandle().taiyitist$setMaxSpeed(speed);
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
 
     @Override
     public void setSlowWhenEmpty(boolean slow) {
-        this.getHandle().banner$setSlowWhenEmpty(slow);
+        this.getHandle().taiyitist$setSlowWhenEmpty(slow);
     }
 
     @Override

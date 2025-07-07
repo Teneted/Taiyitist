@@ -30,10 +30,10 @@ public abstract class MixinExperienceOrb {
     public int value;
     @Shadow
     private Player followingPlayer;
-    private transient Player banner$lastPlayer;
+    private transient Player taiyitist$lastPlayer;
 
     @Inject(method = "getExperienceValue", cancellable = true, at = @At("HEAD"))
-    private static void banner$higherLevelSplit(int expValue, CallbackInfoReturnable<Integer> cir) {
+    private static void taiyitist$higherLevelSplit(int expValue, CallbackInfoReturnable<Integer> cir) {
         // @formatter:off
         if (expValue > 162670129) { cir.setReturnValue(expValue - 100000); return; }
         if (expValue > 81335063) { cir.setReturnValue(81335063); return; }
@@ -55,23 +55,23 @@ public abstract class MixinExperienceOrb {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;tick()V"))
-    private void banner$captureLast(CallbackInfo ci) {
-        banner$lastPlayer = this.followingPlayer;
+    private void taiyitist$captureLast(CallbackInfo ci) {
+        taiyitist$lastPlayer = this.followingPlayer;
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void banner$captureReset(CallbackInfo ci) {
-        banner$lastPlayer = null;
+    private void taiyitist$captureReset(CallbackInfo ci) {
+        taiyitist$lastPlayer = null;
     }
 
     @Redirect(method = "tick", at = @At(value = "FIELD", ordinal = 4, target = "Lnet/minecraft/world/entity/ExperienceOrb;followingPlayer:Lnet/minecraft/world/entity/player/Player;"))
-    private Player banner$targetPlayer(ExperienceOrb entity) {
-        if (this.followingPlayer != banner$lastPlayer) {
+    private Player taiyitist$targetPlayer(ExperienceOrb entity) {
+        if (this.followingPlayer != taiyitist$lastPlayer) {
             EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent((ExperienceOrb) (Object) this, this.followingPlayer, (this.followingPlayer != null) ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.FORGOT_TARGET);
             LivingEntity target = (event.getTarget() == null) ? null : ((CraftLivingEntity) event.getTarget()).getHandle();
 
             if (event.isCancelled()) {
-                this.followingPlayer = banner$lastPlayer;
+                this.followingPlayer = taiyitist$lastPlayer;
                 return null;
             } else {
                 this.followingPlayer = (target instanceof Player) ? (Player) target : null;
@@ -81,12 +81,12 @@ public abstract class MixinExperienceOrb {
     }
 
     @Redirect(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;giveExperiencePoints(I)V"))
-    private void banner$expChange(Player player, int amount) {
+    private void taiyitist$expChange(Player player, int amount) {
         player.giveExperiencePoints(CraftEventFactory.callPlayerExpChangeEvent(player, amount).getAmount());
     }
 
     @Decorate(method = "repairPlayerItems", inject = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;setDamageValue(I)V"))
-    private void banner$itemMend(ServerPlayer serverPlayer, int i, @Local(ordinal = -1) ItemStack itemstack,
+    private void taiyitist$itemMend(ServerPlayer serverPlayer, int i, @Local(ordinal = -1) ItemStack itemstack,
                                  @Local(ordinal = -1) Optional<EnchantedItemInUse> optional, @Local(ordinal = -1) int k) throws Throwable {
         org.bukkit.event.player.PlayerItemMendEvent event = CraftEventFactory.callPlayerItemMendEvent(serverPlayer, (ExperienceOrb) (Object) this, itemstack, optional.get().inSlot(), k);
         k = event.getRepairAmount();
@@ -98,7 +98,7 @@ public abstract class MixinExperienceOrb {
     }
 
     @Decorate(method = "repairPlayerItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;repairPlayerItems(Lnet/minecraft/server/level/ServerPlayer;I)I"))
-    private int banner$updateXp(ExperienceOrb instance, ServerPlayer serverPlayer, int i) throws Throwable {
+    private int taiyitist$updateXp(ExperienceOrb instance, ServerPlayer serverPlayer, int i) throws Throwable {
         this.value = i;
         return (int) DecorationOps.callsite().invoke(instance, serverPlayer, i);
     }

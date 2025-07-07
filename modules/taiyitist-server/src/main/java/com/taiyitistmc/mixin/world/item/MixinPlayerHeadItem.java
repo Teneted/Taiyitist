@@ -13,11 +13,11 @@ public abstract class MixinPlayerHeadItem extends Item {
 
     /*
     @Inject(method = "verifyComponentsAfterLoad", at = @At("TAIL"))
-    private void banner$verifyTag(ItemStack itemStack, CallbackInfo ci) {
-        boolean banner$flag = components().get("SkullOwner", 8)
+    private void taiyitist$verifyTag(ItemStack itemStack, CallbackInfo ci) {
+        boolean taiyitist$flag = components().get("SkullOwner", 8)
                 && !Util.isBlank(compoundTag.getString("SkullOwner"));
         // CraftBukkit start
-        if (!banner$flag) {
+        if (!taiyitist$flag) {
             net.minecraft.nbt.ListTag textures =
                     compoundTag.getCompound("SkullOwner")
                     .getCompound("Properties")

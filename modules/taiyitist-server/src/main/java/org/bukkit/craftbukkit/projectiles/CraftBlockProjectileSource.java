@@ -130,7 +130,7 @@ public class CraftBlockProjectileSource implements BlockProjectileSource {
         if (launch instanceof net.minecraft.world.entity.projectile.AbstractArrow arrow) {
             arrow.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.ALLOWED;
         }
-        launch.banner$setProjectileSource(this);
+        launch.taiyitist$setProjectileSource(this);
         projectileItem.shoot(launch, (double) enumdirection.getStepX(), (double) enumdirection.getStepY(), (double) enumdirection.getStepZ(), dispenseConfig.power(), dispenseConfig.uncertainty());
 
         if (velocity != null) {

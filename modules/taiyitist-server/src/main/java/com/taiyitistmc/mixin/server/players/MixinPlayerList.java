@@ -133,7 +133,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     public String quitMsg;
     @Unique
     public AtomicReference<ServerLoginPacketListenerImpl> handler = new AtomicReference<>(null);
-    public ServerLevel banner$worldserver = null;
+    public ServerLevel taiyitist$worldserver = null;
     public AtomicBoolean avoidSuffocation = new AtomicBoolean(true);
     @Shadow
     @Final
@@ -153,9 +153,9 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     private CraftServer cserver;
     @Unique
     private final AtomicReference<ServerPlayer> entity = new AtomicReference<>(null);
-    private Location banner$loc = null;
-    private transient PlayerRespawnEvent.RespawnReason banner$respawnReason;
-    private final AtomicReference<ServerPlayer> banner$worldBorderPlayer = new AtomicReference<>();
+    private Location taiyitist$loc = null;
+    private transient PlayerRespawnEvent.RespawnReason taiyitist$respawnReason;
+    private final AtomicReference<ServerPlayer> taiyitist$worldBorderPlayer = new AtomicReference<>();
 
     @Shadow
     public abstract void broadcastSystemMessage(Component message, boolean bypassHiddenChat);
@@ -198,18 +198,18 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     public abstract void sendPlayerPermissionLevel(ServerPlayer serverPlayer);
 
     @Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;bans:Lnet/minecraft/server/players/UserBanList;"))
-    public void banner$init(MinecraftServer minecraftServer, LayeredRegistryAccess<RegistryLayer> layeredRegistryAccess, PlayerDataStorage playerDataStorage, int i, CallbackInfo ci) {
+    public void taiyitist$init(MinecraftServer minecraftServer, LayeredRegistryAccess<RegistryLayer> layeredRegistryAccess, PlayerDataStorage playerDataStorage, int i, CallbackInfo ci) {
         this.players = new CopyOnWriteArrayList<>();
-        minecraftServer.banner$setServer(this.cserver =
+        minecraftServer.taiyitist$setServer(this.cserver =
                 new CraftServer((DedicatedServer) minecraftServer, ((PlayerList) (Object) this)));
         TaiyitistMod.LOGGER.info(I18n.as("registry.begin"));
         BukkitRegistry.registerAll((DedicatedServer) minecraftServer);
-        minecraftServer.banner$setConsole(ColouredConsoleSender.getInstance());
+        minecraftServer.taiyitist$setConsole(ColouredConsoleSender.getInstance());
     }
 
     @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE",
             target = "Ljava/util/Optional;flatMap(Ljava/util/function/Function;)Ljava/util/Optional;"))
-    public void banner$print(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci, @Local String string, @Local Optional optional) {
+    public void taiyitist$print(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci, @Local String string, @Local Optional optional) {
         // CraftBukkit start - Better rename detection
         if (optional.isPresent()) {
             CompoundTag nbttagcompound = (CompoundTag) optional.get();
@@ -221,7 +221,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Redirect(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"))
-    private ServerLevel banner$spawnLocationEvent(MinecraftServer minecraftServer, ResourceKey<Level> dimension, Connection netManager, ServerPlayer playerIn) {
+    private ServerLevel taiyitist$spawnLocationEvent(MinecraftServer minecraftServer, ResourceKey<Level> dimension, Connection netManager, ServerPlayer playerIn) {
         CraftPlayer player = playerIn.getBukkitEntity();
         PlayerSpawnLocationEvent event = new PlayerSpawnLocationEvent(player, player.getLocation());
         cserver.getPluginManager().callEvent(event);
@@ -233,17 +233,17 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Redirect(method = "placeNewPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;viewDistance:I"))
-    private int banner$spigotViewDistance(PlayerList playerList, Connection netManager, ServerPlayer playerIn) {
+    private int taiyitist$spigotViewDistance(PlayerList playerList, Connection netManager, ServerPlayer playerIn) {
         return playerIn.serverLevel().bridge$spigotConfig().viewDistance;
     }
 
     @Redirect(method = "placeNewPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;simulationDistance:I"))
-    private int banner$spigotSimDistance(PlayerList instance, Connection netManager, ServerPlayer playerIn) {
+    private int taiyitist$spigotSimDistance(PlayerList instance, Connection netManager, ServerPlayer playerIn) {
         return playerIn.serverLevel().bridge$spigotConfig().simulationDistance;
     }
 
     @Eject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
-    private void banner$playerJoin(PlayerList playerList, Component component, boolean flag, CallbackInfo ci, Connection netManager, ServerPlayer playerIn) {
+    private void taiyitist$playerJoin(PlayerList playerList, Component component, boolean flag, CallbackInfo ci, Connection netManager, ServerPlayer playerIn) {
         PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(playerIn.getBukkitEntity(), CraftChatMessage.fromComponent(component));
         this.players.add(playerIn);
         this.playersByUUID.put(playerIn.getUUID(), playerIn);
@@ -262,26 +262,26 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Redirect(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addNewPlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void banner$addNewPlayer(ServerLevel instance, ServerPlayer player) {
+    private void taiyitist$addNewPlayer(ServerLevel instance, ServerPlayer player) {
         if (player.level() == instance && !instance.players().contains(player)) {
             instance.addNewPlayer(player);
         }
     }
 
     @ModifyVariable(method = "placeNewPlayer", ordinal = 1, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/level/ServerLevel;addNewPlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private ServerLevel banner$handleWorldChanges(ServerLevel value, Connection connection, ServerPlayer player) {
+    private ServerLevel taiyitist$handleWorldChanges(ServerLevel value, Connection connection, ServerPlayer player) {
         return player.serverLevel();
     }
 
     @Inject(method = "save", cancellable = true, at = @At("HEAD"))
-    private void banner$returnIfNotPersist(ServerPlayer playerIn, CallbackInfo ci) {
+    private void taiyitist$returnIfNotPersist(ServerPlayer playerIn, CallbackInfo ci) {
         if (!playerIn.bridge$persist()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;save(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void banner$playerQuitPre(ServerPlayer playerIn, CallbackInfo ci) {
+    private void taiyitist$playerQuitPre(ServerPlayer playerIn, CallbackInfo ci) {
         if (playerIn.inventoryMenu != playerIn.containerMenu) {
             playerIn.getBukkitEntity().closeInventory();
         }
@@ -300,7 +300,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Override
-    public void banner$putHandler(ServerLoginPacketListenerImpl handler) {
+    public void taiyitist$putHandler(ServerLoginPacketListenerImpl handler) {
         this.handler.set(handler);
     }
 
@@ -355,14 +355,14 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Inject(method = "respawn", at = @At("HEAD"))
-    private void banner$stopRiding(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
+    private void taiyitist$stopRiding(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
         serverPlayer.stopRiding();
     }
 
     @Decorate(method = "respawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;findRespawnPositionAndUseSpawnBlock(ZLnet/minecraft/world/level/portal/DimensionTransition$PostDimensionTransition;)Lnet/minecraft/world/level/portal/DimensionTransition;"))
-    private DimensionTransition banner$respawnPoint(ServerPlayer instance, boolean bl, DimensionTransition.PostDimensionTransition postDimensionTransition) throws Throwable {
-        var location = banner$loc;
-        var respawnReason = banner$respawnReason == null ? PlayerRespawnEvent.RespawnReason.DEATH : banner$respawnReason;
+    private DimensionTransition taiyitist$respawnPoint(ServerPlayer instance, boolean bl, DimensionTransition.PostDimensionTransition postDimensionTransition) throws Throwable {
+        var location = taiyitist$loc;
+        var respawnReason = taiyitist$respawnReason == null ? PlayerRespawnEvent.RespawnReason.DEATH : taiyitist$respawnReason;
         DimensionTransition dimensiontransition;
         if (location == null) {
             //instance.pushRespawnReason(respawnReason);
@@ -383,7 +383,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Decorate(method = "respawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V"))
-    private void banner$restoreInv(ServerPlayer newPlayer, ServerPlayer oldPlayer, boolean bl, ServerPlayer serverPlayer, boolean conqueredEnd) throws Throwable {
+    private void taiyitist$restoreInv(ServerPlayer newPlayer, ServerPlayer oldPlayer, boolean bl, ServerPlayer serverPlayer, boolean conqueredEnd) throws Throwable {
         DecorationOps.callsite().invoke(newPlayer, oldPlayer, bl);
         if (!conqueredEnd) {  // keep inventory here since inventory dropped at ServerPlayerEntity#onDeath
             newPlayer.getInventory().replaceWith(oldPlayer.getInventory());
@@ -395,7 +395,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Decorate(method = "respawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;teleport(DDDFF)V"))
-    private void banner$respawnPackets(ServerGamePacketListenerImpl instance, double d, double e, double f, float g, float h, @io.izzel.arclight.mixin.Local(ordinal = -1) ServerPlayer player) throws Throwable {
+    private void taiyitist$respawnPackets(ServerGamePacketListenerImpl instance, double d, double e, double f, float g, float h, @io.izzel.arclight.mixin.Local(ordinal = -1) ServerPlayer player) throws Throwable {
         player.connection.send(new ClientboundSetChunkCacheRadiusPacket(player.serverLevel().bridge$spigotConfig().viewDistance));
         player.connection.send(new ClientboundSetSimulationDistancePacket(player.serverLevel().bridge$spigotConfig().simulationDistance));
         player.connection.teleport(new Location(player.serverLevel().getWorld(), player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot()));
@@ -405,9 +405,9 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     }
 
     @Inject(method = "respawn", at = @At("RETURN"))
-    private void banner$postRespawn(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
-        banner$loc = null;
-        banner$respawnReason = null;
+    private void taiyitist$postRespawn(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
+        taiyitist$loc = null;
+        taiyitist$respawnReason = null;
         var fromWorld = serverPlayer.serverLevel();
         var newPlayer = cir.getReturnValue();
         this.sendAllPlayerInfo(newPlayer);
@@ -417,7 +417,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
             PlayerChangedWorldEvent event = new PlayerChangedWorldEvent(newPlayer.getBukkitEntity(), fromWorld.getWorld());
             Bukkit.getPluginManager().callEvent(event);
         }
-        if (newPlayer.connection.banner$isDisconnected()) {
+        if (newPlayer.connection.taiyitist$isDisconnected()) {
             this.save(newPlayer);
         }
     }
@@ -425,8 +425,8 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     @Override
     public ServerPlayer respawn(ServerPlayer playerIn, boolean flag, Entity.RemovalReason removalReason, PlayerRespawnEvent.RespawnReason respawnReason, Location location) {
         if (true) { // TODO remove on next update
-            banner$respawnReason = respawnReason;
-            banner$loc = location;
+            taiyitist$respawnReason = respawnReason;
+            taiyitist$loc = location;
             return this.respawn(playerIn, flag, removalReason);
         }
         playerIn.stopRiding();
@@ -479,7 +479,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         this.sendActivePlayerEffects(playerIn);
         this.sendLevelInfo(playerIn, serverWorld);
         this.sendPlayerPermissionLevel(playerIn);
-        if (!playerIn.connection.banner$isDisconnected()) {
+        if (!playerIn.connection.taiyitist$isDisconnected()) {
             serverWorld.addRespawnedPlayer(playerIn);
             this.players.add(playerIn);
             this.playersByUUID.put(playerIn.getUUID(), playerIn);
@@ -500,7 +500,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
             PlayerChangedWorldEvent event = new PlayerChangedWorldEvent(playerIn.getBukkitEntity(), fromWorld);
             Bukkit.getPluginManager().callEvent(event);
         }
-        if (playerIn.connection.banner$isDisconnected()) {
+        if (playerIn.connection.taiyitist$isDisconnected()) {
             this.save(playerIn);
         }
         return playerIn;
@@ -508,9 +508,9 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
 
     @Override
     public ServerPlayer respawn(ServerPlayer entityplayer, ServerLevel worldserver, boolean flag, Location location, boolean avoidSuffocation, Entity.RemovalReason entity_removalreason, PlayerRespawnEvent.RespawnReason reason) {
-        this.banner$loc = location;
-        this.banner$worldserver = worldserver;
-        this.banner$respawnReason = reason;
+        this.taiyitist$loc = location;
+        this.taiyitist$worldserver = worldserver;
+        this.taiyitist$respawnReason = reason;
         this.avoidSuffocation.set(avoidSuffocation);
         return this.respawn(entityplayer, flag, entity_removalreason, reason, null);
     }
@@ -523,17 +523,17 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
             ordinal = 1))
-    private void banner$sendSupported(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
+    private void taiyitist$sendSupported(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
         serverPlayer.getBukkitEntity().sendSupportedChannels();
     }
 
     @Inject(method = "sendPlayerPermissionLevel(Lnet/minecraft/server/level/ServerPlayer;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getCommands()Lnet/minecraft/commands/Commands;"))
-    private void banner$calculatePerms(ServerPlayer player, int permLevel, CallbackInfo ci) {
+    private void taiyitist$calculatePerms(ServerPlayer player, int permLevel, CallbackInfo ci) {
         player.getBukkitEntity().recalculatePermissions();
     }
 
     @Redirect(method = "sendAllPlayerInfo", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetSentInfo()V"))
-    private void banner$useScaledHealth(ServerPlayer playerEntity) {
+    private void taiyitist$useScaledHealth(ServerPlayer playerEntity) {
         playerEntity.getBukkitEntity().updateScaledHealth(); // CraftBukkit - Update scaled health on respawn and worldchange
         playerEntity.refreshEntityData(playerEntity);// CraftBukkkit - SPIGOT-7218: sync metadata
         int i = playerEntity.level().getGameRules().getBoolean(GameRules.RULE_REDUCEDDEBUGINFO) ? 22 : 23;
@@ -572,7 +572,7 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void banner$castMsg(PlayerList instance, Packet<?> packet) {
+    private void taiyitist$castMsg(PlayerList instance, Packet<?> packet) {
         // CraftBukkit start
         for (int i = 0; i < this.players.size(); ++i) {
             final ServerPlayer target = this.players.get(i);
@@ -675,46 +675,46 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
                     ordinal = 3))
-    private void banner$cancelSendPacket0(ServerGamePacketListenerImpl instance, Packet<?> packet) {
+    private void taiyitist$cancelSendPacket0(ServerGamePacketListenerImpl instance, Packet<?> packet) {
     }
 
     @Redirect(method = "sendLevelInfo",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
                     ordinal = 4))
-    private void banner$cancelSendPacket1(ServerGamePacketListenerImpl instance, Packet<?> packet) {
+    private void taiyitist$cancelSendPacket1(ServerGamePacketListenerImpl instance, Packet<?> packet) {
     }
 
     @Redirect(method = "sendLevelInfo",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
                     ordinal = 5))
-    private void banner$cancelSendPacket2(ServerGamePacketListenerImpl instance, Packet<?> packet) {
+    private void taiyitist$cancelSendPacket2(ServerGamePacketListenerImpl instance, Packet<?> packet) {
     }
 
     @Inject(method = "sendLevelInfo",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
                     ordinal = 3))
-    private void banner$setWeatherType(ServerPlayer player, ServerLevel level, CallbackInfo ci) {
+    private void taiyitist$setWeatherType(ServerPlayer player, ServerLevel level, CallbackInfo ci) {
         // CraftBukkit start - handle player weather
         player.setPlayerWeather(org.bukkit.WeatherType.DOWNFALL, false);
         player.updateWeather(-level.rainLevel, level.rainLevel, -level.thunderLevel, level.thunderLevel);
     }
 
     @Inject(method = "sendLevelInfo", at = @At("HEAD"))
-    private void banner$getWorldBorderPlayer(ServerPlayer player, ServerLevel level, CallbackInfo ci) {
-        banner$worldBorderPlayer.set(player);
+    private void taiyitist$getWorldBorderPlayer(ServerPlayer player, ServerLevel level, CallbackInfo ci) {
+        taiyitist$worldBorderPlayer.set(player);
     }
 
     @Redirect(method = "sendLevelInfo", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"))
-    private WorldBorder banner$useBukkitWorldBorder(ServerLevel instance) {
-        return banner$worldBorderPlayer.get().level().getWorldBorder();
+    private WorldBorder taiyitist$useBukkitWorldBorder(ServerLevel instance) {
+        return taiyitist$worldBorderPlayer.get().level().getWorldBorder();
     }
 
     @Inject(method = "removeAll", at = @At("HEAD"), cancellable = true)
-    private void banner$removeSafety(CallbackInfo ci) {
+    private void taiyitist$removeSafety(CallbackInfo ci) {
         for (ServerPlayer player : this.players) {
             player.connection.disconnect(CraftChatMessage.fromStringOrEmpty(this.server.bridge$server().getShutdownMessage())); // CraftBukkit - add custom shutdown message
         }

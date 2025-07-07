@@ -46,7 +46,7 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
     public boolean mustNotSave;
     public boolean needsDecoration;
     public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
-    public AtomicBoolean banner$doPlace = new AtomicBoolean(true);
+    public AtomicBoolean taiyitist$doPlace = new AtomicBoolean(true);
     public ServerLevel r;
     public MixinLevelChunk(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor, Registry<Biome> registry, long l, @org.jetbrains.annotations.Nullable LevelChunkSection[] levelChunkSections, @org.jetbrains.annotations.Nullable BlendingData blendingData) {
         super(chunkPos, upgradeData, levelHeightAccessor, registry, l, levelChunkSections, blendingData);
@@ -59,12 +59,12 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
     public abstract Level getLevel();
 
     @Override
-    public ServerLevel banner$r() {
+    public ServerLevel taiyitist$r() {
         return r;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/ChunkPos;Lnet/minecraft/world/level/chunk/UpgradeData;Lnet/minecraft/world/ticks/LevelChunkTicks;Lnet/minecraft/world/ticks/LevelChunkTicks;J[Lnet/minecraft/world/level/chunk/LevelChunkSection;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;Lnet/minecraft/world/level/levelgen/blending/BlendingData;)V", at = @At("RETURN"))
-    private void banner$init(Level worldIn, ChunkPos p_196855_, UpgradeData p_196856_, LevelChunkTicks<Block> p_196857_, LevelChunkTicks<Fluid> p_196858_, long p_196859_, @Nullable LevelChunkSection[] p_196860_, @Nullable LevelChunk.PostLoadProcessor p_196861_, @Nullable BlendingData p_196862_, CallbackInfo ci) {
+    private void taiyitist$init(Level worldIn, ChunkPos p_196855_, UpgradeData p_196856_, LevelChunkTicks<Block> p_196857_, LevelChunkTicks<Fluid> p_196858_, long p_196859_, @Nullable LevelChunkSection[] p_196860_, @Nullable LevelChunk.PostLoadProcessor p_196861_, @Nullable BlendingData p_196862_, CallbackInfo ci) {
         if (DistValidate.isValid(worldIn)) {
             this.r = ((ServerLevel) worldIn);
         }
@@ -72,13 +72,13 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
     }
 
     @Inject(method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V", at = @At("RETURN"))
-    private void banner$init(ServerLevel p_196850_, ProtoChunk protoChunk, @Nullable LevelChunk.PostLoadProcessor p_196852_, CallbackInfo ci) {
+    private void taiyitist$init(ServerLevel p_196850_, ProtoChunk protoChunk, @Nullable LevelChunk.PostLoadProcessor p_196852_, CallbackInfo ci) {
         this.needsDecoration = true; // CraftBukkit
         this.persistentDataContainer = protoChunk.bridge$persistentDataContainer(); // SPIGOT-6814: copy PDC to account for 1.17 to 1.18 chunk upgrading.
     }
 
     @Inject(method = "removeBlockEntity", at = @At(value = "INVOKE_ASSIGN", remap = false, target = "Ljava/util/Map;remove(Ljava/lang/Object;)Ljava/lang/Object;"))
-    private void banner$remove(BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$remove(BlockPos pos, CallbackInfo ci) {
         if (!pendingBlockEntities.isEmpty()) {
             pendingBlockEntities.remove(pos);
         }
@@ -91,11 +91,11 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
 
     @Override
     public BlockState setBlockState(BlockPos pos, BlockState state, boolean isMoving, boolean doPlace) {
-        this.banner$doPlace.set(doPlace);
+        this.taiyitist$doPlace.set(doPlace);
         try {
             return this.setBlockState(pos, state, isMoving);
         } finally {
-            this.banner$doPlace.set(true);
+            this.taiyitist$doPlace.set(true);
         }
     }
 
@@ -122,13 +122,13 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
 
                 org.bukkit.World world = this.r.getWorld();
                 if (world != null) {
-                    this.r.banner$setPopulating(true);
+                    this.r.taiyitist$setPopulating(true);
                     try {
                         for (org.bukkit.generator.BlockPopulator populator : world.getPopulators()) {
                             populator.populate(world, random, bukkitChunk);
                         }
                     } finally {
-                        this.r.banner$setPopulating(false);
+                        this.r.taiyitist$setPopulating(false);
                     }
                 }
                 server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkPopulateEvent(bukkitChunk));
@@ -149,8 +149,8 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
     }
 
     @Redirect(method = "setBlockState", at = @At(value = "FIELD", ordinal = 1, target = "Lnet/minecraft/world/level/Level;isClientSide:Z"))
-    public boolean banner$redirectIsRemote(Level world) {
-        return world.isClientSide && !this.banner$doPlace.getAndSet(true);
+    public boolean taiyitist$redirectIsRemote(Level world) {
+        return world.isClientSide && !this.taiyitist$doPlace.getAndSet(true);
     }
 
     @Override

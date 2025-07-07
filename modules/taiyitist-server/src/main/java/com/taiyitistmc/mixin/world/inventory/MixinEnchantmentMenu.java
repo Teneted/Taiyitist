@@ -40,12 +40,12 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
-    public void banner$init(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
+    public void taiyitist$init(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
         this.player = (org.bukkit.entity.Player) playerInventory.player.getBukkitEntity();
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(net.minecraft.world.entity.player.Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(net.minecraft.world.entity.player.Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 

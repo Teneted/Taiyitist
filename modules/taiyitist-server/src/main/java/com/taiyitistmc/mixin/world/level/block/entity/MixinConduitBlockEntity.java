@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinConduitBlockEntity {
 
     @Redirect(method = "applyEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private static boolean banner$addEntity(Player player, MobEffectInstance eff) {
+    private static boolean taiyitist$addEntity(Player player, MobEffectInstance eff) {
         player.pushEffectCause(EntityPotionEffectEvent.Cause.CONDUIT);
         return player.addEffect(eff);
     }

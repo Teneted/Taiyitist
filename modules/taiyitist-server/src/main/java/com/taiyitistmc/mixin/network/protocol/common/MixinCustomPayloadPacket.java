@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class MixinCustomPayloadPacket {
 
     @ModifyArg(method = "<clinit>", require = 0, at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;codec(Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$FallbackProvider;Ljava/util/List;)Lnet/minecraft/network/codec/StreamCodec;"))
-    private static <B extends FriendlyByteBuf> CustomPacketPayload.FallbackProvider<B> banner$fallbackBukkit(CustomPacketPayload.FallbackProvider<B> arg) {
+    private static <B extends FriendlyByteBuf> CustomPacketPayload.FallbackProvider<B> taiyitist$fallbackBukkit(CustomPacketPayload.FallbackProvider<B> arg) {
         return resourceLocation -> {
             if (Bukkit.getMessenger().getIncomingChannels().contains(resourceLocation.toString())
                     || Bukkit.getMessenger().getOutgoingChannels().contains(resourceLocation.toString())) {

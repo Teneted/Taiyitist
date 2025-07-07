@@ -22,17 +22,17 @@ public abstract class MixinAgeableMob extends PathfinderMob implements Injection
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    private void banner$writeAgeLocked(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$writeAgeLocked(CompoundTag compound, CallbackInfo ci) {
         compound.putBoolean("AgeLocked", ageLocked);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    private void banner$readAgeLocked(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$readAgeLocked(CompoundTag compound, CallbackInfo ci) {
         ageLocked = compound.getBoolean("AgeLocked");
     }
 
     @Redirect(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/Level;isClientSide:Z"))
-    private boolean banner$tickIfNotLocked(Level instance) {
+    private boolean taiyitist$tickIfNotLocked(Level instance) {
         return this.level().isClientSide || ageLocked;
     }
 
@@ -42,7 +42,7 @@ public abstract class MixinAgeableMob extends PathfinderMob implements Injection
     }
 
     @Override
-    public void banner$setAgeLocked(boolean ageLocked) {
+    public void taiyitist$setAgeLocked(boolean ageLocked) {
         this.ageLocked = ageLocked;
     }
 }

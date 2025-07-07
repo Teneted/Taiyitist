@@ -9,7 +9,7 @@ public interface InjectionRconConsoleSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSocketAddress(SocketAddress socketAddress) {
+    default void taiyitist$setSocketAddress(SocketAddress socketAddress) {
         throw new IllegalStateException("Not implemented");
     }
 

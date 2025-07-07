@@ -18,7 +18,7 @@ public abstract class MixinPanicGoal extends Goal {
     protected PathfinderMob mob;
 
     @Inject(method = "canContinueToUse", at = @At("HEAD"), cancellable = true)
-    private void banner$addCheckPanic(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$addCheckPanic(CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start - introduce a temporary timeout hack until this is fixed properly
         if ((this.mob.tickCount - this.mob.lastHurtByMobTimestamp) > 100) {
             this.mob.setLastHurtByMob(null);

@@ -18,7 +18,7 @@ public abstract class MixinCrashReport {
     private SystemReport systemReport;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
-    private void banner$init(String string, Throwable throwable, CallbackInfo ci) {
+    private void taiyitist$init(String string, Throwable throwable, CallbackInfo ci) {
         io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.deobfuscateThrowable(throwable); // Paper
         this.systemReport.setDetail("CraftBukkit Information", new CraftCrashReport()); // CraftBukkit
     }

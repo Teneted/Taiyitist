@@ -6,7 +6,7 @@ public interface InjectionIngredient {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setExact(boolean exact) {
+    default void taiyitist$setExact(boolean exact) {
         throw new IllegalStateException("Not implemented");
     }
 

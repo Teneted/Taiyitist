@@ -25,7 +25,7 @@ public class MixinShulkerBoxDispenseBehavior {
                     target = "Lnet/minecraft/world/item/BlockItem;place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;"),
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$dispenseEvent(BlockSource source, ItemStack stack, CallbackInfoReturnable<ItemStack> cir, Item item, Direction direction, BlockPos blockPos, Direction direction2) {
+    private void taiyitist$dispenseEvent(BlockSource source, ItemStack stack, CallbackInfoReturnable<ItemStack> cir, Item item, Direction direction, BlockPos blockPos, Direction direction2) {
         org.bukkit.block.Block bukkitBlock = source.level().getWorld().getBlockAt(source.pos().getX(), source.pos().getY(), source.pos().getZ());
         CraftItemStack craftItem = CraftItemStack.asCraftMirror(stack);
 

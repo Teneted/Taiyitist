@@ -50,7 +50,7 @@ public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implem
             world.blockEvent(this.getPosition(), this.getTileEntity().getBlockState().getBlock(), 1, 1);
             world.playSound(null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
         }
-        this.getTileEntity().banner$setOpened(true);
+        this.getTileEntity().taiyitist$setOpened(true);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implem
             world.blockEvent(this.getPosition(), this.getTileEntity().getBlockState().getBlock(), 1, 0);
             world.playSound(null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
         }
-        this.getTileEntity().banner$setOpened(false);
+        this.getTileEntity().taiyitist$setOpened(false);
     }
 
     @Override

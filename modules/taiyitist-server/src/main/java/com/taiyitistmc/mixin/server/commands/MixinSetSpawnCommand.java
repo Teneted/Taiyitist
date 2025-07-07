@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinSetSpawnCommand {
 
     @Inject(method = "setSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setRespawnPosition(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/BlockPos;FZZ)V"))
-    private static void banner$addCause(CommandSourceStack source, Collection<ServerPlayer> targets, BlockPos pos, float angle, CallbackInfoReturnable<Integer> cir) {
+    private static void taiyitist$addCause(CommandSourceStack source, Collection<ServerPlayer> targets, BlockPos pos, float angle, CallbackInfoReturnable<Integer> cir) {
         source.getLevel().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.COMMAND);
     }
 }

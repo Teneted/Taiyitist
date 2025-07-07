@@ -375,7 +375,7 @@ public final class CraftServer implements Server {
         this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
         this.pluginManager.useTimings(this.configuration.getBoolean("settings.plugin-profiling"));
         this.overrideSpawnLimits();
-        console.banner$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
+        console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
         this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
         BukkitFieldHooks.pluginTicket().timeout = this.configuration.getInt("chunk-gc.period-in-ticks");
         this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
@@ -1133,7 +1133,7 @@ public final class CraftServer implements Server {
             iregistrycustom_dimension = worlddimensions_b.dimensionsRegistryAccess();
         }
         iregistry = iregistrycustom_dimension.registryOrThrow(Registries.LEVEL_STEM);
-        worlddata.banner$setCustomDimensions(iregistry);
+        worlddata.taiyitist$setCustomDimensions(iregistry);
         worlddata.checkName(name);
         worlddata.setModdedInfo(this.console.getServerModName(), this.console.getModdedStatus().shouldReportAsModified());
 
@@ -1168,8 +1168,8 @@ public final class CraftServer implements Server {
                 worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, console.overworld().getRandomSequences());
 
         name = name.contains("DIM") ? name : name.toLowerCase(java.util.Locale.ENGLISH);
-        internal.banner$setGenerator(generator);
-        internal.banner$setBiomeProvider(biomeProvider);
+        internal.taiyitist$setGenerator(generator);
+        internal.taiyitist$setBiomeProvider(biomeProvider);
         if (!(this.worlds.containsKey(name.toLowerCase(java.util.Locale.ENGLISH)))) {
             return null;
         }

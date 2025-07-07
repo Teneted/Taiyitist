@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinWitherRoseBlock {
 
     @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private void banner$cause(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$cause(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         ((LivingEntity) entityIn).pushEffectCause(EntityPotionEffectEvent.Cause.WITHER_ROSE);
     }
 }

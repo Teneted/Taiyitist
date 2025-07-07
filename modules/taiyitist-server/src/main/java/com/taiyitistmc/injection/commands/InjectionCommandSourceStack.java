@@ -5,7 +5,7 @@ import net.minecraft.commands.CommandSource;
 
 public interface InjectionCommandSourceStack {
 
-    default void banner$setSource(CommandSource source) {
+    default void taiyitist$setSource(CommandSource source) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -13,7 +13,7 @@ public interface InjectionCommandSourceStack {
         throw new IllegalStateException("Not implemented");
     }
 
-    default org.bukkit.command.CommandSender banner$getBukkitSender() {
+    default org.bukkit.command.CommandSender taiyitist$getBukkitSender() {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -21,7 +21,7 @@ public interface InjectionCommandSourceStack {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCurrentCommand(CommandNode<?> node) {
+    default void taiyitist$setCurrentCommand(CommandNode<?> node) {
         throw new IllegalStateException("Not implemented");
     }
 }

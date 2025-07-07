@@ -39,7 +39,7 @@ public abstract class MixinAreaEffectCloud extends Entity implements TraceableEn
 
     @SuppressWarnings("unchecked")
     @Decorate(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntitiesOfClass(Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"))
-    private List<LivingEntity> banner$effectApply(Level instance, Class<LivingEntity> cl, AABB aabb,
+    private List<LivingEntity> taiyitist$effectApply(Level instance, Class<LivingEntity> cl, AABB aabb,
                                                   @Local(ordinal = 0) float radius,
                                                   @Local(ordinal = -1) List<MobEffectInstance> effects) throws Throwable {
         var entities = (List<LivingEntity>) DecorationOps.callsite().invoke(instance, cl, aabb);
@@ -61,13 +61,13 @@ public abstract class MixinAreaEffectCloud extends Entity implements TraceableEn
     }
 
     @Decorate(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$effectCause(LivingEntity instance, MobEffectInstance mobEffectInstance, Entity entity) throws Throwable {
+    private boolean taiyitist$effectCause(LivingEntity instance, MobEffectInstance mobEffectInstance, Entity entity) throws Throwable {
         instance.pushEffectCause(EntityPotionEffectEvent.Cause.AREA_EFFECT_CLOUD);
         return (boolean) DecorationOps.callsite().invoke(instance, mobEffectInstance, entity);
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/AreaEffectCloud;discard()V"))
-    private void banner$discard(CallbackInfo ci) {
+    private void taiyitist$discard(CallbackInfo ci) {
         this.pushRemoveCause(EntityRemoveEvent.Cause.DESPAWN);
     }
 }

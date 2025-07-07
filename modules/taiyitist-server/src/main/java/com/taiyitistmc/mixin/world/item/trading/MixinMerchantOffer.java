@@ -26,13 +26,13 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
     public abstract ItemStack getCostA();
 
     @ShadowConstructor
-    public void banner$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l) {
+    public void taiyitist$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l, CraftMerchantRecipe bukkit) {
-        banner$constructor(itemCost, optional, itemStack, i, j, k, f, l);
+    public void taiyitist$constructor(ItemCost itemCost, Optional<ItemCost> optional, ItemStack itemStack, int i, int j, int k, float f, int l, CraftMerchantRecipe bukkit) {
+        taiyitist$constructor(itemCost, optional, itemStack, i, j, k, f, l);
         this.bukkitHandle = bukkit;
     }
 
@@ -42,7 +42,7 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
     }
 
     @Inject(method = "getCostA", cancellable = true, at = @At("HEAD"))
-    private void banner$fix(CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$fix(CallbackInfoReturnable<ItemStack> cir) {
         if (this.baseCostA.count() <= 0) {
             cir.setReturnValue(ItemStack.EMPTY);
         }
@@ -50,7 +50,7 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
 
     @Redirect(method = "take", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private void banner$shrink(ItemStack instance, int decrement) {
+    private void taiyitist$shrink(ItemStack instance, int decrement) {
         // CraftBukkit start
         if (!this.getCostA().isEmpty()) {
             instance.shrink(this.getCostA().getCount());

@@ -317,7 +317,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         if (this.getHandle().containerMenu == formerContainer) {
             return null;
         }
-        this.getHandle().containerMenu.banner$setCheckReachable(false);
+        this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
         return this.getHandle().containerMenu.getBukkitView();
     }
 
@@ -349,7 +349,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         }
         this.getHandle().openMenu(Blocks.CRAFTING_TABLE.defaultBlockState().getMenuProvider(this.getHandle().level(), CraftLocation.toBlockPosition(location)));
         if (force) {
-            this.getHandle().containerMenu.banner$setCheckReachable(false);
+            this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
         }
         return this.getHandle().containerMenu.getBukkitView();
     }
@@ -371,7 +371,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         this.getHandle().openMenu(Blocks.ENCHANTING_TABLE.defaultBlockState().getMenuProvider(this.getHandle().level(), pos));
 
         if (force) {
-            this.getHandle().containerMenu.banner$setCheckReachable(false);
+            this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
         }
         return this.getHandle().containerMenu.getBukkitView();
     }
@@ -639,7 +639,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void setSaturatedRegenRate(int i) {
-        this.getHandle().getFoodData().banner$setSaturatedRegenRate(i);
+        this.getHandle().getFoodData().taiyitist$setSaturatedRegenRate(i);
     }
 
     @Override
@@ -649,7 +649,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void setUnsaturatedRegenRate(int i) {
-        this.getHandle().getFoodData().banner$setUnsaturatedRegenRate(i);
+        this.getHandle().getFoodData().taiyitist$setUnsaturatedRegenRate(i);
     }
 
     @Override
@@ -659,7 +659,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void setStarvationRate(int i) {
-        this.getHandle().getFoodData().banner$setSaturatedRegenRate(i);
+        this.getHandle().getFoodData().taiyitist$setSaturatedRegenRate(i);
     }
 
     @Override

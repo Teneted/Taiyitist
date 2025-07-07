@@ -61,7 +61,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     protected FoodData foodData;
     @Shadow
     protected PlayerEnderChestContainer enderChestInventory;
-    protected AtomicReference<Boolean> banner$forceSleep = new AtomicReference<>();
+    protected AtomicReference<Boolean> taiyitist$forceSleep = new AtomicReference<>();
     protected AtomicBoolean startSleepInBed_force = new AtomicBoolean(false);
     @Shadow
     @Final
@@ -71,7 +71,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     @Shadow
     @Final
     private Inventory inventory;
-    private EntityExhaustionEvent.ExhaustionReason banner$exhaustReason;
+    private EntityExhaustionEvent.ExhaustionReason taiyitist$exhaustReason;
 
     protected MixinPlayer(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
@@ -102,24 +102,24 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     public abstract FoodData getFoodData();
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(CallbackInfo ci) {
+    private void taiyitist$init(CallbackInfo ci) {
         this.foodData.setEntityhuman((net.minecraft.world.entity.player.Player) (Object) this);
         this.enderChestInventory.setOwner(this.getBukkitEntity());
     }
 
     @Inject(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private void banner$turtleHelmet(CallbackInfo ci) {
+    private void taiyitist$turtleHelmet(CallbackInfo ci) {
         pushEffectCause(EntityPotionEffectEvent.Cause.TURTLE_HELMET);
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"))
-    private void banner$healByRegen(CallbackInfo ci) {
+    private void taiyitist$healByRegen(CallbackInfo ci) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.REGEN);
     }
 
     @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;",
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "RETURN", ordinal = 1))
-    private void banner$playerDropItem(ItemStack droppedItem, boolean dropAround, boolean traceItem, CallbackInfoReturnable<ItemEntity> cir, double d0, ItemEntity itemEntity) {
+    private void taiyitist$playerDropItem(ItemStack droppedItem, boolean dropAround, boolean traceItem, CallbackInfoReturnable<ItemEntity> cir, double d0, ItemEntity itemEntity) {
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) this.getBukkitEntity();
         org.bukkit.entity.Item drop = (org.bukkit.entity.Item) itemEntity.getBukkitEntity();
 
@@ -211,9 +211,9 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Redirect(method = "causeFoodExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;addExhaustion(F)V"))
-    private void banner$exhaustEvent(FoodData foodData, float amount) {
-        EntityExhaustionEvent.ExhaustionReason reason = banner$exhaustReason == null ? EntityExhaustionEvent.ExhaustionReason.UNKNOWN : banner$exhaustReason;
-        banner$exhaustReason = null;
+    private void taiyitist$exhaustEvent(FoodData foodData, float amount) {
+        EntityExhaustionEvent.ExhaustionReason reason = taiyitist$exhaustReason == null ? EntityExhaustionEvent.ExhaustionReason.UNKNOWN : taiyitist$exhaustReason;
+        taiyitist$exhaustReason = null;
         EntityExhaustionEvent event = CraftEventFactory.callPlayerExhaustionEvent((net.minecraft.world.entity.player.Player) (Object) this, reason, amount);
         if (!event.isCancelled()) {
             this.foodData.addExhaustion(event.getExhaustion());
@@ -234,22 +234,22 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
 
     @Override
     public Either<Player.BedSleepingProblem, Unit> startSleepInBed(BlockPos blockposition, boolean force) {
-        banner$forceSleep.set(force);
+        taiyitist$forceSleep.set(force);
         try {
             return this.startSleepInBed(blockposition);
         } finally {
-            this.banner$forceSleep.set(false);
+            this.taiyitist$forceSleep.set(false);
         }
     }
 
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
-    private void banner$damageEntityCustom(DamageSource damageSrc, float damageAmount, CallbackInfo ci) {
+    private void taiyitist$damageEntityCustom(DamageSource damageSrc, float damageAmount, CallbackInfo ci) {
         damageEntity0(damageSrc, damageAmount);
         ci.cancel();
     }
 
     @Inject(method = "stopSleepInBed", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Player;sleepCounter:I"))
-    private void banner$wakeup(boolean flag, boolean flag1, CallbackInfo ci) {
+    private void taiyitist$wakeup(boolean flag, boolean flag1, CallbackInfo ci) {
         BlockPos blockPos = this.getSleepingPos().orElse(null);
         if (this.getBukkitEntity() instanceof org.bukkit.entity.Player player) {
             org.bukkit.block.Block bed;
@@ -264,7 +264,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @ModifyArg(method = "jumpFromGround", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
-    private float banner$exhaustInfo(float f) {
+    private float taiyitist$exhaustInfo(float f) {
         SpigotWorldConfig config = level().bridge$spigotConfig();
         if (config != null) {
             if (this.isSprinting()) {
@@ -279,14 +279,14 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setSharedFlag(IZ)V"))
-    private void banner$toggleGlide(net.minecraft.world.entity.player.Player playerEntity, int flag, boolean set) {
+    private void taiyitist$toggleGlide(net.minecraft.world.entity.player.Player playerEntity, int flag, boolean set) {
         if (playerEntity.getSharedFlag(flag) != set && !CraftEventFactory.callToggleGlideEvent((net.minecraft.world.entity.player.Player) (Object) this, set).isCancelled()) {
             playerEntity.setSharedFlag(flag, set);
         }
     }
 
     @Inject(method = "startFallFlying", cancellable = true, at = @At("HEAD"))
-    private void banner$startGlidingEvent(CallbackInfo ci) {
+    private void taiyitist$startGlidingEvent(CallbackInfo ci) {
         if (CraftEventFactory.callToggleGlideEvent((net.minecraft.world.entity.player.Player) (Object) this, true).isCancelled()) {
             this.setSharedFlag(7, true);
             this.setSharedFlag(7, false);
@@ -295,7 +295,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Inject(method = "stopFallFlying", cancellable = true, at = @At("HEAD"))
-    private void banner$stopGlidingEvent(CallbackInfo ci) {
+    private void taiyitist$stopGlidingEvent(CallbackInfo ci) {
         if (CraftEventFactory.callToggleGlideEvent((net.minecraft.world.entity.player.Player) (Object) this, false).isCancelled()) {
             ci.cancel();
         }
@@ -312,7 +312,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Override
-    public void banner$setFauxSleeping(boolean fauxSleeping) {
+    public void taiyitist$setFauxSleeping(boolean fauxSleeping) {
         this.fauxSleeping = fauxSleeping;
     }
 
@@ -322,7 +322,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Override
-    public void banner$setOldLevel(int oldLevel) {
+    public void taiyitist$setOldLevel(int oldLevel) {
         this.oldLevel = oldLevel;
     }
 
@@ -332,7 +332,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Override
-    public void banner$setAffectsSpawning(boolean affectsSpawning) {
+    public void taiyitist$setAffectsSpawning(boolean affectsSpawning) {
         this.affectsSpawning = affectsSpawning;
     }
 
@@ -348,7 +348,7 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
 
     @Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))
-    private void banner$eatStack(Level level, ItemStack itemStack, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$eatStack(Level level, ItemStack itemStack, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
         this.getFoodData().pushEatStack(itemStack);
     }
 }

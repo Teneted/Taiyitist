@@ -26,21 +26,21 @@ public abstract class MixinAbstractHurtingProjectile extends Projectile implemen
     public abstract void assignDirectionalMovement(Vec3 vec3, double d);
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType<?> entityType, Level level, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<?> entityType, Level level, CallbackInfo ci) {
         this.bukkitYield = 1;
         this.isIncendiary = true;
     }
 
     @Override
     public void setDirection(double d0, double d1, double d2) {
-        double banner$d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
-        Vec3 vec = new Vec3(d0 / banner$d3 * 0.1D, d1 / banner$d3 * 0.1D, 2 / banner$d3 * 0.1D);
-        this.assignDirectionalMovement(vec, banner$d3);
+        double taiyitist$d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+        Vec3 vec = new Vec3(d0 / taiyitist$d3 * 0.1D, d1 / taiyitist$d3 * 0.1D, 2 / taiyitist$d3 * 0.1D);
+        this.assignDirectionalMovement(vec, taiyitist$d3);
     }
 
     /*
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getLookAngle()Lnet/minecraft/world/phys/Vec3;"))
-    private void banner$nonLivingAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$nonLivingAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (CraftEventFactory.handleNonLivingEntityDamageEvent((AbstractHurtingProjectile) (Object) this, source, amount, false)) {
             cir.setReturnValue(false);
         }
@@ -57,12 +57,12 @@ public abstract class MixinAbstractHurtingProjectile extends Projectile implemen
     }
 
     @Override
-    public void banner$setBukkitYield(float yield) {
+    public void taiyitist$setBukkitYield(float yield) {
         bukkitYield = yield;
     }
 
     @Override
-    public void banner$setIsIncendiary(boolean incendiary) {
+    public void taiyitist$setIsIncendiary(boolean incendiary) {
         isIncendiary = incendiary;
     }
 }

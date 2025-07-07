@@ -42,7 +42,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource banner$setCustomCausingEntity(Entity entity) {
+    default DamageSource taiyitist$setCustomCausingEntity(Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -50,7 +50,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource banner$setCustomCausingEntityDamager(Entity entity) {
+    default DamageSource taiyitist$setCustomCausingEntityDamager(Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -62,7 +62,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource banner$setDirectBlock(Block block) {
+    default DamageSource taiyitist$setDirectBlock(Block block) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -74,7 +74,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource banner$setDirectBlockState(org.bukkit.block.BlockState block) {
+    default DamageSource taiyitist$setDirectBlockState(org.bukkit.block.BlockState block) {
         throw new IllegalStateException("Not implemented");
     }
 

@@ -27,7 +27,7 @@ public class MixinArmorItem {
     @Inject(method = "dispenseArmor",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/LivingEntity;setItemSlot(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V"), cancellable = true)
-    private static void banner$inlineBukkit(BlockSource blockSource, ItemStack itemStack,
+    private static void taiyitist$inlineBukkit(BlockSource blockSource, ItemStack itemStack,
                                             CallbackInfoReturnable<Boolean> cir,
                                             @Local LivingEntity livingEntity,
                                             @Local(ordinal = 1) ItemStack itemStack2,
@@ -62,7 +62,7 @@ public class MixinArmorItem {
     @Redirect(method = "dispenseArmor",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/LivingEntity;setItemSlot(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V"))
-    private static void banner$holdEvent(LivingEntity instance, EquipmentSlot equipmentSlot, ItemStack itemStack, @Share("bannerEvent") LocalRef<BlockDispenseArmorEvent> eventLocalRef) {
+    private static void taiyitist$holdEvent(LivingEntity instance, EquipmentSlot equipmentSlot, ItemStack itemStack, @Share("bannerEvent") LocalRef<BlockDispenseArmorEvent> eventLocalRef) {
         instance.setItemSlot(equipmentSlot, CraftItemStack.asNMSCopy(eventLocalRef.get().getItem()));
     }
 }

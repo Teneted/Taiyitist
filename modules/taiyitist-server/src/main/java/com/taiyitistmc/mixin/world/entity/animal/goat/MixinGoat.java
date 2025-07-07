@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Goat.class)
 public abstract class MixinGoat extends Animal {
 
-    private final AtomicReference<PlayerBucketFillEvent> banner$event = new AtomicReference<>();
+    private final AtomicReference<PlayerBucketFillEvent> taiyitist$event = new AtomicReference<>();
 
     protected MixinGoat(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -34,14 +34,14 @@ public abstract class MixinGoat extends Animal {
     @Inject(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/player/Player;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$bucketFillEvent(Player player, InteractionHand hand,
+    private void taiyitist$bucketFillEvent(Player player, InteractionHand hand,
                                         CallbackInfoReturnable<InteractionResult> cir,
                                         ItemStack itemStack) {
         // CraftBukkit start - Got milk?
         PlayerBucketFillEvent event = CraftEventFactory.callPlayerBucketFillEvent((ServerLevel) player.level(),
                 player, this.blockPosition(), this.blockPosition(), null,
                 itemStack, Items.MILK_BUCKET, hand);
-        banner$event.set(event);
+        taiyitist$event.set(event);
         if (event.isCancelled()) {
             cir.setReturnValue(InteractionResult.PASS);
         }
@@ -50,7 +50,7 @@ public abstract class MixinGoat extends Animal {
 
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack banner$fillResult(ItemStack emptyStack, Player player, ItemStack filledStack) {
-        return ItemUtils.createFilledResult(emptyStack, player, CraftItemStack.asNMSCopy(banner$event.get().getItemStack()));
+    private ItemStack taiyitist$fillResult(ItemStack emptyStack, Player player, ItemStack filledStack) {
+        return ItemUtils.createFilledResult(emptyStack, player, CraftItemStack.asNMSCopy(taiyitist$event.get().getItemStack()));
     }
 }

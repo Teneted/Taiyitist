@@ -13,7 +13,7 @@ public interface InjectionMapItemSavedData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setUniqueId(UUID uuid) {
+    default void taiyitist$setUniqueId(UUID uuid) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -21,7 +21,7 @@ public interface InjectionMapItemSavedData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setId(String id) {
+    default void taiyitist$setId(String id) {
         throw new IllegalStateException("Not implemented");
     }
 }

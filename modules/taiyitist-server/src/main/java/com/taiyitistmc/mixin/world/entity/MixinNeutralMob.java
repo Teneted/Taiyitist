@@ -18,7 +18,7 @@ public interface MixinNeutralMob extends InjectionNeutralMob {
     void setTarget(@Nullable LivingEntity livingEntity);
 
     @Decorate(method = "readPersistentAngerSaveData", inject = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/NeutralMob;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$targetReason() {
+    private void taiyitist$targetReason() {
         if (this instanceof Mob b) {
             b.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.UNKNOWN, false);
         }

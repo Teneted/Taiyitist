@@ -104,7 +104,7 @@ public abstract class MixinCampfireBlockEntity extends BlockEntity {
 
     @Inject(method = "placeFood",
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/entity/CampfireBlockEntity;cookingProgress:[I"))
-    private void banner$cookStart(LivingEntity livingEntity, ItemStack itemStack, int i, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) int j) {
+    private void taiyitist$cookStart(LivingEntity livingEntity, ItemStack itemStack, int i, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) int j) {
         var event = new CampfireStartEvent(CraftBlock.at(this.level, this.worldPosition), CraftItemStack.asCraftMirror(itemStack), (CampfireRecipe)getCookableRecipe(itemStack).get().toBukkitRecipe());
         Bukkit.getPluginManager().callEvent(event);
         this.cookingTime[j] = event.getTotalCookTime();

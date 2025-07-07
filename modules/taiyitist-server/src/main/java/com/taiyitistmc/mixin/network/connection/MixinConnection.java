@@ -24,7 +24,7 @@ public class MixinConnection implements InjectionConnection {
     }
 
     @Override
-    public void banner$setHostName(String hostName) {
+    public void taiyitist$setHostName(String hostName) {
         hostname = hostName;
     }
 
@@ -41,7 +41,7 @@ public class MixinConnection implements InjectionConnection {
     }
 
     @Override
-    public void banner$setSpoofedUUID(UUID spoofedUUID) {
+    public void taiyitist$setSpoofedUUID(UUID spoofedUUID) {
         this.spoofedUUID = spoofedUUID;
     }
 

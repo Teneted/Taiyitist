@@ -22,7 +22,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPreventPoiUpdated(boolean preventPoiUpdated) {
+    default void taiyitist$setPreventPoiUpdated(boolean preventPoiUpdated) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -30,7 +30,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setBiomeProvider(org.bukkit.generator.BiomeProvider biomeProvider) {
+    default void taiyitist$setBiomeProvider(org.bukkit.generator.BiomeProvider biomeProvider) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -38,7 +38,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setEnvironment(org.bukkit.World.Environment environment) {
+    default void taiyitist$setEnvironment(org.bukkit.World.Environment environment) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -46,7 +46,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setGenerator(org.bukkit.generator.ChunkGenerator generator) {
+    default void taiyitist$setGenerator(org.bukkit.generator.ChunkGenerator generator) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -54,7 +54,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPvpMode(boolean pvpMode) {
+    default void taiyitist$setPvpMode(boolean pvpMode) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -62,7 +62,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCaptureBlockStates(boolean captureState) {
+    default void taiyitist$setCaptureBlockStates(boolean captureState) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -70,7 +70,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCaptureTreeGeneration(boolean treeGeneration) {
+    default void taiyitist$setCaptureTreeGeneration(boolean treeGeneration) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -82,11 +82,11 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
+    default void taiyitist$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
+    default void taiyitist$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -94,7 +94,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCaptureDrops(List<ItemEntity> captureDrops) {
+    default void taiyitist$setCaptureDrops(List<ItemEntity> captureDrops) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -106,7 +106,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPopulating(boolean populating) {
+    default void taiyitist$setPopulating(boolean populating) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -114,7 +114,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
+    default void taiyitist$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -142,7 +142,7 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
+    default void taiyitist$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -150,11 +150,11 @@ public interface InjectionLevel {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
+    default void taiyitist$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default CraftWorld banner$initWorld(LevelStem levelStem) {
+    default CraftWorld taiyitist$initWorld(LevelStem levelStem) {
         throw new IllegalStateException("Not implemented");
     }
 }

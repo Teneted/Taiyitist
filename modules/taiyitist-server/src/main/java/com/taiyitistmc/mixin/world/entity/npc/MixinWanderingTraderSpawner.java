@@ -17,7 +17,7 @@ public class MixinWanderingTraderSpawner {
             value = "INVOKE",
             target = "Lnet/minecraft/world/entity/EntityType;spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;)Lnet/minecraft/world/entity/Entity;",
             shift = At.Shift.AFTER))
-    private void banner$pushTraderSpawnReason(ServerLevel serverLevel, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$pushTraderSpawnReason(ServerLevel serverLevel, CallbackInfoReturnable<Boolean> cir) {
         serverLevel.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.NATURAL);
     }
 
@@ -25,7 +25,7 @@ public class MixinWanderingTraderSpawner {
             value = "INVOKE",
             target = "Lnet/minecraft/world/entity/EntityType;spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;)Lnet/minecraft/world/entity/Entity;",
             shift = At.Shift.AFTER))
-    private void banner$pushLlamaSpawnReason(ServerLevel serverLevel, WanderingTrader trader, int maxDistance, CallbackInfo ci) {
+    private void taiyitist$pushLlamaSpawnReason(ServerLevel serverLevel, WanderingTrader trader, int maxDistance, CallbackInfo ci) {
         serverLevel.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.NATURAL);
     }
 

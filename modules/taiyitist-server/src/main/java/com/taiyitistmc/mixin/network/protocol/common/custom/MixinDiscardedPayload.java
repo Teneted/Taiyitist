@@ -16,13 +16,13 @@ public class MixinDiscardedPayload implements InjectionDiscardedPayload {
     private ByteBuf data;
 
     @ShadowConstructor
-    public void banner$constructor(ResourceLocation rl) {
+    public void taiyitist$constructor(ResourceLocation rl) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(ResourceLocation rl, ByteBuf data) {
-        this.banner$constructor(rl);
+    public void taiyitist$constructor(ResourceLocation rl, ByteBuf data) {
+        this.taiyitist$constructor(rl);
         this.data = data;
     }
 

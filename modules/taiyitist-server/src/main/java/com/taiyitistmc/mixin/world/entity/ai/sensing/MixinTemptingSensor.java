@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinTemptingSensor {
 
     @Redirect(method = "doTick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/PathfinderMob;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/Brain;setMemory(Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;)V"))
-    private <U> void banner$entityTarget(Brain<?> instance, MemoryModuleType<U> memoryModuleType, U value, ServerLevel level, PathfinderMob mob) {
+    private <U> void taiyitist$entityTarget(Brain<?> instance, MemoryModuleType<U> memoryModuleType, U value, ServerLevel level, PathfinderMob mob) {
         var event = CraftEventFactory.callEntityTargetLivingEvent(mob, (Player) value, EntityTargetEvent.TargetReason.TEMPT);
         if (event.isCancelled()) {
             return;

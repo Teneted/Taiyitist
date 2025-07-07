@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinCarvedPumpkinBlock {
 
     @Redirect(method = "spawnGolemInWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;clearPatternBlocks(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/pattern/BlockPattern$BlockPatternMatch;)V"))
-    private static void banner$cancelClear(Level level, BlockPattern.BlockPatternMatch patternMatch) {
+    private static void taiyitist$cancelClear(Level level, BlockPattern.BlockPatternMatch patternMatch) {
         // Banner - do nothing
     }
 
     @Inject(method = "spawnGolemInWorld", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static void banner$clearPattern(Level level, BlockPattern.BlockPatternMatch patternMatch, Entity golem, BlockPos pos, CallbackInfo ci) {
+    private static void taiyitist$clearPattern(Level level, BlockPattern.BlockPatternMatch patternMatch, Entity golem, BlockPos pos, CallbackInfo ci) {
         if (!level.addFreshEntity(golem, CreatureSpawnEvent.SpawnReason.BUILD_IRONGOLEM)) {
             ci.cancel();
         }

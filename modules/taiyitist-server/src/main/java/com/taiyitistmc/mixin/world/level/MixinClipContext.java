@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public interface MixinClipContext {
 
     @Inject(method = "of", at = @At(value = "HEAD"), cancellable = true)
-    private static void banner$modifyArgs(Entity entity, CallbackInfoReturnable<CollisionContext> cir) {
+    private static void taiyitist$modifyArgs(Entity entity, CallbackInfoReturnable<CollisionContext> cir) {
         if (entity == null) {
             cir.setReturnValue(CollisionContext.empty());
         }

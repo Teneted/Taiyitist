@@ -68,7 +68,7 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
             this.getTileEntity().openersCounter.onAPIOpen((net.minecraft.world.level.Level) this.getWorldHandle(), this.getPosition(), block);
             this.getTileEntity().openersCounter.openerAPICountChanged((net.minecraft.world.level.Level) this.getWorldHandle(), this.getPosition(), block, openCount, openCount + 1);
         }
-        this.getTileEntity().openersCounter.banner$setOpened(true);
+        this.getTileEntity().openersCounter.taiyitist$setOpened(true);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
             this.getTileEntity().openersCounter.onAPIClose((net.minecraft.world.level.Level) this.getWorldHandle(), this.getPosition(), block);
             this.getTileEntity().openersCounter.openerAPICountChanged((net.minecraft.world.level.Level) this.getWorldHandle(), this.getPosition(), block, openCount, 0);
         }
-        this.getTileEntity().openersCounter.banner$setOpened(false);
+        this.getTileEntity().openersCounter.taiyitist$setOpened(false);
     }
 
     @Override

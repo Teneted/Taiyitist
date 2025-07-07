@@ -60,7 +60,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
 
     @Inject(method = "handleLoginAcknowledgement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
     private void banenr$setPlayer(ServerboundLoginAcknowledgedPacket p_298815_, CallbackInfo ci, @Local ServerConfigurationPacketListenerImpl listener) {
-        listener.banner$setPlayer(this.player);
+        listener.taiyitist$setPlayer(this.player);
     }
 
     @Redirect(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;"))
@@ -80,7 +80,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;startClientVerification(Lcom/mojang/authlib/GameProfile;)V",
                     ordinal = 1))
-    private void banner$handleHello(ServerLoginPacketListenerImpl instance, GameProfile gameProfile) {
+    private void taiyitist$handleHello(ServerLoginPacketListenerImpl instance, GameProfile gameProfile) {
         // CraftBukkit start
         class Handler extends Thread {
 

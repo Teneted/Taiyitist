@@ -20,14 +20,14 @@ public abstract class MixinDolphin extends WaterAnimal {
     }
 
     @Inject(method = "pickUpItem", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Dolphin;setItemSlot(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$entityPick(ItemEntity itemEntity, CallbackInfo ci) {
+    private void taiyitist$entityPick(ItemEntity itemEntity, CallbackInfo ci) {
         if (CraftEventFactory.callEntityPickupItemEvent((Dolphin) (Object) this, itemEntity, 0, false).isCancelled()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "getMaxAirSupply", cancellable = true, at = @At("RETURN"))
-    private void banner$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
+    private void taiyitist$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
         cir.setReturnValue(this.bridge$maxAirTicks());
     }
 

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinTrialSpawner {
 
     @Inject(method = "spawnMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;tryAddFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)Z"), cancellable = true)
-    private void banner$spawnMob(ServerLevel serverLevel, BlockPos blockPos, CallbackInfoReturnable<Optional<UUID>> cir, @Local Entity entity) {
+    private void taiyitist$spawnMob(ServerLevel serverLevel, BlockPos blockPos, CallbackInfoReturnable<Optional<UUID>> cir, @Local Entity entity) {
         if (org.bukkit.craftbukkit.event.CraftEventFactory.callTrialSpawnerSpawnEvent(entity, blockPos).isCancelled()) {
             cir.setReturnValue(Optional.empty());
         }
@@ -32,7 +32,7 @@ public class MixinTrialSpawner {
     }
 
     @Inject(method = "ejectReward", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectArrayList;iterator()Lit/unimi/dsi/fastutil/objects/ObjectListIterator;"))
-    private void banner$spawnerDispenseLootEvent(ServerLevel serverLevel, BlockPos blockPos, ResourceKey<LootTable> resourceKey, CallbackInfo ci, @Local ObjectArrayList<ItemStack> objectArrayList) {
+    private void taiyitist$spawnerDispenseLootEvent(ServerLevel serverLevel, BlockPos blockPos, ResourceKey<LootTable> resourceKey, CallbackInfo ci, @Local ObjectArrayList<ItemStack> objectArrayList) {
         // CraftBukkit start
         BlockDispenseLootEvent spawnerDispenseLootEvent = CraftEventFactory.callBlockDispenseLootEvent(serverLevel, blockPos, null, objectArrayList);
         if (spawnerDispenseLootEvent.isCancelled()) {

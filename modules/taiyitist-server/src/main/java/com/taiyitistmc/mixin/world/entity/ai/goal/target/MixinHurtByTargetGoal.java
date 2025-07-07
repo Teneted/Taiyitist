@@ -18,12 +18,12 @@ public abstract class MixinHurtByTargetGoal extends TargetGoal {
     }
 
     @Inject(method = "start", at = @At("HEAD"))
-    public void banner$reason1(CallbackInfo ci) {
+    public void taiyitist$reason1(CallbackInfo ci) {
         this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY, true);
     }
 
     @Inject(method = "alertOther", at = @At("HEAD"))
-    public void banner$reason2(Mob mobIn, LivingEntity targetIn, CallbackInfo ci) {
+    public void taiyitist$reason2(Mob mobIn, LivingEntity targetIn, CallbackInfo ci) {
         mobIn.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY, true);
     }
 }

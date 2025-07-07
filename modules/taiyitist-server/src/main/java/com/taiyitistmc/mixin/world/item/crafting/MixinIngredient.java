@@ -26,16 +26,16 @@ public abstract class MixinIngredient implements InjectionIngredient {
     @Inject(method = "test(Lnet/minecraft/world/item/ItemStack;)Z",
             at = @At("HEAD"),
             cancellable = true)
-    private void banner$test(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        for (ItemStack banner$stack : this.getItems()) {
+    private void taiyitist$test(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        for (ItemStack taiyitist$stack : this.getItems()) {
             // CraftBukkit start
             if (exact) {
-                if (ItemStack.isSameItemSameComponents(banner$stack, stack)) {
+                if (ItemStack.isSameItemSameComponents(taiyitist$stack, stack)) {
                     cir.setReturnValue(true);
                 }
                 continue;
             }
-            if (banner$stack.is(stack.getItem())) {
+            if (taiyitist$stack.is(stack.getItem())) {
                 cir.setReturnValue(true);
             }
             // CraftBukkit end
@@ -48,7 +48,7 @@ public abstract class MixinIngredient implements InjectionIngredient {
     }
 
     @Override
-    public void banner$setExact(boolean exact) {
+    public void taiyitist$setExact(boolean exact) {
         this.exact = exact;
     }
 }

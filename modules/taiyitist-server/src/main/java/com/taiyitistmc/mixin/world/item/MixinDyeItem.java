@@ -25,7 +25,7 @@ public class MixinDyeItem {
     private DyeColor dyeColor;
 
     @Decorate(method = "interactLivingEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Sheep;setColor(Lnet/minecraft/world/item/DyeColor;)V"))
-    private void banner$sheepDyeWool(net.minecraft.world.entity.animal.Sheep sheepEntity, DyeColor color, ItemStack stack, Player playerIn, LivingEntity target, InteractionHand hand) throws Throwable {
+    private void taiyitist$sheepDyeWool(net.minecraft.world.entity.animal.Sheep sheepEntity, DyeColor color, ItemStack stack, Player playerIn, LivingEntity target, InteractionHand hand) throws Throwable {
         byte bColor = (byte) this.dyeColor.getId();
         SheepDyeWoolEvent event = new SheepDyeWoolEvent((org.bukkit.entity.Sheep) target.getBukkitEntity(), org.bukkit.DyeColor.getByWoolData(bColor), ((ServerPlayer) playerIn).getBukkitEntity());
         Bukkit.getPluginManager().callEvent(event);

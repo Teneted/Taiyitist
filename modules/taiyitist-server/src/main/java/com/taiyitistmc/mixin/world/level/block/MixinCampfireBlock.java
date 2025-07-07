@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinCampfireBlock {
 
     @Inject(method = "onProjectileHit", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public void banner$onFire(Level worldIn, BlockState state, BlockHitResult hit, Projectile projectile, CallbackInfo ci) {
+    public void taiyitist$onFire(Level worldIn, BlockState state, BlockHitResult hit, Projectile projectile, CallbackInfo ci) {
         if (CraftEventFactory.callBlockIgniteEvent(worldIn, hit.getBlockPos(), projectile).isCancelled()) {
             ci.cancel();
         }

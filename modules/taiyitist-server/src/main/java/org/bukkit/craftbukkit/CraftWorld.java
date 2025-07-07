@@ -625,11 +625,11 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        this.world.banner$setCaptureTreeGeneration(true);
-        this.world.banner$setCaptureBlockStates(true);
+        this.world.taiyitist$setCaptureTreeGeneration(true);
+        this.world.taiyitist$setCaptureBlockStates(true);
         boolean grownTree = this.generateTree(loc, type);
-        this.world.banner$setCaptureBlockStates(false);
-        this.world.banner$setCaptureTreeGeneration(false);
+        this.world.taiyitist$setCaptureBlockStates(false);
+        this.world.taiyitist$setCaptureTreeGeneration(false);
         if (grownTree) { // Copy block data to delegate
             for (BlockState blockstate : this.world.bridge$capturedBlockStates().values()) {
                 BlockPos position = ((CraftBlockState) blockstate).getPosition();
@@ -1187,7 +1187,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setPVP(boolean pvp) {
-        this.world.banner$setPvpMode(pvp);
+        this.world.taiyitist$setPvpMode(pvp);
     }
 
     public void playEffect(Player player, Effect effect, int data) {

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinNyliumBlock {
 
     @Inject(method = "randomTick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private void banner$blockFade(BlockState p_221835_, ServerLevel level, BlockPos pos, RandomSource p_221838_, CallbackInfo ci) {
+    private void taiyitist$blockFade(BlockState p_221835_, ServerLevel level, BlockPos pos, RandomSource p_221838_, CallbackInfo ci) {
         if (CraftEventFactory.callBlockFadeEvent(level, pos, Blocks.NETHERRACK.defaultBlockState()).isCancelled()) {
             ci.cancel();
         }

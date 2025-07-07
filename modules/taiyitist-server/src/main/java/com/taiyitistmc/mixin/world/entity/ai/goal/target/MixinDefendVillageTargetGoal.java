@@ -18,7 +18,7 @@ public class MixinDefendVillageTargetGoal {
     private IronGolem golem;
 
     @Inject(method = "start", at = @At("HEAD"))
-    public void banner$reason(CallbackInfo ci) {
+    public void taiyitist$reason(CallbackInfo ci) {
         this.golem.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.DEFEND_VILLAGE, true);
     }
 }

@@ -63,7 +63,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     @Shadow
     @Final
     private static Logger LOGGER;
-    private final AtomicReference<BlockBreakEvent> banner$event = new AtomicReference<>();
+    private final AtomicReference<BlockBreakEvent> taiyitist$event = new AtomicReference<>();
     // CraftBukkit start - whole method
     public boolean interactResult = false;
     public boolean firedInteract = false;
@@ -107,7 +107,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     public abstract void destroyAndAck(BlockPos pos, int i, String string);
 
     @Inject(method = "changeGameModeForPlayer", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayerGameMode;setGameModeForPlayer(Lnet/minecraft/world/level/GameType;Lnet/minecraft/world/level/GameType;)V"))
-    private void banner$gameModeEvent(GameType gameType, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$gameModeEvent(GameType gameType, CallbackInfoReturnable<Boolean> cir) {
         PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(player.getBukkitEntity(), GameMode.getByValue(gameType.getId()));
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -116,7 +116,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     }
 
     @Redirect(method = "changeGameModeForPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void banner$changeMessage(PlayerList instance, Packet<?> packet) {
+    private void taiyitist$changeMessage(PlayerList instance, Packet<?> packet) {
         this.player.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, this.player), this.player);
     }
 
@@ -272,7 +272,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     }
 
     @Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
-    private void banner$fireBreakEvent(BlockPos blockposition, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$fireBreakEvent(BlockPos blockposition, CallbackInfoReturnable<Boolean> cir) {
         BlockState iblockdata = this.level.getBlockState(blockposition);
         // CraftBukkit start - fire BlockBreakEvent
         org.bukkit.block.Block bblock = CraftBlock.at(level, blockposition);
@@ -290,7 +290,7 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
             }
 
             event = new BlockBreakEvent(bblock, this.player.getBukkitEntity());
-            banner$event.set(event);
+            taiyitist$event.set(event);
 
             // Sword + Creative mode pre-cancel
             event.setCancelled(isSwordNoBreak);
@@ -333,39 +333,39 @@ public abstract class MixinServerPlayerGameMode implements InjectionServerPlayer
     @Inject(method = "destroyBlock", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;",
             shift = At.Shift.BEFORE))
-    private void banner$setDrops(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        level.banner$setCaptureDrops(new ArrayList<>());
+    private void taiyitist$setDrops(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        level.taiyitist$setCaptureDrops(new ArrayList<>());
     }
 
     @Inject(method = "destroyBlock", at = @At("TAIL"), cancellable = true)
-    private void banner$fireDropEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$fireDropEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         org.bukkit.block.BlockState state = CraftBlock.at(level, pos).getState();
-        if (level.bridge$captureDrops() != null && banner$event.get().isDropItems()) {
+        if (level.bridge$captureDrops() != null && taiyitist$event.get().isDropItems()) {
             CraftEventFactory.handleBlockDropItemEvent(CraftBlock.at(level, pos), state, this.player, level.bridge$captureDrops());
         }
-        level.banner$setCaptureDrops(null);
+        level.taiyitist$setCaptureDrops(null);
 
         // Drop event experience
-        if (this.level.removeBlock(pos, false) && banner$event.get() != null) {
-            this.level.getBlockState(pos).getBlock().popExperience(this.level, pos, banner$event.getAndSet(null).getExpToDrop());
+        if (this.level.removeBlock(pos, false) && taiyitist$event.get() != null) {
+            this.level.getBlockState(pos).getBlock().popExperience(this.level, pos, taiyitist$event.getAndSet(null).getExpToDrop());
         }
         cir.setReturnValue(true);
     }
 
     @Redirect(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;canAttackBlock(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;)Z"))
-    private boolean banner$addFalse(Item instance, BlockState state, Level level, BlockPos pos, Player player) {
+    private boolean taiyitist$addFalse(Item instance, BlockState state, Level level, BlockPos pos, Player player) {
         return this.player.getMainHandItem().getItem().canAttackBlock(state, this.level, pos, this.player);
     }
 
     @Inject(method = "destroyBlock", at = @At("RETURN"))
-    private void banner$clearDrops(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
-        this.level.banner$setCaptureDrops(null);
+    private void taiyitist$clearDrops(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
+        this.level.taiyitist$setCaptureDrops(null);
     }
 
     @Inject(method = "destroyBlock",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"), cancellable = true)
-    private void banner$resetState(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local LocalRef<BlockState> blockState) {
+    private void taiyitist$resetState(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local LocalRef<BlockState> blockState) {
         blockState.set(this.level.getBlockState(pos)); // CraftBukkit - update state from plugins
         if (blockState.get().isAir())
             cir.setReturnValue(false); // CraftBukkit - A plugin set block to air without cancelling

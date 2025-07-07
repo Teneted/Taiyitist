@@ -39,13 +39,13 @@ public abstract class MixinRecipeManager implements InjectionRecipeManager {
  // @formatter:on
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("RETURN"))
-    private void banner$makeMutable(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+    private void taiyitist$makeMutable(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
         this.byName = new HashMap<>(this.byName);
         this.byType = LinkedHashMultimap.create(this.byType);
     }
 
     @Inject(method = "replaceRecipes", at = @At("RETURN"))
-    private void banner$replaceMutable(Iterable<RecipeHolder<?>> iterable, CallbackInfo ci) {
+    private void taiyitist$replaceMutable(Iterable<RecipeHolder<?>> iterable, CallbackInfo ci) {
         this.byName = new HashMap<>(this.byName);
         this.byType = LinkedHashMultimap.create(this.byType);
     }

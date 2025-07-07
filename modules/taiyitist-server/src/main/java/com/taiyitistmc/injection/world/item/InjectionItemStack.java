@@ -24,7 +24,7 @@ public interface InjectionItemStack {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$fakeShrink(int count) {
+    default void taiyitist$fakeShrink(int count) {
         throw new IllegalStateException("Not implemented");
     }
 }

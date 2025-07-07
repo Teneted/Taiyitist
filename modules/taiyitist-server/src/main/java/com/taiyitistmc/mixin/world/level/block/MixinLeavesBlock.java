@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinLeavesBlock {
 
     @Inject(method = "randomTick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/LeavesBlock;dropResources(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"))
-    public void banner$leavesDecay(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
+    public void taiyitist$leavesDecay(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
         LeavesDecayEvent event = new LeavesDecayEvent(CraftBlock.at(worldIn, pos));
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled() || worldIn.getBlockState(pos).getBlock() != (Object) this) {

@@ -12,7 +12,7 @@ public interface InjectionBlock {
         throw new IllegalStateException("Not implemented");
     }
 
-    default int banner$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
+    default int taiyitist$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
         throw new IllegalStateException("Not implemented");
     }
 

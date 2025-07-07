@@ -6,7 +6,7 @@ public interface InjectionAgeableMob {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setAgeLocked(boolean ageLocked) {
+    default void taiyitist$setAgeLocked(boolean ageLocked) {
         throw new IllegalStateException("Not implemented");
     }
 }

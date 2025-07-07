@@ -19,7 +19,7 @@ public abstract class MixinMappedRegistry<T> implements WritableRegistry<T> {
     public final Map<ResourceLocation, T> temporaryUnfrozenMap = new HashMap<>(); // Paper - support pre-filling in registry mod API
 
     @Inject(method = "register", at = @At("RETURN"))
-    private void banner$register(ResourceKey<T> resourceKey, T object, RegistrationInfo registrationInfo, CallbackInfoReturnable<Holder.Reference<T>> cir) {
+    private void taiyitist$register(ResourceKey<T> resourceKey, T object, RegistrationInfo registrationInfo, CallbackInfoReturnable<Holder.Reference<T>> cir) {
         this.temporaryUnfrozenMap.put(resourceKey.location(), object); // Paper - support pre-filling in registry mod API
     }
 }

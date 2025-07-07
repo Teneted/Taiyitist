@@ -34,13 +34,13 @@ public abstract class MixinDispenserMenu extends AbstractContainerMenu {
     // CraftBukkit end
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/Container;)V", at = @At("RETURN"))
-    private void banner$init(int i, Inventory inventory, Container container, CallbackInfo ci) {
+    private void taiyitist$init(int i, Inventory inventory, Container container, CallbackInfo ci) {
         // CraftBukkit start - Save player
         this.player = inventory;
     }
 
     @Inject(method = "stillValid", at = @At("HEAD"))
-    private void banner$checkValid(Player player, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$checkValid(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (!this.bridge$checkReachable()) {
             cir.cancel();
         }

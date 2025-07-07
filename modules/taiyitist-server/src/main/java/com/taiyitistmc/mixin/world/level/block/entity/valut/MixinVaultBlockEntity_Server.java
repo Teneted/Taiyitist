@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinVaultBlockEntity_Server {
 
     @Inject(method = "tryInsertKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/vault/VaultBlockEntity$Server;unlock(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/vault/VaultConfig;Lnet/minecraft/world/level/block/entity/vault/VaultServerData;Lnet/minecraft/world/level/block/entity/vault/VaultSharedData;Ljava/util/List;)V"), cancellable = true)
-    private static void banner$vaultDispenseLootEvent(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, VaultConfig vaultConfig, VaultServerData vaultServerData, VaultSharedData vaultSharedData, Player player, ItemStack itemStack, CallbackInfo ci, @Local List<ItemStack> list) {
+    private static void taiyitist$vaultDispenseLootEvent(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, VaultConfig vaultConfig, VaultServerData vaultServerData, VaultSharedData vaultSharedData, Player player, ItemStack itemStack, CallbackInfo ci, @Local List<ItemStack> list) {
         BlockDispenseLootEvent vaultDispenseLootEvent = CraftEventFactory.callBlockDispenseLootEvent(serverLevel, blockPos, player, list);
         if (vaultDispenseLootEvent.isCancelled()) {
             ci.cancel();
@@ -36,7 +36,7 @@ public class MixinVaultBlockEntity_Server {
     }
 
     @Inject(method = "cycleDisplayItemFromLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/vault/VaultSharedData;setDisplayItem(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 1))
-    private static void banner$vaultDisplayItemEvent(ServerLevel serverLevel, VaultState vaultState, VaultConfig vaultConfig, VaultSharedData vaultSharedData, BlockPos blockPos, CallbackInfo ci, @Local ItemStack itemStack) {
+    private static void taiyitist$vaultDisplayItemEvent(ServerLevel serverLevel, VaultState vaultState, VaultConfig vaultConfig, VaultSharedData vaultSharedData, BlockPos blockPos, CallbackInfo ci, @Local ItemStack itemStack) {
         VaultDisplayItemEvent event = CraftEventFactory.callVaultDisplayItemEvent(serverLevel, blockPos, itemStack);
         if (event.isCancelled()) {
             ci.cancel();

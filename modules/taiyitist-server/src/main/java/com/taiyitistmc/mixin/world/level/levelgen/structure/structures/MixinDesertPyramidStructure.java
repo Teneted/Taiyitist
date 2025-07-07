@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinDesertPyramidStructure {
 
     @Inject(method = "placeSuspiciousSand", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/WorldGenLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"), cancellable = true)
-    private static void banner$lootTable(BoundingBox boundingBox, WorldGenLevel worldGenLevel, BlockPos blockPos, CallbackInfo ci) {
+    private static void taiyitist$lootTable(BoundingBox boundingBox, WorldGenLevel worldGenLevel, BlockPos blockPos, CallbackInfo ci) {
         if (worldGenLevel instanceof org.bukkit.craftbukkit.util.TransformerGeneratorAccess transformerAccess) {
             org.bukkit.craftbukkit.block.CraftBrushableBlock brushableState = (org.bukkit.craftbukkit.block.CraftBrushableBlock) org.bukkit.craftbukkit.block.CraftBlockStates.getBlockState(worldGenLevel, blockPos, Blocks.SUSPICIOUS_SAND.defaultBlockState(), null);
             brushableState.setLootTable(org.bukkit.craftbukkit.CraftLootTable.minecraftToBukkit(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY));

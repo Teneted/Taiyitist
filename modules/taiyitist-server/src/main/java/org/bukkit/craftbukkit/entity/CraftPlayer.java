@@ -398,7 +398,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void setDisplayName(final String name) {
-        getHandle().banner$setDisplayName(name == null ? getName() : name);
+        getHandle().taiyitist$setDisplayName(name == null ? getName() : name);
     }
 
     @Override
@@ -411,7 +411,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (name == null) {
             name = this.getName();
         }
-        getHandle().banner$setListName(name.equals(getName()) ? null : CraftChatMessage.fromStringOrNull(name));
+        getHandle().taiyitist$setListName(name.equals(getName()) ? null : CraftChatMessage.fromStringOrNull(name));
         for (ServerPlayer player : (List<ServerPlayer>) this.server.getHandle().players) {
             if (player.getBukkitEntity().canSee(this)) {
                 player.connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, this.getHandle()));
@@ -1124,7 +1124,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void setSleepingIgnored(boolean isSleeping) {
-        this.getHandle().banner$setFauxSleeping(isSleeping);
+        this.getHandle().taiyitist$setFauxSleeping(isSleeping);
         ((CraftWorld) this.getWorld()).getHandle().updateSleepingPlayerList();
     }
 
@@ -1290,8 +1290,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void setPlayerTime(long time, boolean relative) {
-        getHandle().banner$setTimeOffset(time);
-        getHandle().banner$setRelativeTime(relative);
+        getHandle().taiyitist$setTimeOffset(time);
+        getHandle().taiyitist$setRelativeTime(relative);
     }
 
     @Override
@@ -1750,11 +1750,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
             if (data.contains("newExp")) {
                 ServerPlayer handle = this.getHandle();
-                handle.banner$setNewExp(data.getInt("newExp"));
-                handle.banner$setNewTotalExp(data.getInt("newTotalExp"));
-                handle.banner$setNewLevel(data.getInt("newLevel"));
-                handle.banner$setExpToDrop(data.getInt("expToDrop"));
-                handle.banner$setKeepLevel(data.getBoolean("keepLevel"));
+                handle.taiyitist$setNewExp(data.getInt("newExp"));
+                handle.taiyitist$setNewTotalExp(data.getInt("newTotalExp"));
+                handle.taiyitist$setNewLevel(data.getInt("newLevel"));
+                handle.taiyitist$setExpToDrop(data.getInt("expToDrop"));
+                handle.taiyitist$setKeepLevel(data.getBoolean("keepLevel"));
             }
         }
     }
@@ -2139,7 +2139,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
         this.getHandle().getEntityData().set(net.minecraft.world.entity.LivingEntity.DATA_HEALTH_ID, (float) this.getScaledHealth());
 
-        this.getHandle().banner$setMaxHealthCache(this.getMaxHealth());
+        this.getHandle().taiyitist$setMaxHealthCache(this.getMaxHealth());
     }
 
     @Override

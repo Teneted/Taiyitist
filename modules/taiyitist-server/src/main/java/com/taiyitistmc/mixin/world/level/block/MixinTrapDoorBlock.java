@@ -17,7 +17,7 @@ public class MixinTrapDoorBlock {
 
 
     @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;hasNeighborSignal(Lnet/minecraft/core/BlockPos;)Z"))
-    public boolean banner$blockRedstone(Level world, BlockPos pos, BlockState state, Level worldIn, BlockPos blockPos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public boolean taiyitist$blockRedstone(Level world, BlockPos pos, BlockState state, Level worldIn, BlockPos blockPos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         boolean flag = world.hasNeighborSignal(pos);
         if (flag != state.getValue(TrapDoorBlock.POWERED)) {
             org.bukkit.block.Block craftBlock = CraftBlock.at(world, pos);

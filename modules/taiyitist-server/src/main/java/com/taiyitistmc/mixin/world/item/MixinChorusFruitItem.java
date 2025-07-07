@@ -20,7 +20,7 @@ public abstract class MixinChorusFruitItem extends Item {
     }
 
     @Inject(method = "finishUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;randomTeleport(DDDZ)Z"))
-    private void banner$teleportCause(ItemStack itemStack, Level level, LivingEntity livingEntity, CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$teleportCause(ItemStack itemStack, Level level, LivingEntity livingEntity, CallbackInfoReturnable<ItemStack> cir) {
         if (livingEntity instanceof ServerPlayer p) {
             p.connection.pushTeleportCause(PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT);
         }

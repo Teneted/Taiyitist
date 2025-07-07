@@ -63,7 +63,7 @@ public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEnt
                     args = "intValue=20"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private static void banner$brewEvent(Level level, BlockPos pos, BlockState state, BrewingStandBlockEntity blockEntity, CallbackInfo ci, ItemStack itemStack) {
+    private static void taiyitist$brewEvent(Level level, BlockPos pos, BlockState state, BrewingStandBlockEntity blockEntity, CallbackInfo ci, ItemStack itemStack) {
         BrewingStandFuelEvent event = new BrewingStandFuelEvent(CraftBlock.at(level, pos), CraftItemStack.asCraftMirror(itemStack), 20);
         level.getCraftServer().getPluginManager().callEvent(event);
 
@@ -81,11 +81,11 @@ public abstract class MixinBrewingStandBlockEntity extends BaseContainerBlockEnt
     @Redirect(method = "serverTick",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private static void banner$isConsuming(ItemStack stack, int amount) {
+    private static void taiyitist$isConsuming(ItemStack stack, int amount) {
     }
 
     @Inject(method = "serverTick", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;ingredient:Lnet/minecraft/world/item/Item;"))
-    private static void banner$brewBegin(Level level, BlockPos pos, BlockState p_155288_, BrewingStandBlockEntity entity, CallbackInfo ci) {
+    private static void taiyitist$brewBegin(Level level, BlockPos pos, BlockState p_155288_, BrewingStandBlockEntity entity, CallbackInfo ci) {
         var event = new BrewingStartEvent(CraftBlock.at(level, pos), CraftItemStack.asCraftMirror(entity.getItem(3)), entity.brewTime);
         Bukkit.getPluginManager().callEvent(event);
         entity.brewTime = event.getTotalBrewTime();

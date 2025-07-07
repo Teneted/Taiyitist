@@ -20,7 +20,7 @@ public class MixinRunAroundLikeCrazyGoal {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;tameWithName(Lnet/minecraft/world/entity/player/Player;)Z"))
-    private boolean banner$tameCheck(AbstractHorse instance, Player player) {
+    private boolean taiyitist$tameCheck(AbstractHorse instance, Player player) {
         if (!CraftEventFactory.callEntityTameEvent(this.horse, ((CraftHumanEntity) this.horse.getBukkitEntity().getPassenger()).getHandle()).isCancelled()) {
             return this.horse.tameWithName(player);
         }

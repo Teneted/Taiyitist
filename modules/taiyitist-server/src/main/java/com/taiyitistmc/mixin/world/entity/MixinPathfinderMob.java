@@ -16,7 +16,7 @@ public abstract class MixinPathfinderMob extends Mob {
     // Banner TODO
     /*
     @Inject(method = "handleLeashAtDistance", at = @At(value = "INVOKE", target = "dropLeash"))
-    private void banner$unleashDistance(CallbackInfo ci) {
+    private void taiyitist$unleashDistance(CallbackInfo ci) {
         Bukkit.getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), EntityUnleashEvent.UnleashReason.DISTANCE));
     }*/
 }

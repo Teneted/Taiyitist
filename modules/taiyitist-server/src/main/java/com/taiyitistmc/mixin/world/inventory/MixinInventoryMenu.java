@@ -40,7 +40,7 @@ public abstract class MixinInventoryMenu extends RecipeBookMenu<CraftingInput, C
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    public void banner$init(Inventory playerInventory, boolean localWorld, Player playerIn, CallbackInfo ci) {
+    public void taiyitist$init(Inventory playerInventory, boolean localWorld, Player playerIn, CallbackInfo ci) {
         this.playerInventory = playerInventory;
         ((TransientCraftingContainer) this.craftSlots).bridge$setResultInventory(this.resultSlots);
         ((TransientCraftingContainer) this.craftSlots).setOwner(playerInventory.player);
@@ -48,7 +48,7 @@ public abstract class MixinInventoryMenu extends RecipeBookMenu<CraftingInput, C
     }
 
     @Inject(method = "slotsChanged", at = @At("HEAD"))
-    public void banner$captureContainer(Container inventoryIn, CallbackInfo ci) {
+    public void taiyitist$captureContainer(Container inventoryIn, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureWorkbenchContainer((AbstractContainerMenu) this);
     }
 

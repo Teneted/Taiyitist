@@ -38,7 +38,7 @@ public abstract class MixinWorldBorder implements InjectionWorldBorder {
     }
 
     @Inject(method = "setCenter", at = @At("HEAD"), cancellable = true)
-    private void banner$borderEvent0(double x, double z, CallbackInfo ci) {
+    private void taiyitist$borderEvent0(double x, double z, CallbackInfo ci) {
         // Paper start
         if (this.world != null) {
             io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent event = new io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent(world.getWorld(), world.getWorld().getWorldBorder(), new org.bukkit.Location(world.getWorld(), this.getCenterX(), 0, this.getCenterZ()), new org.bukkit.Location(world.getWorld(), x, 0, z));
@@ -50,7 +50,7 @@ public abstract class MixinWorldBorder implements InjectionWorldBorder {
     }
 
     @Inject(method = "setSize", at = @At("HEAD"), cancellable = true)
-    private void banner$borderEvent1(double size, CallbackInfo ci) {
+    private void taiyitist$borderEvent1(double size, CallbackInfo ci) {
         // Paper start
         if (this.world != null) {
             io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent event = new io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent(world.getWorld(), world.getWorld().getWorldBorder(), io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent.Type.INSTANT_MOVE, getSize(), size, 0);
@@ -65,7 +65,7 @@ public abstract class MixinWorldBorder implements InjectionWorldBorder {
     }
 
     @Inject(method = "lerpSizeBetween", at = @At("HEAD"), cancellable = true)
-    private void banner$borderEvent2(double fromSize, double toSize, long time, CallbackInfo ci) {
+    private void taiyitist$borderEvent2(double fromSize, double toSize, long time, CallbackInfo ci) {
         // Paper start
         if (this.world != null) {
             io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent.Type type;
@@ -83,12 +83,12 @@ public abstract class MixinWorldBorder implements InjectionWorldBorder {
     }
 
     @Inject(method = "addListener", at = @At("HEAD"), cancellable = true)
-    private void banner$checkContain(BorderChangeListener borderChangeListener, CallbackInfo ci) {
+    private void taiyitist$checkContain(BorderChangeListener borderChangeListener, CallbackInfo ci) {
         if (listeners.contains(borderChangeListener)) ci.cancel(); // CraftBukkit
     }
 
     @Override
-    public void banner$setWorld(Level world) {
+    public void taiyitist$setWorld(Level world) {
         this.world = world;
     }
 }

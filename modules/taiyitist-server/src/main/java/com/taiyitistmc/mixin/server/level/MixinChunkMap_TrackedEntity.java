@@ -25,7 +25,7 @@ public class MixinChunkMap_TrackedEntity {
     ServerEntity serverEntity;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$setTrackedPlayers(ChunkMap outer, Entity entity, int range, int updateFrequency, boolean sendVelocityUpdates, CallbackInfo ci) {
+    private void taiyitist$setTrackedPlayers(ChunkMap outer, Entity entity, int range, int updateFrequency, boolean sendVelocityUpdates, CallbackInfo ci) {
         ((InjectionServerEntity) this.serverEntity).setTrackedPlayers(this.seenBy);
     }
 }

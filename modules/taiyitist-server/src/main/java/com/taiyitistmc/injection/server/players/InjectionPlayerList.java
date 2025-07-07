@@ -59,7 +59,7 @@ public interface InjectionPlayerList {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$putHandler(ServerLoginPacketListenerImpl handler) {
+    default void taiyitist$putHandler(ServerLoginPacketListenerImpl handler) {
     }
 
     default ServerPlayer taiyitist$canPlayerLogin(SocketAddress socketAddress, GameProfile gameProfile, ServerLoginPacketListenerImpl handler) {

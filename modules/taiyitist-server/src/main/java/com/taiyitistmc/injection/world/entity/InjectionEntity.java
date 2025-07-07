@@ -23,11 +23,11 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setInWorld(boolean inWorld) {
+    default void taiyitist$setInWorld(boolean inWorld) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setBukkitEntity(CraftEntity bukkitEntity) {
+    default void taiyitist$setBukkitEntity(CraftEntity bukkitEntity) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -53,7 +53,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPersist(boolean persist) {
+    default void taiyitist$setPersist(boolean persist) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -61,7 +61,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setVisibleByDefault(boolean visibleByDefault) {
+    default void taiyitist$setVisibleByDefault(boolean visibleByDefault) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -69,7 +69,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setValid(boolean valid) {
+    default void taiyitist$setValid(boolean valid) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -77,7 +77,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxAirTicks(int maxAirTicks) {
+    default void taiyitist$setMaxAirTicks(int maxAirTicks) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -85,7 +85,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setProjectileSource(org.bukkit.projectiles.ProjectileSource projectileSource) {
+    default void taiyitist$setProjectileSource(org.bukkit.projectiles.ProjectileSource projectileSource) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -93,7 +93,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setLastDamageCancelled(boolean lastDamageCancelled) {
+    default void taiyitist$setLastDamageCancelled(boolean lastDamageCancelled) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -101,7 +101,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPersistentInvisibility(boolean persistentInvisibility) {
+    default void taiyitist$setPersistentInvisibility(boolean persistentInvisibility) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -109,7 +109,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setLastLavaContact(BlockPos lastLavaContact) {
+    default void taiyitist$setLastLavaContact(BlockPos lastLavaContact) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -137,7 +137,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSecondsOnFire(float i, boolean callEvent) {
+    default void taiyitist$setSecondsOnFire(float i, boolean callEvent) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -169,7 +169,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setActivatedTick(long activatedTick) {
+    default void taiyitist$setActivatedTick(long activatedTick) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -177,7 +177,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setDefaultActivationState(boolean state) {
+    default void taiyitist$setDefaultActivationState(boolean state) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -185,11 +185,11 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setGeneration(boolean gen) {
+    default void taiyitist$setGeneration(boolean gen) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean banner$removePassenger(Entity entity) {
+    default boolean taiyitist$removePassenger(Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 

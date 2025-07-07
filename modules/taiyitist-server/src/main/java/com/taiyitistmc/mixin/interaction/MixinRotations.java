@@ -15,7 +15,7 @@ public class MixinRotations {
     private Void dummy_var;
 
     @Inject(method = "<init>(Lnet/minecraft/nbt/ListTag;)V", at = @At("RETURN"))
-    private void banner$init(ListTag listTag, CallbackInfo ci) {
+    private void taiyitist$init(ListTag listTag, CallbackInfo ci) {
         dummy_var = null;
     }
 

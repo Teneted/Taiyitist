@@ -87,17 +87,17 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     }
 
     @Override
-    public void banner$setPlayer(ServerPlayer player) {
+    public void taiyitist$setPlayer(ServerPlayer player) {
         this.player = player;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(MinecraftServer server, Connection connection, CommonListenerCookie cookie, CallbackInfo ci) {
+    private void taiyitist$init(MinecraftServer server, Connection connection, CommonListenerCookie cookie, CallbackInfo ci) {
         this.cserver = ((CraftServer) Bukkit.getServer());
     }
 
     @ModifyConstant(method = "keepConnectionAlive", constant = @Constant(longValue = 15000L))
-    private long banner$incrKeepaliveTimeout(long l) {
+    private long taiyitist$incrKeepaliveTimeout(long l) {
         return 25000L;
     }
 
@@ -111,12 +111,12 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     }
 
     @Override
-    public boolean banner$isDisconnected() {
+    public boolean taiyitist$isDisconnected() {
         return this.isDisconnected();
     }
 
     @Decorate(method = "disconnect(Lnet/minecraft/network/DisconnectionDetails;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V"))
-    private void banner$kickEvent(Connection instance, Packet<?> packet, PacketSendListener packetSendListener, DisconnectionDetails disconnectionDetails) throws Throwable {
+    private void taiyitist$kickEvent(Connection instance, Packet<?> packet, PacketSendListener packetSendListener, DisconnectionDetails disconnectionDetails) throws Throwable {
         if (this.processedDisconnect) {
             DecorationOps.cancel().invoke();
             return;
@@ -164,18 +164,18 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     }
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V", cancellable = true, at = @At("HEAD"))
-    private void banner$updateCompassTarget(Packet<?> packetIn, PacketSendListener futureListeners, CallbackInfo ci) {
+    private void taiyitist$updateCompassTarget(Packet<?> packetIn, PacketSendListener futureListeners, CallbackInfo ci) {
         if (packetIn == null || processedDisconnect) {
             ci.cancel();
             return;
         }
         if (packetIn instanceof ClientboundSetDefaultSpawnPositionPacket packet6) {
-            this.player.banner$setCompassTarget(new Location(this.getCraftPlayer().getWorld(), packet6.pos.getX(), packet6.pos.getY(), packet6.pos.getZ()));
+            this.player.taiyitist$setCompassTarget(new Location(this.getCraftPlayer().getWorld(), packet6.pos.getX(), packet6.pos.getY(), packet6.pos.getZ()));
         }
     }
 
     @Inject(method = "handleCustomPayload", at = @At("HEAD"))
-    private void banner$customPayload(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
+    private void taiyitist$customPayload(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
         var data = bridge$getDiscardedData(packet);
         if (data != null) {
             var readerIndex = data.readerIndex();
@@ -233,12 +233,12 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     }
 
     @Inject(method = "handleResourcePackResponse", at = @At("RETURN"))
-    private void banner$handleResourcePackStatus(ServerboundResourcePackPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$handleResourcePackStatus(ServerboundResourcePackPacket packetIn, CallbackInfo ci) {
         this.cserver.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(this.getCraftPlayer(), packetIn.id(), PlayerResourcePackStatusEvent.Status.values()[packetIn.action().ordinal()]));
     }
 
     @Inject(method = "handleCookieResponse", cancellable = true, at = @At("HEAD"))
-    private void banner$handleCookie(ServerboundCookieResponsePacket serverboundCookieResponsePacket, CallbackInfo ci) {
+    private void taiyitist$handleCookie(ServerboundCookieResponsePacket serverboundCookieResponsePacket, CallbackInfo ci) {
         PacketUtils.ensureRunningOnSameThread(serverboundCookieResponsePacket, (ServerCommonPacketListenerImpl) (Object) this, this.server);
         if (this.player.getBukkitEntity().handleCookieResponse(serverboundCookieResponsePacket)) {
             ci.cancel();

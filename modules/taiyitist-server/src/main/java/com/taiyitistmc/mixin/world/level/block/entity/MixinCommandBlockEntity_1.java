@@ -19,7 +19,7 @@ public abstract class MixinCommandBlockEntity_1 implements CommandSource {
     }
 
     @Override
-    public CommandSender banner$getBukkitSender(CommandSourceStack wrapper) {
+    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return getBukkitSender(wrapper);
     }
 }

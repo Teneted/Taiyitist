@@ -20,7 +20,7 @@ public class MixinStartAttacking {
 
     @SuppressWarnings({"unchecked", "MixinAnnotationTarget"})
     @Decorate(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/behavior/declarative/MemoryAccessor;set(Ljava/lang/Object;)V"))
-    private static <F extends K1, Value> void banner$targetEvent(MemoryAccessor<F, Value> instance, Value object, @Local(ordinal = -1) Mob mob) throws Throwable {
+    private static <F extends K1, Value> void taiyitist$targetEvent(MemoryAccessor<F, Value> instance, Value object, @Local(ordinal = -1) Mob mob) throws Throwable {
         var newTarget = (LivingEntity) object;
         EntityTargetEvent event = CraftEventFactory.callEntityTargetLivingEvent(mob, newTarget, (newTarget instanceof ServerPlayer) ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.CLOSEST_ENTITY);
         if (event.isCancelled()) {

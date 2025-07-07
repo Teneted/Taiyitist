@@ -911,7 +911,7 @@ public class CraftEventFactory {
         CraftWorld world = (CraftWorld) entity.getWorld();
         Bukkit.getServer().getPluginManager().callEvent(event);
 
-        victim.banner$setExpToDrop(event.getDroppedExp());
+        victim.taiyitist$setExpToDrop(event.getDroppedExp());
 
         for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
             if (stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0) continue;
@@ -931,11 +931,11 @@ public class CraftEventFactory {
         org.bukkit.World world = entity.getWorld();
         Bukkit.getServer().getPluginManager().callEvent(event);
 
-        victim.banner$setKeepLevel(event.getKeepLevel());
-        victim.banner$setNewLevel(event.getNewLevel());
-        victim.banner$setNewTotalExp(event.getNewTotalExp());
-        victim.banner$setExpToDrop(event.getDroppedExp());
-        victim.banner$setNewExp(event.getNewExp());
+        victim.taiyitist$setKeepLevel(event.getKeepLevel());
+        victim.taiyitist$setNewLevel(event.getNewLevel());
+        victim.taiyitist$setNewTotalExp(event.getNewTotalExp());
+        victim.taiyitist$setExpToDrop(event.getDroppedExp());
+        victim.taiyitist$setNewExp(event.getNewExp());
 
         for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
             if (stack == null || stack.getType() == Material.AIR) continue;
@@ -1076,7 +1076,7 @@ public class CraftEventFactory {
         if (!event.isCancelled()) {
             event.getEntity().setLastDamageCause(event);
         } else {
-            damagee.banner$setLastDamageCancelled(true); // SPIGOT-5339, SPIGOT-6252, SPIGOT-6777: Keep track if the event was canceled
+            damagee.taiyitist$setLastDamageCancelled(true); // SPIGOT-5339, SPIGOT-6252, SPIGOT-6777: Keep track if the event was canceled
         }
 
         return event;

@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 public interface MixinCommandSource extends InjectionCommandSource {
 
     default CommandSender getBukkitSender(CommandSourceStack wrapper) {
-        return this.banner$getBukkitSender(wrapper);
+        return this.taiyitist$getBukkitSender(wrapper);
     }
 }

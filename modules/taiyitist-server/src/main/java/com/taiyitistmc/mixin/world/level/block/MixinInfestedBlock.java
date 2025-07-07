@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinInfestedBlock {
 
     @Inject(method = "spawnInfestation", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    public void banner$spawn(ServerLevel world, BlockPos pos, CallbackInfo ci) {
+    public void taiyitist$spawn(ServerLevel world, BlockPos pos, CallbackInfo ci) {
         world.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK);
     }
 }

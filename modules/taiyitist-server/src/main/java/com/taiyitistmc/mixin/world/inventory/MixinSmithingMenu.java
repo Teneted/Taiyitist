@@ -30,7 +30,7 @@ public abstract class MixinSmithingMenu extends ItemCombinerMenu {
     }
 
     @Decorate(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/ResultContainer;setItem(ILnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$prepareSmithing(ResultContainer craftResultInventory, int index, ItemStack stack) throws Throwable {
+    private void taiyitist$prepareSmithing(ResultContainer craftResultInventory, int index, ItemStack stack) throws Throwable {
         PrepareSmithingEvent event = new PrepareSmithingEvent(getBukkitView(), CraftItemStack.asCraftMirror(stack).clone());
         Bukkit.getServer().getPluginManager().callEvent(event);
         DecorationOps.callsite().invoke(craftResultInventory, index, CraftItemStack.asNMSCopy(event.getResult()));

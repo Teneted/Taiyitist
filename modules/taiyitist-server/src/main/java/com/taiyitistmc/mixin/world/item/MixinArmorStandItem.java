@@ -17,7 +17,7 @@ public class MixinArmorStandItem {
     @Inject(method = "useOn",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"), cancellable = true)
-    private void banner$callEntityPlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
+    private void taiyitist$callEntityPlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
                                              @Local ArmorStand armorStand) {
         // CraftBukkit start
         if (CraftEventFactory.callEntityPlaceEvent(context, armorStand).isCancelled()) {

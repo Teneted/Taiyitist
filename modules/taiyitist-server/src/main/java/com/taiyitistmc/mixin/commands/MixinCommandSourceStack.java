@@ -37,7 +37,7 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
     public abstract ServerLevel getLevel();
 
     @Inject(method = "hasPermission", cancellable = true, at = @At("HEAD"))
-    public void banner$checkPermission(int level, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$checkPermission(int level, CallbackInfoReturnable<Boolean> cir) {
         CommandNode currentCommand = this.currentCommand;
         if (currentCommand != null) {
             cir.setReturnValue(hasPermission(level, VanillaCommandWrapper.getPermission(currentCommand)));
@@ -45,7 +45,7 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
     }
 
     @Redirect(method = "broadcastToAdmins", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;isOp(Lcom/mojang/authlib/GameProfile;)Z"))
-    private boolean banner$feedbackPermission(PlayerList instance, GameProfile profile) {
+    private boolean taiyitist$feedbackPermission(PlayerList instance, GameProfile profile) {
         return instance.getPlayer(profile.getId()).getBukkitEntity().hasPermission("minecraft.admin.command_feedback");
     }
 
@@ -56,11 +56,11 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
     }
 
     public CommandSender getBukkitSender() {
-        return this.source.banner$getBukkitSender((CommandSourceStack) (Object) this);
+        return this.source.taiyitist$getBukkitSender((CommandSourceStack) (Object) this);
     }
 
     @Override
-    public CommandSender banner$getBukkitSender() {
+    public CommandSender taiyitist$getBukkitSender() {
         return getBukkitSender();
     }
 
@@ -70,12 +70,12 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
     }
 
     @Override
-    public void banner$setCurrentCommand(CommandNode<?> node) {
+    public void taiyitist$setCurrentCommand(CommandNode<?> node) {
         this.currentCommand = node;
     }
 
     @Override
-    public void banner$setSource(CommandSource source) {
+    public void taiyitist$setSource(CommandSource source) {
         this.source = source;
     }
 }

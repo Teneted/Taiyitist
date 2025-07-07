@@ -6,7 +6,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMinLureTime(int minLureTime) {
+    default void taiyitist$setMinLureTime(int minLureTime) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -14,7 +14,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxLureTime(int maxLureTime) {
+    default void taiyitist$setMaxLureTime(int maxLureTime) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -22,7 +22,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMinLureAnglee(float minLureAngle) {
+    default void taiyitist$setMinLureAnglee(float minLureAngle) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -30,7 +30,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxLureAnglee(float maxLureAngle) {
+    default void taiyitist$setMaxLureAnglee(float maxLureAngle) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -38,7 +38,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setRainInfluenced(boolean rainInfluenced) {
+    default void taiyitist$setRainInfluenced(boolean rainInfluenced) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -46,7 +46,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSkyInfluenced(boolean skyInfluenced) {
+    default void taiyitist$setSkyInfluenced(boolean skyInfluenced) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -54,7 +54,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMinWaitTime(int minWaitTime) {
+    default void taiyitist$setMinWaitTime(int minWaitTime) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -62,7 +62,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxWaitTime(int minWaitTime) {
+    default void taiyitist$setMaxWaitTime(int minWaitTime) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -70,7 +70,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setApplyLure(boolean applyLure) {
+    default void taiyitist$setApplyLure(boolean applyLure) {
         throw new IllegalStateException("Not implemented");
     }
 }
