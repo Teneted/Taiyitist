@@ -31,7 +31,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean banner$initialized() {
+    default boolean taiyitist$initialized() {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -39,7 +39,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setLocale(String locale) {
+    default void taiyitist$setLocale(String locale) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -47,7 +47,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setTimeOffset(long timeOffset) {
+    default void taiyitist$setTimeOffset(long timeOffset) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -55,7 +55,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setRelativeTime(boolean relativeTime) {
+    default void taiyitist$setRelativeTime(boolean relativeTime) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -63,7 +63,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setListName(Component listName) {
+    default void taiyitist$setListName(Component listName) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -71,7 +71,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCompassTarget(org.bukkit.Location compassTarget) {
+    default void taiyitist$setCompassTarget(org.bukkit.Location compassTarget) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -79,7 +79,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setNewExp(int newExp) {
+    default void taiyitist$setNewExp(int newExp) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -87,7 +87,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setNewLevel(int newLevel) {
+    default void taiyitist$setNewLevel(int newLevel) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -95,7 +95,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setNewTotalExp(int newTotalExp) {
+    default void taiyitist$setNewTotalExp(int newTotalExp) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -103,7 +103,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setKeepLevel(boolean keepLevel) {
+    default void taiyitist$setKeepLevel(boolean keepLevel) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -111,7 +111,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxHealthCache(double maxHealthCache) {
+    default void taiyitist$setMaxHealthCache(double maxHealthCache) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -119,7 +119,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setJoining(boolean joining) {
+    default void taiyitist$setJoining(boolean joining) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -127,7 +127,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSentListPacket(boolean sentListPacket) {
+    default void taiyitist$setSentListPacket(boolean sentListPacket) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -135,7 +135,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setClientViewDistance(Integer clientViewDistance) {
+    default void taiyitist$setClientViewDistance(Integer clientViewDistance) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -143,7 +143,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setKickLeaveMessage(String kickLeaveMessage) {
+    default void taiyitist$setKickLeaveMessage(String kickLeaveMessage) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -155,7 +155,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setDisplayName(String displayName) {
+    default void taiyitist$setDisplayName(String displayName) {
         throw new IllegalStateException("Not implemented");
     }
 

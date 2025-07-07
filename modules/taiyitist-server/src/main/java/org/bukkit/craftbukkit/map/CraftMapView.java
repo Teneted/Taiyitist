@@ -59,7 +59,7 @@ public final class CraftMapView implements MapView {
 
    public void setWorld(World world) {
       this.worldMap.dimension = ((CraftWorld)world).getHandle().dimension();
-      this.worldMap.banner$setUniqueId(world.getUID());
+      this.worldMap.taiyitist$setUniqueId(world.getUID());
    }
 
    public int getCenterX() {

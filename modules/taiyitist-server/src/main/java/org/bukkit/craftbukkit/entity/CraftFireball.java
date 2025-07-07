@@ -24,11 +24,11 @@ public class CraftFireball extends CraftProjectile implements Fireball {
    }
 
    public void setIsIncendiary(boolean isIncendiary) {
-      this.getHandle().banner$setIsIncendiary(isIncendiary);
+      this.getHandle().taiyitist$setIsIncendiary(isIncendiary);
    }
 
    public void setYield(float yield) {
-      this.getHandle().banner$setBukkitYield(yield);
+      this.getHandle().taiyitist$setBukkitYield(yield);
    }
 
    public ProjectileSource getShooter() {
@@ -42,7 +42,7 @@ public class CraftFireball extends CraftProjectile implements Fireball {
          this.getHandle().setOwner((Entity)null);
       }
 
-      this.getHandle().banner$setProjectileSource(shooter);
+      this.getHandle().taiyitist$setProjectileSource(shooter);
    }
 
    public Vector getDirection() {

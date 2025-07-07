@@ -11,7 +11,7 @@ public class MixinEntitySelector {
 
     @Redirect(method = "checkPermissions", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/commands/CommandSourceStack;hasPermission(I)Z"))
-    private boolean banner$checkPerm(CommandSourceStack instance, int permissionLevel) {
+    private boolean taiyitist$checkPerm(CommandSourceStack instance, int permissionLevel) {
         return instance.hasPermission(permissionLevel, "minecraft.command.selector");// CraftBukkit
     }
 }

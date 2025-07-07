@@ -16,7 +16,7 @@ public interface InjectionAbstractMinecart {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxSpeed(double maxSpeed) {
+    default void taiyitist$setMaxSpeed(double maxSpeed) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -24,7 +24,7 @@ public interface InjectionAbstractMinecart {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSlowWhenEmpty(boolean slowWhenEmpty) {
+    default void taiyitist$setSlowWhenEmpty(boolean slowWhenEmpty) {
         throw new IllegalStateException("Not implemented");
     }
 

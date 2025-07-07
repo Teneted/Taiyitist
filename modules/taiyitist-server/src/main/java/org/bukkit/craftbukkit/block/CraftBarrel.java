@@ -43,7 +43,7 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
          }
       }
 
-      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(true);
+      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.taiyitist$setOpened(true);
    }
 
    public void close() {
@@ -56,7 +56,7 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
          }
       }
 
-      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(false);
+      ((BarrelBlockEntity)this.getTileEntity()).openersCounter.taiyitist$setOpened(false);
    }
 
    public CraftBarrel copy() {

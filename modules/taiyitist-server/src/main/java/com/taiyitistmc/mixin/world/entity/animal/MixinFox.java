@@ -19,7 +19,7 @@ public abstract class MixinFox extends Animal {
     }
 
     @Redirect(method = "pickUpItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Fox;canHoldItem(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private boolean banner$pickupEvent(Fox foxEntity, ItemStack stack, ItemEntity itemEntity) {
+    private boolean taiyitist$pickupEvent(Fox foxEntity, ItemStack stack, ItemEntity itemEntity) {
         return CraftEventFactory.callEntityPickupItemEvent((Fox) (Object) this, itemEntity, stack.getCount() - 1, !this.canHoldItem(stack)).isCancelled();
     }
 }

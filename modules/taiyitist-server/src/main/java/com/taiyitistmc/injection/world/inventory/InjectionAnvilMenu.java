@@ -10,7 +10,7 @@ public interface InjectionAnvilMenu {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaximumRepairCost(int maximumRepairCost) {
+    default void taiyitist$setMaximumRepairCost(int maximumRepairCost) {
         throw new IllegalStateException("Not implemented");
     }
 }

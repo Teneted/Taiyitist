@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPanda_HurtByTargetGoal {
 
     @Inject(method = "alertOther", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$reason(Mob mobIn, LivingEntity targetIn, CallbackInfo ci) {
+    private void taiyitist$reason(Mob mobIn, LivingEntity targetIn, CallbackInfo ci) {
         mobIn.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY, true);
     }
 }

@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BeehiveBlockEntity.class)
 public abstract class MixinBeehiveBlockEntity extends BlockEntity implements InjectionBeehiveBlockEntity {
 
-    private static boolean banner$force;
+    private static boolean taiyitist$force;
     @Shadow
     @Nullable
     public BlockPos savedFlowerPos;
@@ -51,26 +51,26 @@ public abstract class MixinBeehiveBlockEntity extends BlockEntity implements Inj
     }
 
     private static boolean releaseBee(Level world, BlockPos pos, BlockState state, BeehiveBlockEntity.BeeData beeData, @Nullable List<Entity> list, BeehiveBlockEntity.BeeReleaseStatus status, @Nullable BlockPos pos1, boolean force) {
-        banner$force = force;
+        taiyitist$force = force;
         try {
             return releaseOccupant(world, pos, state, beeData.toOccupant(), list, status, pos1);
         } finally {
-            banner$force = false;
+            taiyitist$force = false;
         }
     }
 
     @Redirect(method = "releaseOccupant", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isNight()Z"))
-    private static boolean banner$bypassNightCheck(Level world) {
-        return !banner$force && world.isNight();
+    private static boolean taiyitist$bypassNightCheck(Level world) {
+        return !taiyitist$force && world.isNight();
     }
 
     @Inject(method = "releaseOccupant", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static void banner$spawnFirst(Level level, BlockPos blockPos, BlockState blockState, BeehiveBlockEntity.Occupant occupant, List<Entity> list, BeehiveBlockEntity.BeeReleaseStatus beeReleaseStatus, BlockPos blockPos2, CallbackInfoReturnable<Boolean> cir) {
+    private static void taiyitist$spawnFirst(Level level, BlockPos blockPos, BlockState blockState, BeehiveBlockEntity.Occupant occupant, List<Entity> list, BeehiveBlockEntity.BeeReleaseStatus beeReleaseStatus, BlockPos blockPos2, CallbackInfoReturnable<Boolean> cir) {
         level.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.BEEHIVE);
     }
 
     @Redirect(method = "releaseOccupant", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static boolean banner$addedBefore(Level world, Entity entityIn) {
+    private static boolean taiyitist$addedBefore(Level world, Entity entityIn) {
         return true;
     }
 
@@ -84,7 +84,7 @@ public abstract class MixinBeehiveBlockEntity extends BlockEntity implements Inj
     }
 
     @Redirect(method = "emptyAllLivingFromHive", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Bee;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$angryReason(Bee beeEntity, LivingEntity livingEntity) {
+    private void taiyitist$angryReason(Bee beeEntity, LivingEntity livingEntity) {
         beeEntity.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
         beeEntity.setTarget(livingEntity);
     }
@@ -97,12 +97,12 @@ public abstract class MixinBeehiveBlockEntity extends BlockEntity implements Inj
     }
 
     @Redirect(method = "addOccupant", at = @At(value = "INVOKE", remap = false, target = "Ljava/util/List;size()I"))
-    private int banner$maxBee(List<?> list) {
+    private int taiyitist$maxBee(List<?> list) {
         return list.size() < this.maxBees ? 1 : 3;
     }
 
     @Inject(method = "addOccupant", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;stopRiding()V"))
-    private void banner$beeEnterBlock(Entity entity, CallbackInfo ci) {
+    private void taiyitist$beeEnterBlock(Entity entity, CallbackInfo ci) {
         if (this.level != null) {
             EntityEnterBlockEvent event = new EntityEnterBlockEvent(entity.getBukkitEntity(), CraftBlock.at(this.level, this.worldPosition));
             Bukkit.getPluginManager().callEvent(event);
@@ -116,14 +116,14 @@ public abstract class MixinBeehiveBlockEntity extends BlockEntity implements Inj
     }
 
     @Inject(method = "loadAdditional", at = @At("RETURN"))
-    private void banner$readMax(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    private void taiyitist$readMax(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         if (compoundTag.contains("Bukkit.MaxEntities")) {
             this.maxBees = compoundTag.getInt("Bukkit.MaxEntities");
         }
     }
 
     @Inject(method = "saveAdditional", at = @At("RETURN"))
-    private void banner$writeMax(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    private void taiyitist$writeMax(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         compoundTag.putInt("Bukkit.MaxEntities", this.maxBees);
     }
 
@@ -133,7 +133,7 @@ public abstract class MixinBeehiveBlockEntity extends BlockEntity implements Inj
     }
 
     @Override
-    public void banner$setMaxBees(int maxBees) {
+    public void taiyitist$setMaxBees(int maxBees) {
         this.maxBees = maxBees;
     }
 }

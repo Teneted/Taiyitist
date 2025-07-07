@@ -19,7 +19,7 @@ public class MixinBannerBlockEntity {
 
     @Inject(method = "applyImplicitComponents", at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/level/block/entity/BannerBlockEntity;name:Lnet/minecraft/network/chat/Component;"))
-    private void banner$checkPattern(BlockEntity.DataComponentInput dataComponentInput, CallbackInfo ci) {
+    private void taiyitist$checkPattern(BlockEntity.DataComponentInput dataComponentInput, CallbackInfo ci) {
         this.setPatterns(dataComponentInput.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)); // CraftBukkit - apply limits
     }
 

@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ShearsDispenseItemBehavior.class)
 public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseItemBehavior {
 
-    private static org.bukkit.block.Block banner$bukkitBlock;
-    private static CraftItemStack banner$craftItem;
+    private static org.bukkit.block.Block taiyitist$bukkitBlock;
+    private static CraftItemStack taiyitist$craftItem;
 
     @Shadow
     protected static boolean tryShearBeehive(ServerLevel level, BlockPos pos) {
@@ -36,8 +36,8 @@ public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseIt
     }
 
     private static boolean tryShearLivingEntity(ServerLevel worldserver, BlockPos blockposition, org.bukkit.block.Block bukkitBlock, CraftItemStack craftItem) { // CraftBukkit - add args
-        banner$bukkitBlock = bukkitBlock;
-        banner$craftItem = craftItem;
+        taiyitist$bukkitBlock = bukkitBlock;
+        taiyitist$craftItem = craftItem;
         return tryShearLivingEntity(worldserver, blockposition);
     }
 
@@ -53,7 +53,7 @@ public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseIt
             if (livingEntity instanceof Shearable shearable) {
                 if (shearable.readyForShearing()) {
                     // CraftBukkit start
-                    if (CraftEventFactory.callBlockShearEntityEvent(livingEntity, banner$bukkitBlock, banner$craftItem).isCancelled()) {
+                    if (CraftEventFactory.callBlockShearEntityEvent(livingEntity, taiyitist$bukkitBlock, taiyitist$craftItem).isCancelled()) {
                         shearable.shear(SoundSource.BLOCKS);
                         level.gameEvent(null, GameEvent.SHEAR, pos);
                         return true;

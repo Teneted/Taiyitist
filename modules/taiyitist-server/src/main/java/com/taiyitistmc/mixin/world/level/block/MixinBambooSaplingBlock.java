@@ -19,20 +19,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BambooSaplingBlock.class)
 public class MixinBambooSaplingBlock {
 
-    private final AtomicReference<ServerLevel> banner$level = new AtomicReference<>();
+    private final AtomicReference<ServerLevel> taiyitist$level = new AtomicReference<>();
 
     @Redirect(method = "growBamboo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$blockSpread(Level instance, BlockPos pos, BlockState newState, int flags) {
+    public boolean taiyitist$blockSpread(Level instance, BlockPos pos, BlockState newState, int flags) {
         return CraftEventFactory.handleBlockSpreadEvent(instance, pos.below(), pos, newState, flags);
     }
 
     @Inject(method = "randomTick", at = @At("HEAD"))
-    private void banner$setLevel(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        banner$level.set(level);
+    private void taiyitist$setLevel(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        taiyitist$level.set(level);
     }
 
     @ModifyConstant(method = "randomTick", constant = @Constant(intValue = 3))
-    private int banner$corpRate(int constant) {
-        return banner$level.get().bridge$spigotConfig().bambooModifier / 100;
+    private int taiyitist$corpRate(int constant) {
+        return taiyitist$level.get().bridge$spigotConfig().bambooModifier / 100;
     }
 }

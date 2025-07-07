@@ -35,7 +35,7 @@ public class MixinMapItemSavedData implements InjectionMapItemSavedData {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Redirect(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/Optional;orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;"))
-    private static Object banner$customDimension(Optional<ResourceKey<Level>> optional, Supplier<?> exceptionSupplier, CompoundTag nbt) {
+    private static Object taiyitist$customDimension(Optional<ResourceKey<Level>> optional, Supplier<?> exceptionSupplier, CompoundTag nbt) {
         return optional.orElseGet(() -> {
             long least = nbt.getLong("UUIDLeast");
             long most = nbt.getLong("UUIDMost");
@@ -51,13 +51,13 @@ public class MixinMapItemSavedData implements InjectionMapItemSavedData {
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    public void banner$init(int i, int j, byte b, boolean bl, boolean bl2, boolean bl3, ResourceKey resourceKey, CallbackInfo ci) {
+    public void taiyitist$init(int i, int j, byte b, boolean bl, boolean bl2, boolean bl3, ResourceKey resourceKey, CallbackInfo ci) {
         this.mapView = new CraftMapView((MapItemSavedData) (Object) this);
         this.server = (CraftServer) Bukkit.getServer();
     }
 
     @Inject(method = "save", at = @At("HEAD"))
-    public void banner$storeDimension(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir) {
+    public void taiyitist$storeDimension(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir) {
         if (this.uniqueId == null) {
             for (org.bukkit.World world : this.server.getWorlds()) {
                 CraftWorld cWorld = (CraftWorld) world;
@@ -88,11 +88,11 @@ public class MixinMapItemSavedData implements InjectionMapItemSavedData {
     }
 
     @Override
-    public void banner$setUniqueId(UUID uuid) {
+    public void taiyitist$setUniqueId(UUID uuid) {
         this.uniqueId = uuid;
     }
 
-    public void banner$setId(String id) {
+    public void taiyitist$setId(String id) {
         this.id = id;
     }
 }

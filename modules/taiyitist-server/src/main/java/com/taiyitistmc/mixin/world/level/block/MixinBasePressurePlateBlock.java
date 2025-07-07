@@ -21,7 +21,7 @@ public abstract class MixinBasePressurePlateBlock {
     protected abstract int getSignalStrength(Level level, BlockPos pos);
 
     @Redirect(method = "checkPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BasePressurePlateBlock;getSignalStrength(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)I"))
-    private int banner$blockRedstone(BasePressurePlateBlock abstractPressurePlateBlock, Level worldIn, BlockPos pos, Entity entity, Level world, BlockPos blockPos, BlockState state, int oldRedstoneStrength) {
+    private int taiyitist$blockRedstone(BasePressurePlateBlock abstractPressurePlateBlock, Level worldIn, BlockPos pos, Entity entity, Level world, BlockPos blockPos, BlockState state, int oldRedstoneStrength) {
         int newStrength = this.getSignalStrength(worldIn, pos);
         boolean flag = oldRedstoneStrength > 0;
         boolean flag1 = newStrength > 0;

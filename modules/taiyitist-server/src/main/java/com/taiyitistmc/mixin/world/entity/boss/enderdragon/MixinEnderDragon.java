@@ -50,13 +50,13 @@ public abstract class MixinEnderDragon extends Mob {
     }
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/phases/DragonPhaseInstance;getFlyTargetLocation()Lnet/minecraft/world/phys/Vec3;"))
-    private Vec3 banner$noMoveHovering(DragonPhaseInstance phase) {
+    private Vec3 taiyitist$noMoveHovering(DragonPhaseInstance phase) {
         Vec3 vec3d = phase.getFlyTargetLocation();
         return vec3d != null && phase.getPhase() != EnderDragonPhase.HOVERING ? vec3d : null;
     }
 
     @Redirect(method = "checkCrystals", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;setHealth(F)V"))
-    private void banner$regainHealth(EnderDragon enderDragonEntity, float health) {
+    private void taiyitist$regainHealth(EnderDragon enderDragonEntity, float health) {
         EntityRegainHealthEvent event = new EntityRegainHealthEvent(this.getBukkitEntity(), 1.0F, EntityRegainHealthEvent.RegainReason.ENDER_CRYSTAL);
         Bukkit.getPluginManager().callEvent(event);
 

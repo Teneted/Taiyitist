@@ -9,7 +9,7 @@ public interface InjectionShulkerBoxBlockEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setTransaction(List<HumanEntity> transaction) {
+    default void taiyitist$setTransaction(List<HumanEntity> transaction) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -17,7 +17,7 @@ public interface InjectionShulkerBoxBlockEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setOpened(boolean opened) {
+    default void taiyitist$setOpened(boolean opened) {
         throw new IllegalStateException("Not implemented");
     }
 }

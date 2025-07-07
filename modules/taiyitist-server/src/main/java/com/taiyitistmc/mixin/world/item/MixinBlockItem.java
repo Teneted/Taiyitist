@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinBlockItem {
 
     @Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;getPlacementState(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/level/block/state/BlockState;", shift = At.Shift.AFTER))
-    private void banner$putCBState(BlockPlaceContext blockPlaceContext,
+    private void taiyitist$putCBState(BlockPlaceContext blockPlaceContext,
                                    CallbackInfoReturnable<InteractionResult> cir,
                                    @Local(ordinal = 1) BlockPlaceContext blockPlaceContext2,
                                    @Share("cbState") LocalRef<org.bukkit.block.BlockState> stateLocalRef) {
@@ -46,7 +46,7 @@ public abstract class MixinBlockItem {
     @Inject(method = "place", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/Block;setPlacedBy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;)V",
             shift = At.Shift.AFTER), cancellable = true)
-    private void banner$placeEvent(BlockPlaceContext blockPlaceContext,
+    private void taiyitist$placeEvent(BlockPlaceContext blockPlaceContext,
                                    CallbackInfoReturnable<InteractionResult> cir,
                                    @Local(ordinal = 1) BlockPlaceContext blockPlaceContext2,
                                    @Local(ordinal = 0) BlockState blockState,
@@ -70,11 +70,11 @@ public abstract class MixinBlockItem {
     }
 
     @Redirect(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"))
-    private void banner$cancelPlaySound(Level instance, Player player, BlockPos blockPos, SoundEvent soundEvent, SoundSource soundSource, float f, float g) {
+    private void taiyitist$cancelPlaySound(Level instance, Player player, BlockPos blockPos, SoundEvent soundEvent, SoundSource soundSource, float f, float g) {
     }
 
     @Inject(method = "canPlace", at = @At("HEAD"))
-    private void banner$storeValue(BlockPlaceContext blockPlaceContext,
+    private void taiyitist$storeValue(BlockPlaceContext blockPlaceContext,
                                    BlockState blockState,
                                    CallbackInfoReturnable<Boolean> cir,
                                    @Share("bannerContext") LocalRef<BlockPlaceContext> placeContextLocalRef,
@@ -84,7 +84,7 @@ public abstract class MixinBlockItem {
     }
 
     @ModifyReturnValue(method = "canPlace", at = @At("RETURN"))
-    private boolean banner$buildEvent(boolean original,
+    private boolean taiyitist$buildEvent(boolean original,
                                       @Share("bannerContext") LocalRef<BlockPlaceContext> placeContextLocalRef,
                                       @Share("bannerState") LocalRef<BlockState> stateLocalRef) {
         // CraftBukkit start - store default return

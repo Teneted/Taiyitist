@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinBaseCommandBlock {
 
     @Redirect(method = "performCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;performPrefixedCommand(Lnet/minecraft/commands/CommandSourceStack;Ljava/lang/String;)V"))
-    private void banner$useBukkitStyle(Commands instance, CommandSourceStack commandSourceStack, String string) {
+    private void taiyitist$useBukkitStyle(Commands instance, CommandSourceStack commandSourceStack, String string) {
         instance.dispatchServerCommand(commandSourceStack, string);// CraftBukkit
     }
 }

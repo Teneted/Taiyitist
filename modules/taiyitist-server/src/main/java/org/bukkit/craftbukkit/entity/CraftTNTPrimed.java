@@ -21,7 +21,7 @@ public class CraftTNTPrimed extends CraftEntity implements TNTPrimed {
    }
 
    public void setIsIncendiary(boolean isIncendiary) {
-      this.getHandle().banner$setIsIncendiary(isIncendiary);
+      this.getHandle().taiyitist$setIsIncendiary(isIncendiary);
    }
 
    public void setYield(float yield) {

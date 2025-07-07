@@ -33,13 +33,13 @@ public class MixinRaid implements InjectionRaid {
     @Shadow
     @Final
     private Map<Integer, Set<Raider>> groupRaiderMap;
-    private transient List<Player> banner$winners;
-    private transient Raider banner$leader;
-    private transient List<Raider> banner$raiders;
+    private transient List<Player> taiyitist$winners;
+    private transient Raider taiyitist$leader;
+    private transient List<Raider> taiyitist$raiders;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/raid/Raid;stop()V"),
             slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/Difficulty;PEACEFUL:Lnet/minecraft/world/Difficulty;")))
-    public void banner$stopPeace(CallbackInfo ci) {
+    public void taiyitist$stopPeace(CallbackInfo ci) {
         CraftEventFactory.callRaidStopEvent((Raid) (Object) this, RaidStopEvent.Reason.PEACE);
     }
 
@@ -48,7 +48,7 @@ public class MixinRaid implements InjectionRaid {
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;isVillage(Lnet/minecraft/core/BlockPos;)Z"),
                     to = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/entity/raid/Raid;ticksActive:J")
             ))
-    public void banner$stopNotInVillage(CallbackInfo ci) {
+    public void taiyitist$stopNotInVillage(CallbackInfo ci) {
         CraftEventFactory.callRaidStopEvent((Raid) (Object) this, RaidStopEvent.Reason.NOT_IN_VILLAGE);
     }
 
@@ -57,7 +57,7 @@ public class MixinRaid implements InjectionRaid {
                     from = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/entity/raid/Raid;ticksActive:J"),
                     to = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;getTotalRaidersAlive()I")
             ))
-    public void banner$stopTimeout(CallbackInfo ci) {
+    public void taiyitist$stopTimeout(CallbackInfo ci) {
         CraftEventFactory.callRaidStopEvent((Raid) (Object) this, RaidStopEvent.Reason.TIMEOUT);
     }
 
@@ -66,55 +66,55 @@ public class MixinRaid implements InjectionRaid {
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;shouldSpawnGroup()Z"),
                     to = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;isStarted()Z")
             ))
-    public void banner$stopUnspawnable(CallbackInfo ci) {
+    public void taiyitist$stopUnspawnable(CallbackInfo ci) {
         CraftEventFactory.callRaidStopEvent((Raid) (Object) this, RaidStopEvent.Reason.UNSPAWNABLE);
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;stop()V"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;isOver()Z")))
-    public void banner$stopFinish(CallbackInfo ci) {
+    public void taiyitist$stopFinish(CallbackInfo ci) {
         CraftEventFactory.callRaidStopEvent((Raid) (Object) this, RaidStopEvent.Reason.FINISHED);
     }
 
     @Inject(method = "tick", at = @At(value = "FIELD", shift = At.Shift.BY, target = "Lnet/minecraft/world/entity/raid/Raid$RaidStatus;LOSS:Lnet/minecraft/world/entity/raid/Raid$RaidStatus;"))
-    public void banner$finishNone(CallbackInfo ci) {
+    public void taiyitist$finishNone(CallbackInfo ci) {
         CraftEventFactory.callRaidFinishEvent((Raid) (Object) this, new ArrayList<>());
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/PlayerTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    public void banner$addWinner(PlayerTrigger trigger, ServerPlayer player) {
+    public void taiyitist$addWinner(PlayerTrigger trigger, ServerPlayer player) {
         trigger.trigger(player);
-        if (banner$winners == null) {
-            banner$winners = new ArrayList<>();
+        if (taiyitist$winners == null) {
+            taiyitist$winners = new ArrayList<>();
         }
-        banner$winners.add(player.getBukkitEntity());
+        taiyitist$winners.add(player.getBukkitEntity());
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;setDirty()V"))
-    public void banner$finish(CallbackInfo ci) {
-        List<Player> winners = this.banner$winners == null ? new ArrayList<>() : this.banner$winners;
-        this.banner$winners = null;
+    public void taiyitist$finish(CallbackInfo ci) {
+        List<Player> winners = this.taiyitist$winners == null ? new ArrayList<>() : this.taiyitist$winners;
+        this.taiyitist$winners = null;
         CraftEventFactory.callRaidFinishEvent((Raid) (Object) this, winners);
     }
 
     @Redirect(method = "spawnGroup", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;setLeader(ILnet/minecraft/world/entity/raid/Raider;)V"))
-    public void banner$captureLeader(Raid raid, int raidId, Raider entity) {
+    public void taiyitist$captureLeader(Raid raid, int raidId, Raider entity) {
         raid.setLeader(raidId, entity);
-        banner$leader = entity;
+        taiyitist$leader = entity;
     }
 
     @Redirect(method = "spawnGroup", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/raid/Raid;joinRaid(ILnet/minecraft/world/entity/raid/Raider;Lnet/minecraft/core/BlockPos;Z)V"))
-    public void banner$captureRaider(Raid raid, int wave, Raider entity, BlockPos pos, boolean flag) {
+    public void taiyitist$captureRaider(Raid raid, int wave, Raider entity, BlockPos pos, boolean flag) {
         raid.joinRaid(wave, entity, pos, flag);
-        if (banner$raiders == null) {
-            banner$raiders = new ArrayList<>();
+        if (taiyitist$raiders == null) {
+            taiyitist$raiders = new ArrayList<>();
         }
-        banner$raiders.add(entity);
+        taiyitist$raiders.add(entity);
     }
 
     @Inject(method = "spawnGroup", at = @At("RETURN"))
-    public void banner$spawnWave(BlockPos pos, CallbackInfo ci) {
-        CraftEventFactory.callRaidSpawnWaveEvent((Raid) (Object) this, banner$leader, banner$raiders);
+    public void taiyitist$spawnWave(BlockPos pos, CallbackInfo ci) {
+        CraftEventFactory.callRaidSpawnWaveEvent((Raid) (Object) this, taiyitist$leader, taiyitist$raiders);
     }
 
     @Override

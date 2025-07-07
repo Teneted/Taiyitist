@@ -39,7 +39,7 @@ public class CraftAnvilView extends CraftInventoryView<AnvilMenu, AnvilInventory
    }
 
    public void setMaximumRepairCost(int cost) {
-      ((AnvilMenu)this.container).banner$setMaximumRepairCost(cost);
+      ((AnvilMenu)this.container).taiyitist$setMaximumRepairCost(cost);
    }
 
    public void updateFromLegacy(CraftInventoryAnvil legacy) {

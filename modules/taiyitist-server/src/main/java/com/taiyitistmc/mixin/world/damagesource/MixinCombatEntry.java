@@ -8,15 +8,15 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(CombatEntry.class)
 public class MixinCombatEntry implements InjectionCombatEntry {
 
-    private Component banner$deathMessage;
+    private Component taiyitist$deathMessage;
 
     @Override
-    public void banner$setDeathMessage(Component component) {
-        this.banner$deathMessage = component;
+    public void taiyitist$setDeathMessage(Component component) {
+        this.taiyitist$deathMessage = component;
     }
 
     @Override
     public Component bridge$deathMessage() {
-        return this.banner$deathMessage;
+        return this.taiyitist$deathMessage;
     }
 }

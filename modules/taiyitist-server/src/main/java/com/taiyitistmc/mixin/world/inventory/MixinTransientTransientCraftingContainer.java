@@ -38,13 +38,13 @@ public abstract class MixinTransientTransientCraftingContainer implements Contai
     private int maxStack = MAX_STACK;
 
     @ShadowConstructor
-    public void banner$constructor(AbstractContainerMenu eventHandlerIn, int width, int height) {
+    public void taiyitist$constructor(AbstractContainerMenu eventHandlerIn, int width, int height) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(AbstractContainerMenu eventHandlerIn, int width, int height, Player owner) {
-        banner$constructor(eventHandlerIn, width, height);
+    public void taiyitist$constructor(AbstractContainerMenu eventHandlerIn, int width, int height, Player owner) {
+        taiyitist$constructor(eventHandlerIn, width, height);
         this.owner = owner;
     }
 

@@ -22,7 +22,7 @@ public abstract class CraftProjectile extends CraftEntity implements Projectile 
          this.getHandle().setOwner((Entity)null);
       }
 
-      this.getHandle().banner$setProjectileSource(shooter);
+      this.getHandle().taiyitist$setProjectileSource(shooter);
    }
 
    public boolean doesBounce() {

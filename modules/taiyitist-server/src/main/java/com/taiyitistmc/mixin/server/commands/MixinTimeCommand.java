@@ -15,17 +15,17 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinTimeCommand {
 
     @Redirect(method = "setTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getAllLevels()Ljava/lang/Iterable;"))
-    private static Iterable<ServerLevel> banner$useSourceLevel1(MinecraftServer server, CommandSourceStack source) {
+    private static Iterable<ServerLevel> taiyitist$useSourceLevel1(MinecraftServer server, CommandSourceStack source) {
         return List.of(source.getLevel());
     }
 
     @Redirect(method = "addTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getAllLevels()Ljava/lang/Iterable;"))
-    private static Iterable<ServerLevel> banner$useSourceLevel2(MinecraftServer server, CommandSourceStack source) {
+    private static Iterable<ServerLevel> taiyitist$useSourceLevel2(MinecraftServer server, CommandSourceStack source) {
         return List.of(source.getLevel());
     }
 
     @Redirect(method = "addTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setDayTime(J)V"))
-    private static void banner$addTimeEvent(ServerLevel serverWorld, long time) {
+    private static void taiyitist$addTimeEvent(ServerLevel serverWorld, long time) {
         TimeSkipEvent event = new TimeSkipEvent(serverWorld.getWorld(), TimeSkipEvent.SkipReason.COMMAND, time - serverWorld.getDayTime());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -34,7 +34,7 @@ public class MixinTimeCommand {
     }
 
     @Redirect(method = "setTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setDayTime(J)V"))
-    private static void banner$setTimeEvent(ServerLevel serverWorld, long time) {
+    private static void taiyitist$setTimeEvent(ServerLevel serverWorld, long time) {
         TimeSkipEvent event = new TimeSkipEvent(serverWorld.getWorld(), TimeSkipEvent.SkipReason.COMMAND, time - serverWorld.getDayTime());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {

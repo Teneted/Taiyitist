@@ -16,7 +16,7 @@ public class MixinSculkCatalystBlockEntity_CatalystListener implements Injection
     SculkSpreader sculkSpreader;
 
     @Override
-    public void banner$setLevel(Level level) {
-        this.sculkSpreader.banner$setLevel(level);
+    public void taiyitist$setLevel(Level level) {
+        this.sculkSpreader.taiyitist$setLevel(level);
     }
 }

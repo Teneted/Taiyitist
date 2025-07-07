@@ -27,7 +27,7 @@ public class MixinGameEventDispatcher {
 
     @Inject(method = "post", cancellable = true, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/core/SectionPos;blockToSectionCoord(I)I", ordinal = 0))
-    private void banner$gameEvent(Holder<GameEvent> holder, Vec3 vec3, GameEvent.Context context, CallbackInfo ci, @Local int i, @Local BlockPos blockPos) {
+    private void taiyitist$gameEvent(Holder<GameEvent> holder, Vec3 vec3, GameEvent.Context context, CallbackInfo ci, @Local int i, @Local BlockPos blockPos) {
         // CraftBukkit start
         GenericGameEvent event = new GenericGameEvent(CraftGameEvent.minecraftToBukkit(holder.value()), CraftLocation.toBukkit(blockPos, level.getWorld()), (context.sourceEntity() == null) ? null : context.sourceEntity().getBukkitEntity(), i, !Bukkit.isPrimaryThread());
         level.getCraftServer().getPluginManager().callEvent(event);

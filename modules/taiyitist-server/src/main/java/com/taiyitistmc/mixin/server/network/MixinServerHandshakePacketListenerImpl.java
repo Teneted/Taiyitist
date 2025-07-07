@@ -42,12 +42,12 @@ public abstract class MixinServerHandshakePacketListenerImpl implements ServerHa
     private MinecraftServer server;
 
     @Inject(method = "handleIntention", at = @At("HEAD"))
-    private void banner$setHostName(ClientIntentionPacket packet, CallbackInfo ci) {
-        this.connection.banner$setHostName(packet.hostName() + ":" + packet.port()); // CraftBukkit  - set hostname
+    private void taiyitist$setHostName(ClientIntentionPacket packet, CallbackInfo ci) {
+        this.connection.taiyitist$setHostName(packet.hostName() + ":" + packet.port()); // CraftBukkit  - set hostname
     }
 
     @Inject(method = "beginLogin", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/network/Connection;setupOutboundProtocol(Lnet/minecraft/network/ProtocolInfo;)V"))
-    private void banner$throttler(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
+    private void taiyitist$throttler(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
         try {
             long currentTime = System.currentTimeMillis();
             long connectionThrottle = Bukkit.getServer().getConnectionThrottle();
@@ -74,14 +74,14 @@ public abstract class MixinServerHandshakePacketListenerImpl implements ServerHa
     }
 
     @Inject(method = "beginLogin", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
-    private void banner$proxySupport(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
+    private void taiyitist$proxySupport(ClientIntentionPacket packet, boolean bl, CallbackInfo ci) {
         if (!VelocitySupport.isEnabled()) {
             String[] split = packet.hostName().split("\00");
             if (SpigotConfig.bungee) {
                 if ((split.length == 3 || split.length == 4) && (HOST_PATTERN.matcher(split[1]).matches())) {
-                    this.connection.banner$setHostName(split[0]);
+                    this.connection.taiyitist$setHostName(split[0]);
                     this.connection.address = new InetSocketAddress(split[1], ((InetSocketAddress) this.connection.getRemoteAddress()).getPort());
-                    this.connection.banner$setSpoofedUUID(UndashedUuid.fromStringLenient(split[2]));
+                    this.connection.taiyitist$setSpoofedUUID(UndashedUuid.fromStringLenient(split[2]));
                 } else {
                     var component = Component.literal("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
                     this.connection.send(new ClientboundLoginDisconnectPacket(component));

@@ -53,7 +53,7 @@ public abstract class MixinZombifiedPiglin extends Zombie {
     }
 
     @ModifyArg(method = "startPersistentAngerTimer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/ZombifiedPiglin;setRemainingPersistentAngerTime(I)V"))
-    private int banner$pigAngry(int time) {
+    private int taiyitist$pigAngry(int time) {
         Entity entity = ((ServerLevel) this.level()).getEntity(this.getPersistentAngerTarget());
         PigZombieAngerEvent event = new PigZombieAngerEvent((PigZombie) this.getBukkitEntity(), entity == null ? null : entity.getBukkitEntity(), time);
         Bukkit.getPluginManager().callEvent(event);

@@ -430,7 +430,7 @@ public final class CraftServer implements Server {
       this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
       this.pluginManager.useTimings(this.configuration.getBoolean("settings.plugin-profiling"));
       this.overrideSpawnLimits();
-      console.banner$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
+      console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
       this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
       TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
@@ -975,7 +975,7 @@ public final class CraftServer implements Server {
       TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
       this.printSaveWarning = false;
-      this.console.banner$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
+      this.console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
       this.loadIcon();
       this.loadCompatibilities();
       Commodore var10000 = CraftMagicNumbers.INSTANCE.getCommodore();
@@ -1251,7 +1251,7 @@ public final class CraftServer implements Server {
          }
 
          iregistry = iregistrycustom_dimension.lookupOrThrow(Registries.LEVEL_STEM);
-         worlddata.banner$setCustomDimensions(iregistry);
+         worlddata.taiyitist$setCustomDimensions(iregistry);
          worlddata.checkName(name);
          worlddata.setModdedInfo(this.console.getServerModName(), this.console.getModdedStatus().shouldReportAsModified());
          if (this.console.bridge$options().has("forceUpgrade")) {

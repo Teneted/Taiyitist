@@ -10,7 +10,7 @@ public interface InjectionPrimaryLevelData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCustomDimensions(Registry<LevelStem> customDimensions) {
+    default void taiyitist$setCustomDimensions(Registry<LevelStem> customDimensions) {
         throw new IllegalStateException("Not implemented");
     }
 

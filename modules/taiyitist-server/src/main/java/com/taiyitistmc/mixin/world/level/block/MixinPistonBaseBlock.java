@@ -38,7 +38,7 @@ public abstract class MixinPistonBaseBlock extends DirectionalBlock {
     // @formatter:on
 
     @Inject(method = "checkIfExtend", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;blockEvent(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;II)V"))
-    public void banner$pistonRetract(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci, Direction direction) {
+    public void taiyitist$pistonRetract(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci, Direction direction) {
         if (!this.isSticky) {
             Block block = CraftBlock.at(worldIn, pos);
             BlockPistonRetractEvent event = new BlockPistonRetractEvent(block, ImmutableList.of(), CraftBlock.notchToBlockFace(direction));
@@ -52,7 +52,7 @@ public abstract class MixinPistonBaseBlock extends DirectionalBlock {
 
     @Inject(method = "moveBlocks", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/piston/PistonStructureResolver;getToDestroy()Ljava/util/List;"))
-    public void banner$pistonAction(Level worldIn, BlockPos pos, Direction directionIn, boolean extending, CallbackInfoReturnable<Boolean> cir,
+    public void taiyitist$pistonAction(Level worldIn, BlockPos pos, Direction directionIn, boolean extending, CallbackInfoReturnable<Boolean> cir,
                                     BlockPos blockPos, PistonStructureResolver helper) {
         final Block craftBlock = CraftBlock.at(worldIn, pos);
 

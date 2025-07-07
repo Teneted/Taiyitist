@@ -28,32 +28,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RedStoneOreBlock.class)
 public abstract class MixinRedStoneOreBlock {
 
-    private static Entity banner$entity;
+    private static Entity taiyitist$entity;
 
     @Shadow
     protected static void interact(BlockState state, Level level, BlockPos pos) {
     }
 
     private static void interact(BlockState blockState, Level world, BlockPos blockPos, Entity entity) {
-        banner$entity = entity;
+        taiyitist$entity = entity;
         interact(blockState, world, blockPos);
     }
 
     @Inject(method = "interact", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private static void banner$entityChangeBlock(BlockState blockState, Level world, BlockPos blockPos, CallbackInfo ci) {
-        if (!CraftEventFactory.callEntityChangeBlockEvent(banner$entity, blockPos, blockState.setValue(RedStoneOreBlock.LIT, true))) {
+    private static void taiyitist$entityChangeBlock(BlockState blockState, Level world, BlockPos blockPos, CallbackInfo ci) {
+        if (!CraftEventFactory.callEntityChangeBlockEvent(taiyitist$entity, blockPos, blockState.setValue(RedStoneOreBlock.LIT, true))) {
             ci.cancel();
         }
-        banner$entity = null;
+        taiyitist$entity = null;
     }
 
     @Inject(method = "attack", at = @At(value = "HEAD"))
-    public void banner$interact1(BlockState state, Level worldIn, BlockPos pos, Player player, CallbackInfo ci) {
-        banner$entity = player;
+    public void taiyitist$interact1(BlockState state, Level worldIn, BlockPos pos, Player player, CallbackInfo ci) {
+        taiyitist$entity = player;
     }
 
     @Inject(method = "stepOn", cancellable = true, at = @At(value = "HEAD"))
-    public void banner$entityInteract(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
+    public void taiyitist$entityInteract(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
         if (entityIn instanceof Player) {
             PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(((Player) entityIn), Action.PHYSICAL, pos, null, null, null);
             if (event.isCancelled()) {
@@ -68,16 +68,16 @@ public abstract class MixinRedStoneOreBlock {
                 return;
             }
         }
-        banner$entity = entityIn;
+        taiyitist$entity = entityIn;
     }
 
     @Inject(method = "useItemOn", at = @At(value = "HEAD"))
-    public void banner$interact3(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<ItemInteractionResult> cir) {
-        banner$entity = player;
+    public void taiyitist$interact3(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<ItemInteractionResult> cir) {
+        taiyitist$entity = player;
     }
 
     @Inject(method = "randomTick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private void banner$blockFade(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
+    private void taiyitist$blockFade(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
         if (CraftEventFactory.callBlockFadeEvent(worldIn, pos, state.setValue(RedStoneOreBlock.LIT, false)).isCancelled()) {
             ci.cancel();
         }

@@ -119,9 +119,9 @@ public class MixinDamageSource implements InjectionDamageSource {
     @Override
     public DamageSource cloneInstance() {
         DamageSource damageSource = new DamageSource(this.type, this.directEntity, this.causingEntity, this.damageSourcePosition);
-        damageSource.banner$setDirectBlock(this.getDirectBlock());
-        damageSource.banner$setDirectBlockState(this.getDirectBlockState());
-        damageSource.banner$setCustomCausingEntity(this.customEntityDamager);
+        damageSource.taiyitist$setDirectBlock(this.getDirectBlock());
+        damageSource.taiyitist$setDirectBlockState(this.getDirectBlockState());
+        damageSource.taiyitist$setCustomCausingEntity(this.customEntityDamager);
         this.withSweep = this.isSweep();
         this.poison = this.isPoison();
         this.melting = this.isMelting();
@@ -179,25 +179,25 @@ public class MixinDamageSource implements InjectionDamageSource {
     }
 
     @Override
-    public DamageSource banner$setCustomCausingEntity(Entity entity) {
+    public DamageSource taiyitist$setCustomCausingEntity(Entity entity) {
         this.customEntityDamager = entity;
         return (DamageSource) (Object) this;
     }
 
     @Override
-    public DamageSource banner$setCustomCausingEntityDamager(Entity entity) {
+    public DamageSource taiyitist$setCustomCausingEntityDamager(Entity entity) {
         this.customCausingEntityDamager = entity;
         return (DamageSource) (Object) this;
     }
 
     @Override
-    public DamageSource banner$setDirectBlock(Block block) {
+    public DamageSource taiyitist$setDirectBlock(Block block) {
         this.directBlock = block;
         return (DamageSource) (Object) this;
     }
 
     @Override
-    public DamageSource banner$setDirectBlockState(BlockState block) {
+    public DamageSource taiyitist$setDirectBlockState(BlockState block) {
         this.directBlockState = block;
         return (DamageSource) (Object) this;
     }

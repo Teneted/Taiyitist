@@ -18,7 +18,7 @@ public class MixinFungusBlock {
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "performBonemeal", at = @At("HEAD"))
-    private void banner$captureTree(ServerLevel worldIn, RandomSource rand, BlockPos pos, BlockState state, CallbackInfo ci) {
+    private void taiyitist$captureTree(ServerLevel worldIn, RandomSource rand, BlockPos pos, BlockState state, CallbackInfo ci) {
         if ((Object) this == Blocks.WARPED_FUNGUS) {
             BukkitSnapshotCaptures.captureTreeType(TreeType.WARPED_FUNGUS);
         } else if ((Object) this == Blocks.CRIMSON_FUNGUS) {

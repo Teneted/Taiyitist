@@ -33,7 +33,7 @@ public abstract class MixinBambooStalkBlock {
     public static EnumProperty<BambooLeaves> LEAVES;
 
     @Redirect(method = "performBonemeal", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
-    private <T extends Comparable<T>> T banner$skipIfCancel(BlockState state, Property<T> property) {
+    private <T extends Comparable<T>> T taiyitist$skipIfCancel(BlockState state, Property<T> property) {
         if (!state.is(Blocks.BAMBOO)) {
             return (T) Integer.valueOf(1);
         } else {

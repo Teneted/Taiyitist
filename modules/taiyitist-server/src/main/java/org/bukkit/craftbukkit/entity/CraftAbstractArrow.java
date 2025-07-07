@@ -61,7 +61,7 @@ public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow
          this.getHandle().setOwner((net.minecraft.world.entity.Entity)null);
       }
 
-      this.getHandle().banner$setProjectileSource(shooter);
+      this.getHandle().taiyitist$setProjectileSource(shooter);
    }
 
    public boolean isInBlock() {

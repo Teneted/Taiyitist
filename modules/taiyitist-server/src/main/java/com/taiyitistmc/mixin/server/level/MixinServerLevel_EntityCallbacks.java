@@ -21,8 +21,8 @@ public class MixinServerLevel_EntityCallbacks {
     private ServerLevel outerThis;
 
     @Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("RETURN"))
-    private void banner$valid(Entity entity, CallbackInfo ci) {
-        entity.banner$setValid(true);
+    private void taiyitist$valid(Entity entity, CallbackInfo ci) {
+        entity.taiyitist$setValid(true);
         // Paper start - Set origin location when the entity is being added to the world
         if (entity.getOriginVector() == null) {
             entity.setOrigin(entity.getBukkitEntity().getLocation());
@@ -35,12 +35,12 @@ public class MixinServerLevel_EntityCallbacks {
     }
 
     @Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
-    private void banner$entityAdd(Entity entity, CallbackInfo ci) {
+    private void taiyitist$entityAdd(Entity entity, CallbackInfo ci) {
         new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
     }
 
     @Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
-    private void banner$entityCleanup(Entity entity, CallbackInfo ci) {
+    private void taiyitist$entityCleanup(Entity entity, CallbackInfo ci) {
         if (entity instanceof Player player) {
             for (ServerLevel serverLevel : outerThis.getServer().getAllLevels()) {
                 DimensionDataStorage worldData = serverLevel.getDataStorage();
@@ -61,9 +61,9 @@ public class MixinServerLevel_EntityCallbacks {
     }
 
     @Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("RETURN"))
-    private void banner$invalid(Entity entity, CallbackInfo ci) {
-        entity.banner$setInWorld(true);
-        entity.banner$setValid(false);
+    private void taiyitist$invalid(Entity entity, CallbackInfo ci) {
+        entity.taiyitist$setInWorld(true);
+        entity.taiyitist$setValid(false);
         if (!(entity instanceof ServerPlayer)) {
             for (var player : outerThis.players()) {
                 player.getBukkitEntity().onEntityRemove(entity);

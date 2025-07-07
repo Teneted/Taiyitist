@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinAxeItem {
 
     @Inject(method = "useOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/context/UseOnContext;getItemInHand()Lnet/minecraft/world/item/ItemStack;", shift = At.Shift.AFTER), cancellable = true)
-    private void banner$callEntityChangeBlockEvent(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir, @Local BlockPos blockPos, @Local Player player, @Local Optional<BlockState> optional) {
+    private void taiyitist$callEntityChangeBlockEvent(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir, @Local BlockPos blockPos, @Local Player player, @Local Optional<BlockState> optional) {
         if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(player, blockPos, optional.get())) {
             cir.setReturnValue(InteractionResult.PASS);
         }

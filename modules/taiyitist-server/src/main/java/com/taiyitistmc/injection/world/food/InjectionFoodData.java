@@ -10,7 +10,7 @@ public interface InjectionFoodData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSaturatedRegenRate(int saturatedRegenRate) {
+    default void taiyitist$setSaturatedRegenRate(int saturatedRegenRate) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -18,7 +18,7 @@ public interface InjectionFoodData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
+    default void taiyitist$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -26,7 +26,7 @@ public interface InjectionFoodData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setStarvationRate(int starvationRate) {
+    default void taiyitist$setStarvationRate(int starvationRate) {
         throw new IllegalStateException("Not implemented");
     }
 

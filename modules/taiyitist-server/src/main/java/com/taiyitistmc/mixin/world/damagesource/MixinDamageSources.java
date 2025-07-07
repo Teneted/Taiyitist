@@ -35,7 +35,7 @@ public abstract class MixinDamageSources implements InjectionDamageSources {
             target = "Lnet/minecraft/world/damagesource/DamageSources;" +
                     "source(Lnet/minecraft/resources/ResourceKey;)" +
                     "Lnet/minecraft/world/damagesource/DamageSource;", shift = At.Shift.BEFORE, ordinal = 0))
-    private void banner$init(RegistryAccess registryAccess, CallbackInfo ci) {
+    private void taiyitist$init(RegistryAccess registryAccess, CallbackInfo ci) {
         this.melting = this.source(DamageTypes.ON_FIRE).melting();
         this.poison = this.source(DamageTypes.MAGIC).poison();
         // CraftBukkit end

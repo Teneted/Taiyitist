@@ -45,12 +45,12 @@ public abstract class MixinPlayerDataStorage implements InjectionPlayerDataStora
     private File playerDir;
 
     @Inject(method = "save", at = @At("HEAD"), cancellable = true)
-    private void banner$allowDataSaving(Player player, CallbackInfo ci) {
+    private void taiyitist$allowDataSaving(Player player, CallbackInfo ci) {
         if (org.spigotmc.SpigotConfig.disablePlayerDataSaving) ci.cancel(); // Spigot
     }
 
     @Inject(method = "load(Lnet/minecraft/world/entity/player/Player;Ljava/lang/String;)Ljava/util/Optional;", at = @At("RETURN"))
-    private void banner$lastSeenTime(Player player, String string, CallbackInfoReturnable<Optional<CompoundTag>> cir) {
+    private void taiyitist$lastSeenTime(Player player, String string, CallbackInfoReturnable<Optional<CompoundTag>> cir) {
         cir.getReturnValue().ifPresent((tag) -> {
             if (player instanceof ServerPlayer) {
                 CraftPlayer craftPlayer = ((ServerPlayer) player).getBukkitEntity();

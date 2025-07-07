@@ -70,7 +70,7 @@ public abstract class MixinArmorStand extends LivingEntity implements InjectionA
     }
 
     @Inject(method = "swapItem", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;hasInfiniteMaterials()Z"))
-    public void banner$manipulateEvent(net.minecraft.world.entity.player.Player playerEntity, net.minecraft.world.entity.EquipmentSlot slotType, ItemStack itemStack, InteractionHand hand, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$manipulateEvent(net.minecraft.world.entity.player.Player playerEntity, net.minecraft.world.entity.EquipmentSlot slotType, ItemStack itemStack, InteractionHand hand, CallbackInfoReturnable<Boolean> cir) {
         ItemStack itemStack1 = this.getItemBySlot(slotType);
 
         org.bukkit.inventory.ItemStack armorStandItem = CraftItemStack.asCraftMirror(itemStack1);
@@ -90,67 +90,67 @@ public abstract class MixinArmorStand extends LivingEntity implements InjectionA
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/decoration/ArmorStand;kill()V"))
-    public void banner$damageDropOut(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$damageDropOut(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (CraftEventFactory.handleNonLivingEntityDamageEvent((net.minecraft.world.entity.decoration.ArmorStand) (Object) this, source, amount)) {
             cir.setReturnValue(false);
         } else {
-            banner$callEntityDeath();
+            taiyitist$callEntityDeath();
         }
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/tags/DamageTypeTags;IS_EXPLOSION:Lnet/minecraft/tags/TagKey;"))
-    public void banner$damageNormal(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$damageNormal(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (CraftEventFactory.handleNonLivingEntityDamageEvent((net.minecraft.world.entity.decoration.ArmorStand) (Object) this, source, amount, true, this.invisible)) {
             cir.setReturnValue(false);
         }
     }
 
     @Redirect(method = "hurt", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/decoration/ArmorStand;invisible:Z"))
-    private boolean banner$softenCondition(net.minecraft.world.entity.decoration.ArmorStand entity) {
+    private boolean taiyitist$softenCondition(net.minecraft.world.entity.decoration.ArmorStand entity) {
         return false;
     }
 
     @Inject(method = "hurt", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/decoration/ArmorStand;kill()V"))
-    private void banner$damageDeath1(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        banner$callEntityDeath();
+    private void taiyitist$damageDeath1(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$callEntityDeath();
     }
 
     @Inject(method = "hurt", at = @At(value = "INVOKE", ordinal = 2, target = "Lnet/minecraft/world/entity/decoration/ArmorStand;kill()V"))
-    private void banner$damageDeath2(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        banner$callEntityDeath();
+    private void taiyitist$damageDeath2(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$callEntityDeath();
     }
 
     @Inject(method = "causeDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/ArmorStand;kill()V"))
-    private void banner$deathEvent2(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfo ci) {
-        banner$callEntityDeath();
+    private void taiyitist$deathEvent2(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfo ci) {
+        taiyitist$callEntityDeath();
     }
 
     @Redirect(method = "brokenByAnything", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/ArmorStand;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V"))
-    private void banner$dropLater(ArmorStand instance, ServerLevel serverLevel, DamageSource damageSource) {
+    private void taiyitist$dropLater(ArmorStand instance, ServerLevel serverLevel, DamageSource damageSource) {
     }
 
     @Redirect(method = "brokenByAnything", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;popResource(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$captureDropsDeath(Level worldIn, BlockPos pos, ItemStack stack) {
-        banner$addDrops(worldIn, stack);
+    private void taiyitist$captureDropsDeath(Level worldIn, BlockPos pos, ItemStack stack) {
+        taiyitist$addDrops(worldIn, stack);
     }
 
     @Inject(method = "brokenByAnything", at = @At("RETURN"))
-    private void banner$spawnLast(ServerLevel serverLevel, DamageSource damageSource, CallbackInfo ci) {
+    private void taiyitist$spawnLast(ServerLevel serverLevel, DamageSource damageSource, CallbackInfo ci) {
         this.dropAllDeathLoot(serverLevel, damageSource);
     }
 
     @Inject(method = "kill", at = @At("HEAD"))
-    private void banner$deathEvent(CallbackInfo ci) {
-        banner$callEntityDeath();
+    private void taiyitist$deathEvent(CallbackInfo ci) {
+        taiyitist$callEntityDeath();
     }
 
-    private void banner$addDrops(Level worldIn, ItemStack stack) {
+    private void taiyitist$addDrops(Level worldIn, ItemStack stack) {
         if (!worldIn.isClientSide && !stack.isEmpty() && worldIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) { // Banner - prevents item dupe
             this.bridge$drops().add(CraftItemStack.asBukkitCopy(stack));
         }
     }
 
-    private void banner$callEntityDeath() {
+    private void taiyitist$callEntityDeath() {
         CraftEventFactory.callEntityDeathEvent((net.minecraft.world.entity.decoration.ArmorStand) (Object) this, this.damageSources().genericKill(), this.bridge$drops());// CraftBukkit - call event
     }
 
@@ -169,7 +169,7 @@ public abstract class MixinArmorStand extends LivingEntity implements InjectionA
     }
 
     @Override
-    public void banner$setCanMove(boolean canMove) {
+    public void taiyitist$setCanMove(boolean canMove) {
         this.canMove = canMove;
     }
 }

@@ -79,7 +79,7 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
     @Shadow public abstract AbstractMinecart.Type getMinecartType();
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType<?> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<?> type, Level worldIn, CallbackInfo ci) {
         slowWhenEmpty = true;
         derailedX = 0.5;
         derailedY = 0.5;
@@ -274,12 +274,12 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
     }
 
     @Redirect(method = "applyNaturalSlowdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;isVehicle()Z"))
-    private boolean banner$slowWhenEmpty(AbstractMinecart abstractMinecartEntity) {
+    private boolean taiyitist$slowWhenEmpty(AbstractMinecart abstractMinecartEntity) {
         return this.isVehicle() || !this.slowWhenEmpty;
     }
 
     @Inject(method = "push", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;hasPassenger(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$vehicleCollide(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$vehicleCollide(Entity entityIn, CallbackInfo ci) {
         if (!this.hasPassenger(entityIn)) {
             VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), entityIn.getBukkitEntity());
             Bukkit.getPluginManager().callEvent(collisionEvent);
@@ -329,7 +329,7 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
     }
 
     @Override
-    public void banner$setMaxSpeed(double maxSpeed) {
+    public void taiyitist$setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
@@ -339,7 +339,7 @@ public abstract class MixinAbstractMinecart extends VehicleEntity implements Inj
     }
 
     @Override
-    public void banner$setSlowWhenEmpty(boolean slowWhenEmpty) {
+    public void taiyitist$setSlowWhenEmpty(boolean slowWhenEmpty) {
         this.slowWhenEmpty = slowWhenEmpty;
     }
 }

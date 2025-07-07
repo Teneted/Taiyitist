@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinPlaceCommand {
 
     @Inject(method = "placeStructure", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/StructureStart;getBoundingBox()Lnet/minecraft/world/level/levelgen/structure/BoundingBox;"))
-    private static void banner$pushStructureReason(CommandSourceStack commandSourceStack, Holder.Reference<Structure> reference, BlockPos blockPos, CallbackInfoReturnable<Integer> cir, @Local StructureStart structureStart) {
-        structureStart.banner$setGenerationEventCause(org.bukkit.event.world.AsyncStructureGenerateEvent.Cause.COMMAND); // CraftBukkit - set AsyncStructureGenerateEvent.Cause.COMMAND as generation cause
+    private static void taiyitist$pushStructureReason(CommandSourceStack commandSourceStack, Holder.Reference<Structure> reference, BlockPos blockPos, CallbackInfoReturnable<Integer> cir, @Local StructureStart structureStart) {
+        structureStart.taiyitist$setGenerationEventCause(org.bukkit.event.world.AsyncStructureGenerateEvent.Cause.COMMAND); // CraftBukkit - set AsyncStructureGenerateEvent.Cause.COMMAND as generation cause
     }
 }

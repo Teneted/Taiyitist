@@ -52,15 +52,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer, RecipeCraftingHolder, StackedContentsCompatible, InjectionAbstractFurnaceBlockEntity {
 
 
-    private static AbstractFurnaceBlockEntity banner$captureFurnace;
-    private static Player banner$capturePlayer;
-    private static ItemStack banner$item;
-    private static int banner$captureAmount;
-    private static final AtomicReference<Level> banner$level = new AtomicReference<>();
+    private static AbstractFurnaceBlockEntity taiyitist$captureFurnace;
+    private static Player taiyitist$capturePlayer;
+    private static ItemStack taiyitist$item;
+    private static int taiyitist$captureAmount;
+    private static final AtomicReference<Level> taiyitist$level = new AtomicReference<>();
     // @formatter:on
-    private static final AtomicReference<BlockPos> banner$pos = new AtomicReference<>();
-    private static final AtomicReference<Level> banner$world = new AtomicReference<>();
-    private static final AtomicReference<BlockPos> banner$blockPos = new AtomicReference<>();
+    private static final AtomicReference<BlockPos> taiyitist$pos = new AtomicReference<>();
+    private static final AtomicReference<Level> taiyitist$world = new AtomicReference<>();
+    private static final AtomicReference<BlockPos> taiyitist$blockPos = new AtomicReference<>();
     public List<HumanEntity> transaction = new ArrayList<>();
     // @formatter:off
     @Shadow protected NonNullList<ItemStack> items;
@@ -79,7 +79,7 @@ public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlock
     @Eject(method = "serverTick",
             at = @At(value = "INVOKE", ordinal = 3,
                     target = "Lnet/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity;isLit()Z"))
-    private static boolean banner$setBurnTime(AbstractFurnaceBlockEntity furnace, CallbackInfo ci) {
+    private static boolean taiyitist$setBurnTime(AbstractFurnaceBlockEntity furnace, CallbackInfo ci) {
         ItemStack itemStack = furnace.getItem(1);
         CraftItemStack fuel = CraftItemStack.asCraftMirror(itemStack);
         FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(CraftBlock.at(furnace.getLevel(), furnace.getBlockPos()), fuel, furnace.getBurnDuration(itemStack));
@@ -93,9 +93,9 @@ public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlock
     }
 
     @Redirect(method = "createExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"))
-    private static void banner$expEvent(ServerLevel level, Vec3 vec3, int amount) {
-        if (banner$capturePlayer != null && banner$captureAmount != 0) {
-            FurnaceExtractEvent event = new FurnaceExtractEvent(((ServerPlayer) banner$capturePlayer).getBukkitEntity(), CraftBlock.at(level, banner$captureFurnace.getBlockPos()), CraftMagicNumbers.getMaterial(banner$item.getItem()), banner$captureAmount, amount);
+    private static void taiyitist$expEvent(ServerLevel level, Vec3 vec3, int amount) {
+        if (taiyitist$capturePlayer != null && taiyitist$captureAmount != 0) {
+            FurnaceExtractEvent event = new FurnaceExtractEvent(((ServerPlayer) taiyitist$capturePlayer).getBukkitEntity(), CraftBlock.at(level, taiyitist$captureFurnace.getBlockPos()), CraftMagicNumbers.getMaterial(taiyitist$item.getItem()), taiyitist$captureAmount, amount);
             Bukkit.getPluginManager().callEvent(event);
             amount = event.getExpToDrop();
         }
@@ -103,22 +103,22 @@ public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlock
     }
 
     @Inject(method = "serverTick", at = @At("HEAD"))
-    private static void banner$getInfo(Level level, BlockPos pos, BlockState state,
+    private static void taiyitist$getInfo(Level level, BlockPos pos, BlockState state,
                                        AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci) {
-        banner$world.set(level);
-        banner$blockPos.set(pos);
+        taiyitist$world.set(level);
+        taiyitist$blockPos.set(pos);
     }
 
     @Redirect(method = "serverTick",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity;burn(Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/item/crafting/RecipeHolder;Lnet/minecraft/core/NonNullList;I)Z"))
-    private static boolean banner$burnEvent(RegistryAccess registryAccess, RecipeHolder<?> recipeHolder, NonNullList<ItemStack> nonNullList, int i) {
-        return burn(banner$world.get(), banner$blockPos.get(), registryAccess, recipeHolder, nonNullList, i);
+    private static boolean taiyitist$burnEvent(RegistryAccess registryAccess, RecipeHolder<?> recipeHolder, NonNullList<ItemStack> nonNullList, int i) {
+        return burn(taiyitist$world.get(), taiyitist$blockPos.get(), registryAccess, recipeHolder, nonNullList, i);
     }
 
     private static boolean burn(Level world, BlockPos blockposition, RegistryAccess iregistrycustom, @Nullable RecipeHolder<?> irecipe, NonNullList<ItemStack> nonnulllist, int i) {
-        banner$level.set(world);
-        banner$pos.set(blockposition);
+        taiyitist$level.set(world);
+        taiyitist$pos.set(blockposition);
         return burn(iregistrycustom, irecipe, nonnulllist, i);
     }
 
@@ -139,11 +139,11 @@ public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlock
 
             FurnaceSmeltEvent furnaceSmeltEvent;
             if (irecipe.toBukkitRecipe() instanceof CookingRecipe cookingRecipe) {
-                furnaceSmeltEvent = new FurnaceSmeltEvent(CraftBlock.at(banner$level.get(), banner$pos.get()), source, result, cookingRecipe); // Paper
+                furnaceSmeltEvent = new FurnaceSmeltEvent(CraftBlock.at(taiyitist$level.get(), taiyitist$pos.get()), source, result, cookingRecipe); // Paper
             } else {
-                furnaceSmeltEvent = new FurnaceSmeltEvent(CraftBlock.at(banner$level.get(), banner$pos.get()), source, result);
+                furnaceSmeltEvent = new FurnaceSmeltEvent(CraftBlock.at(taiyitist$level.get(), taiyitist$pos.get()), source, result);
             }
-            banner$level.get().getCraftServer().getPluginManager().callEvent(furnaceSmeltEvent);
+            taiyitist$level.get().getCraftServer().getPluginManager().callEvent(furnaceSmeltEvent);
 
             if (furnaceSmeltEvent.isCancelled()) {
                 return false;
@@ -191,19 +191,19 @@ public abstract class MixinAbstractFurnaceBlockEntity extends BaseContainerBlock
     @Override
     public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel world, Vec3 vec, BlockPos pos, Player entity, ItemStack itemStack, int amount) {
         try {
-            banner$item = itemStack;
-            banner$captureAmount = amount;
-            banner$captureFurnace = (AbstractFurnaceBlockEntity) (Object) this;
-            banner$capturePlayer = entity;
+            taiyitist$item = itemStack;
+            taiyitist$captureAmount = amount;
+            taiyitist$captureFurnace = (AbstractFurnaceBlockEntity) (Object) this;
+            taiyitist$capturePlayer = entity;
             List<RecipeHolder<?>> list = this.getRecipesToAwardAndPopExperience(world, vec);
             entity.awardRecipes(list);
             this.recipesUsed.clear();
             return list;
         } finally {
-            banner$item = null;
-            banner$captureAmount = 0;
-            banner$captureFurnace = null;
-            banner$capturePlayer = null;
+            taiyitist$item = null;
+            taiyitist$captureAmount = 0;
+            taiyitist$captureFurnace = null;
+            taiyitist$capturePlayer = null;
         }
     }
 

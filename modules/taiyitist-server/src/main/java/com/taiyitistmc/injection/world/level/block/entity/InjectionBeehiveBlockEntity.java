@@ -11,7 +11,7 @@ public interface InjectionBeehiveBlockEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxBees(int maxBees) {
+    default void taiyitist$setMaxBees(int maxBees) {
         throw new IllegalStateException("Not implemented");
     }
 

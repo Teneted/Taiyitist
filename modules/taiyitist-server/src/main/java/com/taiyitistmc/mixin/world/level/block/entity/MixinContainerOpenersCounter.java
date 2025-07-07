@@ -44,7 +44,7 @@ public abstract class MixinContainerOpenersCounter implements InjectionContainer
     }
 
     @Inject(method = "incrementOpeners", at = @At("HEAD"))
-    private void banner$increase(Player p_155453_, Level level, BlockPos pos, BlockState p_155456_, CallbackInfo ci) {
+    private void taiyitist$increase(Player p_155453_, Level level, BlockPos pos, BlockState p_155456_, CallbackInfo ci) {
         int oldPower = Math.max(0, Math.min(15, this.openCount++));
         if (level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.TRAPPED_CHEST)) {
             int newPower = Math.max(0, Math.min(15, this.openCount));
@@ -56,7 +56,7 @@ public abstract class MixinContainerOpenersCounter implements InjectionContainer
     }
 
     @Inject(method = "decrementOpeners", at = @At("HEAD"))
-    private void banner$decrease(Player p_155453_, Level level, BlockPos pos, BlockState p_155456_, CallbackInfo ci) {
+    private void taiyitist$decrease(Player p_155453_, Level level, BlockPos pos, BlockState p_155456_, CallbackInfo ci) {
         int oldPower = Math.max(0, Math.min(15, this.openCount--));
         if (level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.TRAPPED_CHEST)) {
             int newPower = Math.max(0, Math.min(15, this.openCount));
@@ -68,7 +68,7 @@ public abstract class MixinContainerOpenersCounter implements InjectionContainer
     }
 
     @ModifyVariable(method = "recheckOpeners", ordinal = 0, at = @At(value = "FIELD", ordinal = 0, target = "Lnet/minecraft/world/level/block/entity/ContainerOpenersCounter;openCount:I"))
-    private int banner$addOpens(int power) {
+    private int taiyitist$addOpens(int power) {
         return opened ? power + 1 : power;
     }
 }

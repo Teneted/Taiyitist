@@ -290,7 +290,7 @@ public abstract class CraftEntity implements Entity {
    }
 
    public void setPersistent(boolean persistent) {
-      this.entity.banner$setPersist(persistent);
+      this.entity.taiyitist$setPersist(persistent);
    }
 
    public Vector getMomentum() {
@@ -503,7 +503,7 @@ public abstract class CraftEntity implements Entity {
             }
          }
 
-         this.getHandle().banner$setVisibleByDefault(visible);
+         this.getHandle().taiyitist$setVisibleByDefault(visible);
       }
 
    }

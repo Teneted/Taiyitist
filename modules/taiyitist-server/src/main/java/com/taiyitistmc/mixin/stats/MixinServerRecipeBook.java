@@ -21,14 +21,14 @@ public class MixinServerRecipeBook {
     @Inject(method = "addRecipes",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/stats/ServerRecipeBook;add(Lnet/minecraft/resources/ResourceLocation;)V"), cancellable = true)
-    private void banner$callRecipeEvent(Collection<RecipeHolder<?>> collection, ServerPlayer serverPlayer, CallbackInfoReturnable<Integer> cir, @Local ResourceLocation resourceLocation) {
+    private void taiyitist$callRecipeEvent(Collection<RecipeHolder<?>> collection, ServerPlayer serverPlayer, CallbackInfoReturnable<Integer> cir, @Local ResourceLocation resourceLocation) {
         if (!CraftEventFactory.handlePlayerRecipeListUpdateEvent(serverPlayer, resourceLocation)) {
             cir.cancel();
         }
     }
 
     @Inject(method = "sendRecipes", at = @At("HEAD"), cancellable = true)
-    private void banner$checkCon(ClientboundRecipePacket.State state, ServerPlayer serverPlayer, List<ResourceLocation> list, CallbackInfo ci) {
+    private void taiyitist$checkCon(ClientboundRecipePacket.State state, ServerPlayer serverPlayer, List<ResourceLocation> list, CallbackInfo ci) {
         if (serverPlayer.connection == null) {
             ci.cancel();
         }

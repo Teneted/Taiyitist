@@ -18,7 +18,7 @@ public class MixinClientboundCommandsPacket_ArgumentNodeStub {
 
     @Inject(method = "serializeCap(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo$Template;)V",
             cancellable = true, at = @At("HEAD"))
-    private static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> void banner$wrapArgument(FriendlyByteBuf buf, ArgumentTypeInfo<A, T> type, ArgumentTypeInfo.Template<A> node, CallbackInfo ci) {
+    private static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> void taiyitist$wrapArgument(FriendlyByteBuf buf, ArgumentTypeInfo<A, T> type, ArgumentTypeInfo.Template<A> node, CallbackInfo ci) {
         if (!SpigotConfig.bungee) {
             return;
         }

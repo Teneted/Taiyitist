@@ -32,12 +32,12 @@ public abstract class MixinBeaconMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/Container;Lnet/minecraft/world/inventory/ContainerData;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
-    public void banner$init(int id, Container inventory, ContainerData containerData, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
+    public void taiyitist$init(int id, Container inventory, ContainerData containerData, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
         this.playerInventory = (Inventory) inventory;
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 

@@ -22,7 +22,7 @@ public abstract class MixinCompoundTag {
     @Shadow public abstract long getLong(String string);
 
     @Inject(method = "putUUID", at = @At("HEAD"))
-    private void banner$SupportOldUUID(String key, UUID uUID, CallbackInfo ci) {
+    private void taiyitist$SupportOldUUID(String key, UUID uUID, CallbackInfo ci) {
         // Paper start - Support old UUID format
         if (this.contains(key + "Most", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC) && this.contains(key + "Least", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC)) {
             this.tags.remove(key + "Most");
@@ -32,7 +32,7 @@ public abstract class MixinCompoundTag {
     }
 
     @Inject(method = "getUUID", at = @At("HEAD"), cancellable = true)
-    private void banner$SupportOldUUID0(String key, CallbackInfoReturnable<UUID> cir) {
+    private void taiyitist$SupportOldUUID0(String key, CallbackInfoReturnable<UUID> cir) {
         // Paper start - Support old UUID format
         if (!contains(key, 11) && this.contains(key + "Most", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC) && this.contains(key + "Least", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC)) {
             cir.setReturnValue(new UUID(this.getLong(key + "Most"), this.getLong(key + "Least")));
@@ -41,7 +41,7 @@ public abstract class MixinCompoundTag {
     }
 
     @Inject(method = "hasUUID", at = @At("HEAD"), cancellable = true)
-    private void banner$SupportOldUUID1(String key, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$SupportOldUUID1(String key, CallbackInfoReturnable<Boolean> cir) {
         // Paper start - Support old UUID format
         if (this.contains(key + "Most", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC) && this.contains(key + "Least", net.minecraft.nbt.Tag.TAG_ANY_NUMERIC)) {
             cir.setReturnValue(true);

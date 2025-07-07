@@ -24,7 +24,7 @@ public abstract class MixinFurnaceResultSlot extends Slot {
     }
 
     @Redirect(method = "checkTakeAchievements(Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity;awardUsedRecipesAndPopExperience(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    public void banner$furnaceDropExp(AbstractFurnaceBlockEntity furnace, ServerPlayer player, ItemStack stack) {
+    public void taiyitist$furnaceDropExp(AbstractFurnaceBlockEntity furnace, ServerPlayer player, ItemStack stack) {
         ((AbstractFurnaceBlockEntity) this.container).bridge$dropExp(player, stack, this.removeCount);
     }
 }

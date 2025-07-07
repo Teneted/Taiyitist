@@ -29,7 +29,7 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
     @Shadow @Final private static EntityDataAccessor<Boolean> DATA_CAN_DUPLICATE;
     // @formatter:on
     public boolean forceDancing = false;
-    private transient Allay banner$duplicate;
+    private transient Allay taiyitist$duplicate;
 
     protected MixinAllay(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
@@ -44,31 +44,31 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/animal/allay/Allay;heal(F)V"))
-    private void banner$healReason(CallbackInfo ci) {
+    private void taiyitist$healReason(CallbackInfo ci) {
         this.pushHealReason(EntityRegainHealthEvent.RegainReason.REGEN);
     }
 
     @Inject(method = "mobInteract", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/animal/allay/Allay;duplicateAllay()V"))
-    private void banner$cancelDuplicate(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        var allay = banner$duplicate;
-        banner$duplicate = null;
+    private void taiyitist$cancelDuplicate(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        var allay = taiyitist$duplicate;
+        taiyitist$duplicate = null;
         if (allay == null) {
             cir.setReturnValue(InteractionResult.SUCCESS);
         }
     }
 
     @Inject(method = "shouldStopDancing", cancellable = true, at = @At("HEAD"))
-    private void banner$stopDancing(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$stopDancing(CallbackInfoReturnable<Boolean> cir) {
         if (this.forceDancing) {
             cir.setReturnValue(false);
         }
     }
 
     @Redirect(method = "duplicateAllay", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$captureDuplicate(Level instance, Entity entity) {
+    private boolean taiyitist$captureDuplicate(Level instance, Entity entity) {
         instance.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.DUPLICATION);
         if (instance.addFreshEntity(entity)) {
-            banner$duplicate = (Allay) entity;
+            taiyitist$duplicate = (Allay) entity;
             return true;
         }
         return false;
@@ -78,9 +78,9 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
     public Allay duplicateAllay0() {
         try {
             this.duplicateAllay();
-            return banner$duplicate;
+            return taiyitist$duplicate;
         } finally {
-            banner$duplicate = null;
+            taiyitist$duplicate = null;
         }
     }
 
@@ -90,7 +90,7 @@ public abstract class MixinAllay extends PathfinderMob implements InjectionAllay
     }
 
     @Override
-    public void banner$setForceDancing(boolean forceDancing) {
+    public void taiyitist$setForceDancing(boolean forceDancing) {
         this.forceDancing = forceDancing;
     }
 }

@@ -6,7 +6,7 @@ public interface InjectionArmorStand {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCanMove(boolean canMove) {
+    default void taiyitist$setCanMove(boolean canMove) {
         throw new IllegalStateException("Not implemented");
     }
 }

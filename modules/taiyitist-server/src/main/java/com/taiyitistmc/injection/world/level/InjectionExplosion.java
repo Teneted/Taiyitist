@@ -6,7 +6,7 @@ public interface InjectionExplosion {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setYield(float yield) {
+    default void taiyitist$setYield(float yield) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -14,7 +14,7 @@ public interface InjectionExplosion {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setWasCanceled(boolean wasCanceled) {
+    default void taiyitist$setWasCanceled(boolean wasCanceled) {
         throw new IllegalStateException("Not implemented");
     }
 }

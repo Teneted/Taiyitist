@@ -14,7 +14,7 @@ public class MixinGiveCommand {
     @Redirect(method = "giveItem",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;drop(Lnet/minecraft/world/item/ItemStack;Z)Lnet/minecraft/world/entity/item/ItemEntity;", ordinal = 0))
-    private static ItemEntity banner$callEventOption(ServerPlayer instance, ItemStack stack, boolean b) {
+    private static ItemEntity taiyitist$callEventOption(ServerPlayer instance, ItemStack stack, boolean b) {
         return instance.drop(stack, false, false, false); // SPIGOT-2942: Add boolean to call event
     }
 }

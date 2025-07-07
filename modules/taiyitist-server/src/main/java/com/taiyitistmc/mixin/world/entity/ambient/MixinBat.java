@@ -110,7 +110,7 @@ public abstract class MixinBat extends AmbientCreature {
 
     @WrapWithCondition(method = "hurt", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/ambient/Bat;setResting(Z)V"))
-    private boolean banner$toggleSleep(Bat instance, boolean isResting) {
+    private boolean taiyitist$toggleSleep(Bat instance, boolean isResting) {
         // CraftBukkit Start - Call BatToggleSleepEvent
         return CraftEventFactory.handleBatToggleSleepEvent(((Bat) (Object) this), true);
         // CraftBukkit End - Call BatToggleSleepEvent

@@ -45,7 +45,7 @@ public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implem
          world.playSound((Entity)null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
       }
 
-      ((ShulkerBoxBlockEntity)this.getTileEntity()).banner$setOpened(true);
+      ((ShulkerBoxBlockEntity)this.getTileEntity()).taiyitist$setOpened(true);
    }
 
    public void close() {
@@ -56,7 +56,7 @@ public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implem
          world.playSound((Entity)null, this.getPosition(), SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
       }
 
-      ((ShulkerBoxBlockEntity)this.getTileEntity()).banner$setOpened(false);
+      ((ShulkerBoxBlockEntity)this.getTileEntity()).taiyitist$setOpened(false);
    }
 
    public CraftShulkerBox copy() {

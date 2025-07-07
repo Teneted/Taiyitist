@@ -31,12 +31,12 @@ public abstract class MixinBlock extends BlockBehaviour implements InjectionBloc
     }
 
     @WrapWithCondition(method = "popResource(Lnet/minecraft/world/level/Level;Ljava/util/function/Supplier;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static boolean banner$addCapture(Level instance, Entity entity) {
-        boolean banner$flag = instance.bridge$captureDrops() != null;
-        if (banner$flag) {
+    private static boolean taiyitist$addCapture(Level instance, Entity entity) {
+        boolean taiyitist$flag = instance.bridge$captureDrops() != null;
+        if (taiyitist$flag) {
             instance.bridge$captureDrops().add((ItemEntity) entity);
         }
-        return !banner$flag;
+        return !taiyitist$flag;
     }
 
     // Spigot start
@@ -57,7 +57,7 @@ public abstract class MixinBlock extends BlockBehaviour implements InjectionBloc
     }
 
     @Override
-    public int banner$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
+    public int taiyitist$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
         return tryDropExperience(level, pos, heldItem, amount);
     }
 
@@ -70,7 +70,7 @@ public abstract class MixinBlock extends BlockBehaviour implements InjectionBloc
     }
 
     @Inject(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
-    private void banner$reason(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
+    private void taiyitist$reason(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
         player.pushExhaustReason(EntityExhaustionEvent.ExhaustionReason.BLOCK_MINED);
     }
     // Spigot end

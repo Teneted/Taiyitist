@@ -15,36 +15,36 @@ public class MixinDimensionTransition implements InjectionDimensionTransition {
 
 
     @ShadowConstructor
-    public void banner$constructor(ServerLevel newLevel, Vec3 pos, Vec3 speed, float yRot, float xRot, boolean missingRespawnBlock, DimensionTransition.PostDimensionTransition postDimensionTransition) {
+    public void taiyitist$constructor(ServerLevel newLevel, Vec3 pos, Vec3 speed, float yRot, float xRot, boolean missingRespawnBlock, DimensionTransition.PostDimensionTransition postDimensionTransition) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$$constructor(ServerLevel newLevel, Vec3 pos, Vec3 speed, float yRot, float xRot, boolean missingRespawnBlock, DimensionTransition.PostDimensionTransition postDimensionTransition, PlayerTeleportEvent.TeleportCause cause) {
-        banner$constructor(newLevel, pos, speed, yRot, xRot, missingRespawnBlock, postDimensionTransition);
-        this.banner$cause = cause;
+    public void taiyitist$$constructor(ServerLevel newLevel, Vec3 pos, Vec3 speed, float yRot, float xRot, boolean missingRespawnBlock, DimensionTransition.PostDimensionTransition postDimensionTransition, PlayerTeleportEvent.TeleportCause cause) {
+        taiyitist$constructor(newLevel, pos, speed, yRot, xRot, missingRespawnBlock, postDimensionTransition);
+        this.taiyitist$cause = cause;
     }
 
     @ShadowConstructor
-    public void banner$constructor(ServerLevel serverLevel, Vec3 vec3, Vec3 vec32, float f, float g, DimensionTransition.PostDimensionTransition postDimensionTransition) {
+    public void taiyitist$constructor(ServerLevel serverLevel, Vec3 vec3, Vec3 vec32, float f, float g, DimensionTransition.PostDimensionTransition postDimensionTransition) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(ServerLevel serverLevel, Vec3 vec3, Vec3 vec32, float f, float g, DimensionTransition.PostDimensionTransition postDimensionTransition, PlayerTeleportEvent.TeleportCause cause) {
-        banner$constructor(serverLevel, vec3, vec32, f, g, postDimensionTransition);
-        this.banner$cause = cause;
+    public void taiyitist$constructor(ServerLevel serverLevel, Vec3 vec3, Vec3 vec32, float f, float g, DimensionTransition.PostDimensionTransition postDimensionTransition, PlayerTeleportEvent.TeleportCause cause) {
+        taiyitist$constructor(serverLevel, vec3, vec32, f, g, postDimensionTransition);
+        this.taiyitist$cause = cause;
     }
 
-    @Unique private PlayerTeleportEvent.TeleportCause banner$cause;
+    @Unique private PlayerTeleportEvent.TeleportCause taiyitist$cause;
 
     @Override
     public void setTeleportCause(PlayerTeleportEvent.TeleportCause cause) {
-        banner$cause = cause;
+        taiyitist$cause = cause;
     }
 
     @Override
     public PlayerTeleportEvent.TeleportCause getTeleportCause() {
-        return banner$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : banner$cause;
+        return taiyitist$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : taiyitist$cause;
     }
 }

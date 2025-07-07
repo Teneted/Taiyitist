@@ -6,7 +6,7 @@ public interface InjectionLightningBolt {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setIsSilent(boolean isSilent) {
+    default void taiyitist$setIsSilent(boolean isSilent) {
         throw new IllegalStateException("Not implemented");
     }
 }

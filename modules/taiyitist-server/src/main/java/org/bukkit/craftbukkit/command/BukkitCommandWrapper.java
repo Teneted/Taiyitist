@@ -38,11 +38,11 @@ public class BukkitCommandWrapper implements Command<CommandSourceStack>, Predic
       );   }
 
    public boolean test(CommandSourceStack wrapper) {
-      return this.command.testPermissionSilent(wrapper.banner$getBukkitSender());
+      return this.command.testPermissionSilent(wrapper.taiyitist$getBukkitSender());
    }
 
    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-      CommandSender sender = ((CommandSourceStack)context.getSource()).banner$getBukkitSender();
+      CommandSender sender = ((CommandSourceStack)context.getSource()).taiyitist$getBukkitSender();
 
       try {
          return this.server.dispatchCommand(sender, context.getInput()) ? 1 : 0;
@@ -55,7 +55,7 @@ public class BukkitCommandWrapper implements Command<CommandSourceStack>, Predic
    }
 
    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-      List<String> results = this.server.tabComplete(((CommandSourceStack)context.getSource()).banner$getBukkitSender(), builder.getInput(), ((CommandSourceStack)context.getSource()).getLevel(), ((CommandSourceStack)context.getSource()).getPosition(), true);
+      List<String> results = this.server.tabComplete(((CommandSourceStack)context.getSource()).taiyitist$getBukkitSender(), builder.getInput(), ((CommandSourceStack)context.getSource()).getLevel(), ((CommandSourceStack)context.getSource()).getPosition(), true);
       builder = builder.createOffset(builder.getInput().lastIndexOf(32) + 1);
       Iterator var4 = results.iterator();
 

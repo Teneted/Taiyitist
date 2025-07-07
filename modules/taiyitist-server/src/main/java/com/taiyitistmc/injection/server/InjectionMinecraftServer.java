@@ -37,7 +37,7 @@ public interface InjectionMinecraftServer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setProcessQueue(java.util.Queue<Runnable> processQueue) {
+    default void taiyitist$setProcessQueue(java.util.Queue<Runnable> processQueue) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -49,7 +49,7 @@ public interface InjectionMinecraftServer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setServer(CraftServer server) {
+    default void taiyitist$setServer(CraftServer server) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -61,11 +61,11 @@ public interface InjectionMinecraftServer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setConsole(ConsoleCommandSender console) {
+    default void taiyitist$setConsole(ConsoleCommandSender console) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setRemoteConsole(RemoteConsoleCommandSender remoteConsole) {
+    default void taiyitist$setRemoteConsole(RemoteConsoleCommandSender remoteConsole) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -109,7 +109,7 @@ public interface InjectionMinecraftServer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setRconConsoleSource(RconConsoleSource source) {
+    default void taiyitist$setRconConsoleSource(RconConsoleSource source) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -121,7 +121,7 @@ public interface InjectionMinecraftServer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setAutosavePeriod(int autosavePeriod) {
+    default void taiyitist$setAutosavePeriod(int autosavePeriod) {
         throw new IllegalStateException("Not implemented");
     }
 }

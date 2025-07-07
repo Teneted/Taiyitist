@@ -25,7 +25,7 @@ public abstract class MixinTreeGrower {
             target = "Lnet/minecraft/core/Holder;value()Ljava/lang/Object;",
             ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$setTreeType0(ServerLevel serverLevel, ChunkGenerator chunkGenerator,
+    private void taiyitist$setTreeType0(ServerLevel serverLevel, ChunkGenerator chunkGenerator,
                                      BlockPos blockPos, BlockState blockState, RandomSource randomSource,
                                      CallbackInfoReturnable<Boolean> cir, ResourceKey resourceKey,
                                      Holder holder, int i, int j) {
@@ -36,7 +36,7 @@ public abstract class MixinTreeGrower {
             target = "Lnet/minecraft/core/Holder;value()Ljava/lang/Object;",
             ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$setTreeType1(ServerLevel serverLevel, ChunkGenerator chunkGenerator,
+    private void taiyitist$setTreeType1(ServerLevel serverLevel, ChunkGenerator chunkGenerator,
                                      BlockPos blockPos, BlockState blockState, RandomSource randomSource,
                                      CallbackInfoReturnable<Boolean> cir, ResourceKey resourceKey,
                                      ResourceKey resourceKey2, Holder holder2) {

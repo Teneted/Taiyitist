@@ -19,7 +19,7 @@ public abstract class MixinArrow extends AbstractArrow {
     }
 
     @Inject(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$pushArrowCause(LivingEntity target, CallbackInfo ci) {
+    private void taiyitist$pushArrowCause(LivingEntity target, CallbackInfo ci) {
         target.pushEffectCause(EntityPotionEffectEvent.Cause.ARROW);
     }
 }

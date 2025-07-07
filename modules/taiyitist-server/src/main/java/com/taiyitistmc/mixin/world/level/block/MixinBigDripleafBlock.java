@@ -30,14 +30,14 @@ public class MixinBigDripleafBlock {
     private static EnumProperty<Tilt> TILT;
 
     @Inject(method = "onProjectileHit", cancellable = true, at = @At("HEAD"))
-    private void banner$projectileHit(Level level, BlockState state, BlockHitResult hitResult, Projectile projectile, CallbackInfo ci) {
+    private void taiyitist$projectileHit(Level level, BlockState state, BlockHitResult hitResult, Projectile projectile, CallbackInfo ci) {
         if (DistValidate.isValid(level) && !CraftEventFactory.callEntityChangeBlockEvent(projectile, hitResult.getBlockPos(), state.setValue(TILT, Tilt.FULL))) {
             ci.cancel();
         }
     }
 
     @Inject(method = "entityInside", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BigDripleafBlock;setTiltAndScheduleTick(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/properties/Tilt;Lnet/minecraft/sounds/SoundEvent;)V"))
-    private void banner$entityInteract(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
+    private void taiyitist$entityInteract(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (!DistValidate.isValid(level)) return;
         org.bukkit.event.Cancellable cancellable;
         if (entity instanceof Player) {

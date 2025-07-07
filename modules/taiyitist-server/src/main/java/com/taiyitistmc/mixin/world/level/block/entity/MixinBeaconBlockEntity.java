@@ -88,12 +88,12 @@ public abstract class MixinBeaconBlockEntity extends BlockEntity implements Inje
     }
 
     @Inject(method = "loadAdditional", at = @At("RETURN"))
-    public void banner$level(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    public void taiyitist$level(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         this.levels = compoundTag.getInt("Levels");
     }
 
     @Inject(method = "setRemoved", at = @At("HEAD"))
-    private void banner$beaconEvent(CallbackInfo ci) {
+    private void taiyitist$beaconEvent(CallbackInfo ci) {
         // Paper start - BeaconDeactivatedEvent
         org.bukkit.block.Block block = CraftBlock.at(level, worldPosition);
         new io.papermc.paper.event.block.BeaconDeactivatedEvent(block).callEvent();

@@ -12,7 +12,7 @@ public abstract class MixinBiomeModificationImpl {
     @Redirect(method = "finalizeWorldGen",
             at = @At(value = "INVOKE",
                     target = "Lnet/fabricmc/fabric/impl/biome/modification/BiomeModificationMarker;fabric_markModified()V"))
-    private void banner$markNone(BiomeModificationMarker instance) {
+    private void taiyitist$markNone(BiomeModificationMarker instance) {
         // Banner do not thing to modify
     }
 }

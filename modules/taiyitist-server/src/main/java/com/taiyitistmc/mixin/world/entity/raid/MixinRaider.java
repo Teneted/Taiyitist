@@ -9,7 +9,7 @@ public class MixinRaider {
     // Banner TODO fixme
     /*
     @Inject(method = "die", locals = LocalCapture.CAPTURE_FAILHARD, require = 0, at = @At(value = "INVOKE", target = "addEffect"))
-    private void banner$raid(DamageSource cause, CallbackInfo ci, Entity entity, Raid raid, ItemStack itemStack, Player playerEntity) {
+    private void taiyitist$raid(DamageSource cause, CallbackInfo ci, Entity entity, Raid raid, ItemStack itemStack, Player playerEntity) {
         ((Player) playerEntity).pushEffectCause(EntityPotionEffectEvent.Cause.PATROL_CAPTAIN);
     }*/
 }

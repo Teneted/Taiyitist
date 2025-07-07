@@ -19,7 +19,7 @@ public class MixinMapItem {
     // Banner TODO Map ID
 
     @Inject(method = "createNewSavedData", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$callMapEvent(Level level, int i, int j, int k, boolean bl, boolean bl2, ResourceKey<Level> resourceKey, CallbackInfoReturnable<MapId> cir, MapItemSavedData mapItemSavedData, MapId mapId) {
+    private static void taiyitist$callMapEvent(Level level, int i, int j, int k, boolean bl, boolean bl2, ResourceKey<Level> resourceKey, CallbackInfoReturnable<MapId> cir, MapItemSavedData mapItemSavedData, MapId mapId) {
         // CraftBukkit start
         MapInitializeEvent event = new MapInitializeEvent(mapItemSavedData.bridge$mapView());
         Bukkit.getServer().getPluginManager().callEvent(event);

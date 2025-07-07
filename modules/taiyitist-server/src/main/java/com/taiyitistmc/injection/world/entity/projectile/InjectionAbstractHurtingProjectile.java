@@ -14,11 +14,11 @@ public interface InjectionAbstractHurtingProjectile {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setBukkitYield(float yield) {
+    default void taiyitist$setBukkitYield(float yield) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setIsIncendiary(boolean incendiary) {
+    default void taiyitist$setIsIncendiary(boolean incendiary) {
         throw new IllegalStateException("Not implemented");
     }
 }

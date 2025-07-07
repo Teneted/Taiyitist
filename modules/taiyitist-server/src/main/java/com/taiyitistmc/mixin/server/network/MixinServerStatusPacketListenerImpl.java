@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinServerStatusPacketListenerImpl {
 
     @Redirect(method = "handleStatusRequest", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;send(Lnet/minecraft/network/protocol/Packet;)V"))
-    public void banner$handleServerPing(Connection networkManager, Packet<?> packetIn) {
+    public void taiyitist$handleServerPing(Connection networkManager, Packet<?> packetIn) {
         // CraftBukkit start
         MinecraftServer server = BukkitMethodHooks.getServer();
 

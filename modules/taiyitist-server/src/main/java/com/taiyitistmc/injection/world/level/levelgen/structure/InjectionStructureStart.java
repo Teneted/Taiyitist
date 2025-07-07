@@ -10,11 +10,11 @@ public interface InjectionStructureStart {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setGenerationEventCause(org.bukkit.event.world.AsyncStructureGenerateEvent.Cause generationEventCause) {
+    default void taiyitist$setGenerationEventCause(org.bukkit.event.world.AsyncStructureGenerateEvent.Cause generationEventCause) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setPersistentDataContainer(org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer persistentDataContainer) {
+    default void taiyitist$setPersistentDataContainer(org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer persistentDataContainer) {
         throw new IllegalStateException("Not implemented");
     }
 }

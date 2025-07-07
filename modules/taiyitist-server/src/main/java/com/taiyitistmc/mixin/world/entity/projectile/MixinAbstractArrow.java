@@ -38,16 +38,16 @@ public abstract class MixinAbstractArrow extends Projectile {
     @Shadow protected abstract ItemStack getPickupItem();
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;hitTargetOrDeflectSelf(Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;"))
-    private ProjectileDeflection banner$hitEvent(AbstractArrow abstractArrow, HitResult hitResult) {
+    private ProjectileDeflection taiyitist$hitEvent(AbstractArrow abstractArrow, HitResult hitResult) {
         return preHitTargetOrDeflectSelf(hitResult);
     }
 
     @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(F)V"))
-    private void banner$fireShot(Entity entity, float f) {
+    private void taiyitist$fireShot(Entity entity, float f) {
         EntityCombustByEntityEvent combustEvent = new EntityCombustByEntityEvent(this.getBukkitEntity(), entity.getBukkitEntity(), f);
         Bukkit.getPluginManager().callEvent(combustEvent);
         if (!combustEvent.isCancelled()) {
-            entity.banner$setSecondsOnFire(combustEvent.getDuration(), false);
+            entity.taiyitist$setSecondsOnFire(combustEvent.getDuration(), false);
         }
     }
 

@@ -19,12 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinLecternBlock {
 
     @Redirect(method = "popBook", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
-    private BlockEntity banner$noValidate(Level world, BlockPos pos) {
+    private BlockEntity taiyitist$noValidate(Level world, BlockPos pos) {
         return world.getBlockEntity(pos, false);
     }
 
     @Inject(method = "popBook", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Direction;getStepX()I"))
-    private void banner$returnIfEmpty(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci, BlockEntity tileEntity, LecternBlockEntity lecternTileEntity, Direction direction, ItemStack itemStack) {
+    private void taiyitist$returnIfEmpty(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci, BlockEntity tileEntity, LecternBlockEntity lecternTileEntity, Direction direction, ItemStack itemStack) {
         if (itemStack.isEmpty()) ci.cancel();
     }
 }

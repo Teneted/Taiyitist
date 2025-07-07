@@ -19,7 +19,7 @@ public abstract class MixinIronGolem extends AbstractGolem {
     }
 
     @Inject(method = "doPush", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/IronGolem;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$targetReason(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$targetReason(Entity entityIn, CallbackInfo ci) {
         bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.COLLISION, true);
     }
 }

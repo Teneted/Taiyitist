@@ -35,11 +35,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(BucketItem.class)
 public abstract class MixinBucketItem extends Item {
 
-    private transient org.bukkit.inventory.@Nullable ItemStack banner$captureItem;
-    private transient Direction banner$direction;
-    private transient BlockPos banner$click;
-    private transient InteractionHand banner$hand;
-    private transient ItemStack banner$stack;
+    private transient org.bukkit.inventory.@Nullable ItemStack taiyitist$captureItem;
+    private transient Direction taiyitist$direction;
+    private transient BlockPos taiyitist$click;
+    private transient InteractionHand taiyitist$hand;
+    private transient ItemStack taiyitist$stack;
 
     public MixinBucketItem(Properties properties) {
         super(properties);
@@ -49,7 +49,7 @@ public abstract class MixinBucketItem extends Item {
     public abstract boolean emptyContents(@Nullable Player player, Level level, BlockPos pos, @Nullable BlockHitResult result);
 
     @Inject(method = "use", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BucketPickup;pickupBlock(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/item/ItemStack;"))
-    private void banner$bucketFill(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, @Local ItemStack stack, @Local BlockHitResult result) {
+    private void taiyitist$bucketFill(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, @Local ItemStack stack, @Local BlockHitResult result) {
         if (!DistValidate.isValid(worldIn)) return;
         BlockPos pos = result.getBlockPos();
         BlockState state = worldIn.getBlockState(pos);
@@ -60,49 +60,49 @@ public abstract class MixinBucketItem extends Item {
             ((ServerPlayer) playerIn).getBukkitEntity().updateInventory();
             cir.setReturnValue(new InteractionResultHolder<>(InteractionResult.FAIL, stack));
         } else {
-            banner$captureItem = event.getItemStack();
+            taiyitist$captureItem = event.getItemStack();
         }
     }
 
     @Inject(method = "use", at = @At("RETURN"))
-    private void banner$clean(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        banner$captureItem = null;
-        banner$direction = null;
-        banner$click = null;
+    private void taiyitist$clean(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+        taiyitist$captureItem = null;
+        taiyitist$direction = null;
+        taiyitist$click = null;
     }
 
     @ModifyArg(method = "use", index = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack banner$useEventItem(ItemStack itemStack) {
-        return banner$captureItem == null ? itemStack : CraftItemStack.asNMSCopy(banner$captureItem);
+    private ItemStack taiyitist$useEventItem(ItemStack itemStack) {
+        return taiyitist$captureItem == null ? itemStack : CraftItemStack.asNMSCopy(taiyitist$captureItem);
     }
 
     @Inject(method = "use", require = 0, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BucketItem;emptyContents(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/BlockHitResult;)Z"))
-    private void banner$capture(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, BlockHitResult result) {
-        banner$direction = result.getDirection();
-        banner$click = result.getBlockPos();
-        banner$hand = handIn;
+    private void taiyitist$capture(Level worldIn, Player playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, BlockHitResult result) {
+        taiyitist$direction = result.getDirection();
+        taiyitist$click = result.getBlockPos();
+        taiyitist$hand = handIn;
     }
 
     public boolean emptyContents(Player entity, Level world, BlockPos pos, @Nullable BlockHitResult result, Direction direction, BlockPos clicked, ItemStack itemstack, InteractionHand hand) {
-        banner$direction = direction;
-        banner$click = clicked;
-        banner$hand = hand;
-        banner$stack = itemstack;
+        taiyitist$direction = direction;
+        taiyitist$click = clicked;
+        taiyitist$hand = hand;
+        taiyitist$stack = itemstack;
         try {
             return this.emptyContents(entity, world, pos, result);
         } finally {
-            banner$direction = null;
-            banner$click = null;
-            banner$hand = null;
-            banner$stack = null;
+            taiyitist$direction = null;
+            taiyitist$click = null;
+            taiyitist$hand = null;
+            taiyitist$stack = null;
         }
     }
 
     @Inject(method = "emptyContents", require = 0, cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/dimension/DimensionType;ultraWarm()Z"))
-    private void banner$bucketEmpty(Player player, Level worldIn, BlockPos posIn, BlockHitResult rayTrace, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$bucketEmpty(Player player, Level worldIn, BlockPos posIn, BlockHitResult rayTrace, CallbackInfoReturnable<Boolean> cir) {
         if (!DistValidate.isValid(worldIn)) return;
-        if (player != null && banner$stack != null) {
-            PlayerBucketEmptyEvent event = CraftEventFactory.callPlayerBucketEmptyEvent((ServerLevel) worldIn, player, posIn, banner$click, banner$direction, banner$stack, banner$hand == null ? InteractionHand.MAIN_HAND : banner$hand);
+        if (player != null && taiyitist$stack != null) {
+            PlayerBucketEmptyEvent event = CraftEventFactory.callPlayerBucketEmptyEvent((ServerLevel) worldIn, player, posIn, taiyitist$click, taiyitist$direction, taiyitist$stack, taiyitist$hand == null ? InteractionHand.MAIN_HAND : taiyitist$hand);
             if (event.isCancelled()) {
                 ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(worldIn, posIn));
                 ((ServerPlayer) player).getBukkitEntity().updateInventory();

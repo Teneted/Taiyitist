@@ -47,7 +47,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;usesAuthentication()Z", ordinal = 1))
-    private void banner$initServer(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$initServer(CallbackInfoReturnable<Boolean> cir) {
         TaiyitistMod.LOGGER.info(I18n.as("bukkit.plugin.loading.info"));
         // CraftBukkit start
         org.spigotmc.SpigotConfig.init((java.io.File) this.bridge$options().valueOf("spigot-settings"));
@@ -62,7 +62,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
                     target = "Ljava/lang/Thread;setDaemon(Z)V",
                     ordinal = 0,
                     shift = At.Shift.BEFORE))
-    private void banner$addLog4j(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$addLog4j(CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start - TODO: handle command-line logging arguments
         java.util.logging.Logger global = java.util.logging.Logger.getLogger("");
         global.setUseParentHandlers(false);
@@ -78,7 +78,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "getPluginNames", at = @At("RETURN"), cancellable = true)
-    private void banner$setPluginNames(CallbackInfoReturnable<String> cir) {
+    private void taiyitist$setPluginNames(CallbackInfoReturnable<String> cir) {
         StringBuilder result = new StringBuilder();
         org.bukkit.plugin.Plugin[] plugins = bridge$server().getPluginManager().getPlugins();
 
@@ -104,7 +104,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Redirect(method = "handleConsoleInputs", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;performPrefixedCommand(Lnet/minecraft/commands/CommandSourceStack;Ljava/lang/String;)V"))
-    private void banner$serverCommandEvent(Commands commands, CommandSourceStack source, String command) {
+    private void taiyitist$serverCommandEvent(Commands commands, CommandSourceStack source, String command) {
         if (command.isEmpty()) {
             return;
         }
@@ -116,7 +116,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Override
-    public void banner$setRconConsoleSource(RconConsoleSource source) {
+    public void taiyitist$setRconConsoleSource(RconConsoleSource source) {
         rconConsoleSource.set(source);
     }
 
@@ -142,18 +142,18 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "onServerExit", at = @At("RETURN"))
-    public void banner$exitNow(CallbackInfo ci) {
+    public void taiyitist$exitNow(CallbackInfo ci) {
         try {
             TerminalConsoleAppender.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Thread exitThread = new Thread(this::banner$exit, "Exit Thread");
+        Thread exitThread = new Thread(this::taiyitist$exit, "Exit Thread");
         exitThread.setDaemon(true);
         exitThread.start();
     }
 
-    private void banner$exit() {
+    private void taiyitist$exit() {
         try {
             Thread.sleep(5000L);
         } catch (InterruptedException e) {
@@ -176,7 +176,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;)V",
             remap = false,
             ordinal = 3, shift = At.Shift.AFTER))
-    private void banner$startMetrics(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$startMetrics(CallbackInfoReturnable<Boolean> cir) {
         Metrics.BannerMetrics.startMetrics();
     }
 }

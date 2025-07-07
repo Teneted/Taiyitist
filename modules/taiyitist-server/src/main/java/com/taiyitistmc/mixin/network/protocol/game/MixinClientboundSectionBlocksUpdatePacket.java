@@ -28,7 +28,7 @@ public class MixinClientboundSectionBlocksUpdatePacket implements InjectionClien
     private BlockState[] states;
 
     @CreateConstructor
-    public void banner$constructor(SectionPos sectionposition, ShortSet shortset, BlockState[] states) {
+    public void taiyitist$constructor(SectionPos sectionposition, ShortSet shortset, BlockState[] states) {
         this.sectionPos = sectionposition;
         this.positions = shortset.toShortArray();
         this.states = states;

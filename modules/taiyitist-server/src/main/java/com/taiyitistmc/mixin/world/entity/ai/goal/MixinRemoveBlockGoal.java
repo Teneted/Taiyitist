@@ -23,7 +23,7 @@ public class MixinRemoveBlockGoal {
 
     @Inject(method = "tick", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
-    public void banner$removeBlock(CallbackInfo ci, Level world, BlockPos pos, BlockPos pos1) {
+    public void taiyitist$removeBlock(CallbackInfo ci, Level world, BlockPos pos, BlockPos pos1) {
         EntityInteractEvent event = new EntityInteractEvent(this.removerMob.getBukkitEntity(), CraftBlock.at(world, pos1));
         world.getCraftServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {

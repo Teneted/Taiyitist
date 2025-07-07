@@ -32,12 +32,12 @@ public abstract class MixinLoomMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
-    public void banner$init(int id, Inventory playerInventory, ContainerLevelAccess worldCallable, CallbackInfo ci) {
+    public void taiyitist$init(int id, Inventory playerInventory, ContainerLevelAccess worldCallable, CallbackInfo ci) {
         this.playerInventory = playerInventory;
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) {
             cir.setReturnValue(true);
         }

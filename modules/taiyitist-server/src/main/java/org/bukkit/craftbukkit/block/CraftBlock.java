@@ -478,9 +478,9 @@ public class CraftBlock implements Block {
       BlockFertilizeEvent event = null;
       ServerLevel world = this.getCraftWorld().getHandle();
       UseOnContext context = new UseOnContext(world, (Player)null, InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(), new BlockHitResult(Vec3.ZERO, direction, this.getPosition(), false));
-      world.banner$setCaptureTreeGeneration(true);
+      world.taiyitist$setCaptureTreeGeneration(true);
       InteractionResult result = BukkitMethodHooks.applyBonemeal(context);
-      world.banner$setCaptureTreeGeneration(false);
+      world.taiyitist$setCaptureTreeGeneration(false);
       if (world.bridge$capturedBlockStates().size() > 0) {
          TreeType treeType = BukkitFieldHooks.treeType();
          BukkitFieldHooks.setTreeType(null);

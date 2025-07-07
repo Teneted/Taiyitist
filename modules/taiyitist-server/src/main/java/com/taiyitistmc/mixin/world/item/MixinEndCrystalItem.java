@@ -22,7 +22,7 @@ public class MixinEndCrystalItem {
     @Inject(method = "useOn", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/boss/enderdragon/EndCrystal;setShowBottom(Z)V",
             shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$handlePlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
+    private void taiyitist$handlePlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
                                          Level level, BlockPos blockPos, BlockState blockState,
                                          BlockPos blockPos2, double d, double e, double f,
                                          List<Entity> list, EndCrystal endCrystal) {

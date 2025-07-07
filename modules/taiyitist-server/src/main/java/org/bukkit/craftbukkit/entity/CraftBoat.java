@@ -35,7 +35,7 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
 
    public void setMaxSpeed(double speed) {
       if (speed >= 0.0) {
-         this.getHandle().banner$setMaxSpeed(speed);
+         this.getHandle().taiyitist$setMaxSpeed(speed);
       }
 
    }
@@ -46,7 +46,7 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
 
    public void setOccupiedDeceleration(double speed) {
       if (speed >= 0.0) {
-         this.getHandle().banner$setOccupiedDeceleration(speed);
+         this.getHandle().taiyitist$setOccupiedDeceleration(speed);
       }
 
    }
@@ -56,7 +56,7 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
    }
 
    public void setUnoccupiedDeceleration(double speed) {
-      this.getHandle().banner$setUnoccupiedDeceleration(speed);
+      this.getHandle().taiyitist$setUnoccupiedDeceleration(speed);
    }
 
    public boolean getWorkOnLand() {
@@ -64,7 +64,7 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
    }
 
    public void setWorkOnLand(boolean workOnLand) {
-      this.getHandle().banner$setLandBoats(workOnLand);
+      this.getHandle().taiyitist$setLandBoats(workOnLand);
    }
 
    public Boat.Status getStatus() {

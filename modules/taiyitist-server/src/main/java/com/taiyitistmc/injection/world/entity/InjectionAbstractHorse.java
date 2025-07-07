@@ -6,7 +6,7 @@ public interface InjectionAbstractHorse {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxDomestication(int maxDomestication) {
+    default void taiyitist$setMaxDomestication(int maxDomestication) {
         throw new IllegalStateException("Not implemented");
     }
 }

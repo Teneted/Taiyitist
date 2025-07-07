@@ -49,7 +49,7 @@ public abstract class MixinCrafterMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 }

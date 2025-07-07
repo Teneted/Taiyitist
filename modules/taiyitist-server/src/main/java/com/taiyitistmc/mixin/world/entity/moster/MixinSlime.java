@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinSlime extends Mob implements InjectionSlime {
 
     private boolean canWander = true;
-    private transient List<LivingEntity> banner$slimes;
+    private transient List<LivingEntity> taiyitist$slimes;
     protected MixinSlime(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
     }
@@ -61,7 +61,7 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
                 }
                 k = event.getCount();
             }
-            banner$slimes = new ArrayList<>(k);
+            taiyitist$slimes = new ArrayList<>(k);
 
             for (int l = 0; l < k; ++l) {
                 float f1 = ((float) (l % 2) - 0.5F) * f;
@@ -77,22 +77,22 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
                 slimeentity.setInvulnerable(this.isInvulnerable());
                 slimeentity.setSize(j, true);
                 slimeentity.moveTo(this.getX() + (double) f1, this.getY() + 0.5D, this.getZ() + (double) f2, this.random.nextFloat() * 360.0F, 0.0F);
-                banner$slimes.add(slimeentity);
+                taiyitist$slimes.add(slimeentity);
             }
-            if (CraftEventFactory.callEntityTransformEvent((net.minecraft.world.entity.monster.Slime) (Object) this, banner$slimes, EntityTransformEvent.TransformReason.SPLIT).isCancelled()) {
+            if (CraftEventFactory.callEntityTransformEvent((net.minecraft.world.entity.monster.Slime) (Object) this, taiyitist$slimes, EntityTransformEvent.TransformReason.SPLIT).isCancelled()) {
                 super.remove(reason);
-                banner$slimes = null;
+                taiyitist$slimes = null;
                 return;
             }
-            for (int l = 0; l < banner$slimes.size(); l++) {
+            for (int l = 0; l < taiyitist$slimes.size(); l++) {
                 // Apotheosis compat
                 float f1 = ((float) (l % 2) - 0.5F) * f;
                 float f2 = ((float) (l / 2) - 0.5F) * f;
-                net.minecraft.world.entity.monster.Slime living = (net.minecraft.world.entity.monster.Slime) banner$slimes.get(l);
+                net.minecraft.world.entity.monster.Slime living = (net.minecraft.world.entity.monster.Slime) taiyitist$slimes.get(l);
                 this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SLIME_SPLIT);
                 this.level().addFreshEntity(living);
             }
-            banner$slimes = null;
+            taiyitist$slimes = null;
         }
         super.remove(reason);
     }
@@ -100,7 +100,7 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
     @Inject(method = "addAdditionalSaveData",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V"))
-    private void banner$putData(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$putData(CompoundTag compound, CallbackInfo ci) {
         compound.putBoolean("Paper.canWander", this.canWander); // Paper
     }
 
@@ -108,7 +108,7 @@ public abstract class MixinSlime extends Mob implements InjectionSlime {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/Mob;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V",
                     shift = At.Shift.AFTER))
-    private void banner$readData(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$readData(CompoundTag compound, CallbackInfo ci) {
         // Paper start - check exists before loading or this will be loaded as false
         if (compound.contains("Paper.canWander")) {
             this.canWander = compound.getBoolean("Paper.canWander");

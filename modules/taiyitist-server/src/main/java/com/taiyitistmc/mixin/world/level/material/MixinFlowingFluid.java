@@ -33,7 +33,7 @@ public abstract class MixinFlowingFluid {
     protected abstract boolean canSpreadTo(BlockGetter level, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState, Fluid fluid);
 
     @Inject(method = "spread", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FlowingFluid;spreadTo(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)V"))
-    public void banner$flowInto(Level worldIn, BlockPos pos, FluidState stateIn, CallbackInfo ci) {
+    public void taiyitist$flowInto(Level worldIn, BlockPos pos, FluidState stateIn, CallbackInfo ci) {
         if (!DistValidate.isValid(worldIn)) return;
         Block source = CraftBlock.at(worldIn, pos);
         BlockFromToEvent event = new BlockFromToEvent(source, BlockFace.DOWN);
@@ -44,7 +44,7 @@ public abstract class MixinFlowingFluid {
     }
 
     @Redirect(method = "spreadToSides", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FlowingFluid;canSpreadTo(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/material/Fluid;)Z"))
-    public boolean banner$flowInto(FlowingFluid flowingFluid, BlockGetter worldIn, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState, Fluid fluidIn) {
+    public boolean taiyitist$flowInto(FlowingFluid flowingFluid, BlockGetter worldIn, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState, Fluid fluidIn) {
         if (this.canSpreadTo(worldIn, fromPos, fromBlockState, direction, toPos, toBlockState, toFluidState, fluidIn)) {
             if (!DistValidate.isValid(worldIn)) return true;
             Block source = CraftBlock.at(((Level) worldIn), fromPos);

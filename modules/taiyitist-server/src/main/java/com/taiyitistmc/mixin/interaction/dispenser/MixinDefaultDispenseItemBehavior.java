@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(DefaultDispenseItemBehavior.class)
 public class MixinDefaultDispenseItemBehavior {
 
-    private static BlockSource banner$isourceblock;
-    private static boolean banner$dropper;
-    private static ItemEntity banner$itemEntity;
+    private static BlockSource taiyitist$isourceblock;
+    private static boolean taiyitist$dropper;
+    private static ItemEntity taiyitist$itemEntity;
     // CraftBukkit start
     private boolean dropper;
 
@@ -32,7 +32,7 @@ public class MixinDefaultDispenseItemBehavior {
     /*
     @Overwrite
     public static void spawnItem(Level level, ItemStack stack, int speed, Direction facing, Position position) {
-       position = DispenserBlock.getDispensePosition(banner$isourceblock);
+       position = DispenserBlock.getDispensePosition(taiyitist$isourceblock);
         double d = position.x();
         double e = position.y();
         double f = position.z();
@@ -43,22 +43,22 @@ public class MixinDefaultDispenseItemBehavior {
         }
 
         ItemEntity itemEntity = new ItemEntity(level, d, e, f, stack);
-        banner$itemEntity = itemEntity;
+        taiyitist$itemEntity = itemEntity;
         double g = level.random.nextDouble() * 0.1 + 0.2;
         itemEntity.setDeltaMovement(level.random.triangle((double)facing.getStepX() * g, 0.0172275 * (double)speed), level.random.triangle(0.2, 0.0172275 * (double)speed), level.random.triangle((double)facing.getStepZ() * g, 0.0172275 * (double)speed));
-        //spawnItem(level, stack, speed, facing, banner$isourceblock, banner$dropper);
+        //spawnItem(level, stack, speed, facing, taiyitist$isourceblock, taiyitist$dropper);
         level.addFreshEntity(itemEntity);
     }*/
     private static boolean spawnItem(Level level, ItemStack stack, int speed, Direction facing, BlockSource isourceblock, boolean dropper) {
-        banner$dropper = dropper;
-        banner$isourceblock = isourceblock;
+        taiyitist$dropper = dropper;
+        taiyitist$isourceblock = isourceblock;
         if (stack.isEmpty()) return true;
 
         // CraftBukkit start
         org.bukkit.block.Block block = level.getWorld().getBlockAt(isourceblock.pos().getX(), isourceblock.pos().getY(), isourceblock.pos().getZ());
         CraftItemStack craftItem = CraftItemStack.asCraftMirror(stack);
 
-        BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), CraftVector.toBukkit(banner$itemEntity.getDeltaMovement()));
+        BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), CraftVector.toBukkit(taiyitist$itemEntity.getDeltaMovement()));
         if (!BukkitFieldHooks.isEventFired()) {
             level.getCraftServer().getPluginManager().callEvent(event);
         }
@@ -67,8 +67,8 @@ public class MixinDefaultDispenseItemBehavior {
             return false;
         }
 
-        banner$itemEntity.setItem(CraftItemStack.asNMSCopy(event.getItem()));
-        banner$itemEntity.setDeltaMovement(CraftVector.toNMS(event.getVelocity()));
+        taiyitist$itemEntity.setItem(CraftItemStack.asNMSCopy(event.getItem()));
+        taiyitist$itemEntity.setDeltaMovement(CraftVector.toNMS(event.getVelocity()));
 
         if (!dropper && !event.getItem().getType().equals(craftItem.getType())) {
             // Chain to handler for new item
@@ -77,7 +77,7 @@ public class MixinDefaultDispenseItemBehavior {
             if (idispensebehavior != DispenseItemBehavior.NOOP && idispensebehavior.getClass() != DispenseItemBehavior.class) {
                 idispensebehavior.dispense(isourceblock, eventStack);
             } else {
-                level.addFreshEntity(banner$itemEntity);
+                level.addFreshEntity(taiyitist$itemEntity);
             }
             return false;
         }
@@ -85,13 +85,13 @@ public class MixinDefaultDispenseItemBehavior {
     }
 
     @ShadowConstructor
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(boolean dropper) {
-        banner$constructor();
+    public void taiyitist$constructor(boolean dropper) {
+        taiyitist$constructor();
         this.dropper = dropper;
     }
 }

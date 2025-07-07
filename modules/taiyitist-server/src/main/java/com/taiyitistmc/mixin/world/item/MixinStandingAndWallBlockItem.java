@@ -26,7 +26,7 @@ public abstract class MixinStandingAndWallBlockItem extends BlockItem {
     }
 
     @Inject(method = "getPlacementState", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/LevelReader;isUnobstructed(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Z"))
-    private void banner$blockCanPlace(BlockPlaceContext context, CallbackInfoReturnable<BlockState> cir, @Local(ordinal = 1) BlockState defaultReturn) {
+    private void taiyitist$blockCanPlace(BlockPlaceContext context, CallbackInfoReturnable<BlockState> cir, @Local(ordinal = 1) BlockState defaultReturn) {
         if (defaultReturn != null) {
             var result = context.getLevel().isUnobstructed(defaultReturn, context.getClickedPos(), CollisionContext.empty());
             var player = (context.getPlayer() instanceof ServerPlayer serverPlayer) ? serverPlayer.getBukkitEntity() : null;

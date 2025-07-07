@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinNbtIo {
 
     @Inject(method = "readAnyTag", at = @At("HEAD"))
-    private static void banner$handleInput(DataInput dataInput, NbtAccounter nbtAccounter, CallbackInfoReturnable<Tag> cir) {
+    private static void taiyitist$handleInput(DataInput dataInput, NbtAccounter nbtAccounter, CallbackInfoReturnable<Tag> cir) {
         // Spigot start
         if (dataInput instanceof io.netty.buffer.ByteBufInputStream byteBufInputStream) {
             dataInput = new DataInputStream(new org.spigotmc.LimitStream(byteBufInputStream, nbtAccounter));

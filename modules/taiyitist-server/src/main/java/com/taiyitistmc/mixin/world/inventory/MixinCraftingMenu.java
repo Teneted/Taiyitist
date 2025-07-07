@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(CraftingMenu.class)
 public abstract class MixinCraftingMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
 
-    private static boolean banner$capture;
+    private static boolean taiyitist$capture;
     // @formatter:off
     @Mutable @Shadow @Final private CraftingContainer craftSlots;
     @Shadow @Final private ResultContainer resultSlots;
@@ -49,30 +49,30 @@ public abstract class MixinCraftingMenu extends RecipeBookMenu<CraftingInput, Cr
     }
 
     @Redirect(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", remap = false, target = "Ljava/util/Optional;isPresent()Z"))
-    private static boolean banner$testRepair(Optional<RecipeHolder<CraftingRecipe>> optional) {
-        banner$capture = optional.map(it -> it.toBukkitRecipe()).orElse(null) instanceof RepairItemRecipe;
+    private static boolean taiyitist$testRepair(Optional<RecipeHolder<CraftingRecipe>> optional) {
+        taiyitist$capture = optional.map(it -> it.toBukkitRecipe()).orElse(null) instanceof RepairItemRecipe;
         return optional.isPresent();
     }
 
     @ModifyVariable(method = "slotChangedCraftingGrid", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/ResultContainer;setItem(ILnet/minecraft/world/item/ItemStack;)V"))
-    private static ItemStack banner$preCraft(ItemStack stack, AbstractContainerMenu container, Level level, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer) {
-        return CraftEventFactory.callPreCraftEvent(craftingContainer, resultContainer, stack, container.getBukkitView(), banner$capture);
+    private static ItemStack taiyitist$preCraft(ItemStack stack, AbstractContainerMenu container, Level level, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer) {
+        return CraftEventFactory.callPreCraftEvent(craftingContainer, resultContainer, stack, container.getBukkitView(), taiyitist$capture);
     }
 
     @Accessor("access") public abstract ContainerLevelAccess bridge$getWorldPos();
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!this.bridge$checkReachable()) cir.setReturnValue(true);
     }
 
     @Inject(method = "slotsChanged", at = @At("HEAD"))
-    public void banner$capture(Container inventoryIn, CallbackInfo ci) {
+    public void taiyitist$capture(Container inventoryIn, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureWorkbenchContainer((CraftingMenu) (Object) this);
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
-    public void banner$init(int i, Inventory playerInventory, ContainerLevelAccess callable, CallbackInfo ci) {
+    public void taiyitist$init(int i, Inventory playerInventory, ContainerLevelAccess callable, CallbackInfo ci) {
         ((TransientCraftingContainer) this.craftSlots).setOwner(playerInventory.player);
         ((TransientCraftingContainer) this.craftSlots).bridge$setResultInventory(this.resultSlots);
         this.playerInventory = playerInventory;

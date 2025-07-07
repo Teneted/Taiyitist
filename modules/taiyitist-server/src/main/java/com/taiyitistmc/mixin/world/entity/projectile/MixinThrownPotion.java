@@ -24,7 +24,7 @@ public abstract class MixinThrownPotion extends ThrowableItemProjectile {
 
 
     @Unique
-    private transient HitResult banner$hitResult;
+    private transient HitResult taiyitist$hitResult;
 
     public MixinThrownPotion(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
@@ -33,14 +33,14 @@ public abstract class MixinThrownPotion extends ThrowableItemProjectile {
 
     /**
      @Redirect(method = "onHit", at = @At(value = "INVOKE", remap = false, target = "Ljava/util/List;isEmpty()Z"))
-     private boolean banner$callEvent(List list, HitResult hitResult) {
-     banner$hitResult = hitResult;
+     private boolean taiyitist$callEvent(List list, HitResult hitResult) {
+     taiyitist$hitResult = hitResult;
      return false;
      }
 
      @Inject(method = "onHit", at = @At("RETURN"))
-     private void banner$resetResult(HitResult p_37543_, CallbackInfo ci) {
-     banner$hitResult = null;
+     private void taiyitist$resetResult(HitResult p_37543_, CallbackInfo ci) {
+     taiyitist$hitResult = null;
      }
 
      /**
@@ -67,7 +67,7 @@ public abstract class MixinThrownPotion extends ThrowableItemProjectile {
      * }
      * }
      * }
-     * PotionSplashEvent event = CraftEventFactory.callPotionSplashEvent((ThrownPotion) (Object) this, banner$hitResult, affected);
+     * PotionSplashEvent event = CraftEventFactory.callPotionSplashEvent((ThrownPotion) (Object) this, taiyitist$hitResult, affected);
      * if (!event.isCancelled() && list != null && !list.isEmpty()) {
      * for (org.bukkit.entity.LivingEntity victim : event.getAffectedEntities()) {
      * if (!(victim instanceof CraftLivingEntity)) {
@@ -98,8 +98,8 @@ public abstract class MixinThrownPotion extends ThrowableItemProjectile {
      * }
      * }
      * @Inject(method = "makeAreaOfEffectCloud", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-     * private void banner$makeCloud(PotionContents potionContents, CallbackInfo ci, AreaEffectCloud areaEffectCloud, LivingEntity livingEntity, Entity entity) {
-     * LingeringPotionSplashEvent event = CraftEventFactory.callLingeringPotionSplashEvent((ThrownPotion) (Object) this, banner$hitResult, entity);
+     * private void taiyitist$makeCloud(PotionContents potionContents, CallbackInfo ci, AreaEffectCloud areaEffectCloud, LivingEntity livingEntity, Entity entity) {
+     * LingeringPotionSplashEvent event = CraftEventFactory.callLingeringPotionSplashEvent((ThrownPotion) (Object) this, taiyitist$hitResult, entity);
      * if (event.isCancelled() || entity.isRemoved()) {
      * ci.cancel();
      * entity.discard();
@@ -108,21 +108,21 @@ public abstract class MixinThrownPotion extends ThrowableItemProjectile {
      */
 
     @Inject(method = "dowseFire", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$entityChangeBlock(BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$entityChangeBlock(BlockPos pos, CallbackInfo ci) {
         if (!CraftEventFactory.callEntityChangeBlockEvent((ThrownPotion) (Object) this, pos, Blocks.AIR.defaultBlockState())) {
             ci.cancel();
         }
     }
 
     @Inject(method = "dowseFire", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;levelEvent(Lnet/minecraft/world/entity/player/Player;ILnet/minecraft/core/BlockPos;I)V"))
-    private void banner$entityChangeBlock2(BlockPos pos, CallbackInfo ci, BlockState state) {
+    private void taiyitist$entityChangeBlock2(BlockPos pos, CallbackInfo ci, BlockState state) {
         if (!CraftEventFactory.callEntityChangeBlockEvent((ThrownPotion) (Object) this, pos, state.setValue(CampfireBlock.LIT, false))) {
             ci.cancel();
         }
     }
 
     @Inject(method = "dowseFire", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/AbstractCandleBlock;extinguish(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;)V"))
-    private void banner$entityChangeBlock3(BlockPos pos, CallbackInfo ci, BlockState state) {
+    private void taiyitist$entityChangeBlock3(BlockPos pos, CallbackInfo ci, BlockState state) {
         if (!CraftEventFactory.callEntityChangeBlockEvent((ThrownPotion) (Object) this, pos, state.setValue(AbstractCandleBlock.LIT, false))) {
             ci.cancel();
         }

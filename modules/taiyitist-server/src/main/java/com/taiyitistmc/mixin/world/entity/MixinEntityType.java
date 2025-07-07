@@ -44,7 +44,7 @@ public abstract class MixinEntityType<T extends Entity> implements InjectionEnti
 
     @Inject(method = "spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
             at = @At(value = "HEAD"))
-    private void banner$spawnReason(ServerLevel serverLevel, ItemStack stack, Player player, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore, CallbackInfoReturnable<T> cir) {
+    private void taiyitist$spawnReason(ServerLevel serverLevel, ItemStack stack, Player player, BlockPos pos, MobSpawnType spawnType, boolean shouldOffsetY, boolean shouldOffsetYMore, CallbackInfoReturnable<T> cir) {
         CreatureSpawnEvent.SpawnReason spawnReason = serverLevel.getAddEntityReason();
         if (spawnReason == null) {
             serverLevel.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
@@ -54,7 +54,7 @@ public abstract class MixinEntityType<T extends Entity> implements InjectionEnti
     @Inject(method = "spawn(Lnet/minecraft/server/level/ServerLevel;Ljava/util/function/Consumer;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
             cancellable = true, at = @At("RETURN"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V")))
-    private void banner$returnIfSuccess(ServerLevel serverLevel, Consumer<T> consumer, BlockPos blockPos, MobSpawnType mobSpawnType, boolean bl, boolean bl2, CallbackInfoReturnable<T> cir, @Local Entity entity) {
+    private void taiyitist$returnIfSuccess(ServerLevel serverLevel, Consumer<T> consumer, BlockPos blockPos, MobSpawnType mobSpawnType, boolean bl, boolean bl2, CallbackInfoReturnable<T> cir, @Local Entity entity) {
         if (entity != null) {
             cir.setReturnValue(entity.isRemoved() ? null : (T) entity);
         }

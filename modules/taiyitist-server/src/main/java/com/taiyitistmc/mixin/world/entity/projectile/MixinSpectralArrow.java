@@ -19,7 +19,7 @@ public abstract class MixinSpectralArrow extends AbstractArrow {
     }
 
     @Inject(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$hit(LivingEntity living, CallbackInfo ci) {
+    private void taiyitist$hit(LivingEntity living, CallbackInfo ci) {
         living.pushEffectCause(EntityPotionEffectEvent.Cause.ARROW);
     }
 }

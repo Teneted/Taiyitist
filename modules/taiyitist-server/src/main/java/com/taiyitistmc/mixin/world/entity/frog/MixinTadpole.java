@@ -21,7 +21,7 @@ public abstract class MixinTadpole {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/animal/frog/Frog;fudgePositionAfterSizeChange(Lnet/minecraft/world/entity/EntityDimensions;)Z")
     )
-    private void banner$transformerEvent(CallbackInfo ci, @Local Frog frog) {
+    private void taiyitist$transformerEvent(CallbackInfo ci, @Local Frog frog) {
         // CraftBukkit start
         if (CraftEventFactory.callEntityTransformEvent(((Tadpole) (Object) this), frog, org.bukkit.event.entity.EntityTransformEvent.TransformReason.METAMORPHOSIS).isCancelled()) {
             this.setAge(0); // Sets the age to 0 for avoid a loop if the event is canceled
@@ -29,7 +29,7 @@ public abstract class MixinTadpole {
     }
 
     @Inject(method = "ageUp()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/frog/Tadpole;discard()V"))
-    private void banner$pushRemoveReason(CallbackInfo ci, @Local Frog frog) {
+    private void taiyitist$pushRemoveReason(CallbackInfo ci, @Local Frog frog) {
         frog.pushRemoveCause(EntityRemoveEvent.Cause.TRANSFORMATION);
     }
 }

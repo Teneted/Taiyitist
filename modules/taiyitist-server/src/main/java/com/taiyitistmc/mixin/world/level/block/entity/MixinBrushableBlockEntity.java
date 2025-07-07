@@ -32,14 +32,14 @@ public abstract class MixinBrushableBlockEntity extends BlockEntity {
 
     @Redirect(method = "dropContent", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$dropContent(Level instance, Entity entity) {
+    private boolean taiyitist$dropContent(Level instance, Entity entity) {
         return false;
     }
 
     @Inject(method = "dropContent", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$dropEvent(Player player, CallbackInfo ci, double d, double e, double f,
+    private void taiyitist$dropEvent(Player player, CallbackInfo ci, double d, double e, double f,
                                   Direction direction, BlockPos blockPos, double g, double h,
                                   double i, ItemEntity itemEntity) {
         // CraftBukkit start
@@ -49,7 +49,7 @@ public abstract class MixinBrushableBlockEntity extends BlockEntity {
     }
 
     @Inject(method = "loadAdditional", at = @At("HEAD"))
-    private void banner$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+    private void taiyitist$load(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
         super.loadAdditional(compoundTag, provider); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
     }
 }

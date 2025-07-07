@@ -40,7 +40,7 @@ public abstract class MixinDistanceManager implements InjectionDistanceManager {
     @Shadow abstract TickingTracker tickingTracker();
 
     @Inject(method = "removePlayer", cancellable = true, at = @At(value = "INVOKE", remap = false, target = "Lit/unimi/dsi/fastutil/objects/ObjectSet;remove(Ljava/lang/Object;)Z"))
-    private void banner$remove(SectionPos p_140829_, ServerPlayer p_140830_, CallbackInfo ci, @Local ObjectSet<?> set) {
+    private void taiyitist$remove(SectionPos p_140829_, ServerPlayer p_140830_, CallbackInfo ci, @Local ObjectSet<?> set) {
         if (set == null) {
             ci.cancel();
         }

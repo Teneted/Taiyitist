@@ -6,7 +6,7 @@ public interface InjectionAbstractBoat {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setMaxSpeed(double maxSpeed) {
+    default void taiyitist$setMaxSpeed(double maxSpeed) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -14,7 +14,7 @@ public interface InjectionAbstractBoat {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setOccupiedDeceleration(double occupiedDeceleration) {
+    default void taiyitist$setOccupiedDeceleration(double occupiedDeceleration) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -22,7 +22,7 @@ public interface InjectionAbstractBoat {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setUnoccupiedDeceleration(double occupiedDeceleration) {
+    default void taiyitist$setUnoccupiedDeceleration(double occupiedDeceleration) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -30,7 +30,7 @@ public interface InjectionAbstractBoat {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setLandBoats(boolean landBoats) {
+    default void taiyitist$setLandBoats(boolean landBoats) {
         throw new IllegalStateException("Not implemented");
     }
 }

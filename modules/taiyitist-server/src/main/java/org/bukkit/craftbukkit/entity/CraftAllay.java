@@ -58,12 +58,12 @@ public class CraftAllay extends CraftCreature implements Allay {
    }
 
    public void startDancing() {
-      this.getHandle().banner$setForceDancing(true);
+      this.getHandle().taiyitist$setForceDancing(true);
       this.getHandle().setDancing(true);
    }
 
    public void stopDancing() {
-      this.getHandle().banner$setForceDancing(false);
+      this.getHandle().taiyitist$setForceDancing(false);
       this.getHandle().jukeboxPos = null;
       this.getHandle().setJukeboxPlaying((BlockPos)null, false);
    }

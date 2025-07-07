@@ -21,7 +21,7 @@ public abstract class MixinWanderingTrader extends net.minecraft.world.entity.np
     }
 
     @Redirect(method = "updateTrades", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffers;add(Ljava/lang/Object;)Z"))
-    private boolean banner$gainOffer(MerchantOffers merchantOffers, Object e) {
+    private boolean taiyitist$gainOffer(MerchantOffers merchantOffers, Object e) {
         MerchantOffer offer = (MerchantOffer) e;
         VillagerAcquireTradeEvent event = new VillagerAcquireTradeEvent((AbstractVillager) getBukkitEntity(), offer.asBukkit());
         if (this.bridge$valid()) {

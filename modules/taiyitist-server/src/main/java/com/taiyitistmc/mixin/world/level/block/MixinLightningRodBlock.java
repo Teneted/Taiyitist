@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinLightningRodBlock {
 
     @Inject(method = "onLightningStrike", cancellable = true, at = @At("HEAD"))
-    private void banner$redstoneChange(BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$redstoneChange(BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
         boolean powered = state.getValue(LightningRodBlock.POWERED);
         int old = (powered) ? 15 : 0;
         int current = (!powered) ? 15 : 0;
@@ -32,7 +32,7 @@ public class MixinLightningRodBlock {
     // Banner TODO fixme
     /*
     @Redirect(method = "onLightningStrike", at = @At(value = "INVOKE", target = "ad"))
-    private boolean banner$strikeReason(Level level, Entity entity) {
+    private boolean taiyitist$strikeReason(Level level, Entity entity) {
         if (!DistValidate.isValid(level)) return level.addFreshEntity(entity);
         ((ServerLevel) level).strikeLightning((LightningBolt) entity, LightningStrikeEvent.Cause.TRIDENT);
         return true;

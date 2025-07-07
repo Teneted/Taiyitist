@@ -25,12 +25,12 @@ public abstract class MixinHarvestFarmland {
 
     @WrapWithCondition(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$callFarmEvent(ServerLevel instance, BlockPos pos, boolean b, Entity entity) {
+    private boolean taiyitist$callFarmEvent(ServerLevel instance, BlockPos pos, boolean b, Entity entity) {
         return CraftEventFactory.callEntityChangeBlockEvent(entity, this.aboveFarmlandPos, Blocks.AIR.defaultBlockState());
     }
 
     @Inject(method = "tick*", at = @At("HEAD"))
-    private void banner$getVillager(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
+    private void taiyitist$getVillager(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureEntityChangeBlock(owner);
     }
 }

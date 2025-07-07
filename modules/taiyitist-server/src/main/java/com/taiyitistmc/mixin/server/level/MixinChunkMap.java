@@ -49,7 +49,7 @@ public abstract class MixinChunkMap extends ChunkStorage implements InjectionChu
     @Shadow protected abstract void tick();
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$updateRandom(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess levelStorageAccess, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop blockableEventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusUpdateListener, Supplier supplier, int i, boolean bl, CallbackInfo ci) {
+    private void taiyitist$updateRandom(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess levelStorageAccess, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop blockableEventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusUpdateListener, Supplier supplier, int i, boolean bl, CallbackInfo ci) {
         this.setChunkGenerator(chunkGenerator);
     }
 
@@ -65,7 +65,7 @@ public abstract class MixinChunkMap extends ChunkStorage implements InjectionChu
     }
 
     @Redirect(method = "upgradeChunkTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;dimension()Lnet/minecraft/resources/ResourceKey;"))
-    private ResourceKey<LevelStem> banner$useTypeKey(ServerLevel serverWorld) {
+    private ResourceKey<LevelStem> taiyitist$useTypeKey(ServerLevel serverWorld) {
         return serverWorld.getTypeKey();
     }
 

@@ -229,10 +229,10 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     private boolean hasMoved; // Spigot
     private int limitedPackets;
     private long lastLimitedPacket = -1;
-    private final AtomicReference<PlayerRecipeBookClickEvent> banner$recipeClickEvent = new AtomicReference<>();
-    private transient PlayerTeleportEvent.TeleportCause banner$cause;
-    private transient boolean banner$noTeleportEvent;
-    private transient boolean banner$teleportCancelled;
+    private final AtomicReference<PlayerRecipeBookClickEvent> taiyitist$recipeClickEvent = new AtomicReference<>();
+    private transient PlayerTeleportEvent.TeleportCause taiyitist$cause;
+    private transient boolean taiyitist$noTeleportEvent;
+    private transient boolean taiyitist$teleportCancelled;
 
     @Shadow
     private static boolean containsInvalidValues(double x, double y, double z, float yRot, float xRot) {
@@ -316,14 +316,14 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "<init>",
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;chunkSender:Lnet/minecraft/server/network/PlayerChunkSender;", shift = At.Shift.BEFORE))
-    private void banner$preHandlePlayer(MinecraftServer minecraftServer, Connection connection,
+    private void taiyitist$preHandlePlayer(MinecraftServer minecraftServer, Connection connection,
                                         ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie,
                                         CallbackInfo ci) {
-        banner$setPlayer(serverPlayer);
+        taiyitist$setPlayer(serverPlayer);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(MinecraftServer server, Connection connection,
+    private void taiyitist$init(MinecraftServer server, Connection connection,
                              ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie,
                              CallbackInfo ci) {
         allowedPlayerTicks = 1;
@@ -511,21 +511,21 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "handleAcceptTeleportPacket",
             at = @At(value = "FIELD", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;awaitingPositionFromClient:Lnet/minecraft/world/phys/Vec3;"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension()Z")))
-    private void banner$updateLoc(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$updateLoc(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
         if (this.player.bridge$valid()) {
             this.player.serverLevel().getChunkSource().move(this.player);
         }
     }
 
     @Inject(method = "performSignedChatCommand", cancellable = true, at = @At("HEAD"))
-    private void banner$rejectIfDisconnectSigned(CallbackInfo ci) {
+    private void taiyitist$rejectIfDisconnectSigned(CallbackInfo ci) {
         if (this.player.hasDisconnected()) {
             ci.cancel();
         }
     }
 
     @Decorate(method = "performUnsignedChatCommand", inject = true, at = @At("HEAD"))
-    private void banner$commandPreprocessEvent(String s) throws Throwable {
+    private void taiyitist$commandPreprocessEvent(String s) throws Throwable {
         if (this.player.hasDisconnected()) {
             DecorationOps.cancel().invoke();
             return;
@@ -583,7 +583,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "tryHandleChat", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getChatVisibility()Lnet/minecraft/world/entity/player/ChatVisiblity;"))
-    private void banner$deadMenTellNoTales(String string, Runnable runnable, CallbackInfo ci) {
+    private void taiyitist$deadMenTellNoTales(String string, Runnable runnable, CallbackInfo ci) {
         if (this.player.isRemoved()) {
             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.disabled.options").withStyle(ChatFormatting.RED), false));
             ci.cancel();
@@ -591,7 +591,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handleAcceptTeleportPacket", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;awaitingTeleport:I"))
-    private void banner$confirm(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$confirm(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
         if (this.awaitingPositionFromClient == null) {
             ci.cancel();
         }
@@ -600,12 +600,12 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "handleRecipeBookChangeSettingsPacket",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;getRecipeBook()Lnet/minecraft/stats/ServerRecipeBook;"))
-    private void banner$fireRecipeEvent(ServerboundRecipeBookChangeSettingsPacket serverboundRecipeBookChangeSettingsPacket, CallbackInfo ci) {
+    private void taiyitist$fireRecipeEvent(ServerboundRecipeBookChangeSettingsPacket serverboundRecipeBookChangeSettingsPacket, CallbackInfo ci) {
         CraftEventFactory.callRecipeBookSettingsEvent(this.player, serverboundRecipeBookChangeSettingsPacket.getBookType(), serverboundRecipeBookChangeSettingsPacket.isOpen(), serverboundRecipeBookChangeSettingsPacket.isFiltering()); // CraftBukkit
     }
 
     @Inject(method = "handleSelectTrade", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/MerchantMenu;setSelectionHint(I)V"))
-    private void banner$tradeSelect(ServerboundSelectTradePacket packet, CallbackInfo ci, @Local int i, @Local MerchantMenu merchantMenu) {
+    private void taiyitist$tradeSelect(ServerboundSelectTradePacket packet, CallbackInfo ci, @Local int i, @Local MerchantMenu merchantMenu) {
         var event = CraftEventFactory.callTradeSelectEvent(this.player, i, merchantMenu);
         if (event.isCancelled()) {
             this.player.getBukkitEntity().updateInventory();
@@ -614,7 +614,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handleEditBook", at = @At("HEAD"), cancellable = true)
-    private void banner$editBookSpam(ServerboundEditBookPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$editBookSpam(ServerboundEditBookPacket packetIn, CallbackInfo ci) {
         if (this.lastBookTick == 0) {
             this.lastBookTick = BukkitFieldHooks.currentTick() - 20;
         }
@@ -641,13 +641,13 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Decorate(method = "signBook", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;setItem(ILnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$editBookEvent(Inventory instance, int i, ItemStack stack, FilteredText text, List<FilteredText> list, int slot, @io.izzel.arclight.mixin.Local(ordinal = 0) ItemStack handStack) throws Throwable {
+    private void taiyitist$editBookEvent(Inventory instance, int i, ItemStack stack, FilteredText text, List<FilteredText> list, int slot, @io.izzel.arclight.mixin.Local(ordinal = 0) ItemStack handStack) throws Throwable {
         CraftEventFactory.handleEditBookEvent(player, i, handStack, stack);
         DecorationOps.callsite().invoke(instance, i, handStack);
     }
 
     @Inject(method = "updateAwaitingTeleport", at = @At("RETURN"))
-    private void banner$setAllowedTicks(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$setAllowedTicks(CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) {
             this.allowedPlayerTicks = 20;
         }
@@ -864,17 +864,17 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Redirect(method = "handlePlayerAction",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;setItemInHand(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;)V", ordinal = 0))
-    private void banner$cancelHeldItem0(ServerPlayer instance, InteractionHand hand, ItemStack stack) {
+    private void taiyitist$cancelHeldItem0(ServerPlayer instance, InteractionHand hand, ItemStack stack) {
     }
 
     @Redirect(method = "handlePlayerAction",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;setItemInHand(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;)V", ordinal = 1))
-    private void banner$cancelHeldItem1(ServerPlayer instance, InteractionHand hand, ItemStack stack) {
+    private void taiyitist$cancelHeldItem1(ServerPlayer instance, InteractionHand hand, ItemStack stack) {
     }
 
     @Inject(method = "handlePlayerAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;stopUsingItem()V"))
-    private void banner$itemSwapEvent(ServerboundPlayerActionPacket packet, CallbackInfo ci,
+    private void taiyitist$itemSwapEvent(ServerboundPlayerActionPacket packet, CallbackInfo ci,
                                       @Local ItemStack itemStack) {
         // CraftBukkit start - inspiration taken from DispenserRegistry (See SpigotCraft#394)
         CraftItemStack mainHand = CraftItemStack.asCraftMirror(itemStack);
@@ -900,12 +900,12 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "handleUseItemOn", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;ackBlockChangesUpTo(I)V"),
             cancellable = true)
-    private void banner$checkImmobile(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkImmobile(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
     }
 
     @Inject(method = "handleUseItemOn", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;serverLevel()Lnet/minecraft/server/level/ServerLevel;", ordinal = 1))
-    private void banner$frozenUseItem(ServerboundUseItemOnPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$frozenUseItem(ServerboundUseItemOnPacket packetIn, CallbackInfo ci) {
         if (!this.checkLimit(packetIn.bridge$timestamp())) {
             ci.cancel();
         }
@@ -914,7 +914,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "handleUseItemOn",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayerGameMode;useItemOn(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
-    private void banner$setStopUsing(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
+    private void taiyitist$setStopUsing(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
         this.player.stopUsingItem(); // CraftBukkit - SPIGOT-4706
     }
 
@@ -936,7 +936,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Inject(method = "handleUseItem",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;ackBlockChangesUpTo(I)V"), cancellable = true)
-    private void banner$checkUseItem(ServerboundUseItemPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkUseItem(ServerboundUseItemPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) {
             ci.cancel();
         }
@@ -944,7 +944,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
 
     @Inject(method = "handleUseItem", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayerGameMode;useItem(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"))
-    private void banner$handleInteractEvent(ServerboundUseItemPacket packet, CallbackInfo ci,
+    private void taiyitist$handleInteractEvent(ServerboundUseItemPacket packet, CallbackInfo ci,
                                             @Local InteractionHand interactionHand, @Local ItemStack itemStack) {
         // CraftBukkit start
         // Raytrace to look for 'rogue armswings'
@@ -991,7 +991,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "onDisconnect", cancellable = true, at = @At("HEAD"))
-    private void banner$returnIfProcessed(DisconnectionDetails disconnectionDetails, CallbackInfo ci) {
+    private void taiyitist$returnIfProcessed(DisconnectionDetails disconnectionDetails, CallbackInfo ci) {
         if (processedDisconnect) {
             ci.cancel();
         } else {
@@ -1000,12 +1000,12 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Redirect(method = "removePlayerFromWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
-    public void banner$captureQuit(PlayerList instance, Component message, boolean bypassHiddenChat) {
+    public void taiyitist$captureQuit(PlayerList instance, Component message, boolean bypassHiddenChat) {
         // do nothing
     }
 
     @Inject(method = "removePlayerFromWorld", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/players/PlayerList;remove(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void banner$setQuitMsg(CallbackInfo ci) {
+    private void taiyitist$setQuitMsg(CallbackInfo ci) {
         String quitMessage = this.server.getPlayerList().bridge$quiltMsg();
 
         // Banner start - avoid quilt msg NPE
@@ -1021,7 +1021,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "sendPlayerChatMessage", cancellable = true, at = @At("HEAD"))
-    private void banner$cantSee(PlayerChatMessage playerChatMessage, ChatType.Bound bound, CallbackInfo ci) {
+    private void taiyitist$cantSee(PlayerChatMessage playerChatMessage, ChatType.Bound bound, CallbackInfo ci) {
         if (!getCraftPlayer().canSee(playerChatMessage.link().sender())) {
             sendDisguisedChatMessage(playerChatMessage.decoratedContent(), bound);
             ci.cancel();
@@ -1032,7 +1032,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"),
             cancellable = true)
-    private void banner$checkAnimate(ServerboundSwingPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkAnimate(ServerboundSwingPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
     }
 
@@ -1040,7 +1040,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"),
             cancellable = true)
-    private void banner$handleAnimateEvent(ServerboundSwingPacket packet, CallbackInfo ci) {
+    private void taiyitist$handleAnimateEvent(ServerboundSwingPacket packet, CallbackInfo ci) {
         // CraftBukkit start - Raytrace to look for 'rogue armswings'
         float f1 = this.player.getXRot();
         float f2 = this.player.getYRot();
@@ -1072,14 +1072,14 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handleSetCarriedItem", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V"))
-    private void banner$carriedItemBlocked(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
+    private void taiyitist$carriedItemBlocked(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "handleSetCarriedItem", cancellable = true, at = @At(value = "FIELD", ordinal = 0, target = "Lnet/minecraft/world/entity/player/Inventory;selected:I"))
-    private void banner$itemHeldEvent(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
+    private void taiyitist$itemHeldEvent(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
         PlayerItemHeldEvent event = new PlayerItemHeldEvent(this.getCraftPlayer(), this.player.getInventory().selected, packet.getSlot());
         this.cserver.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -1090,7 +1090,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handleSetCarriedItem", at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false, target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
-    private void banner$kickOutOfBoundClick(ServerboundSetCarriedItemPacket serverboundSetCarriedItemPacket, CallbackInfo ci) {
+    private void taiyitist$kickOutOfBoundClick(ServerboundSetCarriedItemPacket serverboundSetCarriedItemPacket, CallbackInfo ci) {
         this.disconnect("Invalid hotbar selection (Hacking?)");
     }
 
@@ -1238,7 +1238,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handlePlayerCommand", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"))
-    private void banner$toggleAction(ServerboundPlayerCommandPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$toggleAction(ServerboundPlayerCommandPacket packetIn, CallbackInfo ci) {
         if (this.player.isRemoved()) {
             ci.cancel();
             return;
@@ -1262,13 +1262,13 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;serverLevel()Lnet/minecraft/server/level/ServerLevel;",
                     ordinal = 1), cancellable = true)
-    private void banner$checkInteract(ServerboundInteractPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkInteract(ServerboundInteractPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
     }
 
     @Inject(method = "handleContainerClose", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;doCloseContainer()V"))
-    private void banner$invClose(ServerboundContainerClosePacket packetIn, CallbackInfo ci) {
+    private void taiyitist$invClose(ServerboundContainerClosePacket packetIn, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
         CraftEventFactory.handleInventoryCloseEvent(this.player);
     }
@@ -1600,7 +1600,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "handleContainerButtonClick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"))
-    private void banner$noEnchant(ServerboundContainerButtonClickPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$noEnchant(ServerboundContainerButtonClickPacket packetIn, CallbackInfo ci) {
         if (player.isImmobile()) {
             ci.cancel();
         }
@@ -1610,7 +1610,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/MinecraftServer;getRecipeManager()Lnet/minecraft/world/item/crafting/RecipeManager;"),
             cancellable = true)
-    private void banner$recipeClickEvent(ServerboundPlaceRecipePacket packet, CallbackInfo ci) {
+    private void taiyitist$recipeClickEvent(ServerboundPlaceRecipePacket packet, CallbackInfo ci) {
         // CraftBukkit start - implement PlayerRecipeBookClickEvent
         org.bukkit.inventory.Recipe recipe = this.cserver.getRecipe(CraftNamespacedKey.fromMinecraft(packet.getRecipe()));
         if (recipe == null) {
@@ -1618,7 +1618,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
         }
         PlayerRecipeBookClickEvent event =
                 CraftEventFactory.callRecipeBookClickEvent(this.player, recipe, packet.isShiftDown());
-        banner$recipeClickEvent.set(event);
+        taiyitist$recipeClickEvent.set(event);
         // Cast to keyed should be safe as the recipe will never be a MerchantRecipe.
     }
 
@@ -1690,12 +1690,12 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     @Redirect(method = "method_17820",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/inventory/RecipeBookMenu;handlePlacement(ZLnet/minecraft/world/item/crafting/RecipeHolder;Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private <C extends Container> void banner$recipeClickEvent0(RecipeBookMenu instance, boolean bl, RecipeHolder<?> recipeHolder, ServerPlayer serverPlayer) {
-        ((RecipeBookMenu) this.player.containerMenu).handlePlacement(banner$recipeClickEvent.get().isShiftClick(), recipeHolder, this.player);
+    private <C extends Container> void taiyitist$recipeClickEvent0(RecipeBookMenu instance, boolean bl, RecipeHolder<?> recipeHolder, ServerPlayer serverPlayer) {
+        ((RecipeBookMenu) this.player.containerMenu).handlePlacement(taiyitist$recipeClickEvent.get().isShiftClick(), recipeHolder, this.player);
     }
 
     @Inject(method = "updateSignText", cancellable = true, at = @At("HEAD"))
-    private void banner$updateSignText(ServerboundSignUpdatePacket packet, List<FilteredText> filteredText, CallbackInfo ci) {
+    private void taiyitist$updateSignText(ServerboundSignUpdatePacket packet, List<FilteredText> filteredText, CallbackInfo ci) {
         if (player.isImmobile()) {
             ci.cancel();
         }
@@ -1720,13 +1720,13 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Decorate(method = "teleport(DDDFFLjava/util/Set;)V", inject = true, at = @At("HEAD"))
-    private void banner$teleportEvent(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> relativeSet) throws Throwable {
-        PlayerTeleportEvent.TeleportCause cause = banner$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : banner$cause;
-        banner$cause = null;
+    private void taiyitist$teleportEvent(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> relativeSet) throws Throwable {
+        PlayerTeleportEvent.TeleportCause cause = taiyitist$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : taiyitist$cause;
+        taiyitist$cause = null;
         Player player = this.getCraftPlayer();
         Location from = player.getLocation();
         Location to = new Location(this.getCraftPlayer().getWorld(), x, y, z, yaw, pitch);
-        if (!banner$noTeleportEvent && !from.equals(to)) {
+        if (!taiyitist$noTeleportEvent && !from.equals(to)) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(player, from.clone(), to.clone(), cause);
             this.cserver.getPluginManager().callEvent(event);
             if (event.isCancelled() || !to.equals(event.getTo())) {
@@ -1738,11 +1738,11 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
                 yaw = to.getYaw();
                 pitch = to.getPitch();
             }
-            banner$teleportCancelled = event.isCancelled();
+            taiyitist$teleportCancelled = event.isCancelled();
         } else {
-            banner$teleportCancelled = false;
+            taiyitist$teleportCancelled = false;
         }
-        banner$noTeleportEvent = false;
+        taiyitist$noTeleportEvent = false;
 
         if (Float.isNaN(yaw)) {
             yaw = 0.0f;
@@ -1755,7 +1755,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     }
 
     @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;awaitingTeleportTime:I"))
-    private void banner$storeLastPosition(double d, double e, double f, float yaw, float pitch, Set<RelativeMovement> set, CallbackInfo ci) {
+    private void taiyitist$storeLastPosition(double d, double e, double f, float yaw, float pitch, Set<RelativeMovement> set, CallbackInfo ci) {
         this.lastPosX = this.awaitingPositionFromClient.x;
         this.lastPosY = this.awaitingPositionFromClient.y;
         this.lastPosZ = this.awaitingPositionFromClient.z;
@@ -1770,8 +1770,8 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
 
     @Override
     public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set, PlayerTeleportEvent.TeleportCause cause) {
-        cause = banner$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : banner$cause;
-        banner$cause = null;
+        cause = taiyitist$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : taiyitist$cause;
+        taiyitist$cause = null;
         org.bukkit.entity.Player player = this.getCraftPlayer();
         Location from = player.getLocation();
 
@@ -1807,18 +1807,18 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
 
     @Override
     public void teleport(Location dest) {
-        banner$noTeleportEvent = true;
+        taiyitist$noTeleportEvent = true;
         this.teleport(dest.getX(), dest.getY(), dest.getZ(), dest.getYaw(), dest.getPitch(), Collections.emptySet());
-        banner$noTeleportEvent = false;
+        taiyitist$noTeleportEvent = false;
     }
 
     @Override
     public void bridge$pushNoTeleportEvent() {
-        banner$noTeleportEvent = true;
+        taiyitist$noTeleportEvent = true;
     }
 
     @Inject(method = "teleport(DDDFF)V", at = @At("HEAD"))
-    private void banner$tpBukkit(double d, double e, double f, float g, float h, CallbackInfo ci) {
+    private void taiyitist$tpBukkit(double d, double e, double f, float g, float h, CallbackInfo ci) {
         pushTeleportCause(PlayerTeleportEvent.TeleportCause.UNKNOWN);
     }
 
@@ -1866,11 +1866,11 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
 
     @Override
     public void pushTeleportCause(PlayerTeleportEvent.TeleportCause cause) {
-        banner$cause = cause;
+        taiyitist$cause = cause;
     }
 
     @Override
     public boolean bridge$teleportCancelled() {
-        return banner$teleportCancelled;
+        return taiyitist$teleportCancelled;
     }
 }

@@ -8,7 +8,7 @@ public interface InjectionGuardian {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
+    default void taiyitist$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
         throw new IllegalStateException("Not implemented");
     }
 }

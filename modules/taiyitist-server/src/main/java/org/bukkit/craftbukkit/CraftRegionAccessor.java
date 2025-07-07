@@ -347,7 +347,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
    public <T extends Entity> T createEntity(Location location, Class<T> clazz) throws IllegalArgumentException {
       net.minecraft.world.entity.Entity entity = this.createEntity(location, clazz, true);
       if (!this.isNormalWorld()) {
-         entity.banner$setGeneration(true);
+         entity.taiyitist$setGeneration(true);
       }
 
       return (T) entity.getBukkitEntity();
@@ -396,7 +396,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
       }
 
       if (!this.isNormalWorld()) {
-         entity.banner$setGeneration(true);
+         entity.taiyitist$setGeneration(true);
       }
 
       if (function != null) {

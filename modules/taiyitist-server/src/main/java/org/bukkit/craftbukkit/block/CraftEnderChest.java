@@ -26,7 +26,7 @@ public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, openCount + 1);
       }
 
-      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(true);
+      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.taiyitist$setOpened(true);
    }
 
    public void close() {
@@ -38,7 +38,7 @@ public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity
          ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.openerAPICountChanged((Level)this.getWorldHandle(), this.getPosition(), block, openCount, 0);
       }
 
-      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.banner$setOpened(false);
+      ((EnderChestBlockEntity)this.getTileEntity()).openersCounter.taiyitist$setOpened(false);
    }
 
    public CraftEnderChest copy() {

@@ -15,7 +15,7 @@ public class MixinPacketUtils {
     @Inject(method = "method_11072", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/network/PacketListener;shouldHandleMessage(Lnet/minecraft/network/protocol/Packet;)Z"),
             cancellable = true)
-    private static void banner$neverSync(PacketListener packetListener, Packet packet, CallbackInfo ci) {
+    private static void taiyitist$neverSync(PacketListener packetListener, Packet packet, CallbackInfo ci) {
         if (packetListener instanceof ServerCommonPacketListenerImpl serverCommonPacketListener && serverCommonPacketListener.bridge$processedDisconnect()) {
             ci.cancel();
         }

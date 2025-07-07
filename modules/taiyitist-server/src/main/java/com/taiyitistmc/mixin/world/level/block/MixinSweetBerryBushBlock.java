@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinSweetBerryBushBlock {
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean banner$cropGrow(ServerLevel instance, BlockPos blockPos, BlockState blockState, int i) {
+    private boolean taiyitist$cropGrow(ServerLevel instance, BlockPos blockPos, BlockState blockState, int i) {
         return CraftEventFactory.handleBlockGrowEvent(instance, blockPos, blockState, i);
     }
 
     @Redirect(method = "useWithoutItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/SweetBerryBushBlock;popResource(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$playerHarvest(Level level, BlockPos blockPos, ItemStack itemStack, @Local(argsOnly = true) Player player) {
+    private void taiyitist$playerHarvest(Level level, BlockPos blockPos, ItemStack itemStack, @Local(argsOnly = true) Player player) {
         PlayerHarvestBlockEvent event = CraftEventFactory.callPlayerHarvestBlockEvent(level, blockPos, player, InteractionHand.MAIN_HAND, Collections.singletonList(new ItemStack(Items.SWEET_BERRIES)));
         if (!event.isCancelled()) {
             for (org.bukkit.inventory.ItemStack stack : event.getItemsHarvested()) {

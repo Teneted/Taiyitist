@@ -8,7 +8,7 @@ public interface InjectionWorldBorder {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setWorld(Level world) {
+    default void taiyitist$setWorld(Level world) {
         throw new IllegalStateException("Not implemented");
     }
 }

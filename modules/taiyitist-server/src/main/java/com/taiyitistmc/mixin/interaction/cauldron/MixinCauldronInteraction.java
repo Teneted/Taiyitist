@@ -21,7 +21,7 @@ public interface MixinCauldronInteraction {
 
     @Redirect(method = "<clinit>", at = @At(value = "FIELD",
             target = "Lnet/minecraft/core/cauldron/CauldronInteraction;SHULKER_BOX:Lnet/minecraft/core/cauldron/CauldronInteraction;"))
-    private static void banner$resetShulkerBox(CauldronInteraction value) {
+    private static void taiyitist$resetShulkerBox(CauldronInteraction value) {
         value = (blockState, level, blockPos, player, interactionHand, itemStack) -> {
             Block block = Block.byItem(itemStack.getItem());
             if (!(block instanceof ShulkerBoxBlock)) {
@@ -46,7 +46,7 @@ public interface MixinCauldronInteraction {
 
     @Redirect(method = "<clinit>", at = @At(value = "FIELD",
             target = "Lnet/minecraft/core/cauldron/CauldronInteraction;BANNER:Lnet/minecraft/core/cauldron/CauldronInteraction;"))
-    private static void banner$resetBanner(CauldronInteraction value) {
+    private static void taiyitist$resetBanner(CauldronInteraction value) {
         value = (blockState, level, blockPos, player, interactionHand, itemStack) -> {
             BannerPatternLayers bannerPatternLayers = itemStack.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
             if (bannerPatternLayers.layers().isEmpty()) {

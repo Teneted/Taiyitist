@@ -42,7 +42,7 @@ public class MixinCommandSource1 implements InjectionCommandSource {
     }
 
     @Override
-    public CommandSender banner$getBukkitSender(CommandSourceStack wrapper) {
+    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return getBukkitSender(wrapper);
     }
 }

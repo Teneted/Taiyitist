@@ -28,13 +28,13 @@ public abstract class MixinPlayerEnderChestContainer extends SimpleContainer {
 
     /*
     @ShadowConstructor
-    public void banner$constructor$super(int numSlots) {
+    public void taiyitist$constructor$super(int numSlots) {
         throw new RuntimeException();
     }
 
     @CreateConstructor
-    public void banner$constructor(Player owner) {
-        banner$constructor$super(27);
+    public void taiyitist$constructor(Player owner) {
+        taiyitist$constructor$super(27);
         this.owner = owner;
     }*/
 

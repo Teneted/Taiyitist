@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinElderGuardian {
 
     @Inject(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffectUtil;addEffectToPlayersAround(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;DLnet/minecraft/world/effect/MobEffectInstance;I)Ljava/util/List;"))
-    private void banner$potionReason(CallbackInfo ci) {
+    private void taiyitist$potionReason(CallbackInfo ci) {
         BukkitSnapshotCaptures.captureEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 }

@@ -837,7 +837,7 @@ public class CraftEventFactory {
       CraftWorld world = (CraftWorld)entity.getWorld();
       EntityDeathEvent event = new EntityDeathEvent(entity, bukkitDamageSource, drops, victim.getExpReward(world.getHandle(), damageSource.getEntity()));
       Bukkit.getServer().getPluginManager().callEvent(event);
-      victim.banner$setExpToDrop(event.getDroppedExp());
+      victim.taiyitist$setExpToDrop(event.getDroppedExp());
       Iterator var7 = event.getDrops().iterator();
 
       while(var7.hasNext()) {
@@ -857,11 +857,11 @@ public class CraftEventFactory {
       event.setKeepInventory(keepInventory);
       event.setKeepLevel(victim.bridge$keepLevel());
       Bukkit.getServer().getPluginManager().callEvent(event);
-      victim.banner$setKeepLevel(event.getKeepLevel());
-      victim.banner$setNewLevel(event.getNewLevel());
-      victim.banner$setNewTotalExp(event.getNewTotalExp());
-      victim.banner$setExpToDrop(event.getDroppedExp());
-      victim.banner$setNewExp(event.getNewExp());
+      victim.taiyitist$setKeepLevel(event.getKeepLevel());
+      victim.taiyitist$setNewLevel(event.getNewLevel());
+      victim.taiyitist$setNewTotalExp(event.getNewTotalExp());
+      victim.taiyitist$setExpToDrop(event.getDroppedExp());
+      victim.taiyitist$setNewExp(event.getNewExp());
       Iterator var8 = event.getDrops().iterator();
 
       while(true) {
@@ -884,9 +884,9 @@ public class CraftEventFactory {
                }
             }
 
-            victim.banner$setForceDrops(true);
+            victim.taiyitist$setForceDrops(true);
             victim.spawnAtLocation(victim.level(), CraftItemStack.asNMSCopy(stack));
-            victim.banner$setForceDrops(false);
+            victim.taiyitist$setForceDrops(false);
          }
       }
    }
@@ -1028,7 +1028,7 @@ public class CraftEventFactory {
       if (!event.isCancelled()) {
          event.getEntity().setLastDamageCause(event);
       } else {
-         damagee.banner$setLastDamageCancelled(true);
+         damagee.taiyitist$setLastDamageCancelled(true);
       }
 
       return event;
@@ -1815,13 +1815,13 @@ public class CraftEventFactory {
          Block block = location.getBlock();
          BlockState blockState = serverExplosion.getDamageSource().getDirectBlockState() != null ? serverExplosion.getDamageSource().getDirectBlockState() : block.getState();
          BlockExplodeEvent event = callBlockExplodeEvent(block, blockState, blockList, serverExplosion.bridge$getYield(), serverExplosion.getBlockInteraction());
-         serverExplosion.banner$setWasCanceled(event.isCancelled());
-         serverExplosion.banner$setYield(event.getYield());
+         serverExplosion.taiyitist$setWasCanceled(event.isCancelled());
+         serverExplosion.taiyitist$setYield(event.getYield());
          return event.blockList();
       } else {
          EntityExplodeEvent event = callEntityExplodeEvent(serverExplosion.getDirectSourceEntity() != null ? serverExplosion.getDirectSourceEntity() : serverExplosion.getDamageSource().getCausingDamager(), blockList, serverExplosion.bridge$getYield(), serverExplosion.getBlockInteraction());
-         serverExplosion.banner$setWasCanceled(event.isCancelled());
-         serverExplosion.banner$setYield(event.getYield());
+         serverExplosion.taiyitist$setWasCanceled(event.isCancelled());
+         serverExplosion.taiyitist$setYield(event.getYield());
          return event.blockList();
       }
    }

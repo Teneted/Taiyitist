@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinChunkSerializer {
 
     @Inject(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/ChunkAccess;setLightCorrect(Z)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$loadPersistent(ServerLevel serverLevel, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos chunkPos, CompoundTag compoundTag, CallbackInfoReturnable<ProtoChunk> cir, ChunkPos chunkPos2, UpgradeData upgradeData, boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2, ChunkSource chunkSource, LevelLightEngine levelLightEngine, Registry registry, Codec codec, boolean bl3, long m, ChunkType chunkType, BlendingData blendingData, ChunkAccess chunkAccess) {
+    private static void taiyitist$loadPersistent(ServerLevel serverLevel, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos chunkPos, CompoundTag compoundTag, CallbackInfoReturnable<ProtoChunk> cir, ChunkPos chunkPos2, UpgradeData upgradeData, boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2, ChunkSource chunkSource, LevelLightEngine levelLightEngine, Registry registry, Codec codec, boolean bl3, long m, ChunkType chunkType, BlendingData blendingData, ChunkAccess chunkAccess) {
         net.minecraft.nbt.Tag persistentBase = compoundTag.get("ChunkBukkitValues");
         if (persistentBase instanceof CompoundTag) {
             (chunkAccess).bridge$persistentDataContainer().putAll((CompoundTag) persistentBase);
@@ -36,7 +36,7 @@ public class MixinChunkSerializer {
     }
 
     @Inject(method = "write", at = @At("RETURN"))
-    private static void banner$savePersistent(ServerLevel level, ChunkAccess chunkAccess, CallbackInfoReturnable<CompoundTag> cir) {
+    private static void taiyitist$savePersistent(ServerLevel level, ChunkAccess chunkAccess, CallbackInfoReturnable<CompoundTag> cir) {
         var container = (CraftPersistentDataContainer) (chunkAccess).bridge$persistentDataContainer();
         if (!container.isEmpty()) {
             cir.getReturnValue().put("ChunkBukkitValues", container.toTagCompound());

@@ -441,7 +441,7 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
     }
 
     @Override
-    public void banner$setCheckReachable(boolean checkReachable) {
+    public void taiyitist$setCheckReachable(boolean checkReachable) {
         this.checkReachable = checkReachable;
     }
 
@@ -459,7 +459,7 @@ public abstract class MixinAbstractContainerMenu implements InjectionAbstractCon
     }
 
     @Inject(method = "getCarried", at = @At("HEAD"))
-    private void banner$checkCarried(CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$checkCarried(CallbackInfoReturnable<ItemStack> cir) {
         // CraftBukkit start
         if (this.carried.isEmpty()) {
             this.setCarried(ItemStack.EMPTY);

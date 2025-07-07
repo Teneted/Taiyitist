@@ -122,12 +122,12 @@ public abstract class MixinPiglinAi {
     }
 
     @Redirect(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", remap = false, target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isBarterCurrency(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private static boolean banner$customBarter(ItemStack stack, Piglin piglin) {
+    private static boolean taiyitist$customBarter(ItemStack stack, Piglin piglin) {
         return isBarterItem(stack, piglin);
     }
 
     @Redirect(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;throwItems(Lnet/minecraft/world/entity/monster/piglin/Piglin;Ljava/util/List;)V"))
-    private static void banner$barterEvent(Piglin piglin, List<ItemStack> items) {
+    private static void taiyitist$barterEvent(Piglin piglin, List<ItemStack> items) {
         ItemStack stack = piglin.getItemInHand(InteractionHand.OFF_HAND);
         PiglinBarterEvent event = CraftEventFactory.callPiglinBarterEvent(piglin, getBarterResponseItems(piglin), stack);
         if (!event.isCancelled()) {
@@ -136,27 +136,27 @@ public abstract class MixinPiglinAi {
     }
 
     @Redirect(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isLovedItem(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private static boolean banner$customLove(ItemStack stack, Piglin piglin) {
+    private static boolean taiyitist$customLove(ItemStack stack, Piglin piglin) {
         return isLovedByPiglin(stack, piglin);
     }
 
     @Redirect(method = "wantsToPickup", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isBarterCurrency(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private static boolean banner$customBanter2(ItemStack stack, Piglin piglin) {
+    private static boolean taiyitist$customBanter2(ItemStack stack, Piglin piglin) {
         return isBarterItem(stack, piglin);
     }
 
     @Redirect(method = "canAdmire", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isBarterCurrency(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private static boolean banner$customBanter3(ItemStack stack, Piglin piglin) {
+    private static boolean taiyitist$customBanter3(ItemStack stack, Piglin piglin) {
         return isBarterItem(stack, piglin);
     }
 
     @Redirect(method = "isNotHoldingLovedItemInOffHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;isLovedItem(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private static boolean banner$customLove2(ItemStack stack, Piglin piglin) {
+    private static boolean taiyitist$customLove2(ItemStack stack, Piglin piglin) {
         return isLovedByPiglin(stack, piglin);
     }
 
     @Inject(method = "angerNearbyPiglins", at = @At("HEAD"), cancellable = true)
-    private static void banner$configAnger(Player player, boolean angerOnlyIfCanSee, CallbackInfo ci) {
+    private static void taiyitist$configAnger(Player player, boolean angerOnlyIfCanSee, CallbackInfo ci) {
         if (!player.level().bridge$bannerConfig().piglinsGuardChests) ci.cancel(); // Paper
     }
 }

@@ -22,7 +22,7 @@ public class CraftShulkerBullet extends CraftProjectile implements ShulkerBullet
          this.getHandle().setOwner((net.minecraft.world.entity.Entity)null);
       }
 
-      this.getHandle().banner$setProjectileSource(shooter);
+      this.getHandle().taiyitist$setProjectileSource(shooter);
    }
 
    public Entity getTarget() {

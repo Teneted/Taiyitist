@@ -15,7 +15,7 @@ public abstract class MixinEntitySelectorParser implements InjectionEntitySelect
 
     @Shadow
     private boolean usesSelectors;
-    private final AtomicBoolean banner$overridePermissions = new AtomicBoolean(false);
+    private final AtomicBoolean taiyitist$overridePermissions = new AtomicBoolean(false);
 
     @Shadow
     protected abstract void parseSelector() throws CommandSyntaxException;
@@ -25,23 +25,23 @@ public abstract class MixinEntitySelectorParser implements InjectionEntitySelect
 
     @Override
     public void parseSelector(boolean overridePermissions) throws CommandSyntaxException {
-        banner$overridePermissions.set(overridePermissions);
+        taiyitist$overridePermissions.set(overridePermissions);
         parseSelector();
     }
 
     @Redirect(method = "parseSelector", at = @At(value = "FIELD", target = "Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;usesSelectors:Z"))
-    private void banner$resetUseSelectors(EntitySelectorParser instance, boolean value) {
-        this.usesSelectors = !banner$overridePermissions.getAndSet(false);
+    private void taiyitist$resetUseSelectors(EntitySelectorParser instance, boolean value) {
+        this.usesSelectors = !taiyitist$overridePermissions.getAndSet(false);
     }
 
     @Redirect(method = "parse", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;parseSelector()V"))
-    private void banner$resetParseSelectors(EntitySelectorParser instance) throws CommandSyntaxException {
-        this.parseSelector(banner$overridePermissions.getAndSet(false));
+    private void taiyitist$resetParseSelectors(EntitySelectorParser instance) throws CommandSyntaxException {
+        this.parseSelector(taiyitist$overridePermissions.getAndSet(false));
     }
 
     @Override
     public EntitySelector parse(boolean overridePermissions) throws CommandSyntaxException {
-        banner$overridePermissions.set(overridePermissions);
+        taiyitist$overridePermissions.set(overridePermissions);
         return parse();
     }
 }

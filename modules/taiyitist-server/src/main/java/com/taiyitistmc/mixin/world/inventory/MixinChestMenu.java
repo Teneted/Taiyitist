@@ -33,12 +33,12 @@ public abstract class MixinChestMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/inventory/MenuType;ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/Container;I)V", at = @At("RETURN"))
-    public void banner$init(MenuType<?> type, int id, Inventory playerInventoryIn, Container p_i50092_4_, int rows, CallbackInfo ci) {
+    public void taiyitist$init(MenuType<?> type, int id, Inventory playerInventoryIn, Container p_i50092_4_, int rows, CallbackInfo ci) {
         this.playerInventory = playerInventoryIn;
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 

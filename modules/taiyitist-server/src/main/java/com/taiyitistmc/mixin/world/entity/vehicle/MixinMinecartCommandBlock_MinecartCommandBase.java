@@ -19,7 +19,7 @@ public abstract class MixinMinecartCommandBlock_MinecartCommandBase implements C
     }
 
     @Override
-    public CommandSender banner$getBukkitSender(CommandSourceStack wrapper) {
+    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return getBukkitSender(wrapper);
     }
 }

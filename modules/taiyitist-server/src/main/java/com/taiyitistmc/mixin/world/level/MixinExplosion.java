@@ -52,13 +52,13 @@ public abstract class MixinExplosion implements InjectionExplosion {
     @Unique public float yield;
 
     @Inject(method = "addOrAppendStack", cancellable = true, at = @At("HEAD"))
-    private static void banner$fix(List<Pair<ItemStack, BlockPos>> p_311090_, ItemStack stack, BlockPos p_309821_, CallbackInfo ci) {
+    private static void taiyitist$fix(List<Pair<ItemStack, BlockPos>> p_311090_, ItemStack stack, BlockPos p_309821_, CallbackInfo ci) {
         if (stack.isEmpty()) ci.cancel();
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Explosion$BlockInteraction;)V",
             at = @At("RETURN"))
-    public void banner$adjustSize(Level worldIn, Entity exploderIn, double xIn, double yIn, double zIn, float sizeIn, boolean causesFireIn, Explosion.BlockInteraction modeIn, CallbackInfo ci) {
+    public void taiyitist$adjustSize(Level worldIn, Entity exploderIn, double xIn, double yIn, double zIn, float sizeIn, boolean causesFireIn, Explosion.BlockInteraction modeIn, CallbackInfo ci) {
         this.radius = Math.max(sizeIn, 0F);
         this.yield = this.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY ? 1.0F / this.radius : 1.0F;
     }
@@ -69,7 +69,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Inject(method = "explode", at = @At(value = "HEAD"), cancellable = true)
-    public void banner$explode(CallbackInfo ci) {
+    public void taiyitist$explode(CallbackInfo ci) {
         // CraftBukkit start
         if (this.radius < 0.1F) {
             ci.cancel();
@@ -78,14 +78,14 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Decorate(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean banner$handleMultiPart(Entity entity, DamageSource damageSource, float f) throws Throwable {
+    private boolean taiyitist$handleMultiPart(Entity entity, DamageSource damageSource, float f) throws Throwable {
         // Special case ender dragon only give knockback if no damage is cancelled
         // Thinks to note:
         // - Setting a velocity to a ComplexEntityPart is ignored (and therefore not needed)
         // - Damaging ComplexEntityPart while forward the damage to EntityEnderDragon
         // - Damaging EntityEnderDragon does nothing
         // - EntityEnderDragon hitbock always covers the other parts and is therefore always present
-        entity.banner$setLastDamageCancelled(false);
+        entity.taiyitist$setLastDamageCancelled(false);
 
         if (entity.bridge$lastDamageCancelled()) {
             throw DecorationOps.jumpToLoopStart();
@@ -100,7 +100,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
                     target = "Lnet/minecraft/world/entity/Entity;setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V"
             )
     )
-    private void banner$setDeltaMovement(Entity instance, Vec3 vec3) {
+    private void taiyitist$setDeltaMovement(Entity instance, Vec3 vec3) {
         float q = this.radius * 2.0F;
         double v = Math.sqrt(instance.distanceToSqr(vec3)) / (double)q;
         double aa = ((double)1.0F - v) * (double)Explosion.getSeenPercent(vec3, instance) * (double)this.damageCalculator.getKnockbackMultiplier(instance);
@@ -135,7 +135,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Decorate(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;onExplosionHit(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Explosion;Ljava/util/function/BiConsumer;)V"))
-    private void banner$tntPrime(BlockState instance, Level level, BlockPos pos, Explosion explosion, BiConsumer<?, ?> biConsumer) throws Throwable {
+    private void taiyitist$tntPrime(BlockState instance, Level level, BlockPos pos, Explosion explosion, BiConsumer<?, ?> biConsumer) throws Throwable {
         if (instance.getBlock() instanceof TntBlock) {
             var sourceEntity = source == null ? null : source;
             var sourceBlock = sourceEntity == null ? BlockPos.containing(this.x, this.y, this.z) : null;
@@ -148,7 +148,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Decorate(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean banner$blockIgnite(Level instance, BlockPos blockPos, BlockState blockState) throws Throwable {
+    private boolean taiyitist$blockIgnite(Level instance, BlockPos blockPos, BlockState blockState) throws Throwable {
         BlockIgniteEvent event = CraftEventFactory.callBlockIgniteEvent(this.level, blockPos, (Explosion) (Object) this);
         if (event.isCancelled()) {
             return false;
@@ -162,7 +162,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Override
-    public void banner$setWasCanceled(boolean wasCanceled) {
+    public void taiyitist$setWasCanceled(boolean wasCanceled) {
         this.wasCanceled = wasCanceled;
     }
 }

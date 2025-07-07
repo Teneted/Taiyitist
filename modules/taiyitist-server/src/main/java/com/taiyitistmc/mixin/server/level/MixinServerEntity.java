@@ -95,20 +95,20 @@ public abstract class MixinServerEntity implements InjectionServerEntity {
     @Shadow protected abstract void broadcastAndSend(Packet<?> packet);
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, CallbackInfo ci) {
+    private void taiyitist$init(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, CallbackInfo ci) {
         trackedPlayers = new HashSet<>();
         lastTick = BukkitFieldHooks.currentTick() - 1;
         lastUpdate = lastPosUpdate = lastMapUpdate = -1;
     }
 
     @ShadowConstructor
-    public void banner$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer) {
+    public void taiyitist$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer) {
         throw new NullPointerException();
     }
 
     @CreateConstructor
-    public void banner$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, Set<ServerPlayerConnection> set) {
-        banner$constructor(serverWorld, entity, updateFrequency, sendVelocityUpdates, packetConsumer);
+    public void taiyitist$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, Set<ServerPlayerConnection> set) {
+        taiyitist$constructor(serverWorld, entity, updateFrequency, sendVelocityUpdates, packetConsumer);
         this.trackedPlayers = set;
     }
 
@@ -256,14 +256,14 @@ public abstract class MixinServerEntity implements InjectionServerEntity {
     }
 
     @Inject(method = "sendPairingData", cancellable = true, require = 0, at = @At("HEAD"))
-    private void banner$returnIfRemoved(CallbackInfo ci) {
+    private void taiyitist$returnIfRemoved(CallbackInfo ci) {
         if (this.entity.isRemoved()) {
             ci.cancel();
         }
     }
 
     @Redirect(method = "sendPairingData", require = 0, at = @At(value = "INVOKE", target = "Ljava/util/Collection;isEmpty()Z"))
-    private boolean banner$injectScaledHealth(Collection<AttributeInstance> instance, ServerPlayer player) {
+    private boolean taiyitist$injectScaledHealth(Collection<AttributeInstance> instance, ServerPlayer player) {
         if (this.entity.getId() == player.getId()) {
             ((ServerPlayer) this.entity).getBukkitEntity().injectScaledMaxHealth(instance, false);
         }
@@ -271,7 +271,7 @@ public abstract class MixinServerEntity implements InjectionServerEntity {
     }
 
     @Inject(method = "sendDirtyEntityData", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerEntity;broadcastAndSend(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void banner$sendScaledHealth(CallbackInfo ci, @Local Set<AttributeInstance> set) {
+    private void taiyitist$sendScaledHealth(CallbackInfo ci, @Local Set<AttributeInstance> set) {
         if (this.entity instanceof ServerPlayer player) {
             player.getBukkitEntity().injectScaledMaxHealth(set, false);
         }

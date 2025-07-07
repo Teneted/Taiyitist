@@ -10,7 +10,7 @@ public interface InjectionConnection {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setHostName(String hostName) {
+    default void taiyitist$setHostName(String hostName) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -22,7 +22,7 @@ public interface InjectionConnection {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setSpoofedUUID(UUID spoofedUUID) {
+    default void taiyitist$setSpoofedUUID(UUID spoofedUUID) {
         throw new IllegalStateException("Not implemented");
     }
 

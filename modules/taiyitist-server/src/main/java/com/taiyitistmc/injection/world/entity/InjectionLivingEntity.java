@@ -42,7 +42,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setExpToDrop(int expToDrop) {
+    default void taiyitist$setExpToDrop(int expToDrop) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -50,7 +50,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setForceDrops(boolean forceDrops) {
+    default void taiyitist$setForceDrops(boolean forceDrops) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -58,7 +58,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
+    default void taiyitist$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -66,7 +66,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCraftAttributes(CraftAttributeMap craftAttributes) {
+    default void taiyitist$setCraftAttributes(CraftAttributeMap craftAttributes) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -74,7 +74,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCollides(boolean collides) {
+    default void taiyitist$setCollides(boolean collides) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -82,7 +82,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setCollidableExemptions(Set<UUID> collidableExemptions) {
+    default void taiyitist$setCollidableExemptions(Set<UUID> collidableExemptions) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -90,7 +90,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
+    default void taiyitist$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -98,7 +98,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setIsTickingEffects(boolean isTickingEffects) {
+    default void taiyitist$setIsTickingEffects(boolean isTickingEffects) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -106,7 +106,7 @@ public interface InjectionLivingEntity extends InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
+    default void taiyitist$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
         throw new IllegalStateException("Not implemented");
     }
 

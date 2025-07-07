@@ -27,7 +27,7 @@ public class MixinComposterBlock_OutputContainer extends SimpleContainer {
     // @formatter:on
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/item/ItemStack;)V", at = @At("RETURN"))
-    public void banner$setOwner(BlockState blockState, LevelAccessor world, BlockPos blockPos, ItemStack itemStack, CallbackInfo ci) {
+    public void taiyitist$setOwner(BlockState blockState, LevelAccessor world, BlockPos blockPos, ItemStack itemStack, CallbackInfo ci) {
         this.setOwner(new CraftBlockInventoryHolder(world, blockPos, this));
     }
 

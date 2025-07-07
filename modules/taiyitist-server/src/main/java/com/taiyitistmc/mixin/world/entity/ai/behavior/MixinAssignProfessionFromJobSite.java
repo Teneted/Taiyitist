@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinAssignProfessionFromJobSite {
 
     @Redirect(method = "method_46891", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/npc/Villager;setVillagerData(Lnet/minecraft/world/entity/npc/VillagerData;)V"))
-    private static void banner$cancelJob(Villager instance, VillagerData villagerData) {
+    private static void taiyitist$cancelJob(Villager instance, VillagerData villagerData) {
     }
 
     @Inject(method = "method_46891", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/npc/Villager;setVillagerData(Lnet/minecraft/world/entity/npc/VillagerData;)V"), cancellable = true)
-    private static void banner$jobChange(Villager villager, ServerLevel serverLevel, VillagerProfession villagerProfession, CallbackInfo ci) {
+    private static void taiyitist$jobChange(Villager villager, ServerLevel serverLevel, VillagerProfession villagerProfession, CallbackInfo ci) {
         // CraftBukkit start - Fire VillagerCareerChangeEvent where Villager gets employed
         VillagerCareerChangeEvent event = CraftEventFactory.callVillagerCareerChangeEvent(villager, CraftVillager.CraftProfession.minecraftToBukkit(villagerProfession), VillagerCareerChangeEvent.ChangeReason.EMPLOYED);
         if (event.isCancelled()) {

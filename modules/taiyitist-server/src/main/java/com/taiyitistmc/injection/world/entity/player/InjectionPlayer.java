@@ -18,7 +18,7 @@ public interface InjectionPlayer extends InjectionLivingEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setAffectsSpawning(boolean affectsSpawning) {
+    default void taiyitist$setAffectsSpawning(boolean affectsSpawning) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -49,7 +49,7 @@ public interface InjectionPlayer extends InjectionLivingEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setFauxSleeping(boolean fauxSleeping) {
+    default void taiyitist$setFauxSleeping(boolean fauxSleeping) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -57,7 +57,7 @@ public interface InjectionPlayer extends InjectionLivingEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setOldLevel(int oldLevel) {
+    default void taiyitist$setOldLevel(int oldLevel) {
         throw new IllegalStateException("Not implemented");
     }
 

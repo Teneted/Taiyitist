@@ -74,18 +74,18 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     protected abstract boolean shouldStopFishing(Player player);
 
     @Redirect(method = "checkCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/FishingHook;hitTargetOrDeflectSelf(Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;"))
-    private ProjectileDeflection banner$collide(FishingHook fishingHook, HitResult hitResult) {
+    private ProjectileDeflection taiyitist$collide(FishingHook fishingHook, HitResult hitResult) {
         return this.preHitTargetOrDeflectSelf(hitResult);
     }
 
     @Inject(method = "catchingFish", at = @At(value = "FIELD", shift = At.Shift.AFTER, ordinal = 0, target = "Lnet/minecraft/world/entity/projectile/FishingHook;timeUntilHooked:I"))
-    private void banner$attemptFail(BlockPos blockPos, CallbackInfo ci) {
+    private void taiyitist$attemptFail(BlockPos blockPos, CallbackInfo ci) {
         PlayerFishEvent event = new PlayerFishEvent((org.bukkit.entity.Player) this.getPlayerOwner().getBukkitEntity(), null, (FishHook) this.getBukkitEntity(), PlayerFishEvent.State.FAILED_ATTEMPT);
         Bukkit.getPluginManager().callEvent(event);
     }
 
     @Inject(method = "catchingFish", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/FishingHook;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"))
-    private void banner$fishBite(BlockPos blockPos, CallbackInfo ci) {
+    private void taiyitist$fishBite(BlockPos blockPos, CallbackInfo ci) {
         PlayerFishEvent event = new PlayerFishEvent((org.bukkit.entity.Player) this.getPlayerOwner().getBukkitEntity(), null, (FishHook) this.getBukkitEntity(), PlayerFishEvent.State.BITE);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -94,7 +94,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Inject(method = "catchingFish", at = @At("RETURN"))
-    private void banner$modifyWaitingTime(BlockPos p_37146_, CallbackInfo ci) {
+    private void taiyitist$modifyWaitingTime(BlockPos p_37146_, CallbackInfo ci) {
         if (this.nibble <= 0 && this.timeUntilHooked <= 0 && this.timeUntilLured <= 0) {
             this.timeUntilLured = Mth.nextInt(this.random, this.minWaitTime, this.maxWaitTime);
             this.timeUntilLured -= (this.applyLure) ? this.lureSpeed * 20 * 5 : 0;
@@ -112,7 +112,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Redirect(method = "catchingFish", at = @At(value = "INVOKE", ordinal = 2, target = "Lnet/minecraft/util/Mth;nextFloat(Lnet/minecraft/util/RandomSource;FF)F"))
-    private float banner$lureAngleParam(RandomSource random, float p_216269_, float p_216270_) {
+    private float taiyitist$lureAngleParam(RandomSource random, float p_216269_, float p_216270_) {
         return Mth.nextFloat(random, this.minLureAngle, this.maxLureAngle);
     }
 
@@ -218,7 +218,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMinWaitTime(int minWaitTime) {
+    public void taiyitist$setMinWaitTime(int minWaitTime) {
         this.minWaitTime = minWaitTime;
     }
 
@@ -228,7 +228,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMaxWaitTime(int minWaitTime) {
+    public void taiyitist$setMaxWaitTime(int minWaitTime) {
         this.minWaitTime = minWaitTime;
     }
 
@@ -238,7 +238,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setApplyLure(boolean applyLure) {
+    public void taiyitist$setApplyLure(boolean applyLure) {
         this.applyLure = applyLure;
     }
 
@@ -248,7 +248,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMinLureTime(int minLureTime) {
+    public void taiyitist$setMinLureTime(int minLureTime) {
         this.minLureTime = minLureTime;
     }
 
@@ -258,7 +258,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMaxLureTime(int maxLureTime) {
+    public void taiyitist$setMaxLureTime(int maxLureTime) {
         this.maxLureTime = maxLureTime;
     }
 
@@ -268,7 +268,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMinLureAnglee(float minLureAngle) {
+    public void taiyitist$setMinLureAnglee(float minLureAngle) {
         this.minLureAngle = minLureAngle;
     }
 
@@ -278,7 +278,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setMaxLureAnglee(float maxLureAngle) {
+    public void taiyitist$setMaxLureAnglee(float maxLureAngle) {
         this.maxLureAngle = maxLureAngle;
     }
 
@@ -288,7 +288,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setRainInfluenced(boolean rainInfluenced) {
+    public void taiyitist$setRainInfluenced(boolean rainInfluenced) {
         this.rainInfluenced = rainInfluenced;
     }
 
@@ -298,7 +298,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void banner$setSkyInfluenced(boolean skyInfluenced) {
+    public void taiyitist$setSkyInfluenced(boolean skyInfluenced) {
         this.skyInfluenced = skyInfluenced;
     }
 }

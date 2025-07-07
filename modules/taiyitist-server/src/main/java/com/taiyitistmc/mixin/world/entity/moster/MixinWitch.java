@@ -31,14 +31,14 @@ public abstract class MixinWitch extends Raider {
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/alchemy/PotionContents;forEachEffect(Ljava/util/function/Consumer;)V"))
-    private void banner$reason(CallbackInfo ci) {
+    private void taiyitist$reason(CallbackInfo ci) {
         pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$callWitchConsumerEvent(CallbackInfo ci, ItemStack itemStack, PotionContents potionContents) {
+    private void taiyitist$callWitchConsumerEvent(CallbackInfo ci, ItemStack itemStack, PotionContents potionContents) {
         // Paper start
         if (itemStack.is(Items.POTION)) {
             com.destroystokyo.paper.event.entity.WitchConsumePotionEvent event = new com.destroystokyo.paper.event.entity.WitchConsumePotionEvent((org.bukkit.entity.Witch) this.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemStack));
@@ -51,7 +51,7 @@ public abstract class MixinWitch extends Raider {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/projectile/ThrownPotion;<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$callWitchPotionEvent(LivingEntity livingEntity, float f, CallbackInfo ci, Vec3 vec3, double d, double e, double g, double h, Holder holder) {
+    private void taiyitist$callWitchPotionEvent(LivingEntity livingEntity, float f, CallbackInfo ci, Vec3 vec3, double d, double e, double g, double h, Holder holder) {
         // Paper start
         paperPotion.set(PotionContents.createItemStack(Items.SPLASH_POTION, holder));
         com.destroystokyo.paper.event.entity.WitchThrowPotionEvent event = new com.destroystokyo.paper.event.entity.WitchThrowPotionEvent((org.bukkit.entity.Witch) this.getBukkitEntity(), (org.bukkit.entity.LivingEntity) livingEntity.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(paperPotion.get()));
@@ -64,7 +64,7 @@ public abstract class MixinWitch extends Raider {
 
     @Redirect(method = "performRangedAttack", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/projectile/ThrownPotion;setItem(Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$setPaperPotion(ThrownPotion instance, ItemStack itemStack) {
+    private void taiyitist$setPaperPotion(ThrownPotion instance, ItemStack itemStack) {
         instance.setItem(paperPotion.get());
     }
 }

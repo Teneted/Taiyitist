@@ -25,19 +25,19 @@ public class MixinSkeletonTrapGoal {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"),
             slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/horse/SkeletonTrapGoal;createHorse(Lnet/minecraft/world/DifficultyInstance;)Lnet/minecraft/world/entity/animal/horse/AbstractHorse;")))
-    private void banner$thunder(CallbackInfo ci) {
+    private void taiyitist$thunder(CallbackInfo ci) {
         this.horse.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.TRAP);
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$addHorse(ServerLevel world, Entity entityIn) {
+    private boolean taiyitist$addHorse(ServerLevel world, Entity entityIn) {
         world.strikeLightning(entityIn, LightningStrikeEvent.Cause.TRAP);
         return true;
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/horse/SkeletonTrapGoal;createHorse(Lnet/minecraft/world/DifficultyInstance;)Lnet/minecraft/world/entity/animal/horse/AbstractHorse;")))
-    private void banner$jockey(CallbackInfo ci) {
+    private void taiyitist$jockey(CallbackInfo ci) {
         this.horse.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.JOCKEY);
     }
 }

@@ -23,7 +23,7 @@ public abstract class MixinBaseSpawner {
 
 
     @Inject(method = "setEntityId", at = @At("RETURN"))
-    public void banner$clearMobs(CallbackInfo ci) {
+    public void taiyitist$clearMobs(CallbackInfo ci) {
         this.spawnPotentials = SimpleWeightedRandomList.empty();
     }
 
@@ -31,7 +31,7 @@ public abstract class MixinBaseSpawner {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;tryAddFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)Z")
     )
-    private void banner$pushReason(ServerLevel serverLevel, BlockPos pos, CallbackInfo ci,
+    private void taiyitist$pushReason(ServerLevel serverLevel, BlockPos pos, CallbackInfo ci,
                                    @Local(ordinal = 1) BlockPos blockPos,
                                    @Local Entity entity) {
         // Spigot Start

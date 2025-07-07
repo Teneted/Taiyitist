@@ -49,12 +49,12 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
     public abstract String getLevelName();
 
     @Redirect(method = "setTagData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/WorldGenSettings;encode(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/world/level/levelgen/WorldOptions;Lnet/minecraft/core/RegistryAccess;)Lcom/mojang/serialization/DataResult;"))
-    private <T extends Tag> DataResult<T> banner$customDim(DynamicOps<T> ops, WorldOptions options, RegistryAccess registry) {
+    private <T extends Tag> DataResult<T> taiyitist$customDim(DynamicOps<T> ops, WorldOptions options, RegistryAccess registry) {
         return WorldGenSettings.encode(ops, options, new WorldDimensions(this.customDimensions != null ? this.customDimensions : registry.registryOrThrow(Registries.LEVEL_STEM)));
     }
 
     @Inject(method = "setThundering", cancellable = true, at = @At("HEAD"))
-    private void banner$thunder(boolean thunderingIn, CallbackInfo ci) {
+    private void taiyitist$thunder(boolean thunderingIn, CallbackInfo ci) {
         if (this.thundering == thunderingIn) {
             return;
         }
@@ -70,7 +70,7 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
     }
 
     @Inject(method = "setRaining", cancellable = true, at = @At("HEAD"))
-    private void banner$storm(boolean isRaining, CallbackInfo ci) {
+    private void taiyitist$storm(boolean isRaining, CallbackInfo ci) {
         if (this.raining == isRaining) {
             return;
         }
@@ -86,7 +86,7 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
     }
 
     @Inject(method = "setDifficulty", at = @At("RETURN"))
-    private void banner$sendDiffChange(Difficulty newDifficulty, CallbackInfo ci) {
+    private void taiyitist$sendDiffChange(Difficulty newDifficulty, CallbackInfo ci) {
         ClientboundChangeDifficultyPacket packet = new ClientboundChangeDifficultyPacket(newDifficulty, this.isDifficultyLocked());
         if (this.world != null) {
             for (Player player : this.world.players()) {
@@ -101,7 +101,7 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
     }
 
     @Override
-    public void banner$setCustomDimensions(Registry<LevelStem> customDimensions) {
+    public void taiyitist$setCustomDimensions(Registry<LevelStem> customDimensions) {
         this.customDimensions = customDimensions;
     }
 

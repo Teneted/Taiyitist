@@ -29,7 +29,7 @@ public abstract class MixinWitherBoss extends Monster {
     }
 
     @Decorate(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;explode(Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;)Lnet/minecraft/world/level/Explosion;"))
-    private Explosion banner$fireExplosionPrimeEvent(Level instance, Entity source, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction explosionInteraction) throws Throwable {
+    private Explosion taiyitist$fireExplosionPrimeEvent(Level instance, Entity source, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction explosionInteraction) throws Throwable {
         ExplosionPrimeEvent event = new ExplosionPrimeEvent(this.getBukkitEntity(), 7.0F, false);
         instance.getCraftServer().getPluginManager().callEvent(event);
 
@@ -41,7 +41,7 @@ public abstract class MixinWitherBoss extends Monster {
     }
 
     @Decorate(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/wither/WitherBoss;setAlternativeTarget(II)V"))
-    private void banner$targetLivingEvent(WitherBoss instance, int i, int entityId) throws Throwable {
+    private void taiyitist$targetLivingEvent(WitherBoss instance, int i, int entityId) throws Throwable {
         if (i > 0 && entityId != 0) {
             if (CraftEventFactory.callEntityTargetLivingEvent((WitherBoss) (Object) this, (LivingEntity) this.level().getEntity(entityId), EntityTargetEvent.TargetReason.CLOSEST_ENTITY).isCancelled()) {
                 return;
@@ -51,7 +51,7 @@ public abstract class MixinWitherBoss extends Monster {
     }
 
     @Decorate(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$damageBlock(Level instance, BlockPos blockPos, boolean b, Entity entity) throws Throwable {
+    private boolean taiyitist$damageBlock(Level instance, BlockPos blockPos, boolean b, Entity entity) throws Throwable {
         if (!CraftEventFactory.callEntityChangeBlockEvent((WitherBoss) (Object) this, blockPos, Blocks.AIR.defaultBlockState())) {
             return false;
         }
@@ -59,12 +59,12 @@ public abstract class MixinWitherBoss extends Monster {
     }
 
     @Inject(method = "customServerAiStep", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/boss/wither/WitherBoss;heal(F)V"))
-    private void banner$healReason(CallbackInfo ci) {
+    private void taiyitist$healReason(CallbackInfo ci) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.WITHER_SPAWN);
     }
 
     @Inject(method = "customServerAiStep", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/boss/wither/WitherBoss;heal(F)V"))
-    private void banner$healReason0(CallbackInfo ci) {
+    private void taiyitist$healReason0(CallbackInfo ci) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.REGEN);
     }
 }

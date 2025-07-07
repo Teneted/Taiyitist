@@ -25,7 +25,7 @@ public abstract class MixinChestBlock implements InjectionChestBlock {
     private static DoubleBlockCombiner.Combiner<ChestBlockEntity, Optional<MenuProvider>> MENU_PROVIDER_COMBINER;
 
     @Inject(method = "isCatSittingOnChest", at = @At("HEAD"), cancellable = true)
-    private static void banner$configCatSitting(LevelAccessor level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    private static void taiyitist$configCatSitting(LevelAccessor level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         // Paper start - Option to disable chest cat detection
         if (level.getMinecraftWorld().bridge$bannerConfig().disableChestCatDetection) {
             cir.setReturnValue(false);

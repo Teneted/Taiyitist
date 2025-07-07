@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinFireworkRocketEntity {
 
     @Inject(method = "explode", cancellable = true, at = @At("HEAD"))
-    private void banner$fireworksExplode(CallbackInfo ci) {
+    private void taiyitist$fireworksExplode(CallbackInfo ci) {
         if (CraftEventFactory.callFireworkExplodeEvent((FireworkRocketEntity) (Object) this).isCancelled()) {
             ci.cancel();
         }

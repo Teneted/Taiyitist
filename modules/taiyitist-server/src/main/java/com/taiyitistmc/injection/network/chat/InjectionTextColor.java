@@ -8,7 +8,7 @@ public interface InjectionTextColor {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void banner$setFormat(ChatFormatting format) {
+    default void taiyitist$setFormat(ChatFormatting format) {
         throw new IllegalStateException("Not implemented");
     }
 }

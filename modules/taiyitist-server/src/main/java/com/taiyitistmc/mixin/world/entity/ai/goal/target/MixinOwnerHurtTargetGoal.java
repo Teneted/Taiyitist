@@ -17,7 +17,7 @@ public abstract class MixinOwnerHurtTargetGoal extends TargetGoal {
     }
 
     @Inject(method = "start", at = @At("HEAD"))
-    public void banner$reason(CallbackInfo ci) {
+    public void taiyitist$reason(CallbackInfo ci) {
         this.mob.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET, true);
     }
 }

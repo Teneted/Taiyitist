@@ -165,9 +165,9 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     private Vector origin;
     @javax.annotation.Nullable
     private UUID originWorld;
-    private transient EntityRemoveEvent.Cause banner$removeCause;
-    private transient CreatureSpawnEvent.SpawnReason banner$spawnReason;
-    private final AtomicReference<Vec3> banner$location = new AtomicReference<>();
+    private transient EntityRemoveEvent.Cause taiyitist$removeCause;
+    private transient CreatureSpawnEvent.SpawnReason taiyitist$spawnReason;
+    private final AtomicReference<Vec3> taiyitist$location = new AtomicReference<>();
 
     private static boolean isLevelAtLeast(CompoundTag tag, int level) {
         return tag.contains("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
@@ -364,12 +364,12 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "igniteForSeconds", at = @At("HEAD"))
-    private void banner$setSecondsOnFire(float f, CallbackInfo ci) {
+    private void taiyitist$setSecondsOnFire(float f, CallbackInfo ci) {
         igniteForSeconds(f, true);
     }
 
     @Override
-    public void banner$setSecondsOnFire(float i, boolean callEvent) {
+    public void taiyitist$setSecondsOnFire(float i, boolean callEvent) {
         if (callEvent) {
             EntityCombustEvent event = new EntityCombustEvent(this.getBukkitEntity(), i);
             this.level.getCraftServer().getPluginManager().callEvent(event);
@@ -403,12 +403,12 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "getMaxAirSupply", cancellable = true, at = @At("RETURN"))
-    private void banner$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
+    private void taiyitist$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
         cir.setReturnValue(this.maxAirTicks);
     }
 
     @Inject(method = "setPose", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;)V"))
-    public void banner$setPose$EntityPoseChangeEvent(Pose pose, CallbackInfo ci) {
+    public void taiyitist$setPose$EntityPoseChangeEvent(Pose pose, CallbackInfo ci) {
         if (pose == this.getPose()) {
             ci.cancel();
             return;
@@ -418,7 +418,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "setRot", at = @At(value = "HEAD"))
-    public void banner$infCheck(float yaw, float pitch, CallbackInfo ci) {
+    public void taiyitist$infCheck(float yaw, float pitch, CallbackInfo ci) {
         // CraftBukkit start - yaw was sometimes set to NaN, so we need to set it back to 0
         if (Float.isNaN(yaw)) {
             yaw = 0;
@@ -448,14 +448,14 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Decorate(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;handlePortal()V"))
-    private void banner$baseTick$moveToPostTick(Entity entity) throws Throwable {
+    private void taiyitist$baseTick$moveToPostTick(Entity entity) throws Throwable {
         if ((Object) this instanceof ServerPlayer) {
             DecorationOps.callsite().invoke(entity);// CraftBukkit - // Moved up to postTick
         }
     }
 
     @Decorate(method = "updateFluidHeightAndDoFluidPushing", require = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FluidState;getFlow(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/Vec3;"))
-    private Vec3 banner$setLava(FluidState instance, BlockGetter level, BlockPos pos) throws Throwable {
+    private Vec3 taiyitist$setLava(FluidState instance, BlockGetter level, BlockPos pos) throws Throwable {
         if (instance.getType().is(FluidTags.LAVA)) {
             lastLavaContact = pos.immutable();
         }
@@ -463,7 +463,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Decorate(method = "baseTick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/Entity;isInLava()Z"))
-    private boolean banner$resetLava(Entity instance) throws Throwable {
+    private boolean taiyitist$resetLava(Entity instance) throws Throwable {
         var ret = (boolean) DecorationOps.callsite().invoke(instance);
         if (!ret) {
             this.lastLavaContact = null;
@@ -472,7 +472,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Decorate(method = "lavaHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(F)V"))
-    public void banner$setOnFireFromLava$bukkitEvent(Entity instance, float f) throws Throwable {
+    public void taiyitist$setOnFireFromLava$bukkitEvent(Entity instance, float f) throws Throwable {
         if ((Object) this instanceof LivingEntity && remainingFireTicks <= 0) {
             var damager = (lastLavaContact == null) ? null : CraftBlock.at(level(), lastLavaContact);
             var damagee = this.getBukkitEntity();
@@ -488,27 +488,27 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Decorate(method = "lavaHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/DamageSources;lava()Lnet/minecraft/world/damagesource/DamageSource;"))
-    private DamageSource banner$resetBlockDamage(DamageSources instance) throws Throwable {
+    private DamageSource taiyitist$resetBlockDamage(DamageSources instance) throws Throwable {
         var damager = (lastLavaContact == null) ? null : CraftBlock.at(level(), lastLavaContact);
         var damageSource = (DamageSource) DecorationOps.callsite().invoke(instance);
         return damageSource.directBlock(damager);
     }
 
     @ModifyArg(method = "move", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
-    private BlockPos banner$captureBlockWalk(BlockPos pos) {
+    private BlockPos taiyitist$captureBlockWalk(BlockPos pos) {
         BukkitSnapshotCaptures.captureDamageEventBlock(pos);
         return pos;
     }
 
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$resetBlockWalk(MoverType type, Vec3 pos, CallbackInfo ci) {
+    private void taiyitist$resetBlockWalk(MoverType type, Vec3 pos, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureDamageEventBlock(null);
     }
 
     @Inject(method = "move", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/Entity;onGround()Z",
             ordinal = 1))
-    private void banner$move$blockCollide(MoverType type, Vec3 pos, CallbackInfo ci, @Local(ordinal = 1) Vec3 vec3) {
+    private void taiyitist$move$blockCollide(MoverType type, Vec3 pos, CallbackInfo ci, @Local(ordinal = 1) Vec3 vec3) {
         // CraftBukkit start
         if (horizontalCollision && getBukkitEntity() instanceof Vehicle) {
             Vehicle vehicle = (Vehicle) this.getBukkitEntity();
@@ -533,13 +533,13 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "saveAsPassenger", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/Entity;getEncodeId()Ljava/lang/String;"))
-    public void banner$writeUnlessRemoved$persistCheck(CompoundTag compound, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$writeUnlessRemoved$persistCheck(CompoundTag compound, CallbackInfoReturnable<Boolean> cir) {
         if (!this.persist)
             cir.setReturnValue(false);
     }
 
     @Inject(method = "saveWithoutId", at = @At(value = "INVOKE_ASSIGN", ordinal = 1, target = "Lnet/minecraft/nbt/CompoundTag;put(Ljava/lang/String;Lnet/minecraft/nbt/Tag;)Lnet/minecraft/nbt/Tag;"))
-    public void banner$writeWithoutTypeId$InfiniteValueCheck(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
+    public void taiyitist$writeWithoutTypeId$InfiniteValueCheck(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
         if (Float.isNaN(this.getYRot())) {
             this.yRot = 0;
         }
@@ -550,7 +550,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "saveWithoutId", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 0, target = "Lnet/minecraft/nbt/CompoundTag;putUUID(Ljava/lang/String;Ljava/util/UUID;)V"))
-    public void banner$writeWithoutTypeId$CraftBukkitNBT(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
+    public void taiyitist$writeWithoutTypeId$CraftBukkitNBT(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
         compound.putLong("WorldUUIDLeast", this.level.getWorld().getUID().getLeastSignificantBits());
         compound.putLong("WorldUUIDMost", this.level.getWorld().getUID().getMostSignificantBits());
         compound.putInt("Bukkit.updateLevel", CURRENT_LEVEL);
@@ -570,7 +570,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "saveWithoutId", at = @At(value = "RETURN"))
-    public void banner$writeWithoutTypeId$StoreBukkitValues(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
+    public void taiyitist$writeWithoutTypeId$StoreBukkitValues(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
         if (this.bukkitEntity != null) {
             this.bukkitEntity.storeBukkitValues(compound);
         }
@@ -586,7 +586,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "load", at = @At(value = "RETURN"))
-    public void banner$read$ReadBukkitValues(CompoundTag compound, CallbackInfo ci) {
+    public void taiyitist$read$ReadBukkitValues(CompoundTag compound, CallbackInfo ci) {
         // CraftBukkit start
         if ((Object) this instanceof LivingEntity entity) {
             this.tickCount = compound.getInt("Spigot.ticksLived");
@@ -641,7 +641,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "setInvisible", cancellable = true, at = @At("HEAD"))
-    private void banner$preventVisible(boolean invisible, CallbackInfo ci) {
+    private void taiyitist$preventVisible(boolean invisible, CallbackInfo ci) {
         if (this.persistentInvisibility) {
             ci.cancel();
         }
@@ -650,7 +650,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     @Inject(method = "spawnAtLocation(Lnet/minecraft/world/item/ItemStack;F)Lnet/minecraft/world/entity/item/ItemEntity;",
             cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    public void banner$entityDropItem(ItemStack stack, float offsetY, CallbackInfoReturnable<ItemEntity> cir, @Local ItemEntity itemEntity) {
+    public void taiyitist$entityDropItem(ItemStack stack, float offsetY, CallbackInfoReturnable<ItemEntity> cir, @Local ItemEntity itemEntity) {
         EntityDropItemEvent event = new EntityDropItemEvent(this.getBukkitEntity(), (Item) (itemEntity).getBukkitEntity());
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -659,7 +659,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "startRiding(Lnet/minecraft/world/entity/Entity;Z)Z", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/world/entity/Entity;setPose(Lnet/minecraft/world/entity/Pose;)V"))
-    public void banner$startRiding(Entity vehicle, boolean force, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$startRiding(Entity vehicle, boolean force, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start
         if (vehicle.getBukkitEntity() instanceof Vehicle && this.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
             VehicleEnterEvent event = new VehicleEnterEvent((Vehicle) vehicle.getBukkitEntity(), this.getBukkitEntity());
@@ -685,14 +685,14 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Redirect(method = "removeVehicle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;removePassenger(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$stopRiding(Entity entity, Entity passenger) {
-        if (!entity.banner$removePassenger(passenger)) {
+    private void taiyitist$stopRiding(Entity entity, Entity passenger) {
+        if (!entity.taiyitist$removePassenger(passenger)) {
             this.vehicle = entity;
         }
     }
 
     @Inject(method = "interact", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Leashable;setLeashedTo(Lnet/minecraft/world/entity/Entity;Z)V"))
-    private void banner$leashEvent(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$leashEvent(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         if (CraftEventFactory.callPlayerLeashEntityEvent((Entity) (Object) this, player, player, interactionHand).isCancelled()) {
             //player.resendItemInHands(); // SPIGOT-7615: Resend to fix client desync with used item // Banner TODO Fixme
             ((ServerPlayer) player).connection.send(new ClientboundSetEntityLinkPacket((Entity) (Object) this, ((Leashable) this).getLeashHolder()));
@@ -701,7 +701,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public boolean banner$removePassenger(Entity entity) {
+    public boolean taiyitist$removePassenger(Entity entity) {
         if (entity.getVehicle() == (Object) this) {
             throw new IllegalStateException("Use x.stopRiding(y), not y.removePassenger(x)");
         } else {
@@ -748,7 +748,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "setSwimming", cancellable = true, at = @At(value = "HEAD"))
-    public void banner$setSwimming$EntityToggleSwimEvent(boolean flag, CallbackInfo ci) {
+    public void taiyitist$setSwimming$EntityToggleSwimEvent(boolean flag, CallbackInfo ci) {
         // CraftBukkit start
         if (this.valid && this.isSwimming() != flag && (Object) this instanceof LivingEntity) {
             if (CraftEventFactory.callToggleSwimEvent((LivingEntity) (Object) this, flag).isCancelled()) {
@@ -759,7 +759,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Redirect(method = "thunderHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(F)V"))
-    public void banner$onStruckByLightning$EntityCombustByEntityEvent0(Entity entity, float f) {
+    public void taiyitist$onStruckByLightning$EntityCombustByEntityEvent0(Entity entity, float f) {
         final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
         final org.bukkit.entity.Entity stormBukkitEntity = entity.getBukkitEntity();
         final PluginManager pluginManager = Bukkit.getPluginManager();
@@ -773,7 +773,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "setAirSupply", cancellable = true, at = @At(value = "HEAD"))
-    public void banner$setAir$EntityAirChangeEvent(int air, CallbackInfo ci) {
+    public void taiyitist$setAir$EntityAirChangeEvent(int air, CallbackInfo ci) {
         // CraftBukkit start
         EntityAirChangeEvent event = new EntityAirChangeEvent(this.getBukkitEntity(), air);
         // Suppress during worldgen
@@ -790,7 +790,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Redirect(method = "thunderHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    public boolean banner$onStruckByLightning$EntityCombustByEntityEvent1(Entity instance, DamageSource source, float amount) {
+    public boolean taiyitist$onStruckByLightning$EntityCombustByEntityEvent1(Entity instance, DamageSource source, float amount) {
         final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
         final org.bukkit.entity.Entity stormBukkitEntity = instance.getBukkitEntity();
         final PluginManager pluginManager = Bukkit.getPluginManager();
@@ -810,7 +810,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "startSeenByPlayer", at = @At("HEAD"))
-    private void banner$trackEvent(ServerPlayer serverPlayer, CallbackInfo ci) {
+    private void taiyitist$trackEvent(ServerPlayer serverPlayer, CallbackInfo ci) {
         // Paper start
         if (PlayerTrackEntityEvent.getHandlerList().getRegisteredListeners().length > 0) {
             new PlayerTrackEntityEvent(serverPlayer.getBukkitEntity(), this.getBukkitEntity()).callEvent();
@@ -819,7 +819,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "startSeenByPlayer", at = @At("HEAD"))
-    private void banner$untrackedEvent(ServerPlayer serverPlayer, CallbackInfo ci) {
+    private void taiyitist$untrackedEvent(ServerPlayer serverPlayer, CallbackInfo ci) {
         // Paper start
         if (PlayerUntrackEntityEvent.getHandlerList().getRegisteredListeners().length > 0) {
             new PlayerUntrackEntityEvent(serverPlayer.getBukkitEntity(), this.getBukkitEntity()).callEvent();
@@ -830,7 +830,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     @Nullable
     @Override
     public Entity teleportTo(ServerLevel worldserver, Vec3 location) {
-        banner$location.set(location);
+        taiyitist$location.set(location);
         DimensionTransition dimensionTransition = this.portalProcess.getPortalDestination(worldserver, ((Entity) (Object) this));
         return changeDimension(dimensionTransition);
     }
@@ -841,14 +841,14 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Redirect(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FF)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addDuringTeleport(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$skipIfNotInWorld(ServerLevel instance, Entity entity) {
+    private void taiyitist$skipIfNotInWorld(ServerLevel instance, Entity entity) {
         if (this.inWorld) {
             instance.addDuringTeleport(entity);
         }
     }
 
     @Inject(method = "restoreFrom", at = @At("HEAD"))
-    private void banner$forwardHandle(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$forwardHandle(Entity entityIn, CallbackInfo ci) {
         entityIn.getBukkitEntity().setHandle((Entity) (Object) this);
         this.bukkitEntity = entityIn.getBukkitEntity();
         if (entityIn instanceof Mob) {
@@ -858,10 +858,10 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
 
     @Inject(method = "setSharedFlag", at = @At("HEAD"),
             cancellable = true)
-    private void banner$forwardHandle(int flag, boolean set, CallbackInfo ci) {
-        if (BukkitSnapshotCaptures.banner$stopGlide()) {
+    private void taiyitist$forwardHandle(int flag, boolean set, CallbackInfo ci) {
+        if (BukkitSnapshotCaptures.taiyitist$stopGlide()) {
             if (!(getSharedFlag(flag) && !CraftEventFactory.callToggleGlideEvent((LivingEntity) (Object) this, false).isCancelled())) {
-                BukkitSnapshotCaptures.capturebanner$stopGlide(false);
+                BukkitSnapshotCaptures.capturetaiyitist$stopGlide(false);
                 ci.cancel();
             }
         }
@@ -883,7 +883,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     @Redirect(method = "setBoundingBox",
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/world/entity/Entity;bb:Lnet/minecraft/world/phys/AABB;"))
-    private void banner$resetBBox(Entity instance, AABB axisalignedbb) {
+    private void taiyitist$resetBBox(Entity instance, AABB axisalignedbb) {
         // CraftBukkit start - block invalid bounding boxes
         double minX = axisalignedbb.minX,
                 minY = axisalignedbb.minY,
@@ -917,7 +917,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setActivatedTick(long activatedTick) {
+    public void taiyitist$setActivatedTick(long activatedTick) {
         this.activatedTick = activatedTick;
     }
 
@@ -927,7 +927,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setDefaultActivationState(boolean state) {
+    public void taiyitist$setDefaultActivationState(boolean state) {
         defaultActivationState = state;
     }
 
@@ -937,7 +937,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setGeneration(boolean gen) {
+    public void taiyitist$setGeneration(boolean gen) {
         this.generation = gen;
     }
 
@@ -947,7 +947,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setPersist(boolean persist) {
+    public void taiyitist$setPersist(boolean persist) {
         this.persist = persist;
     }
 
@@ -957,7 +957,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setVisibleByDefault(boolean visibleByDefault) {
+    public void taiyitist$setVisibleByDefault(boolean visibleByDefault) {
         this.visibleByDefault = visibleByDefault;
     }
 
@@ -967,7 +967,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setValid(boolean valid) {
+    public void taiyitist$setValid(boolean valid) {
         this.valid = valid;
     }
 
@@ -977,7 +977,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setMaxAirTicks(int maxAirTicks) {
+    public void taiyitist$setMaxAirTicks(int maxAirTicks) {
         this.maxAirTicks = maxAirTicks;
     }
 
@@ -987,7 +987,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setProjectileSource(ProjectileSource projectileSource) {
+    public void taiyitist$setProjectileSource(ProjectileSource projectileSource) {
         this.projectileSource = projectileSource;
     }
 
@@ -997,7 +997,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setLastDamageCancelled(boolean lastDamageCancelled) {
+    public void taiyitist$setLastDamageCancelled(boolean lastDamageCancelled) {
         this.lastDamageCancelled = lastDamageCancelled;
     }
 
@@ -1007,7 +1007,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setPersistentInvisibility(boolean persistentInvisibility) {
+    public void taiyitist$setPersistentInvisibility(boolean persistentInvisibility) {
         this.persistentInvisibility = persistentInvisibility;
     }
 
@@ -1017,17 +1017,17 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setLastLavaContact(BlockPos lastLavaContact) {
+    public void taiyitist$setLastLavaContact(BlockPos lastLavaContact) {
         this.lastLavaContact = lastLavaContact;
     }
 
     @Override
-    public CommandSender banner$getBukkitSender(CommandSourceStack wrapper) {
+    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return getBukkitEntity();
     }
 
     @Override
-    public void banner$setBukkitEntity(CraftEntity bukkitEntity) {
+    public void taiyitist$setBukkitEntity(CraftEntity bukkitEntity) {
         this.bukkitEntity = bukkitEntity;
     }
 
@@ -1037,7 +1037,7 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Override
-    public void banner$setInWorld(boolean inWorld) {
+    public void taiyitist$setInWorld(boolean inWorld) {
         this.inWorld = inWorld;
     }
 
@@ -1067,32 +1067,32 @@ public abstract class MixinEntity implements Nameable, EntityAccess, CommandSour
     }
 
     @Inject(method = "setRemoved", at = @At("HEAD"))
-    private void banner$setRemoved(Entity.RemovalReason removalReason, CallbackInfo ci) {
-        CraftEventFactory.callEntityRemoveEvent(((Entity) (Object) this), banner$removeCause != null ? banner$removeCause : null);
+    private void taiyitist$setRemoved(Entity.RemovalReason removalReason, CallbackInfo ci) {
+        CraftEventFactory.callEntityRemoveEvent(((Entity) (Object) this), taiyitist$removeCause != null ? taiyitist$removeCause : null);
     }
 
     @Override
     public void pushRemoveCause(EntityRemoveEvent.Cause cause) {
-        this.banner$removeCause = cause;
+        this.taiyitist$removeCause = cause;
     }
 
     @Override
     public void pushSpawnCause(CreatureSpawnEvent.SpawnReason reason) {
-        this.banner$spawnReason = reason;
+        this.taiyitist$spawnReason = reason;
     }
 
     @Inject(method = "spawnAtLocation(Lnet/minecraft/world/item/ItemStack;F)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"))
-    private void banner$spawnReason(ItemStack itemStack, float f, CallbackInfoReturnable<ItemEntity> cir) {
+    private void taiyitist$spawnReason(ItemStack itemStack, float f, CallbackInfoReturnable<ItemEntity> cir) {
         pushSpawnCause(CreatureSpawnEvent.SpawnReason.NATURAL);
     }
 
     @Inject(method = "kill", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;remove(Lnet/minecraft/world/entity/Entity$RemovalReason;)V"))
-    private void banner$killReason(CallbackInfo ci) {
+    private void taiyitist$killReason(CallbackInfo ci) {
         pushRemoveCause(EntityRemoveEvent.Cause.DEATH);
     }
 
     @Inject(method = "onBelowWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;discard()V"))
-    private void banner$pushOutOfWorldReason(CallbackInfo ci) {
+    private void taiyitist$pushOutOfWorldReason(CallbackInfo ci) {
         pushRemoveCause(EntityRemoveEvent.Cause.OUT_OF_WORLD);
     }
 }

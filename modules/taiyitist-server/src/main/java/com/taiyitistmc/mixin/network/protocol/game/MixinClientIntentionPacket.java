@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinClientIntentionPacket {
 
     @Redirect(method = "<init>(Lnet/minecraft/network/FriendlyByteBuf;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/FriendlyByteBuf;readUtf(I)Ljava/lang/String;"))
-    private static String banner$bungeeHostname(FriendlyByteBuf packetBuffer, int maxLength) {
+    private static String taiyitist$bungeeHostname(FriendlyByteBuf packetBuffer, int maxLength) {
         return packetBuffer.readUtf(Short.MAX_VALUE);
     }
 }

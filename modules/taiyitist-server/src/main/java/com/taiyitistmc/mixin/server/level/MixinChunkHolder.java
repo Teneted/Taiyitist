@@ -58,7 +58,7 @@ public abstract class MixinChunkHolder extends GenerationChunkHolder implements 
 
     @Inject(method = "blockChanged", cancellable = true,
             at = @At(value = "FIELD", ordinal = 0, target = "Lnet/minecraft/server/level/ChunkHolder;changedBlocksPerSection:[Lit/unimi/dsi/fastutil/shorts/ShortSet;"))
-    private void banner$outOfBound(BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$outOfBound(BlockPos pos, CallbackInfo ci) {
         int i = this.levelHeightAccessor.getSectionIndex(pos.getY());
         if (i < 0 || i >= this.changedBlocksPerSection.length) {
             ci.cancel();
@@ -68,7 +68,7 @@ public abstract class MixinChunkHolder extends GenerationChunkHolder implements 
     @Inject(method = "updateFutures", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ChunkLevel;fullStatus(I)Lnet/minecraft/server/level/FullChunkStatus;",
             ordinal = 1))
-    private void banner$chunkEvent0(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
+    private void taiyitist$chunkEvent0(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
         // CraftBukkit start
         // ChunkUnloadEvent: Called before the chunk is unloaded: isChunkLoaded is still true and chunk can still be modified by plugins.
         if (ChunkLevel.fullStatus(this.oldTicketLevel).isOrAfter(FullChunkStatus.FULL) && !ChunkLevel.fullStatus(this.ticketLevel).isOrAfter(FullChunkStatus.FULL)) {
@@ -96,7 +96,7 @@ public abstract class MixinChunkHolder extends GenerationChunkHolder implements 
     }
 
     @Inject(method = "updateFutures", at = @At("TAIL"))
-    private void banner$chunkEvent1(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
+    private void taiyitist$chunkEvent1(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
         // CraftBukkit start
         // ChunkLoadEvent: Called after the chunk is loaded: isChunkLoaded returns true and chunk is ready to be modified by plugins.
         if (!ChunkLevel.fullStatus(this.oldTicketLevel).isOrAfter(FullChunkStatus.FULL) && ChunkLevel.fullStatus(this.ticketLevel).isOrAfter(FullChunkStatus.FULL)) {

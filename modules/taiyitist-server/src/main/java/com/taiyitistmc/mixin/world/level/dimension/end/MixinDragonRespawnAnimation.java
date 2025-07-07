@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinDragonRespawnAnimation {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EndCrystal;discard()V"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$pushRevReason(ServerLevel serverLevel, EndDragonFight endDragonFight, List<EndCrystal> list, int i, BlockPos blockPos, CallbackInfo ci, Iterator var6, EndCrystal endCrystal) {
+    private void taiyitist$pushRevReason(ServerLevel serverLevel, EndDragonFight endDragonFight, List<EndCrystal> list, int i, BlockPos blockPos, CallbackInfo ci, Iterator var6, EndCrystal endCrystal) {
         endCrystal.pushRemoveCause(EntityRemoveEvent.Cause.EXPLODE);// CraftBukkit - add Bukkit remove cause
     }
 }

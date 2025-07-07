@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinSugarCaneBlock {
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public boolean banner$cropGrow(ServerLevel world, BlockPos pos, BlockState state) {
+    public boolean taiyitist$cropGrow(ServerLevel world, BlockPos pos, BlockState state) {
         return CraftEventFactory.handleBlockGrowEvent(world, pos, state);
     }
 }
