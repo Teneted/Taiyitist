@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinIceBlock {
 
     @Inject(method = "melt", cancellable = true, at = @At("HEAD"))
-    public void banner$blockFade(BlockState blockState, Level world, BlockPos blockPos, CallbackInfo ci) {
+    public void taiyitist$blockFade(BlockState blockState, Level world, BlockPos blockPos, CallbackInfo ci) {
         if (CraftEventFactory.callBlockFadeEvent(world, blockPos, world.dimensionType().ultraWarm()
                 ? Blocks.AIR.defaultBlockState() : Blocks.WATER.defaultBlockState()).isCancelled()) {
             ci.cancel();

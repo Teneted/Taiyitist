@@ -70,13 +70,13 @@ public class CraftAllay extends CraftCreature implements org.bukkit.entity.Allay
 
     @Override
     public void startDancing() {
-        getHandle().banner$setForceDancing(true);
+        getHandle().taiyitist$setForceDancing(true);
         getHandle().setDancing(true);
     }
 
     @Override
     public void stopDancing() {
-        getHandle().banner$setForceDancing(false);
+        getHandle().taiyitist$setForceDancing(false);
         getHandle().jukeboxPos = null;
         getHandle().setJukeboxPlaying(null, false);
     }

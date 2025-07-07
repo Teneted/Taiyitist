@@ -15,7 +15,7 @@ public class MixinRecordItem {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/context/UseOnContext;getPlayer()Lnet/minecraft/world/entity/player/Player;",
             shift = At.Shift.BEFORE), cancellable = true)
-    private void banner$addCheck(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$addCheck(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
         if (cir.getReturnValueZ()) cir.setReturnValue(InteractionResult.SUCCESS); // CraftBukkit - handled in ItemStack
     }
 }

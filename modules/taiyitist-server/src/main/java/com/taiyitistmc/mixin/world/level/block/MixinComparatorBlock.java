@@ -14,14 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinComparatorBlock {
 
     @Inject(method = "refreshOutputState", cancellable = true, at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public void banner$blockRedstone1(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci) {
+    public void taiyitist$blockRedstone1(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (CraftEventFactory.callRedstoneChange(worldIn, pos, 15, 0).getNewCurrent() != 0) {
             ci.cancel();
         }
     }
 
     @Inject(method = "refreshOutputState", cancellable = true, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public void banner$blockRedstone2(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci) {
+    public void taiyitist$blockRedstone2(Level worldIn, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (CraftEventFactory.callRedstoneChange(worldIn, pos, 0, 15).getNewCurrent() != 15) {
             ci.cancel();
         }

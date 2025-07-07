@@ -18,22 +18,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinCactusBlock {
 
     @Inject(method = "entityInside", at = @At("HEAD"))
-    private void banner$cactusDamage1(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$cactusDamage1(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = CraftBlock.at(worldIn, pos);
     }
 
     @Inject(method = "entityInside", at = @At("RETURN"))
-    private void banner$cactusDamage2(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$cactusDamage2(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = null;
     }
 
     @Inject(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z", shift = At.Shift.AFTER))
-    private void banner$blockGrow(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        CraftEventFactory.handleBlockGrowEvent(level, pos, level.banner$defaultBlockState());
+    private void taiyitist$blockGrow(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        CraftEventFactory.handleBlockGrowEvent(level, pos, level.taiyitist$defaultBlockState());
     }
 
     @Inject(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z", shift = At.Shift.BEFORE))
-    private void banner$callEvent(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        level.banner$callEvent(true);
+    private void taiyitist$callEvent(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        level.taiyitist$callEvent(true);
     }
 }

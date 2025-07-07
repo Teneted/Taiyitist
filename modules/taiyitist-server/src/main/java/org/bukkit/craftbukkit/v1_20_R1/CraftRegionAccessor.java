@@ -546,7 +546,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
         }
 
         if (!isNormalWorld()) {
-            entity.banner$setGeneration(true);
+            entity.taiyitist$setGeneration(true);
         }
 
         if (function != null) {

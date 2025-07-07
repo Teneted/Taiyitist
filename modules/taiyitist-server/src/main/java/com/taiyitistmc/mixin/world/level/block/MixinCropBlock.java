@@ -24,37 +24,37 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinCropBlock {
 
     @Unique
-    private final AtomicReference<Entity> banner$entity = new AtomicReference<>();
+    private final AtomicReference<Entity> taiyitist$entity = new AtomicReference<>();
     @Unique
-    private final AtomicReference<BlockPos> banner$pos = new AtomicReference<>();
+    private final AtomicReference<BlockPos> taiyitist$pos = new AtomicReference<>();
     @Unique
-    private final AtomicReference<Level> banner$level = new AtomicReference<>();
+    private final AtomicReference<Level> taiyitist$level = new AtomicReference<>();
 
     @Redirect(method = "growCrops(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$blockGrowGrow(Level world, BlockPos pos, BlockState newState, int flags) {
+    public boolean taiyitist$blockGrowGrow(Level world, BlockPos pos, BlockState newState, int flags) {
         return CraftEventFactory.handleBlockGrowEvent(world, pos, newState, flags);
     }
 
     @Inject(method = "entityInside", at = @At("HEAD"))
-    private void banner$getInfo(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
-        banner$entity.set(entity);
-        banner$pos.set(pos);
-        banner$level.set(level);
+    private void taiyitist$getInfo(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
+        taiyitist$entity.set(entity);
+        taiyitist$pos.set(pos);
+        taiyitist$level.set(level);
     }
 
     @Redirect(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
-    public boolean banner$entityChangeBlock(GameRules instance, GameRules.Key<GameRules.BooleanValue> key) {
-       return CraftEventFactory.callEntityChangeBlockEvent(banner$entity.get(), banner$pos.get(), Blocks.AIR.defaultBlockState(), !banner$level.get().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
+    public boolean taiyitist$entityChangeBlock(GameRules instance, GameRules.Key<GameRules.BooleanValue> key) {
+       return CraftEventFactory.callEntityChangeBlockEvent(taiyitist$entity.get(), taiyitist$pos.get(), Blocks.AIR.defaultBlockState(), !taiyitist$level.get().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
     }
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$blockGrowTick(ServerLevel world, BlockPos pos, BlockState newState, int flags) {
+    public boolean taiyitist$blockGrowTick(ServerLevel world, BlockPos pos, BlockState newState, int flags) {
         return CraftEventFactory.handleBlockGrowEvent(world, pos, newState, flags);
     }
 
     @Inject(method = "getGrowthSpeed", cancellable = true, at = @At("RETURN"))
-    private static void banner$spigotModifier(Block block, BlockGetter blockGetter, BlockPos pos, CallbackInfoReturnable<Float> cir) {
+    private static void taiyitist$spigotModifier(Block block, BlockGetter blockGetter, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         if (blockGetter instanceof Level bridge) {
             int modifier;
             if (block == Blocks.BEETROOTS) {

@@ -30,7 +30,7 @@ public class MixinSlime_SlimeRandomDirectionGoal {
     @Inject(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/util/RandomSource;nextInt(I)I",
             ordinal = 1, shift = At.Shift.AFTER), cancellable = true)
-    private void banner$slimeEvent(CallbackInfo ci) {
+    private void taiyitist$slimeEvent(CallbackInfo ci) {
         // Paper start
         SlimeChangeDirectionEvent event = new SlimeChangeDirectionEvent((org.bukkit.entity.Slime) this.slime.getBukkitEntity(), this.chosenDegrees);
         if (!event.callEvent()) ci.cancel();

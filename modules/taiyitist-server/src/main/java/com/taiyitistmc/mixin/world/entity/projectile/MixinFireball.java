@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinFireball {
 
     @Inject(method = "readAdditionalSaveData", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Fireball;setItem(Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$nonNullItem(CompoundTag compound, CallbackInfo ci, ItemStack stack) {
+    private void taiyitist$nonNullItem(CompoundTag compound, CallbackInfo ci, ItemStack stack) {
         if (stack.isEmpty()) ci.cancel();
     }
 }

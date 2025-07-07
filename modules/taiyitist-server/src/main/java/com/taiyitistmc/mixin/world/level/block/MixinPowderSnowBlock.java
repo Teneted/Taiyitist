@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPowderSnowBlock {
 
     @Inject(method = "entityInside", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
-    private void banner$entityChangeBlock(BlockState p_154263_, Level p_154264_, BlockPos pos, Entity entity, CallbackInfo ci) {
+    private void taiyitist$entityChangeBlock(BlockState p_154263_, Level p_154264_, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (!CraftEventFactory.callEntityChangeBlockEvent(entity, pos, Blocks.AIR.defaultBlockState())) {
             ci.cancel();
         }

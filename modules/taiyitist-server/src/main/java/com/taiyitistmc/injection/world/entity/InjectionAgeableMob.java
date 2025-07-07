@@ -6,6 +6,6 @@ public interface InjectionAgeableMob {
         return false;
     }
 
-    default void banner$setAgeLocked(boolean ageLocked) {
+    default void taiyitist$setAgeLocked(boolean ageLocked) {
     }
 }

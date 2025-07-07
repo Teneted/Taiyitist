@@ -2,6 +2,6 @@ package com.taiyitistmc.injection.commands;
 
 public interface InjectionCommandNode {
 
-    void banner$removeCommand(String name);
+    void taiyitist$removeCommand(String name);
 
 }

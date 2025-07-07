@@ -8,21 +8,21 @@ public interface InjectionFoodData {
         return 0;
     }
 
-    default void banner$setSaturatedRegenRate(int saturatedRegenRate) {
+    default void taiyitist$setSaturatedRegenRate(int saturatedRegenRate) {
     }
 
     default int bridge$unsaturatedRegenRate() {
         return 0;
     }
 
-    default void banner$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
+    default void taiyitist$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
     }
 
     default int bridge$starvationRate() {
         return 0;
     }
 
-    default void banner$setStarvationRate(int starvationRate) {
+    default void taiyitist$setStarvationRate(int starvationRate) {
     }
 
     default Player getEntityhuman() {

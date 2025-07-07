@@ -16,7 +16,7 @@ public abstract class MixinCrashReport {
     @Shadow @Final private SystemReport systemReport;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
-    private void banner$init(String string, Throwable throwable, CallbackInfo ci) {
+    private void taiyitist$init(String string, Throwable throwable, CallbackInfo ci) {
         this.systemReport.setDetail("CraftBukkit Information", new CraftCrashReport()); // CraftBukkit
     }
 }

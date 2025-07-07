@@ -19,7 +19,7 @@ public abstract class MixinSkeleton extends AbstractSkeleton {
     }
 
     @Inject(method = "doFreezeConversion", at = @At("HEAD"))
-    private void banner$pushSkeletonReason(CallbackInfo ci) {
+    private void taiyitist$pushSkeletonReason(CallbackInfo ci) {
         this.bridge$pushTransformReason(EntityTransformEvent.TransformReason.FROZEN);
         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.FROZEN);
     }

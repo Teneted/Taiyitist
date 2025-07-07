@@ -36,12 +36,12 @@ public abstract class MixinShulkerBoxBlockEntity extends RandomizableContainerBl
     }
 
     @Inject(method = "startOpen", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;blockEvent(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;II)V"))
-    private void banner$sound1(Player player, CallbackInfo ci) {
+    private void taiyitist$sound1(Player player, CallbackInfo ci) {
         if (opened) ci.cancel();
     }
 
     @Inject(method = "stopOpen", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;blockEvent(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;II)V"))
-    private void banner$sound2(Player player, CallbackInfo ci) {
+    private void taiyitist$sound2(Player player, CallbackInfo ci) {
         if (opened) ci.cancel();
     }
 
@@ -86,7 +86,7 @@ public abstract class MixinShulkerBoxBlockEntity extends RandomizableContainerBl
     }
 
     @Override
-    public void banner$setTransaction(List<HumanEntity> transaction) {
+    public void taiyitist$setTransaction(List<HumanEntity> transaction) {
         this.transaction = transaction;
     }
 
@@ -96,7 +96,7 @@ public abstract class MixinShulkerBoxBlockEntity extends RandomizableContainerBl
     }
 
     @Override
-    public void banner$setOpened(boolean opened) {
+    public void taiyitist$setOpened(boolean opened) {
         this.opened = opened;
     }
 }

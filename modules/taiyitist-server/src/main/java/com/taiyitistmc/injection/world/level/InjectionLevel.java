@@ -22,49 +22,49 @@ public interface InjectionLevel {
         return false;
     }
 
-    default void banner$setPreventPoiUpdated(boolean preventPoiUpdated) {
+    default void taiyitist$setPreventPoiUpdated(boolean preventPoiUpdated) {
     }
 
     default org.bukkit.generator.BiomeProvider bridge$biomeProvider() {
         return null;
     }
 
-    default void banner$setBiomeProvider(org.bukkit.generator.BiomeProvider biomeProvider) {
+    default void taiyitist$setBiomeProvider(org.bukkit.generator.BiomeProvider biomeProvider) {
     }
 
     default org.bukkit.World.Environment bridge$environment() {
         return null;
     }
 
-    default void banner$setEnvironment(org.bukkit.World.Environment environment) {
+    default void taiyitist$setEnvironment(org.bukkit.World.Environment environment) {
     }
 
     default org.bukkit.generator.ChunkGenerator bridge$generator() {
         return null;
     }
 
-    default void banner$setGenerator(org.bukkit.generator.ChunkGenerator generator) {
+    default void taiyitist$setGenerator(org.bukkit.generator.ChunkGenerator generator) {
     }
 
     default boolean bridge$pvpMode() {
         return false;
     }
 
-    default void banner$setPvpMode(boolean pvpMode) {
+    default void taiyitist$setPvpMode(boolean pvpMode) {
     }
 
     default boolean bridge$captureBlockStates() {
         return false;
     }
 
-    default void banner$setCaptureBlockStates(boolean captureState) {
+    default void taiyitist$setCaptureBlockStates(boolean captureState) {
     }
 
     default boolean bridge$captureTreeGeneration() {
         return false;
     }
 
-    default void banner$setCaptureTreeGeneration(boolean treeGeneration) {
+    default void taiyitist$setCaptureTreeGeneration(boolean treeGeneration) {
     }
 
     default Map<BlockPos, CapturedBlockState> bridge$capturedBlockStates() {
@@ -75,17 +75,17 @@ public interface InjectionLevel {
         return null;
     }
 
-    default void banner$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
+    default void taiyitist$setCapturedTileEntities(Map<BlockPos, BlockEntity> tileEntities) {
     }
 
-    default void banner$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
+    default void taiyitist$setCapturedBlockStates(Map<BlockPos, CapturedBlockState> capturedBlockStates) {
     }
 
     default List<ItemEntity> bridge$captureDrops() {
         return null;
     }
 
-    default void banner$setCaptureDrops(List<ItemEntity> captureDrops) {
+    default void taiyitist$setCaptureDrops(List<ItemEntity> captureDrops) {
 
     }
 
@@ -97,7 +97,7 @@ public interface InjectionLevel {
         return false;
     }
 
-    default void banner$setPopulating(boolean populating) {
+    default void taiyitist$setPopulating(boolean populating) {
 
     }
 
@@ -105,7 +105,7 @@ public interface InjectionLevel {
         return false;
     }
 
-    default void banner$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
+    default void taiyitist$setKeepSpawnInMemory(boolean keepSpawnInMemory) {
     }
 
     default ResourceKey<LevelStem> getTypeKey(){
@@ -131,20 +131,20 @@ public interface InjectionLevel {
         return null;
     }
 
-    default void banner$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
+    default void taiyitist$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
     }
 
     default BannerWorldConfig bridge$bannerConfig() {
         return null;
     }
 
-    default void banner$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
+    default void taiyitist$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
     }
 
-    default void banner$callEvent(boolean call) {
+    default void taiyitist$callEvent(boolean call) {
     }
 
-    default BlockState banner$defaultBlockState() {
+    default BlockState taiyitist$defaultBlockState() {
         return null;
     }
 }

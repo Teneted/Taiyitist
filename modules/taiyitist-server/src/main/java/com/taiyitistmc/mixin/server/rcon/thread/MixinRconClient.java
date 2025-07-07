@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinRconClient {
 
     @Unique
-    private DedicatedServer banner$serverInterface;
+    private DedicatedServer taiyitist$serverInterface;
 
     // CraftBukkit start
     @Unique
@@ -28,14 +28,14 @@ public class MixinRconClient {
 
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void banner$init(ServerInterface pServerInterface, String pRconPassword, Socket pClient, CallbackInfo ci) {
-        banner$serverInterface = (DedicatedServer) pServerInterface;
-        this.rconConsoleSource = new net.minecraft.server.rcon.RconConsoleSource(banner$serverInterface); // CraftBukkit
-        this.rconConsoleSource.banner$setSocketAddress(pClient.getRemoteSocketAddress()); // CraftBukkit
+    private void taiyitist$init(ServerInterface pServerInterface, String pRconPassword, Socket pClient, CallbackInfo ci) {
+        taiyitist$serverInterface = (DedicatedServer) pServerInterface;
+        this.rconConsoleSource = new net.minecraft.server.rcon.RconConsoleSource(taiyitist$serverInterface); // CraftBukkit
+        this.rconConsoleSource.taiyitist$setSocketAddress(pClient.getRemoteSocketAddress()); // CraftBukkit
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/rcon/thread/RconClient;sendCmdResponse(ILjava/lang/String;)V", ordinal = 0))
-    private void banner$checkHeart(CallbackInfo ci) {
-        banner$serverInterface.banner$setRconConsoleSource(rconConsoleSource);
+    private void taiyitist$checkHeart(CallbackInfo ci) {
+        taiyitist$serverInterface.taiyitist$setRconConsoleSource(rconConsoleSource);
     }
 }

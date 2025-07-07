@@ -10,7 +10,7 @@ public interface InjectionPrimaryLevelData {
         return null;
     }
 
-    default void banner$setCustomDimensions(Registry<LevelStem> customDimensions) {
+    default void taiyitist$setCustomDimensions(Registry<LevelStem> customDimensions) {
     }
 
     default void checkName(String name) {

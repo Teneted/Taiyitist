@@ -21,7 +21,7 @@ public class MixinConnection implements InjectionConnection {
     }
 
     @Override
-    public void banner$setHostName(String hostName) {
+    public void taiyitist$setHostName(String hostName) {
         hostname = hostName;
     }
 

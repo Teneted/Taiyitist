@@ -10,6 +10,6 @@ public interface InjectionLootDataManager {
         return null;
     }
 
-    default void banner$setLootTableToKey(Map<LootTable, ResourceLocation> lootTableToKey) {
+    default void taiyitist$setLootTableToKey(Map<LootTable, ResourceLocation> lootTableToKey) {
     }
 }

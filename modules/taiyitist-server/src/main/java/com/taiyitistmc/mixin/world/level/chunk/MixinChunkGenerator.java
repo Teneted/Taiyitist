@@ -49,7 +49,7 @@ public abstract class MixinChunkGenerator implements InjectionChunkGenerator {
     private static int fetchReferences(StructureManager structureManager, ChunkAccess chunk, SectionPos sectionPos, Structure structure) {return 0;}
 
     @Inject(method = "applyBiomeDecoration", at = @At("RETURN"))
-    private void banner$addBukkitDecoration(WorldGenLevel level, ChunkAccess chunkAccess, StructureManager manager, CallbackInfo ci) {
+    private void taiyitist$addBukkitDecoration(WorldGenLevel level, ChunkAccess chunkAccess, StructureManager manager, CallbackInfo ci) {
         this.addDecorations(level, chunkAccess, manager);
     }
 

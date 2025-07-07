@@ -38,26 +38,26 @@ public abstract class MixinFoodData implements InjectionFoodData {
     public int starvationRate = 80;
 
     @Unique
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(Player entityhuman) {
+    public void taiyitist$constructor(Player entityhuman) {
         org.apache.commons.lang.Validate.notNull(entityhuman);
         this.entityhuman = entityhuman;
     }
 
     @Unique
-    private transient Item banner$foodItem;
+    private transient Item taiyitist$foodItem;
     @Unique
-    private transient ItemStack banner$foodStack;
+    private transient ItemStack taiyitist$foodStack;
 
     @Unique
     private AtomicBoolean duplicateCall = new AtomicBoolean(false);
 
     @Inject(method = "eat(IF)V", at = @At("HEAD"), cancellable = true)
-    private void banner$eatCake(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
+    private void taiyitist$eatCake(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
         // Banner start
         if (!duplicateCall.getAndSet(false)) {
             int old = this.foodLevel;
@@ -69,22 +69,22 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Inject(method = "eat(IF)V", at = @At("TAIL"))
-    private void banner$sendUpdate(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
+    private void taiyitist$sendUpdate(int foodLevelModifier, float saturationLevelModifier, CallbackInfo ci) {
         ((ServerPlayer) entityhuman).getBukkitEntity().sendHealthUpdate(); // Banner
     }
 
     @Inject(method = "eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;)V", at = @At("HEAD"))
-    private void banner$setFoodInformation(Item item, ItemStack stack, CallbackInfo ci) {
-        this.banner$foodItem = item;
-        this.banner$foodStack = stack;
+    private void taiyitist$setFoodInformation(Item item, ItemStack stack, CallbackInfo ci) {
+        this.taiyitist$foodItem = item;
+        this.taiyitist$foodStack = stack;
     }
 
     @Redirect(method = "eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;)V",
             at = @At(value = "INVOKE",target = "Lnet/minecraft/world/food/FoodData;eat(IF)V"))
-    private void banner$foodLevelChange(FoodData instance, int foodLevelModifier, float saturationLevelModifier) {
+    private void taiyitist$foodLevelChange(FoodData instance, int foodLevelModifier, float saturationLevelModifier) {
         int oldFoodLevel = foodLevel;
-        FoodProperties foodInfo = banner$foodItem.getFoodProperties();
-        FoodLevelChangeEvent event = CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodInfo.getNutrition() + oldFoodLevel, banner$foodStack);
+        FoodProperties foodInfo = taiyitist$foodItem.getFoodProperties();
+        FoodLevelChangeEvent event = CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodInfo.getNutrition() + oldFoodLevel, taiyitist$foodStack);
 
         if (!event.isCancelled()) {
             duplicateCall.set(true);
@@ -94,7 +94,7 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE_ASSIGN", remap = false, target = "Ljava/lang/Math;max(II)I"))
-    public void banner$foodLevelChange2(Player player, CallbackInfo ci) {
+    public void taiyitist$foodLevelChange2(Player player, CallbackInfo ci) {
         if (entityhuman == null) {
             return;
         }
@@ -108,7 +108,7 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"))
-    public void banner$heal(Player player, CallbackInfo ci) {
+    public void taiyitist$heal(Player player, CallbackInfo ci) {
         if (entityhuman == null) {
             entityhuman = player;
         }
@@ -117,17 +117,17 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 10))
-    private int banner$changeValue(int constant) {
+    private int taiyitist$changeValue(int constant) {
         return this.saturatedRegenRate; // CraftBukkit
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 80, ordinal = 0))
-    private int banner$changeValue0(int constant) {
+    private int taiyitist$changeValue0(int constant) {
         return this.unsaturatedRegenRate; // CraftBukkit - add regen rate manipulation
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 80, ordinal = 1))
-    private int banner$changeValue1(int constant) {
+    private int taiyitist$changeValue1(int constant) {
         return this.starvationRate;  // CraftBukkit - add regen rate manipulation
     }
 
@@ -147,7 +147,7 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Override
-    public void banner$setSaturatedRegenRate(int saturatedRegenRate) {
+    public void taiyitist$setSaturatedRegenRate(int saturatedRegenRate) {
         this.saturatedRegenRate = saturatedRegenRate;
     }
 
@@ -157,7 +157,7 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Override
-    public void banner$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
+    public void taiyitist$setUnsaturatedRegenRate(int unsaturatedRegenRate) {
         this.unsaturatedRegenRate = unsaturatedRegenRate;
     }
 
@@ -167,7 +167,7 @@ public abstract class MixinFoodData implements InjectionFoodData {
     }
 
     @Override
-    public void banner$setStarvationRate(int starvationRate) {
+    public void taiyitist$setStarvationRate(int starvationRate) {
         this.starvationRate = starvationRate;
     }
 }

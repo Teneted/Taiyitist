@@ -50,45 +50,45 @@ public abstract class MixinSignBlockEntity extends BlockEntity implements Comman
     }
 
     @Unique
-    private AtomicReference<Player> banner$player = new AtomicReference<>();
+    private AtomicReference<Player> taiyitist$player = new AtomicReference<>();
     @Unique
-    private AtomicReference<BlockPos> banner$pos = new AtomicReference<>();
+    private AtomicReference<BlockPos> taiyitist$pos = new AtomicReference<>();
 
     @Inject(method = "executeClickCommandsIfPresent", at = @At("HEAD"))
-    private void banner$getInfo(Player player, Level level, BlockPos blockPos, boolean bl,
+    private void taiyitist$getInfo(Player player, Level level, BlockPos blockPos, boolean bl,
                                 CallbackInfoReturnable<Boolean> cir) {
-        banner$player.set(player);
-        banner$pos.set(blockPos);
+        taiyitist$player.set(player);
+        taiyitist$pos.set(blockPos);
     }
 
     @Inject(method = "markUpdated", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;sendBlockUpdated(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;I)V"))
-    public void banner$setColor(CallbackInfo ci) {
+    public void taiyitist$setColor(CallbackInfo ci) {
         if (this.level == null) {
             ci.cancel();
         }
     }
 
     @Unique
-    private AtomicBoolean banner$front = new AtomicBoolean();
+    private AtomicBoolean taiyitist$front = new AtomicBoolean();
     @Unique
-    private AtomicBoolean banner$bl = new AtomicBoolean();
+    private AtomicBoolean taiyitist$bl = new AtomicBoolean();
 
     @Inject(method = "updateSignText", at = @At("HEAD"))
-    private void banner$getBl(Player player, boolean bl, List<FilteredText> list, CallbackInfo ci) {
-        banner$bl.set(bl);
+    private void taiyitist$getBl(Player player, boolean bl, List<FilteredText> list, CallbackInfo ci) {
+        taiyitist$bl.set(bl);
     }
 
     @Redirect(method = "method_49845",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/SignBlockEntity;setMessages(Lnet/minecraft/world/entity/player/Player;Ljava/util/List;Lnet/minecraft/world/level/block/entity/SignText;)Lnet/minecraft/world/level/block/entity/SignText;"))
-    private SignText banner$resetMsg(SignBlockEntity instance, Player player, List<FilteredText> list, SignText signText) {
-        return setMessages(player, list, signText, banner$bl.get());
+    private SignText taiyitist$resetMsg(SignBlockEntity instance, Player player, List<FilteredText> list, SignText signText) {
+        return setMessages(player, list, signText, taiyitist$bl.get());
     }
 
     @Redirect(method = "executeClickCommandsIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/SignBlockEntity;createCommandSourceStack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/commands/CommandSourceStack;"))
     private CommandSourceStack arclight$setSource(Player player, Level level, BlockPos blockPos) {
         var stack = createCommandSourceStack(player, level, blockPos);
-        stack.banner$setSource(this);
+        stack.taiyitist$setSource(this);
         return stack;
     }
 
@@ -96,19 +96,19 @@ public abstract class MixinSignBlockEntity extends BlockEntity implements Comman
             target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V",
             remap = false,
             shift = At.Shift.AFTER))
-    private void banner$sendPacket(Player player, boolean bl, List<FilteredText> list, CallbackInfo ci) {
+    private void taiyitist$sendPacket(Player player, boolean bl, List<FilteredText> list, CallbackInfo ci) {
         ((ServerPlayer) player).connection.send(this.getUpdatePacket()); // CraftBukkit
     }
 
     @Unique
     private SignText setMessages(Player player, List<FilteredText> list, SignText signText, boolean front) {
-        banner$front.set(front);
+        taiyitist$front.set(front);
         return setMessages(player, list, signText);
     }
 
     @Inject(method = "setMessages", at = @At("RETURN"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$signChangeEvent(Player player, List<FilteredText> list, SignText signText,
+    private void taiyitist$signChangeEvent(Player player, List<FilteredText> list, SignText signText,
                                         CallbackInfoReturnable<SignText> cir) {
         SignText originalText = signText; // CraftBukkit
         // CraftBukkit start
@@ -118,7 +118,7 @@ public abstract class MixinSignBlockEntity extends BlockEntity implements Comman
             lines[i] = CraftChatMessage.fromComponent(signText.getMessage(i, player.isTextFilteringEnabled()));
         }
 
-        SignChangeEvent event = new SignChangeEvent(CraftBlock.at(this.level, this.worldPosition), cbPlayer, Arrays.copyOf(lines, lines.length), (banner$front.get()) ? Side.FRONT : Side.BACK);
+        SignChangeEvent event = new SignChangeEvent(CraftBlock.at(this.level, this.worldPosition), cbPlayer, Arrays.copyOf(lines, lines.length), (taiyitist$front.get()) ? Side.FRONT : Side.BACK);
         player.level().getCraftServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -148,11 +148,11 @@ public abstract class MixinSignBlockEntity extends BlockEntity implements Comman
 
     @Unique
     public CommandSender getBukkitSender(CommandSourceStack wrapper) {
-        return wrapper.getEntity() != null ? wrapper.getEntity().banner$getBukkitSender(wrapper) : new CraftBlockCommandSender(wrapper, (BlockEntity) (Object) this);
+        return wrapper.getEntity() != null ? wrapper.getEntity().taiyitist$getBukkitSender(wrapper) : new CraftBlockCommandSender(wrapper, (BlockEntity) (Object) this);
     }
 
     @Override
-    public CommandSender banner$getBukkitSender(CommandSourceStack wrapper) {
+    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return getBukkitSender(wrapper);
     }
 }

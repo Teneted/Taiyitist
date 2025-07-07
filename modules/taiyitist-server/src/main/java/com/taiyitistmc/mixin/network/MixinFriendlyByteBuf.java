@@ -27,7 +27,7 @@ public abstract class MixinFriendlyByteBuf {
     @Inject(method = "readItem",
             at = @At(value = "TAIL"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$setItemMeta(CallbackInfoReturnable<ItemStack> cir, Item item, int i, ItemStack itemStack) {
+    private void taiyitist$setItemMeta(CallbackInfoReturnable<ItemStack> cir, Item item, int i, ItemStack itemStack) {
         // CraftBukkit start
         if (itemStack.getTag() != null) {
             CraftItemStack.setItemMeta(itemStack, CraftItemStack.getItemMeta(itemStack));

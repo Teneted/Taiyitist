@@ -23,13 +23,13 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
     private CraftMerchantRecipe bukkitHandle;
 
     @Unique
-    public void banner$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand) {
+    public void taiyitist$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand, CraftMerchantRecipe bukkit) {
-        banner$constructor(buyingStackFirstIn, buyingStackSecondIn, sellingStackIn, usesIn, maxUsesIn, givenEXPIn, priceMultiplierIn, demand);
+    public void taiyitist$constructor(ItemStack buyingStackFirstIn, ItemStack buyingStackSecondIn, ItemStack sellingStackIn, int usesIn, int maxUsesIn, int givenEXPIn, float priceMultiplierIn, int demand, CraftMerchantRecipe bukkit) {
+        taiyitist$constructor(buyingStackFirstIn, buyingStackSecondIn, sellingStackIn, usesIn, maxUsesIn, givenEXPIn, priceMultiplierIn, demand);
         this.bukkitHandle = bukkit;
     }
 
@@ -44,7 +44,7 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
     }
 
     @Inject(method = "getCostA", cancellable = true, at = @At("HEAD"))
-    private void banner$fix(CallbackInfoReturnable<ItemStack> cir) {
+    private void taiyitist$fix(CallbackInfoReturnable<ItemStack> cir) {
         if (this.baseCostA.getCount() <= 0) {
             cir.setReturnValue(ItemStack.EMPTY);
         }
@@ -52,7 +52,7 @@ public abstract class MixinMerchantOffer implements InjectionMerchantOffer {
 
     @Redirect(method = "take", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private void banner$shrink(ItemStack instance, int decrement) {
+    private void taiyitist$shrink(ItemStack instance, int decrement) {
         // CraftBukkit start
         if (!this.getCostA().isEmpty()) {
             instance.shrink(this.getCostA().getCount());

@@ -71,12 +71,12 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu{
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
-    public void banner$init(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
+    public void taiyitist$init(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, CallbackInfo ci) {
         this.player = (org.bukkit.entity.Player) playerInventory.player.getBukkitEntity();
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(net.minecraft.world.entity.player.Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(net.minecraft.world.entity.player.Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 
@@ -113,8 +113,8 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu{
                         EnchantItemEvent event = new EnchantItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), this.getBukkitView(), access.getLocation().getBlock(), item, this.costs[id], enchants, hintedEnchantment, hintedEnchantmentLevel, id);
                         level.getCraftServer().getPluginManager().callEvent(event);
 
-                        int banner$level = event.getExpLevelCost();
-                        if (event.isCancelled() || (banner$level > player.experienceLevel && !player.getAbilities().instabuild) || event.getEnchantsToAdd().isEmpty()) {
+                        int taiyitist$level = event.getExpLevelCost();
+                        if (event.isCancelled() || (taiyitist$level > player.experienceLevel && !player.getAbilities().instabuild) || event.getEnchantsToAdd().isEmpty()) {
                             return;
                         }
                         if (bl) {

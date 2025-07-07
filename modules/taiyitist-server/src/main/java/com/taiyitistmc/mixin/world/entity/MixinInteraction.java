@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinInteraction {
 
     @Unique
-    private double banner$finalDamage;
-    private DamageSource banner$source;
+    private double taiyitist$finalDamage;
+    private DamageSource taiyitist$source;
 
     @Inject(method = "skipAttackInteraction", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/entity/Interaction;attack:Lnet/minecraft/world/entity/Interaction$PlayerAction;"))
     private void fireEntityDamageEvent(Entity entity, CallbackInfoReturnable<Boolean> cir) {
@@ -31,14 +31,14 @@ public class MixinInteraction {
         if (event.isCancelled()) {
             cir.setReturnValue(true);
         } else {
-            banner$finalDamage = event.getFinalDamage();
-            banner$source = source;
+            taiyitist$finalDamage = event.getFinalDamage();
+            taiyitist$source = source;
         }
     }
 
     @Redirect(method = "skipAttackInteraction", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/advancements/critereon/PlayerHurtEntityTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;FFZ)V"))
-    private void banner$setDamage(PlayerHurtEntityTrigger instance, ServerPlayer player, Entity entity, DamageSource source, float amountDealt, float amountTaken, boolean blocked) {
-        instance.trigger(player, entity, banner$source, (float) banner$finalDamage, amountTaken, blocked);
+    private void taiyitist$setDamage(PlayerHurtEntityTrigger instance, ServerPlayer player, Entity entity, DamageSource source, float amountDealt, float amountTaken, boolean blocked) {
+        instance.trigger(player, entity, taiyitist$source, (float) taiyitist$finalDamage, amountTaken, blocked);
     }
 }

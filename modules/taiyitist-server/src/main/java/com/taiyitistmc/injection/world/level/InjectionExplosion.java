@@ -6,6 +6,6 @@ public interface InjectionExplosion {
         return false;
     }
 
-    default void banner$setWasCanceled(boolean wasCanceled) {
+    default void taiyitist$setWasCanceled(boolean wasCanceled) {
     }
 }

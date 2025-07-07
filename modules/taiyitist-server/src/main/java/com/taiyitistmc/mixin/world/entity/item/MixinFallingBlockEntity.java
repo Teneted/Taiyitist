@@ -32,19 +32,19 @@ public abstract class MixinFallingBlockEntity extends Entity {
     }
 
     @Inject(method = "tick", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private void banner$entityChangeBlock(CallbackInfo ci, Block block, BlockPos pos) {
+    private void taiyitist$entityChangeBlock(CallbackInfo ci, Block block, BlockPos pos) {
         if (!CraftEventFactory.callEntityChangeBlockEvent((FallingBlockEntity) (Object) this, pos, this.blockState)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "causeFallDamage", at = @At(value = "INVOKE", remap = false, target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
-    private void banner$damageSource(float distance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$damageSource(float distance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         CraftEventFactory.entityDamage = (FallingBlockEntity) (Object) this;
     }
 
     @Inject(method = "causeFallDamage", at = @At(value = "INVOKE", remap = false, shift = At.Shift.AFTER, target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
-    private void banner$damageSourceReset(float distance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$damageSourceReset(float distance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         CraftEventFactory.entityDamage = null;
     }
 
@@ -56,7 +56,7 @@ public abstract class MixinFallingBlockEntity extends Entity {
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void banner$addData(CompoundTag compoundTag, CallbackInfo ci) {
+    private void taiyitist$addData(CompoundTag compoundTag, CallbackInfo ci) {
         // Paper start - Try and load origin location from the old NBT tags for backwards compatibility
         if (compoundTag.contains("SourceLoc_x")) {
             int srcX = compoundTag.getInt("SourceLoc_x");

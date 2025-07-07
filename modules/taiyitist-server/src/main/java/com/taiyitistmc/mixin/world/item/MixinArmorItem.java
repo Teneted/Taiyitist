@@ -27,20 +27,20 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinArmorItem {
 
     @Unique
-    private static AtomicReference<BlockDispenseArmorEvent> banner$armorEvent = new AtomicReference<>();
+    private static AtomicReference<BlockDispenseArmorEvent> taiyitist$armorEvent = new AtomicReference<>();
 
     @Inject(method = "dispenseArmor",
             at= @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;setItemSlot(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V",
             shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private static void banner$callArmorEvent(BlockSource source, ItemStack stack, CallbackInfoReturnable<Boolean> cir, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    private static void taiyitist$callArmorEvent(BlockSource source, ItemStack stack, CallbackInfoReturnable<Boolean> cir, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
         // CraftBukkit start
         Level world = source.getLevel();
         org.bukkit.block.Block block = world.getWorld().getBlockAt(source.getPos().getX(), source.getPos().getY(), source.getPos().getZ());
         CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemStack);
 
         BlockDispenseArmorEvent event = new BlockDispenseArmorEvent(block, craftItem.clone(), (CraftLivingEntity) livingEntity.getBukkitEntity());
-        banner$armorEvent.set(event);
+        taiyitist$armorEvent.set(event);
         if (!BukkitFieldHooks.isEventFired()) {
             world.getCraftServer().getPluginManager().callEvent(event);
         }
@@ -66,7 +66,7 @@ public class MixinArmorItem {
     @ModifyArg(method = "dispenseArmor", at= @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;setItemSlot(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V"),
             index = 1)
-    private static ItemStack banner$setStack(ItemStack stack) {
-        return CraftItemStack.asNMSCopy(banner$armorEvent.get().getItem());
+    private static ItemStack taiyitist$setStack(ItemStack stack) {
+        return CraftItemStack.asNMSCopy(taiyitist$armorEvent.get().getItem());
     }
 }

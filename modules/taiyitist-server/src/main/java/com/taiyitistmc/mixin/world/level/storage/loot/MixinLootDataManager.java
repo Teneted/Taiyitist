@@ -23,7 +23,7 @@ public class MixinLootDataManager implements InjectionLootDataManager {
     public Map<?, ResourceLocation> lootTableToKey = ImmutableMap.of(); // CraftBukkit
 
     @Inject(method = "apply", at = @At("RETURN"))
-    private void banner$buildRev(Map<LootDataType<?>, Map<ResourceLocation, ?>> map, CallbackInfo ci) {
+    private void taiyitist$buildRev(Map<LootDataType<?>, Map<ResourceLocation, ?>> map, CallbackInfo ci) {
         // CraftBukkit start - build a reversed registry map
         ImmutableMap.Builder<Object, ResourceLocation> lootTableToKeyBuilder = ImmutableMap.builder();
         this.elements.forEach((key, lootTable) -> lootTableToKeyBuilder.put((Object) lootTable, key.location()));
@@ -37,7 +37,7 @@ public class MixinLootDataManager implements InjectionLootDataManager {
     }
 
     @Override
-    public void banner$setLootTableToKey(Map<LootTable, ResourceLocation> lootTableToKey) {
+    public void taiyitist$setLootTableToKey(Map<LootTable, ResourceLocation> lootTableToKey) {
         this.lootTableToKey = lootTableToKey;
     }
 }

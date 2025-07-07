@@ -48,9 +48,9 @@ public interface InjectionPlayerList {
         return null;
     }
 
-    default void banner$chat(boolean canSend) {
+    default void taiyitist$chat(boolean canSend) {
     }
 
-    default void banner$putHandler(ServerLoginPacketListenerImpl handler) {
+    default void taiyitist$putHandler(ServerLoginPacketListenerImpl handler) {
     }
 }

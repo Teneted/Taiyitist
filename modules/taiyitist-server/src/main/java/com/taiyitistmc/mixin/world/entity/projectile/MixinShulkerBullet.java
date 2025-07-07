@@ -47,17 +47,17 @@ public abstract class MixinShulkerBullet extends Projectile implements Injection
 
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/core/Direction$Axis;)V", at = @At("RETURN"))
-    private void banner$init(Level level, LivingEntity livingEntity, Entity entity, Direction.Axis axis, CallbackInfo ci) {
-        this.banner$setProjectileSource((ProjectileSource) entity.getBukkitEntity());
+    private void taiyitist$init(Level level, LivingEntity livingEntity, Entity entity, Direction.Axis axis, CallbackInfo ci) {
+        this.taiyitist$setProjectileSource((ProjectileSource) entity.getBukkitEntity());
     }
 
     @Inject(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$reason(EntityHitResult result, CallbackInfo ci) {
+    private void taiyitist$reason(EntityHitResult result, CallbackInfo ci) {
         ((LivingEntity) result.getEntity()).pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    private void banner$hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory.handleNonLivingEntityDamageEvent(this, source, amount, false)) {
             cir.setReturnValue(false);
         }

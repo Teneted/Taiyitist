@@ -6,7 +6,7 @@ public interface InjectionAbstractHorse {
         return 0;
     }
 
-    default void banner$setMaxDomestication(int maxDomestication) {
+    default void taiyitist$setMaxDomestication(int maxDomestication) {
 
     }
 }

@@ -17,7 +17,7 @@ public class MixinPortalInfo implements InjectionPortalInfo {
     public CraftPortalEvent portalEventInfo;
 
     @Override
-    public void banner$setPortalEventInfo(CraftPortalEvent event) {
+    public void taiyitist$setPortalEventInfo(CraftPortalEvent event) {
         this.portalEventInfo = event;
     }
 
@@ -27,7 +27,7 @@ public class MixinPortalInfo implements InjectionPortalInfo {
     }
 
     @Override
-    public void banner$setWorld(ServerLevel world) {
+    public void taiyitist$setWorld(ServerLevel world) {
         this.world = world;
     }
 

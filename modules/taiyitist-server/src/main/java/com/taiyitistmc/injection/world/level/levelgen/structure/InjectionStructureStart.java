@@ -13,11 +13,11 @@ public interface InjectionStructureStart {
         throw new RuntimeException("Not implemented!");
     }
 
-    default void banner$setGenerationEventCause(AsyncStructureGenerateEvent.Cause generationEventCause) {
+    default void taiyitist$setGenerationEventCause(AsyncStructureGenerateEvent.Cause generationEventCause) {
         throw new RuntimeException("Not implemented!");
     }
 
-    default void banner$setPersistentDataContainer(DirtyCraftPersistentDataContainer persistentDataContainer) {
+    default void taiyitist$setPersistentDataContainer(DirtyCraftPersistentDataContainer persistentDataContainer) {
         throw new RuntimeException("Not implemented!");
     }
 }

@@ -23,7 +23,7 @@ public class MixinGoToWantedItem {
     @Inject(method = "method_46945", at = @At(value = "NEW",
             args = "class=net/minecraft/world/entity/ai/memory/WalkTarget"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private static void banner$targetEvent(BehaviorBuilder.Instance instance, MemoryAccessor memoryAccessor,
+    private static void taiyitist$targetEvent(BehaviorBuilder.Instance instance, MemoryAccessor memoryAccessor,
                                            MemoryAccessor memoryAccessor2, Predicate predicate, int i, float f,
                                            MemoryAccessor memoryAccessor3, MemoryAccessor memoryAccessor4,
                                            ServerLevel serverLevel, LivingEntity livingEntity, long l,

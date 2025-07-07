@@ -39,13 +39,13 @@ public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, 
     public boolean isIncendiary;
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType<? extends PrimedTnt> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<? extends PrimedTnt> type, Level worldIn, CallbackInfo ci) {
         this.yield = 4;
         isIncendiary = false;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/entity/LivingEntity;)V", at = @At("RETURN"))
-    private void banner$init(Level worldIn, double x, double y, double z, LivingEntity igniter, CallbackInfo ci) {
+    private void taiyitist$init(Level worldIn, double x, double y, double z, LivingEntity igniter, CallbackInfo ci) {
         this.yield = 4;
         isIncendiary = false;
     }
@@ -96,7 +96,7 @@ public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, 
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void banner$addData(CompoundTag compoundTag, CallbackInfo ci) {
+    private void taiyitist$addData(CompoundTag compoundTag, CallbackInfo ci) {
         // Paper start - Try and load origin location from the old NBT tags for backwards compatibility
         if (compoundTag.contains("SourceLoc_x")) {
             int srcX = compoundTag.getInt("SourceLoc_x");
@@ -113,7 +113,7 @@ public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, 
     }
 
     @Override
-    public void banner$setYield(float yield) {
+    public void taiyitist$setYield(float yield) {
         this.yield = yield;
     }
 
@@ -123,7 +123,7 @@ public abstract class MixinPrimedTnt extends Entity implements TraceableEntity, 
     }
 
     @Override
-    public void banner$setIsIncendiary(boolean isIncendiary) {
+    public void taiyitist$setIsIncendiary(boolean isIncendiary) {
         this.isIncendiary = isIncendiary;
     }
 }

@@ -10,7 +10,7 @@ public interface InjectionContainerOpenersCounter {
         return false;
     }
 
-    default void banner$setOpened(boolean opened) {
+    default void taiyitist$setOpened(boolean opened) {
     }
 
     default void onAPIOpen(Level world, BlockPos blockposition, BlockState iblockdata) {

@@ -18,7 +18,7 @@ public class MixinThrownTrident {
     @Shadow public ItemStack tridentItem;
 
     @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$lightning(Level world, Entity entityIn) {
+    private boolean taiyitist$lightning(Level world, Entity entityIn) {
         ((ServerLevel) world).strikeLightning((LightningBolt) entityIn, LightningStrikeEvent.Cause.TRIDENT);
         return true;
     }

@@ -21,7 +21,7 @@ public abstract class MixinStructurePlaceSettings {
     @Shadow public abstract RandomSource getRandom(@Nullable BlockPos seedPos);
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void banner$resetValue(CallbackInfo ci) {
+    private void taiyitist$resetValue(CallbackInfo ci) {
         this.palette = -1; // CraftBukkit - Set initial value so we know if the palette has been set forcefully
     }
 

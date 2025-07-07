@@ -38,63 +38,63 @@ public interface InjectionLivingEntity extends InjectionEntity {
         return 0;
     }
 
-    default void banner$setExpToDrop(int expToDrop) {
+    default void taiyitist$setExpToDrop(int expToDrop) {
     }
 
     default boolean bridge$forceDrops() {
         return false;
     }
 
-    default void banner$setForceDrops(boolean forceDrops) {
+    default void taiyitist$setForceDrops(boolean forceDrops) {
     }
 
     default ArrayList<org.bukkit.inventory.ItemStack> bridge$drops() {
         return null;
     }
 
-    default void banner$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
+    default void taiyitist$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
     }
 
     default org.bukkit.craftbukkit.v1_20_R1.attribute.CraftAttributeMap bridge$craftAttributes() {
         return null;
     }
 
-    default void banner$setCraftAttributes(org.bukkit.craftbukkit.v1_20_R1.attribute.CraftAttributeMap craftAttributes) {
+    default void taiyitist$setCraftAttributes(org.bukkit.craftbukkit.v1_20_R1.attribute.CraftAttributeMap craftAttributes) {
     }
 
     default boolean bridge$collides() {
         return false;
     }
 
-    default void banner$setCollides(boolean collides) {
+    default void taiyitist$setCollides(boolean collides) {
     }
 
     default Set<UUID> bridge$collidableExemptions() {
         return null;
     }
 
-    default void banner$setCollidableExemptions(Set<UUID> collidableExemptions) {
+    default void taiyitist$setCollidableExemptions(Set<UUID> collidableExemptions) {
     }
 
     default boolean bridge$bukkitPickUpLoot() {
         return false;
     }
 
-    default void banner$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
+    default void taiyitist$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
     }
 
     default boolean bridge$isTickingEffects() {
         return false;
     }
 
-    default void banner$setIsTickingEffects(boolean isTickingEffects) {
+    default void taiyitist$setIsTickingEffects(boolean isTickingEffects) {
     }
 
     default List<ProcessableEffect> bridge$effectsToProcess() {
         return null;
     }
 
-    default void banner$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
+    default void taiyitist$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
     }
 
     default void onEquipItem(EquipmentSlot enumitemslot, ItemStack itemstack, ItemStack itemstack1, boolean silent) {

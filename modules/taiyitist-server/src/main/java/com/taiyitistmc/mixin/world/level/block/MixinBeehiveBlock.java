@@ -20,7 +20,7 @@ public class MixinBeehiveBlock extends Block {
     }
 
     @Redirect(method = "angerNearbyBees", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Bee;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$targetReason(Bee beeEntity, LivingEntity livingEntity) {
+    private void taiyitist$targetReason(Bee beeEntity, LivingEntity livingEntity) {
         beeEntity.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
         beeEntity.setTarget(livingEntity);
     }

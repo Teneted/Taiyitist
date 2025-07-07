@@ -45,7 +45,7 @@ public abstract class MixinFireBlock implements InjectionFireBlock {
     private AtomicReference<BlockPos> sourceposition = new AtomicReference<>();
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$fireSpread(ServerLevel world, BlockPos mutablePos, BlockState newState, int flags,
+    public boolean taiyitist$fireSpread(ServerLevel world, BlockPos mutablePos, BlockState newState, int flags,
                                        BlockState state, ServerLevel worldIn, BlockPos pos) {
         if (world.getBlockState(mutablePos).getBlock() != Blocks.FIRE) {
             if (!CraftEventFactory.callBlockIgniteEvent(world, mutablePos, pos).isCancelled()) {
@@ -56,7 +56,7 @@ public abstract class MixinFireBlock implements InjectionFireBlock {
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
-    public boolean banner$extinguish1(ServerLevel world, BlockPos pos, boolean isMoving) {
+    public boolean taiyitist$extinguish1(ServerLevel world, BlockPos pos, boolean isMoving) {
         if (!CraftEventFactory.callBlockFadeEvent(world, pos, Blocks.AIR.defaultBlockState()).isCancelled()) {
             world.removeBlock(pos, isMoving);
         }
@@ -66,19 +66,19 @@ public abstract class MixinFireBlock implements InjectionFireBlock {
     @Inject(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/FireBlock;checkBurnOut(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;ILnet/minecraft/util/RandomSource;I)V",
             ordinal = 0, shift = At.Shift.BEFORE))
-    private void banner$checkSource0(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+    private void taiyitist$checkSource0(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
         sourceposition.set(pos);
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/FireBlock;checkBurnOut(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;ILnet/minecraft/util/RandomSource;I)V",
             ordinal = 5, shift = At.Shift.AFTER))
-    private void banner$checkSource1(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+    private void taiyitist$checkSource1(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
         sourceposition.set(null);
     }
 
     @Inject(method = "checkBurnOut", cancellable = true, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
-    public void banner$blockBurn(Level level, BlockPos pos, int chance, RandomSource random, int age, CallbackInfo ci) {
+    public void taiyitist$blockBurn(Level level, BlockPos pos, int chance, RandomSource random, int age, CallbackInfo ci) {
         org.bukkit.block.Block theBlock = level.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
         org.bukkit.block.Block sourceBlock = level.getWorld().getBlockAt(sourceposition.get().getX(), sourceposition.get().getY(), sourceposition.get().getZ());
         BlockBurnEvent event = new BlockBurnEvent(theBlock, sourceBlock);
@@ -92,7 +92,7 @@ public abstract class MixinFireBlock implements InjectionFireBlock {
     }
 
     @Redirect(method = "updateShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;defaultBlockState()Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockFade(net.minecraft.world.level.block.Block block, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState taiyitist$blockFade(net.minecraft.world.level.block.Block block, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!(worldIn instanceof Level)) {
             return Blocks.AIR.defaultBlockState();
         }

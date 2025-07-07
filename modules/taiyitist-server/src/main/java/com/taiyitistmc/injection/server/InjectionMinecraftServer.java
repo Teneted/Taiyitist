@@ -36,7 +36,7 @@ public interface InjectionMinecraftServer {
         return null;
     }
 
-    default void banner$setProcessQueue(java.util.Queue<Runnable> processQueue) {
+    default void taiyitist$setProcessQueue(java.util.Queue<Runnable> processQueue) {
     }
 
     default WorldLoader.DataLoadContext bridge$worldLoader() {
@@ -47,7 +47,7 @@ public interface InjectionMinecraftServer {
         return null;
     }
 
-    default void banner$setServer(CraftServer server) {
+    default void taiyitist$setServer(CraftServer server) {
     }
 
     default OptionSet bridge$options() {
@@ -58,10 +58,10 @@ public interface InjectionMinecraftServer {
         return null;
     }
 
-    default void banner$setConsole(ConsoleCommandSender console) {
+    default void taiyitist$setConsole(ConsoleCommandSender console) {
     }
 
-    default void banner$setRemoteConsole(RemoteConsoleCommandSender remoteConsole) {
+    default void taiyitist$setRemoteConsole(RemoteConsoleCommandSender remoteConsole) {
 
     }
 
@@ -100,11 +100,11 @@ public interface InjectionMinecraftServer {
         return new double[0];
     }
 
-    default void banner$setRconConsoleSource(RconConsoleSource source) {
+    default void taiyitist$setRconConsoleSource(RconConsoleSource source) {
 
     }
 
-    default void banner$setAutosavePeriod(int autosavePeriod) {
+    default void taiyitist$setAutosavePeriod(int autosavePeriod) {
 
     }
 }

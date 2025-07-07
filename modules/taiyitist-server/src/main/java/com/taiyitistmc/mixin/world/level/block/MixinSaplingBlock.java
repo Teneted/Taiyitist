@@ -32,22 +32,22 @@ public class MixinSaplingBlock {
 
     @Redirect(method = "advanceTree", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z"))
-    private boolean banner$cancelGrowTree(AbstractTreeGrower instance, ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
+    private boolean taiyitist$cancelGrowTree(AbstractTreeGrower instance, ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
         return false;
     }
 
     @Inject(method = "advanceTree", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;growTree(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/util/RandomSource;)Z",
             shift = At.Shift.AFTER))
-    private void banner$fireStructureGrowEvent(ServerLevel level, BlockPos pos, BlockState state,
+    private void taiyitist$fireStructureGrowEvent(ServerLevel level, BlockPos pos, BlockState state,
                                                RandomSource random, CallbackInfo ci) {
         // CraftBukkit start
         if (level.bridge$captureTreeGeneration()) {
             this.treeGrower.growTree(level, level.getChunkSource().getGenerator(), pos, state, random);
         } else {
-            level.banner$setCaptureTreeGeneration(true);
+            level.taiyitist$setCaptureTreeGeneration(true);
             this.treeGrower.growTree(level, level.getChunkSource().getGenerator(), pos, state, random);
-            level.banner$setCaptureTreeGeneration(false);
+            level.taiyitist$setCaptureTreeGeneration(false);
             if (!level.bridge$capturedBlockStates().isEmpty()) {
                 TreeType treeType = BukkitFieldHooks.treeType();
                 BukkitFieldHooks.setTreeType(null);

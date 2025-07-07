@@ -27,7 +27,7 @@ public class MixinInteractWithDoor {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/DoorBlock;setOpen(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Z)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private static void banner$openDoor(BehaviorBuilder.Instance instance, MemoryAccessor memoryAccessor,
+    private static void taiyitist$openDoor(BehaviorBuilder.Instance instance, MemoryAccessor memoryAccessor,
                                         MemoryAccessor memoryAccessor2, MutableObject mutableObject,
                                         MutableInt mutableInt, MemoryAccessor memoryAccessor3,
                                         ServerLevel serverLevel, LivingEntity livingEntity,

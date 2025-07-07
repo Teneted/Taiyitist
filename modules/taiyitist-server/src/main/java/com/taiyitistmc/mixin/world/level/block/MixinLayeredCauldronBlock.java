@@ -18,16 +18,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinLayeredCauldronBlock {
 
     @Redirect(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;clearFire()V"))
-    private void banner$extinguish1(Entity entity) {
+    private void taiyitist$extinguish1(Entity entity) {
     }
 
     @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/LayeredCauldronBlock;handleEntityOnFireInside(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"))
-    private void banner$extinguish2(BlockState p_153534_, Level p_153535_, BlockPos p_153536_, Entity entity, CallbackInfo ci) {
+    private void taiyitist$extinguish2(BlockState p_153534_, Level p_153535_, BlockPos p_153536_, Entity entity, CallbackInfo ci) {
         BukkitCauldronHooks.setChangeReason(entity, CauldronLevelChangeEvent.ChangeReason.EXTINGUISH);
     }
 
     @Inject(method = "entityInside", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/block/LayeredCauldronBlock;handleEntityOnFireInside(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"))
-    private void banner$extinguish3(BlockState p_153534_, Level p_153535_, BlockPos p_153536_, Entity p_153537_, CallbackInfo ci) {
+    private void taiyitist$extinguish3(BlockState p_153534_, Level p_153535_, BlockPos p_153536_, Entity p_153537_, CallbackInfo ci) {
         if (!BukkitCauldronHooks.getResult()) {
             ci.cancel();
         }
@@ -35,17 +35,17 @@ public class MixinLayeredCauldronBlock {
     }
 
     @Redirect(method = "lowerFillLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private static boolean banner$lowerFill(Level level, BlockPos pos, BlockState state, BlockState old) {
+    private static boolean taiyitist$lowerFill(Level level, BlockPos pos, BlockState state, BlockState old) {
         return BukkitCauldronHooks.changeLevel(level, pos, state, BukkitCauldronHooks.getEntity(), BukkitCauldronHooks.getReason());
     }
 
     @Redirect(method = "handlePrecipitation", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean banner$precipitation(Level level, BlockPos pos, BlockState state, BlockState old) {
+    private boolean taiyitist$precipitation(Level level, BlockPos pos, BlockState state, BlockState old) {
         return BukkitCauldronHooks.changeLevel(level, pos, state, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL);
     }
 
     @Redirect(method = "receiveStalactiteDrip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean banner$drip(Level instance, BlockPos pos, BlockState state, BlockState old, @Cancellable CallbackInfo ci) {
+    private boolean taiyitist$drip(Level instance, BlockPos pos, BlockState state, BlockState old, @Cancellable CallbackInfo ci) {
         if (BukkitCauldronHooks.changeLevel(instance, pos, state, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL)) {
             return true;
         } else {

@@ -14,18 +14,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinEndDragonFight implements InjectionEndDragonFight {
 
     @Unique
-    public boolean banner$respawnDragon = false;
+    public boolean taiyitist$respawnDragon = false;
 
     @Inject(method = "respawnDragon",
             at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/level/dimension/end/EndDragonFight;respawnCrystals:Ljava/util/List;",
                     shift = At.Shift.AFTER))
-    private void banner$setRespawnResult(List<EndCrystal> crystals, CallbackInfo ci) {
-        banner$respawnDragon = true;
+    private void taiyitist$setRespawnResult(List<EndCrystal> crystals, CallbackInfo ci) {
+        taiyitist$respawnDragon = true;
     }
 
     @Override
     public boolean bridge$isRespawnDragon() {
-        return banner$respawnDragon;
+        return taiyitist$respawnDragon;
     }
 }

@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinMagmaBlock {
 
     @Inject(method = "stepOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    public void banner$blockDamagePre(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
+    public void taiyitist$blockDamagePre(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = CraftBlock.at(worldIn, pos);
     }
 
     @Inject(method = "stepOn", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    public void banner$blockDamagePost(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
+    public void taiyitist$blockDamagePost(Level worldIn, BlockPos pos, BlockState state, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = null;
     }
 }

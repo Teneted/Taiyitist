@@ -5,14 +5,14 @@ import net.minecraft.commands.CommandSource;
 
 public interface InjectionCommandSourceStack {
 
-    default void banner$setSource(CommandSource source) {
+    default void taiyitist$setSource(CommandSource source) {
     }
 
     default boolean hasPermission(int i, String bukkitPermission) {
         return false;
     }
 
-    default org.bukkit.command.CommandSender banner$getBukkitSender() {
+    default org.bukkit.command.CommandSender taiyitist$getBukkitSender() {
         return null;
     }
 
@@ -20,6 +20,6 @@ public interface InjectionCommandSourceStack {
         return null;
     }
 
-    default void banner$setCurrentCommand(CommandNode<?> node) {
+    default void taiyitist$setCurrentCommand(CommandNode<?> node) {
     }
 }

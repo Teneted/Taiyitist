@@ -6,13 +6,13 @@ public interface InjectionPrimedTnt {
         return 0;
     }
 
-    default void banner$setYield(float yield) {
+    default void taiyitist$setYield(float yield) {
     }
 
     default boolean bridge$isIncendiary() {
         return false;
     }
 
-    default void banner$setIsIncendiary(boolean isIncendiary) {
+    default void taiyitist$setIsIncendiary(boolean isIncendiary) {
     }
 }

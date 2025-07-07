@@ -36,11 +36,11 @@ public abstract class MixinHarvestFarmland extends Behavior<Villager> {
 
     @Shadow @Nullable private BlockPos aboveFarmlandPos;
     @Unique
-    private AtomicReference<Block> banner$planted = new AtomicReference<>();
+    private AtomicReference<Block> taiyitist$planted = new AtomicReference<>();
     @Unique
-    private AtomicReference<Boolean> banner$flag = new AtomicReference<>();
+    private AtomicReference<Boolean> taiyitist$flag = new AtomicReference<>();
     @Unique
-    private AtomicReference<Villager> banner$villager = new AtomicReference<>();
+    private AtomicReference<Villager> taiyitist$villager = new AtomicReference<>();
 
     public MixinHarvestFarmland(Map<MemoryModuleType<?>, MemoryStatus> map) {
         super(map);
@@ -48,43 +48,43 @@ public abstract class MixinHarvestFarmland extends Behavior<Villager> {
 
     @WrapWithCondition(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$callFarmEvent(ServerLevel instance, BlockPos pos, boolean b, Entity entity) {
+    private boolean taiyitist$callFarmEvent(ServerLevel instance, BlockPos pos, boolean b, Entity entity) {
         return CraftEventFactory.callEntityChangeBlockEvent(entity, this.aboveFarmlandPos, Blocks.AIR.defaultBlockState());
     }
 
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V", at = @At("HEAD"))
-    private void banner$getVillager(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
-        banner$villager.set(owner);
+    private void taiyitist$getVillager(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
+        taiyitist$villager.set(owner);
     }
 
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"),
             slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;gameEvent(Lnet/minecraft/world/level/gameevent/GameEvent;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/gameevent/GameEvent$Context;)V")),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$getFlag(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci, BlockState blockState,
+    private void taiyitist$getFlag(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci, BlockState blockState,
                                 Block block, Block block2, SimpleContainer simpleContainer, int i,
                                 ItemStack itemStack, boolean bl, BlockItem blockItem, BlockState blockState2) {
-        banner$flag.set(bl);
+        taiyitist$flag.set(bl);
     }
 
     @Redirect(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"),
     slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;gameEvent(Lnet/minecraft/world/level/gameevent/GameEvent;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/gameevent/GameEvent$Context;)V")))
-    private boolean banner$addPlantCheck(ServerLevel instance, BlockPos pos, BlockState state) {
-        banner$planted.set(state.getBlock());
-        if (banner$planted.get() != null && CraftEventFactory.callEntityChangeBlockEvent(banner$villager.get(), this.aboveFarmlandPos, banner$planted.get().defaultBlockState())) {
-            instance.setBlockAndUpdate(this.aboveFarmlandPos, banner$planted.get().defaultBlockState());
-            instance.gameEvent(GameEvent.BLOCK_PLACE, this.aboveFarmlandPos, GameEvent.Context.of(banner$villager.get(), banner$planted.get().defaultBlockState()));
-            banner$flag.set(true);
+    private boolean taiyitist$addPlantCheck(ServerLevel instance, BlockPos pos, BlockState state) {
+        taiyitist$planted.set(state.getBlock());
+        if (taiyitist$planted.get() != null && CraftEventFactory.callEntityChangeBlockEvent(taiyitist$villager.get(), this.aboveFarmlandPos, taiyitist$planted.get().defaultBlockState())) {
+            instance.setBlockAndUpdate(this.aboveFarmlandPos, taiyitist$planted.get().defaultBlockState());
+            instance.gameEvent(GameEvent.BLOCK_PLACE, this.aboveFarmlandPos, GameEvent.Context.of(taiyitist$villager.get(), taiyitist$planted.get().defaultBlockState()));
+            taiyitist$flag.set(true);
         }else {
-            banner$flag.set(false);
+            taiyitist$flag.set(false);
         }
-        return banner$flag.get();
+        return taiyitist$flag.get();
     }
 
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private void banner$captureOn(ServerLevel worldIn, Villager owner, long gameTime, CallbackInfo ci) {
+    private void taiyitist$captureOn(ServerLevel worldIn, Villager owner, long gameTime, CallbackInfo ci) {
         BukkitSnapshotCaptures.captureEntityChangeBlock(owner);
     }
 }

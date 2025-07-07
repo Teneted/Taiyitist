@@ -14,7 +14,7 @@ public class MixinAdvancementList {
 
     @Inject(method = "add", at = @At(value = "INVOKE",
             target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-    private void banner$moveLogger(Map<ResourceLocation, Advancement.Builder> advancements, CallbackInfo ci) {}
+    private void taiyitist$moveLogger(Map<ResourceLocation, Advancement.Builder> advancements, CallbackInfo ci) {}
     // CraftBukkit - moved to AdvancementDataWorld#reload
 
 }

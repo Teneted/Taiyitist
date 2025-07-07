@@ -21,17 +21,17 @@ public class MixinServerScoreboard {
     @Shadow @Final private MinecraftServer server;
 
     @Redirect(method = "startTrackingObjective", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;getPlayers()Ljava/util/List;"))
-    private List<ServerPlayer> banner$filterAdd(PlayerList playerList) {
+    private List<ServerPlayer> taiyitist$filterAdd(PlayerList playerList) {
         return filterPlayer(playerList.getPlayers());
     }
 
     @Redirect(method = "stopTrackingObjective", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;getPlayers()Ljava/util/List;"))
-    private List<ServerPlayer> banner$filterRemove(PlayerList playerList) {
+    private List<ServerPlayer> taiyitist$filterRemove(PlayerList playerList) {
         return filterPlayer(playerList.getPlayers());
     }
 
     @Redirect(method = "*", require = 11, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void banner$sendToOwner(PlayerList playerList, Packet<?> packetIn) {
+    private void taiyitist$sendToOwner(PlayerList playerList, Packet<?> packetIn) {
         for (ServerPlayer entity : filterPlayer(playerList.getPlayers())) {
             entity.connection.send(packetIn);
         }

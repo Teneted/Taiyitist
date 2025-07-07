@@ -21,7 +21,7 @@ public class MixinBlockStateParser {
     @Shadow @Final private Map<Property<?>, Comparable<?>> properties;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(HolderLookup holderLookup, StringReader stringReader, boolean bl, boolean bl2, CallbackInfo ci) {
+    private void taiyitist$init(HolderLookup holderLookup, StringReader stringReader, boolean bl, boolean bl2, CallbackInfo ci) {
         this.properties = new LinkedHashMap<>(properties);
     }
 }

@@ -17,7 +17,7 @@ public abstract class MixinBreakDoorGoal extends DoorInteractGoal {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z", shift = At.Shift.BEFORE), cancellable = true)
-    private void banner$breakDoorTick(CallbackInfo ci) {
+    private void taiyitist$breakDoorTick(CallbackInfo ci) {
         // CraftBukkit start
         if (CraftEventFactory.callEntityBreakDoorEvent(this.mob, this.doorPos).isCancelled()) {
             this.start();

@@ -26,12 +26,12 @@ public class MixinPlayerDataStorage implements InjectionPlayerDataStorage {
     @Shadow @Final private static Logger LOGGER;
 
     @Inject(method = "save", at = @At("HEAD"), cancellable = true)
-    private void banner$allowDataSaving(Player player, CallbackInfo ci) {
+    private void taiyitist$allowDataSaving(Player player, CallbackInfo ci) {
         if (org.spigotmc.SpigotConfig.disablePlayerDataSaving) ci.cancel(); // Spigot
     }
 
     @Inject(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtUtils;getDataVersion(Lnet/minecraft/nbt/CompoundTag;I)I"))
-    private void banner$lastSeenTime(Player player, CallbackInfoReturnable<CompoundTag> cir) {
+    private void taiyitist$lastSeenTime(Player player, CallbackInfoReturnable<CompoundTag> cir) {
         if (player instanceof ServerPlayer) {
             CraftPlayer craftPlayer = ((ServerPlayer) player).getBukkitEntity();
             // Only update first played if it is older than the one we have

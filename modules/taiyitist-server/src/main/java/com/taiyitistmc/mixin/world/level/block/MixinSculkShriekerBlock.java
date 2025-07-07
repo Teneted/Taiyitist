@@ -25,7 +25,7 @@ public abstract class MixinSculkShriekerBlock extends Block {
     }
 
     @Inject(method = "stepOn", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockEntity(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntityType;)Ljava/util/Optional;"))
-    private void banner$interact(Level world, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci,
+    private void taiyitist$interact(Level world, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci,
                                    ServerLevel level, ServerPlayer player) {
         if (CraftEventFactory.callPlayerInteractEvent(player, org.bukkit.event.block.Action.PHYSICAL, pos, null, null, null).isCancelled()) {
             ci.cancel();
@@ -35,7 +35,7 @@ public abstract class MixinSculkShriekerBlock extends Block {
     @Override
     public int getExpDrop(BlockState blockState, ServerLevel world, BlockPos blockPos, ItemStack itemStack, boolean flag) {
         if (flag) {
-            return this.banner$tryDropExperience(world, blockPos, itemStack, ConstantInt.of(5));
+            return this.taiyitist$tryDropExperience(world, blockPos, itemStack, ConstantInt.of(5));
         }
         return 0;
     }

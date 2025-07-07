@@ -31,13 +31,13 @@ public abstract class MixinWitch extends Raider {
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Witch;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private void banner$reason(CallbackInfo ci) {
+    private void taiyitist$reason(CallbackInfo ci) {
         pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/alchemy/PotionUtils;getMobEffects(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
-    private List<MobEffectInstance> banner$callWitchConsumerEvent(ItemStack stack) {
+    private List<MobEffectInstance> taiyitist$callWitchConsumerEvent(ItemStack stack) {
         // Paper start
         com.destroystokyo.paper.event.entity.WitchConsumePotionEvent event = new com.destroystokyo.paper.event.entity.WitchConsumePotionEvent((org.bukkit.entity.Witch) this.getBukkitEntity(), CraftItemStack.asCraftMirror(stack));
         return event.callEvent() ? PotionUtils.getMobEffects(CraftItemStack.asNMSCopy(event.getPotion())) : null;
@@ -51,7 +51,7 @@ public abstract class MixinWitch extends Raider {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/projectile/ThrownPotion;<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$callWitchPotionEvent(LivingEntity target, float velocity, CallbackInfo ci, Vec3 vec3,
+    private void taiyitist$callWitchPotionEvent(LivingEntity target, float velocity, CallbackInfo ci, Vec3 vec3,
                                              double d, double e, double f, double g, Potion potion) {
         // Paper start
         paperPotion.set(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
@@ -64,7 +64,7 @@ public abstract class MixinWitch extends Raider {
     }
 
     @Redirect(method = "performRangedAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/alchemy/PotionUtils;setPotion(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/alchemy/Potion;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack banner$resetPotionStack(ItemStack stack, Potion potion) {
+    private ItemStack taiyitist$resetPotionStack(ItemStack stack, Potion potion) {
         return paperPotion.get();
     }
 

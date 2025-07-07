@@ -6,7 +6,7 @@ public interface InjectionArmorStand {
         return false;
     }
 
-    default void banner$setCanMove(boolean canMove) {
+    default void taiyitist$setCanMove(boolean canMove) {
 
     }
 }

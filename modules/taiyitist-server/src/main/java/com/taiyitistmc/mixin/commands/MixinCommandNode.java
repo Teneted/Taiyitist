@@ -35,20 +35,20 @@ public abstract class MixinCommandNode<S> implements Comparable<CommandNode<S>>,
 
     // CraftBukkit start
     @Override
-    public void banner$removeCommand(String name) {
+    public void taiyitist$removeCommand(String name) {
         removeCommand(name);
     }
     // CraftBukkit end
 
     @Inject(method = "canUse", at = @At("HEAD"), cancellable = true)
-    private void banner$canUse(S source, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$canUse(S source, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start
         if (source instanceof CommandSourceStack) {
             try {
-                ((CommandSourceStack) source).banner$setCurrentCommand(((CommandNode<?>) (Object) this));
+                ((CommandSourceStack) source).taiyitist$setCurrentCommand(((CommandNode<?>) (Object) this));
                 cir.setReturnValue(requirement.test(source));
             } finally {
-                ((CommandSourceStack) source).banner$setCurrentCommand(null);
+                ((CommandSourceStack) source).taiyitist$setCurrentCommand(null);
             }
             // CraftBukkit end
         }

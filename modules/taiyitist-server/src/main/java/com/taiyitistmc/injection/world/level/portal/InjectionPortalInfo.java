@@ -6,14 +6,14 @@ import org.jetbrains.annotations.Nullable;
 
 public interface InjectionPortalInfo {
 
-    default void banner$setPortalEventInfo(CraftPortalEvent event){
+    default void taiyitist$setPortalEventInfo(CraftPortalEvent event){
     }
 
     default CraftPortalEvent bridge$getPortalEventInfo() {
         return null;
     }
 
-    default void banner$setWorld(ServerLevel world){
+    default void taiyitist$setWorld(ServerLevel world){
     }
 
     default @Nullable ServerLevel bridge$getWorld(){

@@ -34,26 +34,26 @@ public abstract class MixinExperienceOrb {
     @Shadow protected abstract int xpToDurability(int xp);
 
     @Unique
-    private transient Player banner$lastPlayer;
+    private transient Player taiyitist$lastPlayer;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;tick()V"))
-    private void banner$captureLast(CallbackInfo ci) {
-        banner$lastPlayer = this.followingPlayer;
+    private void taiyitist$captureLast(CallbackInfo ci) {
+        taiyitist$lastPlayer = this.followingPlayer;
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void banner$captureReset(CallbackInfo ci) {
-        banner$lastPlayer = null;
+    private void taiyitist$captureReset(CallbackInfo ci) {
+        taiyitist$lastPlayer = null;
     }
 
     @Redirect(method = "tick", at = @At(value = "FIELD", ordinal = 4, target = "Lnet/minecraft/world/entity/ExperienceOrb;followingPlayer:Lnet/minecraft/world/entity/player/Player;"))
-    private Player banner$targetPlayer(ExperienceOrb entity) {
-        if (this.followingPlayer != banner$lastPlayer) {
+    private Player taiyitist$targetPlayer(ExperienceOrb entity) {
+        if (this.followingPlayer != taiyitist$lastPlayer) {
             EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent((ExperienceOrb) (Object) this, this.followingPlayer, (this.followingPlayer != null) ? EntityTargetEvent.TargetReason.CLOSEST_PLAYER : EntityTargetEvent.TargetReason.FORGOT_TARGET);
             LivingEntity target = (event.getTarget() == null) ? null : ((CraftLivingEntity) event.getTarget()).getHandle();
 
             if (event.isCancelled()) {
-                this.followingPlayer = banner$lastPlayer;
+                this.followingPlayer = taiyitist$lastPlayer;
                 return null;
             } else {
                 this.followingPlayer = (target instanceof Player) ? (Player) target : null;
@@ -63,7 +63,7 @@ public abstract class MixinExperienceOrb {
     }
 
     @Redirect(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;giveExperiencePoints(I)V"))
-    private void banner$expChange(Player player, int amount) {
+    private void taiyitist$expChange(Player player, int amount) {
         player.giveExperiencePoints(CraftEventFactory.callPlayerExpChangeEvent(player, amount).getAmount());
     }
 
@@ -97,7 +97,7 @@ public abstract class MixinExperienceOrb {
     }
 
     @Inject(method = "getExperienceValue", cancellable = true, at = @At("HEAD"))
-    private static void banner$higherLevelSplit(int expValue, CallbackInfoReturnable<Integer> cir) {
+    private static void taiyitist$higherLevelSplit(int expValue, CallbackInfoReturnable<Integer> cir) {
         // @formatter:off
         if (expValue > 162670129) { cir.setReturnValue(expValue - 100000); return; }
         if (expValue > 81335063) { cir.setReturnValue(81335063); return; }

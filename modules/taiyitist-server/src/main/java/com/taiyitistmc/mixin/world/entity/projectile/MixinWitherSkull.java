@@ -26,17 +26,17 @@ public abstract class MixinWitherSkull extends AbstractHurtingProjectile {
     }
 
     @Inject(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"))
-    private void banner$heal(EntityHitResult result, CallbackInfo ci) {
+    private void taiyitist$heal(EntityHitResult result, CallbackInfo ci) {
         if (this.getOwner() != null) ((LivingEntity)this.getOwner()).pushHealReason(EntityRegainHealthEvent.RegainReason.WITHER);
     }
 
     @Inject(method = "onHitEntity", require = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$effect(EntityHitResult result, CallbackInfo ci) {
+    private void taiyitist$effect(EntityHitResult result, CallbackInfo ci) {
         ((LivingEntity)result.getEntity()).pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 
     @Redirect(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;explode(Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;)Lnet/minecraft/world/level/Explosion;"))
-    private Explosion banner$explode(Level world, Entity entityIn, double xIn, double yIn, double zIn, float explosionRadius, boolean causesFire, Level.ExplosionInteraction interaction) {
+    private Explosion taiyitist$explode(Level world, Entity entityIn, double xIn, double yIn, double zIn, float explosionRadius, boolean causesFire, Level.ExplosionInteraction interaction) {
         ExplosionPrimeEvent event = new ExplosionPrimeEvent(this.getBukkitEntity(), explosionRadius, causesFire);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {

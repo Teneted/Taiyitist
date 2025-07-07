@@ -16,7 +16,7 @@ public class MixinOldUsersConverter_5 {
     @Inject(method = "movePlayerFile", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/players/OldUsersConverter;ensureDirectoryExists(Ljava/io/File;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$useOldName(File file, String oldFileName, String newFileName, CallbackInfo ci,
+    private void taiyitist$useOldName(File file, String oldFileName, String newFileName, CallbackInfo ci,
                                    File file2, File file3) {
         // CraftBukkit start - Use old file name to seed lastKnownName
         final File fileUnknown = new File(file.getParentFile(), "unknownplayers");

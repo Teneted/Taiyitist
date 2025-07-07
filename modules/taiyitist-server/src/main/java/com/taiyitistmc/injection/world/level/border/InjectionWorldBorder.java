@@ -8,6 +8,6 @@ public interface InjectionWorldBorder {
         return null;
     }
 
-    default void banner$setWorld(Level world) {
+    default void taiyitist$setWorld(Level world) {
     }
 }

@@ -13,12 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPufferfish {
 
     @Inject(method = "touch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$attack(Mob mobEntity, CallbackInfo ci) {
+    private void taiyitist$attack(Mob mobEntity, CallbackInfo ci) {
          mobEntity.pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 
     @Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$collide(Player entityIn, CallbackInfo ci) {
+    private void taiyitist$collide(Player entityIn, CallbackInfo ci) {
          entityIn.pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 }

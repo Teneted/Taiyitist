@@ -25,19 +25,19 @@ public abstract class MixinBaseSpawner {
 
 
     @Inject(method = "setEntityId", at = @At("RETURN"))
-    public void banner$clearMobs(CallbackInfo ci) {
+    public void taiyitist$clearMobs(CallbackInfo ci) {
         this.spawnPotentials = SimpleWeightedRandomList.empty();
     }
 
     @Decorate(method = "serverTick", inject = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;checkSpawnObstruction(Lnet/minecraft/world/level/LevelReader;)Z"))
-    private void banner$nerf(@Local(ordinal = -1) Mob mob) {
+    private void taiyitist$nerf(@Local(ordinal = -1) Mob mob) {
         if (mob.level().bridge$spigotConfig().nerfSpawnerMobs) {
-           mob.banner$setAware(false);
+           mob.taiyitist$setAware(false);
         }
     }
 
     @Decorate(method = "serverTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;tryAddFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$pushReason(ServerLevel serverLevel, Entity entity, ServerLevel level, BlockPos pos) throws Throwable {
+    private boolean taiyitist$pushReason(ServerLevel serverLevel, Entity entity, ServerLevel level, BlockPos pos) throws Throwable {
         if (CraftEventFactory.callSpawnerSpawnEvent(entity, pos).isCancelled()) {
             throw DecorationOps.jumpToLoopStart();
         }

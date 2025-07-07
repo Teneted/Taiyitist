@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinRedstoneTorchBlock {
 
     @Inject(method = "tick", cancellable = true, at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private void banner$blockRedstone1(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand, CallbackInfo ci) {
+    private void taiyitist$blockRedstone1(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand, CallbackInfo ci) {
         int oldCurrent = state.getValue(RedstoneTorchBlock.LIT) ? 15 : 0;
         if (oldCurrent != 0) {
             CraftBlock block = CraftBlock.at(worldIn, pos);
@@ -30,7 +30,7 @@ public class MixinRedstoneTorchBlock {
     }
 
     @Inject(method = "tick", cancellable = true, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private void banner$blockRedstone2(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand, CallbackInfo ci) {
+    private void taiyitist$blockRedstone2(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand, CallbackInfo ci) {
         int oldCurrent = state.getValue(RedstoneTorchBlock.LIT) ? 15 : 0;
         if (oldCurrent != 15) {
             CraftBlock block = CraftBlock.at(worldIn, pos);

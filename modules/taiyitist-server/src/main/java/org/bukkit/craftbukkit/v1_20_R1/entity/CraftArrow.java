@@ -70,7 +70,7 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().banner$setProjectileSource(shooter);
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override

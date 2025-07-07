@@ -30,12 +30,12 @@ public abstract class MixinConcretePowderBlock extends Block {
     }
 
     @Redirect(method = "onLand", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$blockForm(Level world, BlockPos pos, BlockState newState, int flags) {
+    public boolean taiyitist$blockForm(Level world, BlockPos pos, BlockState newState, int flags) {
         return CraftEventFactory.handleBlockFormEvent(world, pos, newState, flags);
     }
 
     @Redirect(method = "getStateForPlacement", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/ConcretePowderBlock;concrete:Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockForm(ConcretePowderBlock instance, BlockPlaceContext context) {
+    public BlockState taiyitist$blockForm(ConcretePowderBlock instance, BlockPlaceContext context) {
         Level world = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
         CraftBlockState blockState = CraftBlockStates.getBlockState(world, blockPos);
@@ -49,7 +49,7 @@ public abstract class MixinConcretePowderBlock extends Block {
     }
 
     @Redirect(method = "updateShape", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/ConcretePowderBlock;concrete:Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockForm(ConcretePowderBlock instance, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState taiyitist$blockForm(ConcretePowderBlock instance, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!(worldIn instanceof Level)) {
             return this.concrete;
         }

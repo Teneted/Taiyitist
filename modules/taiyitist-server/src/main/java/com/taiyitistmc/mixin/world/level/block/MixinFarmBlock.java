@@ -18,14 +18,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinFarmBlock {
 
     @Inject(method = "turnToDirt", cancellable = true, at = @At("HEAD"))
-    private static void banner$blockFade(Entity entity, BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci) {
+    private static void taiyitist$blockFade(Entity entity, BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci) {
         if (CraftEventFactory.callBlockFadeEvent(worldIn, pos, Blocks.DIRT.defaultBlockState()).isCancelled()) {
             ci.cancel();
         }
     }
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public boolean banner$moistureChange(ServerLevel world, BlockPos pos, BlockState newState, int flags) {
+    public boolean taiyitist$moistureChange(ServerLevel world, BlockPos pos, BlockState newState, int flags) {
         return CraftEventFactory.handleMoistureChangeEvent(world, pos, newState, flags);
     }
 }

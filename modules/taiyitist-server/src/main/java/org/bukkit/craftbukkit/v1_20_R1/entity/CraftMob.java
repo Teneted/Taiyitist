@@ -37,7 +37,7 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
 
     @Override
     public void setAware(boolean aware) {
-        getHandle().banner$setAware(aware);
+        getHandle().taiyitist$setAware(aware);
     }
 
     @Override

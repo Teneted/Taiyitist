@@ -25,28 +25,28 @@ public abstract class MixinOcelot extends Animal {
     }
 
     @Unique
-    private AtomicReference<Player> banner$player = new AtomicReference<>();
+    private AtomicReference<Player> taiyitist$player = new AtomicReference<>();
 
     @Inject(method = "mobInteract", at = @At(("HEAD")))
-    private void banner$setPlayer(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        banner$player.set(player);
+    private void taiyitist$setPlayer(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        taiyitist$player.set(player);
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/animal/Ocelot;setTrusting(Z)V"))
-    private boolean banner$callTameEvent0(Ocelot ocelot, boolean value) {
-        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), banner$player.get()).isCancelled();
+    private boolean taiyitist$callTameEvent0(Ocelot ocelot, boolean value) {
+        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), taiyitist$player.get()).isCancelled();
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/animal/Ocelot;spawnTrustingParticles(Z)V", ordinal = 0))
-    private boolean banner$callTameEvent1(Ocelot ocelot, boolean value) {
-        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), banner$player.get()).isCancelled();
+    private boolean taiyitist$callTameEvent1(Ocelot ocelot, boolean value) {
+        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), taiyitist$player.get()).isCancelled();
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;broadcastEntityEvent(Lnet/minecraft/world/entity/Entity;B)V", ordinal = 0))
-    private boolean banner$callTameEvent2(Level level, Entity entity, byte state) {
-        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), banner$player.get()).isCancelled();
+    private boolean taiyitist$callTameEvent2(Level level, Entity entity, byte state) {
+        return !CraftEventFactory.callEntityTameEvent(((Ocelot) (Object) this), taiyitist$player.get()).isCancelled();
     }
 }

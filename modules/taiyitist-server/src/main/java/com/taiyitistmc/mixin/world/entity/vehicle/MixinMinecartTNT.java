@@ -28,7 +28,7 @@ public abstract class MixinMinecartTNT extends AbstractMinecart {
     }
 
     @Redirect(method = "explode(Lnet/minecraft/world/damagesource/DamageSource;D)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;)Lnet/minecraft/world/level/Explosion;"))
-    private Explosion banner$explode(Level level, Entity entity, DamageSource source, ExplosionDamageCalculator calculator, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction interaction, @Cancellable CallbackInfo ci) {
+    private Explosion taiyitist$explode(Level level, Entity entity, DamageSource source, ExplosionDamageCalculator calculator, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction interaction, @Cancellable CallbackInfo ci) {
         var event = new ExplosionPrimeEvent(this.getBukkitEntity(), radius, fire);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {

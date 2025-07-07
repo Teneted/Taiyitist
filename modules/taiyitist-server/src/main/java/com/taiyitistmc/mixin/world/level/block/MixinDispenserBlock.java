@@ -20,7 +20,7 @@ public class MixinDispenserBlock {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/DispenserBlockEntity;setItem(ILnet/minecraft/world/item/ItemStack;)V",
                     shift = At.Shift.BEFORE))
-    private void banner$restEventStatus(ServerLevel level, BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$restEventStatus(ServerLevel level, BlockPos pos, CallbackInfo ci) {
         eventFired = false; // CraftBukkit - reset event status
     }
 

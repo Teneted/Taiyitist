@@ -6,6 +6,6 @@ public interface InjectionIngredient {
         return false;
     }
 
-    default void banner$setExact(boolean exact) {
+    default void taiyitist$setExact(boolean exact) {
     }
 }

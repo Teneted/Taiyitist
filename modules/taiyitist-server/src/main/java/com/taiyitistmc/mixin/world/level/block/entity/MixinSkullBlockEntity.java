@@ -13,14 +13,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinSkullBlockEntity {
 
    @Inject(method = "updateOwnerProfile", at = @At("HEAD"), cancellable = true)
-   private void banner$updateOwnerProfile(CallbackInfo ci) {
+   private void taiyitist$updateOwnerProfile(CallbackInfo ci) {
       if (BannerConfig.disable_skullblock_skin) {
          ci.cancel();
       }
    }
 
    @Inject(method = "updateGameprofile", at = @At("HEAD"), cancellable = true)
-   private static void banner$updateGameprofile(GameProfile profile, Consumer<GameProfile> profileConsumer, CallbackInfo ci) {
+   private static void taiyitist$updateGameprofile(GameProfile profile, Consumer<GameProfile> profileConsumer, CallbackInfo ci) {
       if (BannerConfig.disable_skullblock_skin) {
          ci.cancel();
       }

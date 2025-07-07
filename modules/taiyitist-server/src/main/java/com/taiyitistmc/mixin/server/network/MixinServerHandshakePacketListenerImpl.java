@@ -39,7 +39,7 @@ public class MixinServerHandshakePacketListenerImpl {
      */
     @Overwrite
     public void handleIntention(ClientIntentionPacket packet) {
-        this.connection.banner$setHostName(packet.hostName + ":" + packet.port); // CraftBukkit  - set hostname
+        this.connection.taiyitist$setHostName(packet.hostName + ":" + packet.port); // CraftBukkit  - set hostname
         switch (packet.getIntention()) {
             case LOGIN -> {
                 this.connection.setProtocol(ConnectionProtocol.LOGIN);

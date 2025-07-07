@@ -27,7 +27,7 @@ public class MixinArmorStandItem {
             at= @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V",
             shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$callEntityPlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
+    private void taiyitist$callEntityPlaceEvent(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir,
                                              Direction direction, Level level, BlockPlaceContext blockPlaceContext,
                                              BlockPos blockPos, ItemStack itemStack, Vec3 vec3, AABB aABB,
                                              ServerLevel serverLevel, Consumer<ArmorStand> consumer,

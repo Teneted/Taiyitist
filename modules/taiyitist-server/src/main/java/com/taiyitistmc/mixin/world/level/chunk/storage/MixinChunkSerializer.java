@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinChunkSerializer {
 
     @Redirect(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/ChunkAccess;setLightCorrect(Z)V"))
-    private static void banner$loadPersistent(ChunkAccess instance, boolean correct, ServerLevel level, PoiManager poiManager, ChunkPos pos, CompoundTag tag) {
+    private static void taiyitist$loadPersistent(ChunkAccess instance, boolean correct, ServerLevel level, PoiManager poiManager, ChunkPos pos, CompoundTag tag) {
         net.minecraft.nbt.Tag persistentBase = tag.get("ChunkBukkitValues");
         if (persistentBase instanceof CompoundTag) {
             ((CraftPersistentDataContainer) (instance).bridge$persistentDataContainer()).putAll((CompoundTag) persistentBase);
@@ -26,7 +26,7 @@ public class MixinChunkSerializer {
     }
 
     @Inject(method = "write", at = @At("RETURN"))
-    private static void banner$savePersistent(ServerLevel level, ChunkAccess chunkAccess, CallbackInfoReturnable<CompoundTag> cir) {
+    private static void taiyitist$savePersistent(ServerLevel level, ChunkAccess chunkAccess, CallbackInfoReturnable<CompoundTag> cir) {
         var container = (CraftPersistentDataContainer) (chunkAccess).bridge$persistentDataContainer();
         if (!container.isEmpty()) {
             cir.getReturnValue().put("ChunkBukkitValues", container.toTagCompound());

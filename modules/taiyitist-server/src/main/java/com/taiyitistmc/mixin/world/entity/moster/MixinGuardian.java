@@ -15,7 +15,7 @@ public class MixinGuardian implements InjectionGuardian {
     public Guardian.GuardianAttackGoal guardianAttackGoal;
 
     @ModifyArg(method = "registerGoals", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/goal/GoalSelector;addGoal(ILnet/minecraft/world/entity/ai/goal/Goal;)V"))
-    private Goal banner$saveGoal(Goal goal) {
+    private Goal taiyitist$saveGoal(Goal goal) {
         if (goal instanceof Guardian.GuardianAttackGoal guardianGoal) {
             this.guardianAttackGoal = guardianGoal;
         }
@@ -28,7 +28,7 @@ public class MixinGuardian implements InjectionGuardian {
     }
 
     @Override
-    public void banner$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
+    public void taiyitist$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
         this.guardianAttackGoal = guardianAttackGoal;
     }
 }

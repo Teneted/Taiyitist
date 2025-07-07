@@ -23,18 +23,18 @@ public class MixinFrostWalkerEnchantment {
     @Redirect(method = "onEntityMoved",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private static boolean banner$cancelUpdate(Level instance, BlockPos pos, BlockState state) {
+    private static boolean taiyitist$cancelUpdate(Level instance, BlockPos pos, BlockState state) {
         return false;
     }
 
     @Redirect(method = "onEntityMoved", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;scheduleTick(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;I)V"))
-    private static void banner$canceltick(Level instance, BlockPos pos, Block block, int i) {}
+    private static void taiyitist$canceltick(Level instance, BlockPos pos, Block block, int i) {}
 
     @Inject(method = "onEntityMoved", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;scheduleTick(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;I)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$tick(LivingEntity living, Level level, BlockPos pos,
+    private static void taiyitist$tick(LivingEntity living, Level level, BlockPos pos,
                                     int levelConflicting, CallbackInfo ci, BlockState blockState,
                                     int i, BlockPos.MutableBlockPos mutableBlockPos, Iterator<BlockPos> var7,
                                     BlockPos blockPos, BlockState blockState2, BlockState blockState3) {

@@ -55,7 +55,7 @@ public class CraftBeehive extends CraftBlockEntityState<BeehiveBlockEntity> impl
     public void setMaxEntities(int max) {
         Preconditions.checkArgument(max > 0, "Max bees must be more than 0");
 
-        getSnapshot().banner$setMaxBees(max);
+        getSnapshot().taiyitist$setMaxBees(max);
     }
 
     @Override

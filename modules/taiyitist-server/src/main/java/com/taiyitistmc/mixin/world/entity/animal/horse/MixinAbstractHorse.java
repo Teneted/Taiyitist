@@ -32,41 +32,41 @@ public abstract class MixinAbstractHorse extends Animal implements InjectionAbst
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(EntityType<? extends AbstractHorse> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<? extends AbstractHorse> type, Level worldIn, CallbackInfo ci) {
         this.maxDomestication = 100;
     }
 
     @Redirect(method = "createInventory", at = @At(value = "NEW", args = "class=net/minecraft/world/SimpleContainer"))
-    private SimpleContainer banner$createInv(int slots) {
+    private SimpleContainer taiyitist$createInv(int slots) {
         SimpleContainer inventory = new SimpleContainer(slots);
         inventory.setOwner((InventoryHolder) this.getBukkitEntity());
         return inventory;
     }
 
     @Inject(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;heal(F)V"))
-    private void banner$healByEating(Player player, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$healByEating(Player player, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.EATING);
     }
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;heal(F)V"))
-    private void banner$healByRegen(CallbackInfo ci) {
+    private void taiyitist$healByRegen(CallbackInfo ci) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.REGEN);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    private void banner$writeTemper(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$writeTemper(CompoundTag compound, CallbackInfo ci) {
         compound.putInt("Bukkit.MaxDomestication", this.maxDomestication);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    private void banner$readTemper(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$readTemper(CompoundTag compound, CallbackInfo ci) {
         if (compound.contains("Bukkit.MaxDomestication")) {
             this.maxDomestication = compound.getInt("Bukkit.MaxDomestication");
         }
     }
 
     @Inject(method = "handleStartJump", cancellable = true, at = @At("HEAD"))
-    private void banner$horseJump(int i, CallbackInfo ci) {
+    private void taiyitist$horseJump(int i, CallbackInfo ci) {
         float power;
         if (i >= 90) {
             power = 1.0F;
@@ -84,7 +84,7 @@ public abstract class MixinAbstractHorse extends Animal implements InjectionAbst
     }
 
     @Override
-    public void banner$setMaxDomestication(int maxDomestication) {
+    public void taiyitist$setMaxDomestication(int maxDomestication) {
         this.maxDomestication = maxDomestication;
     }
 

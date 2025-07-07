@@ -21,7 +21,7 @@ public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity
             getTileEntity().openersCounter.onAPIOpen((net.minecraft.world.level.Level) getWorldHandle(), getPosition(), block);
             getTileEntity().openersCounter.openerAPICountChanged((net.minecraft.world.level.Level) getWorldHandle(), getPosition(), block, openCount, openCount + 1);
         }
-        getTileEntity().openersCounter.banner$setOpened(true);
+        getTileEntity().openersCounter.taiyitist$setOpened(true);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class CraftEnderChest extends CraftBlockEntityState<EnderChestBlockEntity
             getTileEntity().openersCounter.onAPIClose((net.minecraft.world.level.Level) getWorldHandle(), getPosition(), block);
             getTileEntity().openersCounter.openerAPICountChanged((net.minecraft.world.level.Level) getWorldHandle(), getPosition(), block, openCount, 0);
         }
-        getTileEntity().openersCounter.banner$setOpened(false);
+        getTileEntity().openersCounter.taiyitist$setOpened(false);
     }
 }

@@ -6,27 +6,27 @@ public interface InjectionBoat {
         return 0;
     }
 
-    default void banner$setMaxSpeed(double maxSpeed) {
+    default void taiyitist$setMaxSpeed(double maxSpeed) {
     }
 
     default double bridge$occupiedDeceleration() {
         return 0;
     }
 
-    default void banner$setOccupiedDeceleration(double occupiedDeceleration) {
+    default void taiyitist$setOccupiedDeceleration(double occupiedDeceleration) {
     }
 
     default double bridge$unoccupiedDeceleration() {
         return 0;
     }
 
-    default void banner$setUnoccupiedDeceleration(double occupiedDeceleration) {
+    default void taiyitist$setUnoccupiedDeceleration(double occupiedDeceleration) {
     }
 
     default boolean bridge$landBoats() {
         return false;
     }
 
-    default void banner$setLandBoats(boolean landBoats) {
+    default void taiyitist$setLandBoats(boolean landBoats) {
     }
 }

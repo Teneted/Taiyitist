@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinStrider {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Strider;setSuffocating(Z)V"))
-    private void banner$temperatureChange(Strider instance, boolean flag) {
+    private void taiyitist$temperatureChange(Strider instance, boolean flag) {
         if (flag ^ instance.isSuffocating()) {
             if (CraftEventFactory.callStriderTemperatureChangeEvent(instance, flag)) {
                 instance.setSuffocating(flag);

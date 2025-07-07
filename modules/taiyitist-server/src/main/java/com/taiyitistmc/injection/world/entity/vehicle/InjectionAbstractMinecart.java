@@ -8,14 +8,14 @@ public interface InjectionAbstractMinecart {
         return 0;
     }
 
-    default void banner$setMaxSpeed(double maxSpeed) {
+    default void taiyitist$setMaxSpeed(double maxSpeed) {
     }
 
     default boolean bridge$slowWhenEmpty() {
         return false;
     }
 
-    default void banner$setSlowWhenEmpty(boolean slowWhenEmpty) {
+    default void taiyitist$setSlowWhenEmpty(boolean slowWhenEmpty) {
 
     }
 

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinBellBlockEntity {
 
     @Redirect(method = "makeRaidersGlow", at = @At(value = "INVOKE", remap = false, target = "Ljava/util/stream/Stream;forEach(Ljava/util/function/Consumer;)V"))
-    private static void banner$bellResonate(Stream<LivingEntity> instance, Consumer<? super LivingEntity> consumer, Level level, BlockPos pos) {
+    private static void taiyitist$bellResonate(Stream<LivingEntity> instance, Consumer<? super LivingEntity> consumer, Level level, BlockPos pos) {
         var list = instance.map(it -> (org.bukkit.entity.LivingEntity) (it).getBukkitEntity()).toList();
         CraftEventFactory.handleBellResonateEvent(level, pos, list).forEach(consumer);
     }

@@ -218,7 +218,7 @@ public abstract class MixinNaturalSpawner {
     }
 
     @Inject(method = "spawnMobsForChunkGeneration", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ServerLevelAccessor;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"))
-    private static void banner$worldGenSpawn(ServerLevelAccessor levelAccessor, Holder<Biome> biome, ChunkPos chunkPos, RandomSource random, CallbackInfo ci) {
+    private static void taiyitist$worldGenSpawn(ServerLevelAccessor levelAccessor, Holder<Biome> biome, ChunkPos chunkPos, RandomSource random, CallbackInfo ci) {
         levelAccessor.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.CHUNK_GEN);
     }
 }

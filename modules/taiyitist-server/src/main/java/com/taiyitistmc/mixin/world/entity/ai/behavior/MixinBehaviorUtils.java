@@ -18,7 +18,7 @@ public class MixinBehaviorUtils {
 
     @Inject(method = "throwItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;F)V", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static void banner$entityDropItem(LivingEntity entity, ItemStack stack, Vec3 vec3, Vec3 vec32, float yOffset, CallbackInfo ci, double d, ItemEntity itemEntity, Vec3 vec33) {
+    private static void taiyitist$entityDropItem(LivingEntity entity, ItemStack stack, Vec3 vec3, Vec3 vec32, float yOffset, CallbackInfo ci, double d, ItemEntity itemEntity, Vec3 vec33) {
         // CraftBukkit start
         EntityDropItemEvent event = new EntityDropItemEvent(entity.getBukkitEntity(), (Item) itemEntity.getBukkitEntity());
         itemEntity.level().getCraftServer().getPluginManager().callEvent(event);

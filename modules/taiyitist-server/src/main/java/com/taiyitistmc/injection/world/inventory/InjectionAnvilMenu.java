@@ -10,7 +10,7 @@ public interface InjectionAnvilMenu {
         return 0;
     }
 
-    default void banner$setMaximumRepairCost(int maximumRepairCost) {
+    default void taiyitist$setMaximumRepairCost(int maximumRepairCost) {
 
     }
 }

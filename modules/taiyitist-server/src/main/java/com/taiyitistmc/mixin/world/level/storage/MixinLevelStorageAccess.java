@@ -22,19 +22,19 @@ public abstract class MixinLevelStorageAccess implements InjectionLevelStorageAc
     public ResourceKey<LevelStem> dimensionType;
 
     @Unique
-    public void banner$constructor(LevelStorageSource saveFormat, String saveName) {
+    public void taiyitist$constructor(LevelStorageSource saveFormat, String saveName) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(LevelStorageSource saveFormat, String saveName, ResourceKey<LevelStem> dimensionType) {
-        banner$constructor(saveFormat, saveName);
+    public void taiyitist$constructor(LevelStorageSource saveFormat, String saveName, ResourceKey<LevelStem> dimensionType) {
+        taiyitist$constructor(saveFormat, saveName);
         this.dimensionType = dimensionType;
     }
 
 
     @Inject(method = "getDimensionPath", cancellable = true, at = @At("HEAD"))
-    private void banner$useActualType(ResourceKey<Level> dimensionKey, CallbackInfoReturnable<Path> cir) {
+    private void taiyitist$useActualType(ResourceKey<Level> dimensionKey, CallbackInfoReturnable<Path> cir) {
         if (dimensionType == LevelStem.OVERWORLD) {
             cir.setReturnValue(this.levelDirectory.path());
         } else if (dimensionType == LevelStem.NETHER) {

@@ -30,18 +30,18 @@ public abstract class MixinSignBlock implements InjectionSignBlock {
     @Shadow public abstract void openTextEdit(Player player, SignBlockEntity signEntity, boolean isFrontText);
 
     @Unique
-    private AtomicReference<PlayerSignOpenEvent.Cause> banner$signOpenCause =
+    private AtomicReference<PlayerSignOpenEvent.Cause> taiyitist$signOpenCause =
             new AtomicReference<>(PlayerSignOpenEvent.Cause.UNKNOWN);
 
     @Inject(method = "openTextEdit",
             at = @At("HEAD"))
-    private void banner$openSignEvent(Player player, SignBlockEntity signEntity, boolean isFrontText, CallbackInfo ci) {
-        openTextEdit(player, signEntity, isFrontText, banner$signOpenCause.get());
+    private void taiyitist$openSignEvent(Player player, SignBlockEntity signEntity, boolean isFrontText, CallbackInfo ci) {
+        openTextEdit(player, signEntity, isFrontText, taiyitist$signOpenCause.get());
     }
 
     @Override
     public void openTextEdit(Player player, SignBlockEntity signEntity, boolean isFrontText, PlayerSignOpenEvent.Cause cause) {
-        cause = banner$signOpenCause.get();
+        cause = taiyitist$signOpenCause.get();
         // Paper start
         org.bukkit.entity.Player bukkitPlayer = (org.bukkit.entity.Player) player.getBukkitEntity();
         org.bukkit.block.Block bukkitBlock = CraftBlock.at(signEntity.getLevel(), signEntity.getBlockPos());
@@ -58,14 +58,14 @@ public abstract class MixinSignBlock implements InjectionSignBlock {
 
     @Inject(method = "use", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V"))
-    private void banner$setCause(BlockState state, Level level, BlockPos pos, Player player,
+    private void taiyitist$setCause(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         pushOpenSignCause(PlayerSignOpenEvent.Cause.INTERACT);
     }
 
     @Override
     public void pushOpenSignCause(PlayerSignOpenEvent.Cause cause) {
-        banner$signOpenCause.set(cause);
+        taiyitist$signOpenCause.set(cause);
     }
 
 }

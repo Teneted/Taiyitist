@@ -8,7 +8,7 @@ public interface InjectionProjectile {
         return false;
     }
 
-    default void banner$setHitCancelled(boolean cancelled) {
+    default void taiyitist$setHitCancelled(boolean cancelled) {
 
     }
 

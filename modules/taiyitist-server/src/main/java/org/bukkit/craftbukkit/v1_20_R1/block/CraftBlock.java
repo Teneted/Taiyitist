@@ -517,9 +517,9 @@ public class CraftBlock implements Block {
         UseOnContext context = new UseOnContext(world, null, InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(), new BlockHitResult(Vec3.ZERO, direction, getPosition(), false));
 
         // SPIGOT-6895: Call StructureGrowEvent and BlockFertilizeEvent
-        world.banner$setCaptureTreeGeneration(true);
+        world.taiyitist$setCaptureTreeGeneration(true);
         InteractionResult result = BukkitMethodHooks.applyBonemeal(context);
-        world.banner$setCaptureTreeGeneration(false);
+        world.taiyitist$setCaptureTreeGeneration(false);
 
         if (world.bridge$capturedBlockStates().size() > 0) {
             TreeType treeType = BukkitFieldHooks.treeType();

@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinLiquidBlock {
 
     @Unique
-    private transient boolean banner$fizz = true;
+    private transient boolean taiyitist$fizz = true;
 
     @Redirect(method = "shouldSpreadLiquid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public boolean banner$blockForm(Level world, BlockPos pos, BlockState state) {
-        return banner$fizz = CraftEventFactory.handleBlockFormEvent(world, pos, state);
+    public boolean taiyitist$blockForm(Level world, BlockPos pos, BlockState state) {
+        return taiyitist$fizz = CraftEventFactory.handleBlockFormEvent(world, pos, state);
     }
 
     @Inject(method = "fizz", cancellable = true, at = @At("HEAD"))
-    public void banner$fizz(LevelAccessor worldIn, BlockPos pos, CallbackInfo ci) {
-        if (!banner$fizz) {
+    public void taiyitist$fizz(LevelAccessor worldIn, BlockPos pos, CallbackInfo ci) {
+        if (!taiyitist$fizz) {
             ci.cancel();
         }
     }

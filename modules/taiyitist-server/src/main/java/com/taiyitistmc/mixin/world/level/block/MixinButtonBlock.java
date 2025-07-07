@@ -30,7 +30,7 @@ public class MixinButtonBlock {
 
     @Inject(method = "checkPressed", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
-    public void banner$entityInteract(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci,
+    public void taiyitist$entityInteract(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci,
                                         AbstractArrow abstractarrow, boolean flag) {
         boolean flag1 = state.getValue(ButtonBlock.POWERED);
         if (flag1 != flag && flag) {
@@ -46,7 +46,7 @@ public class MixinButtonBlock {
 
     @Inject(method = "checkPressed", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    public void banner$blockRedstone3(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci,
+    public void taiyitist$blockRedstone3(BlockState state, Level worldIn, BlockPos pos, CallbackInfo ci,
                                         AbstractArrow abstractarrow, boolean flag, boolean flag1) {
         Block block = CraftBlock.at(worldIn, pos);
         int old = (flag1) ? 15 : 0;
@@ -61,7 +61,7 @@ public class MixinButtonBlock {
     }
 
     @Inject(method = "use", cancellable = true, at = @At(value = "HEAD"))
-    public void banner$blockRedstone1(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$blockRedstone1(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<Boolean> cir) {
         if (!state.getValue(POWERED)) {
             boolean powered = state.getValue(POWERED);
             Block block = CraftBlock.at(worldIn, pos);

@@ -230,7 +230,7 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
     @Override
     public void setCanMove(boolean move) {
-        getHandle().banner$setCanMove(move);
+        getHandle().taiyitist$setCanMove(move);
     }
     // Paper end
 }

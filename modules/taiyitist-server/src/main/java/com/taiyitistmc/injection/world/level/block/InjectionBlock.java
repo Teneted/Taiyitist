@@ -12,7 +12,7 @@ public interface InjectionBlock {
         return 0;
     }
 
-    default int banner$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
+    default int taiyitist$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
         return 0;
     }
 

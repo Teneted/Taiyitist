@@ -20,11 +20,11 @@ public abstract class MixinLevelChunkSection implements InjectionLevelChunkSecti
 
     };
 
-    public void banner$constructor(PalettedContainer<BlockState> pStates, PalettedContainerRO<Holder<Biome>> pBiomes) {
+    public void taiyitist$constructor(PalettedContainer<BlockState> pStates, PalettedContainerRO<Holder<Biome>> pBiomes) {
         throw new RuntimeException();
     }
 
-    public void banner$constructor(PalettedContainer<BlockState> pStates, PalettedContainer<Holder<Biome>> pBiomes) {
+    public void taiyitist$constructor(PalettedContainer<BlockState> pStates, PalettedContainer<Holder<Biome>> pBiomes) {
         this.states = pStates;
         this.biomes = pBiomes;
         this.recalcBlockCounts();

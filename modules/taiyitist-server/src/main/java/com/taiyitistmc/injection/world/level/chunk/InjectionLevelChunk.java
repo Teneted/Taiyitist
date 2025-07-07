@@ -10,7 +10,7 @@ public interface InjectionLevelChunk {
         return null;
     }
 
-    default ServerLevel banner$r() {
+    default ServerLevel taiyitist$r() {
         return null;
     }
 

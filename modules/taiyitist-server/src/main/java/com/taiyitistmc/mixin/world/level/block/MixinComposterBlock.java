@@ -40,7 +40,7 @@ public class MixinComposterBlock {
 
     @SuppressWarnings({"InvalidMemberReference", "UnresolvedMixinReference", "MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
     @Redirect(method = "getContainer", at = @At(value = "NEW", target = "()Lnet/minecraft/world/level/block/ComposterBlock$EmptyContainer;"))
-    public ComposterBlock.EmptyContainer banner$newEmpty(BlockState blockState, LevelAccessor world, BlockPos blockPos) {
+    public ComposterBlock.EmptyContainer taiyitist$newEmpty(BlockState blockState, LevelAccessor world, BlockPos blockPos) {
         ComposterBlock.EmptyContainer inventory = new ComposterBlock.EmptyContainer();
         inventory.setOwner(new CraftBlockInventoryHolder(world, blockPos, inventory));
         return inventory;
@@ -70,7 +70,7 @@ public class MixinComposterBlock {
     }
 
     @Inject(method = "extractProduce", cancellable = true, at = @At("HEAD"))
-    private static void banner$emptyComposter(Entity entity, BlockState state, Level world, BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
+    private static void taiyitist$emptyComposter(Entity entity, BlockState state, Level world, BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (entity != null && !(entity instanceof Player)) {
             BlockState blockState = empty(entity, state, DummyGeneratorAccess.INSTANCE, pos);
             if (!CraftEventFactory.callEntityChangeBlockEvent(entity, pos, blockState)) {

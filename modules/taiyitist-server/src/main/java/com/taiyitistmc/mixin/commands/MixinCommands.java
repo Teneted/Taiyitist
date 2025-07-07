@@ -37,7 +37,7 @@ public abstract class MixinCommands implements InjectionCommands {
     @Shadow public abstract int performPrefixedCommand(CommandSourceStack source, String command);
 
     @Unique
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         this.dispatcher.setConsumer((context, b, i) -> context.getSource().onCommandComplete(context, b, i));
     }
 
@@ -58,7 +58,7 @@ public abstract class MixinCommands implements InjectionCommands {
             command = command.substring(1);
         }
 
-        ServerCommandEvent event = new ServerCommandEvent(sender.banner$getBukkitSender(), command);
+        ServerCommandEvent event = new ServerCommandEvent(sender.taiyitist$getBukkitSender(), command);
         org.bukkit.Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return 0;
@@ -115,7 +115,7 @@ public abstract class MixinCommands implements InjectionCommands {
         // Remove labels that were removed during the event
         for (String orig : bukkit) {
             if (!event.getCommands().contains(orig)) {
-                ((InjectionCommandNode) rootCommandNode).banner$removeCommand(orig);
+                ((InjectionCommandNode) rootCommandNode).taiyitist$removeCommand(orig);
             }
         }
         player.connection.send(new ClientboundCommandsPacket(rootCommandNode));

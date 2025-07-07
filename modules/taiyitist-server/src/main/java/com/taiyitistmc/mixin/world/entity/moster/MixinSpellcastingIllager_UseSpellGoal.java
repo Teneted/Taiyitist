@@ -17,7 +17,7 @@ public abstract class MixinSpellcastingIllager_UseSpellGoal {
     // @formatter:on
 
     @Inject(method = "tick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/SpellcasterIllager$SpellcasterUseSpellGoal;performSpellCasting()V"))
-    private void banner$castSpell(CallbackInfo ci) {
+    private void taiyitist$castSpell(CallbackInfo ci) {
         if (!CraftEventFactory.handleEntitySpellCastEvent(outerThis, this.getSpell())) {
             ci.cancel();
         }

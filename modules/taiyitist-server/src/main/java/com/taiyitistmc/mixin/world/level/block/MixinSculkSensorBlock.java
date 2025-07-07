@@ -29,7 +29,7 @@ public abstract class MixinSculkSensorBlock extends Block {
     }
 
     @Inject(method = "stepOn", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
-    private void banner$stepOn(Level level, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci) {
+    private void taiyitist$stepOn(Level level, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci) {
         org.bukkit.event.Cancellable cancellable;
         if (entity instanceof Player) {
             cancellable = CraftEventFactory.callPlayerInteractEvent((Player) entity, org.bukkit.event.block.Action.PHYSICAL, pos, null, null, null);
@@ -43,7 +43,7 @@ public abstract class MixinSculkSensorBlock extends Block {
     }
 
     @Inject(method = "deactivate", cancellable = true, at = @At("HEAD"))
-    private static void banner$deactivate(Level level, BlockPos pos, BlockState state, CallbackInfo ci) {
+    private static void taiyitist$deactivate(Level level, BlockPos pos, BlockState state, CallbackInfo ci) {
         BlockRedstoneEvent eventRedstone = new BlockRedstoneEvent(CraftBlock.at(level, pos), state.getValue(SculkSensorBlock.POWER), 0);
         Bukkit.getPluginManager().callEvent(eventRedstone);
 
@@ -56,7 +56,7 @@ public abstract class MixinSculkSensorBlock extends Block {
     @Unique private static int newCurrent;
 
     @Inject(method = "activate", cancellable = true, at = @At("HEAD"))
-    private void banner$activate(Entity entity, Level level, BlockPos blockPos,
+    private void taiyitist$activate(Entity entity, Level level, BlockPos blockPos,
                                         BlockState blockState, int i, int j, CallbackInfo ci) {
         BlockRedstoneEvent eventRedstone = new BlockRedstoneEvent(CraftBlock.at(level, blockPos), blockState.getValue(SculkSensorBlock.POWER), i);
         level.getCraftServer().getPluginManager().callEvent(eventRedstone);
@@ -67,14 +67,14 @@ public abstract class MixinSculkSensorBlock extends Block {
     }
 
     @ModifyVariable(method = "activate", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"), argsOnly = true)
-    private int banner$updateCurrent(int old) {
+    private int taiyitist$updateCurrent(int old) {
         return newCurrent;
     }
 
     @Override
     public int getExpDrop(BlockState blockState, ServerLevel world, BlockPos blockPos, ItemStack itemStack, boolean flag) {
         if (flag) {
-            return this.banner$tryDropExperience(world, blockPos, itemStack, ConstantInt.of(5));
+            return this.taiyitist$tryDropExperience(world, blockPos, itemStack, ConstantInt.of(5));
         }
         return 0;
     }

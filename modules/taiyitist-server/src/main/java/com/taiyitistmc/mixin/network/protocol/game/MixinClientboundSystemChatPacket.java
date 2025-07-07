@@ -14,18 +14,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinClientboundSystemChatPacket {
 
     @Unique
-    public void banner$constructor(Component content, boolean overlay) {
+    public void taiyitist$constructor(Component content, boolean overlay) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(String content, boolean overlay) {
-        banner$constructor(Component.Serializer.fromJson(content), overlay);
+    public void taiyitist$constructor(String content, boolean overlay) {
+        taiyitist$constructor(Component.Serializer.fromJson(content), overlay);
     }
 
     @Unique
-    public void banner$constructor(BaseComponent[] content, boolean overlay) {
-        banner$constructor(ComponentSerializer.toString(content), overlay);
+    public void taiyitist$constructor(BaseComponent[] content, boolean overlay) {
+        taiyitist$constructor(ComponentSerializer.toString(content), overlay);
     }
 
     @Inject(method = "<init>(Lnet/minecraft/network/chat/Component;Z)V", at = @At("RETURN"))

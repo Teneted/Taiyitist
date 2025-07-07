@@ -110,7 +110,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
     @Redirect(method = "<init>(Lnet/minecraft/nbt/CompoundTag;)V",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/nbt/CompoundTag;getCompound(Ljava/lang/String;)Lnet/minecraft/nbt/CompoundTag;"))
-    private CompoundTag banner$markAsCopy(CompoundTag instance, String key) {
+    private CompoundTag taiyitist$markAsCopy(CompoundTag instance, String key) {
         // CraftBukkit start - make defensive copy as this data may be coming from the save thread
         return instance.getCompound(key).copy();
         // CraftBukkit end
@@ -127,7 +127,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
     }
 
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
-    public void banner$callPlayerItemDamageEvent(int i, RandomSource random, ServerPlayer entityplayer, CallbackInfoReturnable<Boolean> ci) {
+    public void taiyitist$callPlayerItemDamageEvent(int i, RandomSource random, ServerPlayer entityplayer, CallbackInfoReturnable<Boolean> ci) {
         if (!((ItemStack)(Object)this).isDamageableItem()) {
             ci.setReturnValue(false);
             return;
@@ -162,7 +162,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
     }
 
     @Inject(method = "hurtAndBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private <T extends LivingEntity> void banner$itemBreak(int amount, T entityIn, Consumer<T> onBroken, CallbackInfo ci) {
+    private <T extends LivingEntity> void taiyitist$itemBreak(int amount, T entityIn, Consumer<T> onBroken, CallbackInfo ci) {
         if (this.count == 1 && entityIn instanceof Player) {
             CraftEventFactory.callPlayerItemBreakEvent(((Player) entityIn), (ItemStack) (Object) this);
         }
@@ -196,7 +196,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
     }
 
     @Inject(method = "setRepairCost", at = @At("HEAD"), cancellable = true)
-    private void banner$handleCost(int cost, CallbackInfo ci) {
+    private void taiyitist$handleCost(int cost, CallbackInfo ci) {
         // CraftBukkit start - remove RepairCost tag when 0 (SPIGOT-3945)
         if (cost == 0) {
             this.removeTagKey("RepairCost");
@@ -231,23 +231,23 @@ public abstract class MixinItemStack implements InjectionItemStack {
             int oldCount = this.getCount();
             ServerLevel world = (ServerLevel) context.getLevel();
             if (!(item instanceof BucketItem || item instanceof SolidBucketItem)) { // if not bucket
-                world.banner$setCaptureBlockStates(true);
+                world.taiyitist$setCaptureBlockStates(true);
                 // special case bonemeal
                 if (item == Items.BONE_MEAL) {
-                    world.banner$setCaptureTreeGeneration(true);
+                    world.taiyitist$setCaptureTreeGeneration(true);
                 }
             }
             InteractionResult interactionResult;
             try {
                 interactionResult = item.useOn(context);
             } finally {
-                world.banner$setCaptureBlockStates(false);
+                world.taiyitist$setCaptureBlockStates(false);
             }
             CompoundTag newData = this.getTagClone();
             int newCount = this.getCount();
             this.setCount(oldCount);
             if (interactionResult.consumesAction() && world.bridge$captureTreeGeneration() && !world.bridge$capturedBlockStates().isEmpty()) {
-                world.banner$setCaptureTreeGeneration(false);
+                world.taiyitist$setCaptureTreeGeneration(false);
                 Location location = CraftLocation.toBukkit(blockPos, world.getWorld());
                 TreeType treeType = BukkitFieldHooks.treeType();
                 BukkitFieldHooks.setTreeType(null);
@@ -278,7 +278,7 @@ public abstract class MixinItemStack implements InjectionItemStack {
                 BukkitFieldHooks.setOpenSign(null); // SPIGOT-6758 - Reset on early return // Banner - cancel
                 return interactionResult;
             }
-            world.banner$setCaptureTreeGeneration(false);
+            world.taiyitist$setCaptureTreeGeneration(false);
             if (player != null && interactionResult.shouldAwardStats()) {
                 InteractionHand bannerHand = context.getHand(); // Banner
                 org.bukkit.event.block.BlockPlaceEvent placeEvent = null;
@@ -294,11 +294,11 @@ public abstract class MixinItemStack implements InjectionItemStack {
                     // PAIL: Remove this when MC-99075 fixed
                     placeEvent.getPlayer().updateInventory();
                     // revert back all captured blocks
-                    world.banner$setPreventPoiUpdated(true); // CraftBukkit - SPIGOT-5710
+                    world.taiyitist$setPreventPoiUpdated(true); // CraftBukkit - SPIGOT-5710
                     for (org.bukkit.block.BlockState blockstate : blocks) {
                         blockstate.update(true, false);
                     }
-                    world.banner$setPreventPoiUpdated(false);
+                    world.taiyitist$setPreventPoiUpdated(false);
 
                     // Brute force all possible updates
                     BlockPos placedPos = ((CraftBlock) placeEvent.getBlock()).getPosition();

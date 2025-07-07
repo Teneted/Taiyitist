@@ -24,7 +24,7 @@ public class CraftShulkerBullet extends AbstractProjectile implements ShulkerBul
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().banner$setProjectileSource(shooter);
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override

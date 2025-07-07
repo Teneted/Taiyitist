@@ -18,7 +18,7 @@ public class MixinDedicatedServerProperties {
     public long maxTickTime;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$resetMaxTickTime(Properties properties, CallbackInfo ci) {
+    private void taiyitist$resetMaxTickTime(Properties properties, CallbackInfo ci) {
         this.maxTickTime = -1;
     }
 }

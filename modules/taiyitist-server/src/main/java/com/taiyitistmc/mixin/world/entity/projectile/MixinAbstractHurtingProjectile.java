@@ -35,34 +35,34 @@ public abstract class MixinAbstractHurtingProjectile extends Projectile implemen
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType<?> entityType, Level level, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<?> entityType, Level level, CallbackInfo ci) {
         this.bukkitYield = 1;
         this.isIncendiary = true;
     }
 
     @Override
     public void setDirection(double d0, double d1, double d2) {
-        double banner$d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+        double taiyitist$d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
 
-        this.xPower = d0 / banner$d3 * 0.1D;
-        this.yPower = d1 / banner$d3 * 0.1D;
-        this.zPower = d2 / banner$d3 * 0.1D;
+        this.xPower = d0 / taiyitist$d3 * 0.1D;
+        this.yPower = d1 / taiyitist$d3 * 0.1D;
+        this.zPower = d2 / taiyitist$d3 * 0.1D;
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/AbstractHurtingProjectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
-    private void banner$preOnHit(AbstractHurtingProjectile abstractHurtingProjectile, HitResult hitResult) {
+    private void taiyitist$preOnHit(AbstractHurtingProjectile abstractHurtingProjectile, HitResult hitResult) {
         this.preOnHit(hitResult);
     }
 
     @Inject(method = "tick", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/projectile/AbstractHurtingProjectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
-    private void banner$projectileHit(CallbackInfo ci, Entity entity, HitResult rayTraceResult) {
+    private void taiyitist$projectileHit(CallbackInfo ci, Entity entity, HitResult rayTraceResult) {
         if (this.isRemoved()) {
             CraftEventFactory.callProjectileHitEvent((AbstractHurtingProjectile) (Object) this, rayTraceResult);
         }
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getLookAngle()Lnet/minecraft/world/phys/Vec3;"))
-    private void banner$nonLivingAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$nonLivingAttack(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (CraftEventFactory.handleNonLivingEntityDamageEvent((AbstractHurtingProjectile) (Object) this, source, amount, false)) {
             cir.setReturnValue(false);
         }
@@ -79,12 +79,12 @@ public abstract class MixinAbstractHurtingProjectile extends Projectile implemen
     }
 
     @Override
-    public void banner$setBukkitYield(float yield) {
+    public void taiyitist$setBukkitYield(float yield) {
         bukkitYield = yield;
     }
 
     @Override
-    public void banner$setIsIncendiary(boolean incendiary) {
+    public void taiyitist$setIsIncendiary(boolean incendiary) {
         isIncendiary = incendiary;
     }
 }

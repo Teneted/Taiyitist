@@ -25,14 +25,14 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 
 public class BukkitSnapshotCaptures {
 
-    private static boolean banner$stopGlide = false;
+    private static boolean taiyitist$stopGlide = false;
 
-    public static void capturebanner$stopGlide(boolean f) {
-        banner$stopGlide = f;
+    public static void capturetaiyitist$stopGlide(boolean f) {
+        taiyitist$stopGlide = f;
     }
 
-    public static boolean banner$stopGlide() {
-        return banner$stopGlide;
+    public static boolean taiyitist$stopGlide() {
+        return taiyitist$stopGlide;
     }
 
     private static Vec3 positionImpl;
@@ -189,17 +189,17 @@ public class BukkitSnapshotCaptures {
         }
     }
 
-    private static AbstractContainerMenu banner$capturedContainer;
+    private static AbstractContainerMenu taiyitist$capturedContainer;
 
     public static void captureWorkbenchContainer(AbstractContainerMenu container) {
-        banner$capturedContainer = container;
+        taiyitist$capturedContainer = container;
     }
 
     public static AbstractContainerMenu getWorkbenchContainer() {
         try {
-            return banner$capturedContainer;
+            return taiyitist$capturedContainer;
         } finally {
-            banner$capturedContainer = null;
+            taiyitist$capturedContainer = null;
         }
     }
 

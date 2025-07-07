@@ -33,7 +33,7 @@ public abstract class MixinVillager extends AbstractVillager {
     @Shadow @Final private static Logger LOGGER;
 
     @Unique
-    private AtomicReference<DamageSource> banner$damageSource = new AtomicReference<>();
+    private AtomicReference<DamageSource> taiyitist$damageSource = new AtomicReference<>();
     public MixinVillager(EntityType<? extends AbstractVillager> entityType, Level level) {
         super(entityType, level);
     }
@@ -41,11 +41,11 @@ public abstract class MixinVillager extends AbstractVillager {
     @Redirect(method = "thunderHit", at = @At(value = "INVOKE",
             target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
             remap = false))
-    private void banner$moveDown(Logger instance, String s, Object o1, Object o2) { }
+    private void taiyitist$moveDown(Logger instance, String s, Object o1, Object o2) { }
 
     @Inject(method = "thunderHit", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/monster/Witch;moveTo(DDDFF)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$fireZapEvent(ServerLevel level,
+    private void taiyitist$fireZapEvent(ServerLevel level,
                                      LightningBolt lightning,
                                      CallbackInfo ci, Witch witch) {
         // Paper start
@@ -56,12 +56,12 @@ public abstract class MixinVillager extends AbstractVillager {
     }
 
     @Inject(method = "customServerAiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/npc/Villager;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private void banner$reason(CallbackInfo ci) {
+    private void taiyitist$reason(CallbackInfo ci) {
         pushEffectCause(EntityPotionEffectEvent.Cause.VILLAGER_TRADE);
     }
 
     @Redirect(method = "restock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffer;resetUses()V"))
-    private void banner$restock(MerchantOffer instance) {
+    private void taiyitist$restock(MerchantOffer instance) {
         VillagerReplenishTradeEvent event = new VillagerReplenishTradeEvent((Villager) this.getBukkitEntity(), instance.asBukkit());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -70,7 +70,7 @@ public abstract class MixinVillager extends AbstractVillager {
     }
 
     @Redirect(method = "catchUpDemand", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffer;resetUses()V"))
-    private void banner$replenish(MerchantOffer instance) {
+    private void taiyitist$replenish(MerchantOffer instance) {
         VillagerReplenishTradeEvent event = new VillagerReplenishTradeEvent((Villager) this.getBukkitEntity(), instance.asBukkit());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -79,7 +79,7 @@ public abstract class MixinVillager extends AbstractVillager {
     }
 
     @Inject(method = "thunderHit", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$transformWitch(ServerLevel serverWorld, LightningBolt lightningBolt, CallbackInfo ci, Witch witchEntity) {
+    private void taiyitist$transformWitch(ServerLevel serverWorld, LightningBolt lightningBolt, CallbackInfo ci, Witch witchEntity) {
         if (CraftEventFactory.callEntityTransformEvent((net.minecraft.world.entity.npc.Villager) (Object) this, witchEntity, EntityTransformEvent.TransformReason.LIGHTNING).isCancelled()) {
             ci.cancel();
         } else {
@@ -88,23 +88,23 @@ public abstract class MixinVillager extends AbstractVillager {
     }
 
     @Inject(method = "spawnGolemIfNeeded", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/SpawnUtil;trySpawnMob(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;IIILnet/minecraft/util/SpawnUtil$Strategy;)Ljava/util/Optional;"))
-    private void banner$ironGolemReason(ServerLevel world, long p_35399_, int p_35400_, CallbackInfo ci) {
+    private void taiyitist$ironGolemReason(ServerLevel world, long p_35399_, int p_35400_, CallbackInfo ci) {
         world.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.VILLAGE_DEFENSE);
     }
 
     @Inject(method = "spawnGolemIfNeeded", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/util/SpawnUtil;trySpawnMob(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;IIILnet/minecraft/util/SpawnUtil$Strategy;)Ljava/util/Optional;"))
-    private void banner$ironGolemReasonReset(ServerLevel world, long p_35399_, int p_35400_, CallbackInfo ci) {
+    private void taiyitist$ironGolemReasonReset(ServerLevel world, long p_35399_, int p_35400_, CallbackInfo ci) {
         world.pushAddEntityReason(null);
     }
 
     @Inject(method = "die", at = @At("HEAD"))
-    private void banner$getSource(DamageSource damageSource, CallbackInfo ci) {
-        banner$damageSource.set(damageSource);
+    private void taiyitist$getSource(DamageSource damageSource, CallbackInfo ci) {
+        taiyitist$damageSource.set(damageSource);
     }
 
     @Redirect(method = "die", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
-    private void banner$logVillagerDeaths(Logger instance, String s, Object o1, Object o2) {
+    private void taiyitist$logVillagerDeaths(Logger instance, String s, Object o1, Object o2) {
         if (org.spigotmc.SpigotConfig.logVillagerDeaths)
-            LOGGER.info("Villager {} died, message: '{}'", ((net.minecraft.world.entity.npc.Villager) (Object) this), banner$damageSource.get().getLocalizedDeathMessage(this).getString()); // Spigot
+            LOGGER.info("Villager {} died, message: '{}'", ((net.minecraft.world.entity.npc.Villager) (Object) this), taiyitist$damageSource.get().getLocalizedDeathMessage(this).getString()); // Spigot
     }
 }

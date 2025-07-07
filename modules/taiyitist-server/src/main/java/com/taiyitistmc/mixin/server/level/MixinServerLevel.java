@@ -139,11 +139,11 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     public PrimaryLevelData K;
 
     @Unique
-    private transient boolean banner$force;
+    private transient boolean taiyitist$force;
     @Unique
-    private final AtomicReference<CreatureSpawnEvent.SpawnReason> banner$reason = new AtomicReference<>();
+    private final AtomicReference<CreatureSpawnEvent.SpawnReason> taiyitist$reason = new AtomicReference<>();
     @Unique
-    private final AtomicReference<Boolean> banner$timeSkipCancelled = new AtomicReference<>(false);
+    private final AtomicReference<Boolean> taiyitist$timeSkipCancelled = new AtomicReference<>(false);
     @Unique
     public ResourceKey<LevelStem> typeKey;
 
@@ -152,16 +152,16 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Unique
-    public void banner$constructor(MinecraftServer minecraftServer, Executor backgroundExecutor, LevelStorageSource.LevelStorageAccess levelSave, ServerLevelData worldInfo, ResourceKey<Level> dimension, LevelStem levelStem, ChunkProgressListener statusListener, boolean isDebug, long seed, List<CustomSpawner> specialSpawners, boolean shouldBeTicking, RandomSequences randomSequences) {
+    public void taiyitist$constructor(MinecraftServer minecraftServer, Executor backgroundExecutor, LevelStorageSource.LevelStorageAccess levelSave, ServerLevelData worldInfo, ResourceKey<Level> dimension, LevelStem levelStem, ChunkProgressListener statusListener, boolean isDebug, long seed, List<CustomSpawner> specialSpawners, boolean shouldBeTicking, RandomSequences randomSequences) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(MinecraftServer minecraftServer, Executor backgroundExecutor, LevelStorageSource.LevelStorageAccess levelSave, PrimaryLevelData worldInfo, ResourceKey<Level> dimension, LevelStem levelStem, ChunkProgressListener statusListener, boolean isDebug, long seed, List<CustomSpawner> specialSpawners, boolean shouldBeTicking, RandomSequences randomSequences, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider) {
-        banner$constructor(minecraftServer, backgroundExecutor, levelSave, worldInfo, dimension, levelStem, statusListener, isDebug, seed, specialSpawners, shouldBeTicking, randomSequences);
-        this.banner$setGenerator(gen);
-        this.banner$setEnvironment(env);
-        this.banner$setBiomeProvider(biomeProvider);
+    public void taiyitist$constructor(MinecraftServer minecraftServer, Executor backgroundExecutor, LevelStorageSource.LevelStorageAccess levelSave, PrimaryLevelData worldInfo, ResourceKey<Level> dimension, LevelStem levelStem, ChunkProgressListener statusListener, boolean isDebug, long seed, List<CustomSpawner> specialSpawners, boolean shouldBeTicking, RandomSequences randomSequences, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider) {
+        taiyitist$constructor(minecraftServer, backgroundExecutor, levelSave, worldInfo, dimension, levelStem, statusListener, isDebug, seed, specialSpawners, shouldBeTicking, randomSequences);
+        this.taiyitist$setGenerator(gen);
+        this.taiyitist$setEnvironment(env);
+        this.taiyitist$setBiomeProvider(biomeProvider);
         if (gen != null) {
             this.chunkSource.chunkMap.generator = new CustomChunkGenerator((ServerLevel) (Object) this, this.chunkSource.getGenerator(), gen);
         }
@@ -169,8 +169,8 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void banner$initWorldServer(MinecraftServer minecraftServer, Executor executor, LevelStorageSource.LevelStorageAccess levelStorageAccess, ServerLevelData serverLevelData, ResourceKey<Level> resourceKey, LevelStem levelStem, ChunkProgressListener chunkProgressListener, boolean bl, long l, List<CustomSpawner> list, boolean bl2, RandomSequences randomSequences, CallbackInfo ci) {
-        this.banner$setPvpMode(minecraftServer.isPvpAllowed());
+    private void taiyitist$initWorldServer(MinecraftServer minecraftServer, Executor executor, LevelStorageSource.LevelStorageAccess levelStorageAccess, ServerLevelData serverLevelData, ResourceKey<Level> resourceKey, LevelStem levelStem, ChunkProgressListener chunkProgressListener, boolean bl, long l, List<CustomSpawner> list, boolean bl2, RandomSequences randomSequences, CallbackInfo ci) {
+        this.taiyitist$setPvpMode(minecraftServer.isPvpAllowed());
         this.convertable = levelStorageAccess;
         var typeKey = ((InjectionLevelStorageAccess) levelStorageAccess).bridge$getTypeKey();
         if (typeKey != null) {
@@ -195,7 +195,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
             }
         }
         this.uuid = WorldUUID.getUUID(levelStorageAccess.getDimensionPath(this.dimension()).toFile());
-        this.getWorldBorder().banner$setWorld((ServerLevel) (Object) this);
+        this.getWorldBorder().taiyitist$setWorld((ServerLevel) (Object) this);
         if (K != null) {
             K.setWorld((ServerLevel) (Object) this);
         }
@@ -203,24 +203,24 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/players/PlayerList;getViewDistance()I"))
-    private int banner$setViewDistance(PlayerList instance) {
+    private int taiyitist$setViewDistance(PlayerList instance) {
         return this.bridge$spigotConfig().viewDistance;
     }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/players/PlayerList;getSimulationDistance()I"))
-    private int banner$setSimulationDistance(PlayerList instance) {
+    private int taiyitist$setSimulationDistance(PlayerList instance) {
         return this.bridge$spigotConfig().simulationDistance;
     }
 
     @Inject(method = "saveLevelData", at = @At("RETURN"))
-    private void banner$savePdc(CallbackInfo ci) {
+    private void taiyitist$savePdc(CallbackInfo ci) {
         var data = this.getDataStorage().computeIfAbsent(LevelPersistentData::new, () -> new LevelPersistentData(null), "bukkit_pdc");
         data.save(this.getWorld());
     }
 
     @Inject(method = "gameEvent", cancellable = true, at = @At("HEAD"))
-    private void banner$gameEventEvent(GameEvent gameEvent, Vec3 pos, GameEvent.Context context, CallbackInfo ci) {
+    private void taiyitist$gameEventEvent(GameEvent gameEvent, Vec3 pos, GameEvent.Context context, CallbackInfo ci) {
         var entity = context.sourceEntity();
         var i = gameEvent.getNotificationRadius();
         GenericGameEvent event = new GenericGameEvent(org.bukkit.GameEvent.getByKey(CraftNamespacedKey.fromMinecraft(BuiltInRegistries.GAME_EVENT.getKey(gameEvent))), new Location(this.getWorld(), pos.x(), pos.y(), pos.z()), (entity == null) ? null : entity.getBukkitEntity(), i, !Bukkit.isPrimaryThread());
@@ -250,27 +250,27 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "tickNonPassenger", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;tick()V"))
-    private void banner$tickPortal(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$tickPortal(Entity entityIn, CallbackInfo ci) {
         entityIn.postTick();
     }
 
     @Inject(method = "tickPassenger", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;rideTick()V"))
-    private void banner$tickPortalPassenger(Entity ridingEntity, Entity passengerEntity, CallbackInfo ci) {
+    private void taiyitist$tickPortalPassenger(Entity ridingEntity, Entity passengerEntity, CallbackInfo ci) {
         passengerEntity.postTick();
     }
 
     @Inject(method = "tickChunk", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    public void banner$thunder(LevelChunk chunkIn, int randomTickSpeed, CallbackInfo ci) {
+    public void taiyitist$thunder(LevelChunk chunkIn, int randomTickSpeed, CallbackInfo ci) {
         pushAddEntityReason(CreatureSpawnEvent.SpawnReason.LIGHTNING);
     }
 
     @Redirect(method = "tickChunk", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$thunder(ServerLevel serverWorld, Entity entityIn) {
+    private boolean taiyitist$thunder(ServerLevel serverWorld, Entity entityIn) {
         return strikeLightning(entityIn, LightningStrikeEvent.Cause.WEATHER);
     }
 
     @ModifyConstant(method = "tickChunk", constant = @Constant(intValue = 100000))
-    private int banner$configChane(int constant) {
+    private int taiyitist$configChane(int constant) {
         return this.bridge$spigotConfig().thunderChance;
     }
 
@@ -294,7 +294,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "tickChunk", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 0, shift = At.Shift.BEFORE, target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public void banner$snowForm0(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome) {
+    public void taiyitist$snowForm0(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome) {
 
         CraftBlockState craftBlockState = CraftBlockStates.getBlockState((ServerLevel) (Object) this, blockPos2, 3);
         craftBlockState.setData(Blocks.ICE.defaultBlockState());
@@ -308,7 +308,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "tickChunk", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 1, shift = At.Shift.BEFORE, target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public void banner$snowForm1(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome, int k, BlockState blockState, int l, BlockState blockState2) {
+    public void taiyitist$snowForm1(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome, int k, BlockState blockState, int l, BlockState blockState2) {
 
         CraftBlockState craftBlockState = CraftBlockStates.getBlockState((ServerLevel) (Object) this, blockPos, 3);
         craftBlockState.setData(blockState2);
@@ -322,7 +322,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "tickChunk", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 2, shift = At.Shift.BEFORE, target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public void banner$snowForm2(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome) {
+    public void taiyitist$snowForm2(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci, ChunkPos chunkPos, boolean bl, int i, int j, ProfilerFiller profilerFiller, BlockPos blockPos, BlockPos blockPos2, Biome biome) {
 
         CraftBlockState craftBlockState = CraftBlockStates.getBlockState((ServerLevel) (Object) this, blockPos, 3);
         craftBlockState.setData(Blocks.SNOW.defaultBlockState());
@@ -336,14 +336,14 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "save", at = @At(value = "JUMP", ordinal = 0, opcode = Opcodes.IFNULL))
-    private void banner$worldSaveEvent(ProgressListener progress, boolean flush, boolean skipSave, CallbackInfo ci) {
+    private void taiyitist$worldSaveEvent(ProgressListener progress, boolean flush, boolean skipSave, CallbackInfo ci) {
         if (DistValidate.isValid((LevelAccessor) this)) {
             Bukkit.getPluginManager().callEvent(new WorldSaveEvent(getWorld()));
         }
     }
 
     @Inject(method = "save", at = @At("TAIL"))
-    private void banner$saveAllChunks(ProgressListener progress, boolean flush, boolean skipSave, CallbackInfo ci) {
+    private void taiyitist$saveAllChunks(ProgressListener progress, boolean flush, boolean skipSave, CallbackInfo ci) {
         // CraftBukkit start - moved from MinecraftServer.saveAllChunks
         if (this.serverLevelData instanceof PrimaryLevelData worldInfo) {
             worldInfo.setWorldBorder(this.getWorldBorder().createSettings());
@@ -354,7 +354,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "unload", at = @At("HEAD"))
-    public void banner$closeOnChunkUnloading(LevelChunk chunkIn, CallbackInfo ci) {
+    public void taiyitist$closeOnChunkUnloading(LevelChunk chunkIn, CallbackInfo ci) {
         for (BlockEntity tileentity : chunkIn.getBlockEntities().values()) {
             if (tileentity instanceof Container) {
                 for (HumanEntity h : Lists.newArrayList(((Container) tileentity).getViewers())) {
@@ -367,19 +367,19 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Redirect(method = "sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/server/level/ServerPlayer;ZDDDLnet/minecraft/network/protocol/Packet;)Z"))
-    public boolean banner$particleVisible(ServerLevel serverWorld, ServerPlayer player, boolean longDistance, double posX, double posY, double posZ, Packet<?> packet) {
-        return this.sendParticles(player, banner$force, posX, posY, posZ, packet);
+    public boolean taiyitist$particleVisible(ServerLevel serverWorld, ServerPlayer player, boolean longDistance, double posX, double posY, double posZ, Packet<?> packet) {
+        return this.sendParticles(player, taiyitist$force, posX, posY, posZ, packet);
     }
 
     @Override
     public <T extends ParticleOptions> int sendParticles(T type, double posX, double posY, double posZ, int particleCount, double xOffset, double yOffset, double zOffset, double speed, boolean force) {
-        banner$force = force;
+        taiyitist$force = force;
         return this.sendParticles(type, posX, posY, posZ, particleCount, xOffset, yOffset, zOffset, speed);
     }
 
     @Inject(method = "addEntity", cancellable = true, at = @At(value = "HEAD"))
-    private void banner$canAddEntity(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
-        CreatureSpawnEvent.SpawnReason reason = banner$reason.get() == null ? CreatureSpawnEvent.SpawnReason.DEFAULT : banner$reason.get();
+    private void taiyitist$canAddEntity(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
+        CreatureSpawnEvent.SpawnReason reason = taiyitist$reason.get() == null ? CreatureSpawnEvent.SpawnReason.DEFAULT : taiyitist$reason.get();
         if (!BannerConfig.spawnForChunk && reason.equals(SpawnReason.CHUNK_GEN)) {
             cir.setReturnValue(false);
         }
@@ -390,9 +390,9 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "addEntity", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;addNewEntity(Lnet/minecraft/world/level/entity/EntityAccess;)Z"))
-    private void banner$addEntityEvent(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
-        CreatureSpawnEvent.SpawnReason reason = banner$reason.get() == null ? CreatureSpawnEvent.SpawnReason.DEFAULT : banner$reason.get();
-        banner$reason.set(null);
+    private void taiyitist$addEntityEvent(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
+        CreatureSpawnEvent.SpawnReason reason = taiyitist$reason.get() == null ? CreatureSpawnEvent.SpawnReason.DEFAULT : taiyitist$reason.get();
+        taiyitist$reason.set(null);
         if (DistValidate.isValid((LevelAccessor) this) && !CraftEventFactory.doEntityAddEventCalling((ServerLevel) (Object) this, entityIn, reason)) {
             cir.setReturnValue(false);
         }
@@ -426,8 +426,8 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "addEntity", at = @At("RETURN"))
-    public void banner$resetReason(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
-        banner$reason.set(null);
+    public void taiyitist$resetReason(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$reason.set(null);
     }
 
     @Override
@@ -466,7 +466,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     public MapItemSavedData getMapData(String mapName) {
         return BukkitMethodHooks.getServer().overworld().getDataStorage().get((nbt) -> {
             MapItemSavedData newMap = MapItemSavedData.load(nbt);
-            newMap.banner$setId(mapName);
+            newMap.taiyitist$setId(mapName);
             MapInitializeEvent event = new MapInitializeEvent(newMap.bridge$mapView());
             Bukkit.getServer().getPluginManager().callEvent(event);
             return newMap;
@@ -474,23 +474,23 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Inject(method = "setMapData", at = @At("HEAD"))
-    private void banner$mapSetId(String id, MapItemSavedData data, CallbackInfo ci) {
-        data.banner$setId(id);
+    private void taiyitist$mapSetId(String id, MapItemSavedData data, CallbackInfo ci) {
+        data.taiyitist$setId(id);
     }
 
     @Inject(method = "blockUpdated", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;updateNeighborsAt(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V"))
-    private void banner$returnIfPopulate(BlockPos pos, Block block, CallbackInfo ci) {
+    private void taiyitist$returnIfPopulate(BlockPos pos, Block block, CallbackInfo ci) {
         if (bridge$populating()) {
             ci.cancel();
         }
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setDayTime(J)V"))
-    private void banner$timeSkip(ServerLevel world, long time) {
+    private void taiyitist$timeSkip(ServerLevel world, long time) {
         TimeSkipEvent event = new TimeSkipEvent(this.getWorld(), TimeSkipEvent.SkipReason.NIGHT_SKIP, (time - time % 24000L) - this.getDayTime());
         if (this.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
             Bukkit.getPluginManager().callEvent(event);
-            banner$timeSkipCancelled.set(event.isCancelled());
+            taiyitist$timeSkipCancelled.set(event.isCancelled());
             if (!event.isCancelled()) {
                 world.setDayTime(this.getDayTime() + event.getSkipAmount());
             }
@@ -498,20 +498,20 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;wakeUpAllPlayers()V"))
-    private void banner$notWakeIfCancelled(ServerLevel world) {
-        if (!banner$timeSkipCancelled.getAndSet(false)) {
+    private void taiyitist$notWakeIfCancelled(ServerLevel world) {
+        if (!taiyitist$timeSkipCancelled.getAndSet(false)) {
             this.wakeUpAllPlayers();
         }
     }
 
     @ModifyVariable(method = "tickBlock", ordinal = 0, argsOnly = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V"))
-    private BlockPos banner$captureTickingBlock(BlockPos pos) {
+    private BlockPos taiyitist$captureTickingBlock(BlockPos pos) {
         BukkitSnapshotCaptures.captureTickingBlock((ServerLevel) (Object) this, pos);
         return pos;
     }
 
     @ModifyVariable(method = "tickBlock", ordinal = 0, argsOnly = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/block/state/BlockState;tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V"))
-    private BlockPos banner$resetTickingBlock(BlockPos pos) {
+    private BlockPos taiyitist$resetTickingBlock(BlockPos pos) {
         BukkitSnapshotCaptures.resetTickingBlock();
         return pos;
     }
@@ -551,19 +551,19 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     }
 
     @ModifyVariable(method = "tickChunk", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;randomTick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V"))
-    private BlockPos banner$captureRandomTick(BlockPos pos) {
+    private BlockPos taiyitist$captureRandomTick(BlockPos pos) {
         BukkitSnapshotCaptures.captureTickingBlock((ServerLevel) (Object) this, pos);
         return pos;
     }
 
     @ModifyVariable(method = "tickChunk", ordinal = 0, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/block/state/BlockState;randomTick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V"))
-    private BlockPos banner$resetRandomTick(BlockPos pos) {
+    private BlockPos taiyitist$resetRandomTick(BlockPos pos) {
         BukkitSnapshotCaptures.resetTickingBlock();
         return pos;
     }
 
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
-    private void banner$checkSpawnEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$checkSpawnEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (BannerConfig.nospawnEntity.contains(entity.getBukkitEntity().getType().name())) {
             cir.setReturnValue(false);
         }

@@ -55,7 +55,7 @@ public abstract class MixinChunkHolder implements InjectionChunkHolder {
 
     @Inject(method = "blockChanged", cancellable = true,
             at = @At(value = "FIELD", ordinal = 0, target = "Lnet/minecraft/server/level/ChunkHolder;changedBlocksPerSection:[Lit/unimi/dsi/fastutil/shorts/ShortSet;"))
-    private void banner$outOfBound(BlockPos pos, CallbackInfo ci) {
+    private void taiyitist$outOfBound(BlockPos pos, CallbackInfo ci) {
         int i = this.levelHeightAccessor.getSectionIndex(pos.getY());
         if (i < 0 || i >= this.changedBlocksPerSection.length) {
             ci.cancel();
@@ -63,7 +63,7 @@ public abstract class MixinChunkHolder implements InjectionChunkHolder {
     }
 
     @Inject(method = "updateFutures", at = @At(value = "JUMP", opcode = Opcodes.IFEQ, ordinal = 0))
-    private void banner$onChunkUnload(ChunkMap chunkManager, Executor executor, CallbackInfo ci) {
+    private void taiyitist$onChunkUnload(ChunkMap chunkManager, Executor executor, CallbackInfo ci) {
         FullChunkStatus fullChunkStatus = ChunkLevel.fullStatus(this.oldTicketLevel);
         FullChunkStatus fullChunkStatus2 = ChunkLevel.fullStatus(this.ticketLevel);
         if (fullChunkStatus.isOrAfter(FullChunkStatus.FULL) && !fullChunkStatus2.isOrAfter(FullChunkStatus.FULL)) {
@@ -87,7 +87,7 @@ public abstract class MixinChunkHolder implements InjectionChunkHolder {
     }
 
     @Inject(method = "updateFutures", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/level/ChunkHolder$LevelChangeListener;onLevelChange(Lnet/minecraft/world/level/ChunkPos;Ljava/util/function/IntSupplier;ILjava/util/function/IntConsumer;)V"))
-    private void banner$onChunkLoad(ChunkMap chunkManager, Executor executor, CallbackInfo ci) {
+    private void taiyitist$onChunkLoad(ChunkMap chunkManager, Executor executor, CallbackInfo ci) {
         FullChunkStatus fullChunkStatus = ChunkLevel.fullStatus(this.oldTicketLevel);
         FullChunkStatus fullChunkStatus2 = ChunkLevel.fullStatus(this.ticketLevel);
         this.oldTicketLevel = this.ticketLevel;

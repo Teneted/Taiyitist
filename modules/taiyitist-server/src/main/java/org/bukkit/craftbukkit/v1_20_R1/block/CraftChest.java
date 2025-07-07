@@ -62,7 +62,7 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
             getTileEntity().getLevel().blockEvent(getPosition(), block.getBlock(), 1, getTileEntity().openersCounter.getOpenerCount() + 1);
             ChestBlockEntity.playSound(getTileEntity().getLevel(), getPosition(), block, SoundEvents.CHEST_OPEN);
         }
-        getTileEntity().openersCounter.banner$setOpened(true);
+        getTileEntity().openersCounter.taiyitist$setOpened(true);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
             getTileEntity().getLevel().blockEvent(getPosition(), block.getBlock(), 1, 0);
             ChestBlockEntity.playSound(getTileEntity().getLevel(), getPosition(), block, SoundEvents.CHEST_CLOSE);
         }
-        getTileEntity().openersCounter.banner$setOpened(false);
+        getTileEntity().openersCounter.taiyitist$setOpened(false);
     }
 }

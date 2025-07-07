@@ -58,7 +58,7 @@ public abstract class MixinBlock extends BlockBehaviour implements InjectionBloc
     }
 
     @Override
-    public int banner$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
+    public int taiyitist$tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
         return tryDropExperience(level, pos, heldItem, amount);
     }
 
@@ -74,7 +74,7 @@ public abstract class MixinBlock extends BlockBehaviour implements InjectionBloc
     }
 
     @Inject(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
-    private void banner$reason(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
+    private void taiyitist$reason(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
        player.pushExhaustReason(EntityExhaustionEvent.ExhaustionReason.BLOCK_MINED);
     }
 

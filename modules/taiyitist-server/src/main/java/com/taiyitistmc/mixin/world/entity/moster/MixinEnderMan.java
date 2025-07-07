@@ -67,7 +67,7 @@ public abstract class MixinEnderMan extends Monster {
     }
 
     @Inject(method = "isLookingAtMe", at = @At("HEAD"), cancellable = true)
-    private void banner$lookingCheck(Player player, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$lookingCheck(Player player, CallbackInfoReturnable<Boolean> cir) {
         boolean shouldAttack = isLookingAtMe_check(player);
         com.destroystokyo.paper.event.entity.EndermanAttackPlayerEvent event = new com.destroystokyo.paper.event.entity.EndermanAttackPlayerEvent((org.bukkit.entity.Enderman) getBukkitEntity(), (org.bukkit.entity.Player) player.getBukkitEntity());
         event.setCancelled(!shouldAttack);
@@ -98,7 +98,7 @@ public abstract class MixinEnderMan extends Monster {
     public void setTarget(@Nullable LivingEntity entity) {
         this.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
         super.setTarget(entity);
-        if (getBanner$targetSuccess()) {
+        if (gettaiyitist$targetSuccess()) {
             bridge$updateTarget(getTarget());
         }
     }

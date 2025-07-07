@@ -614,11 +614,11 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        world.banner$setCaptureTreeGeneration(true);
-        world.banner$setCaptureBlockStates(true);
+        world.taiyitist$setCaptureTreeGeneration(true);
+        world.taiyitist$setCaptureBlockStates(true);
         boolean grownTree = generateTree(loc, type);
-        world.banner$setCaptureTreeGeneration(false);
-        world.banner$setCaptureBlockStates(false);
+        world.taiyitist$setCaptureTreeGeneration(false);
+        world.taiyitist$setCaptureBlockStates(false);
         if (grownTree) { // Copy block data to delegate
             for (BlockState blockstate : world.bridge$capturedBlockStates().values()) {
                 BlockPos position = ((CraftBlockState) blockstate).getPosition();
@@ -1141,7 +1141,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setPVP(boolean pvp) {
-        world.banner$setPvpMode(pvp);
+        world.taiyitist$setPvpMode(pvp);
     }
 
     public void playEffect(Player player, Effect effect, int data) {
@@ -1305,7 +1305,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setKeepSpawnInMemory(boolean keepLoaded) {
-        world.banner$setKeepSpawnInMemory(keepLoaded);
+        world.taiyitist$setKeepSpawnInMemory(keepLoaded);
         // Grab the worlds spawn chunk
         BlockPos chunkcoordinates = this.world.getSharedSpawnPos();
         if (keepLoaded) {
@@ -1956,7 +1956,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         public LightningStrike strikeLightning(Location loc, boolean isSilent) {
             LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(world);
             lightning.moveTo(loc.getX(), loc.getY(), loc.getZ());
-            lightning.banner$setIsSilent(isSilent);
+            lightning.taiyitist$setIsSilent(isSilent);
             world.strikeLightning(lightning, LightningStrikeEvent.Cause.CUSTOM );
             return (LightningStrike) lightning.getBukkitEntity();
         }
@@ -1966,7 +1966,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
             LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(world);
             lightning.moveTo(loc.getX(), loc.getY(), loc.getZ());
             lightning.visualOnly = true;
-            lightning.banner$setIsSilent(isSilent);
+            lightning.taiyitist$setIsSilent(isSilent);
             world.strikeLightning( lightning, LightningStrikeEvent.Cause.CUSTOM );
             return (LightningStrike) lightning.getBukkitEntity();
         }

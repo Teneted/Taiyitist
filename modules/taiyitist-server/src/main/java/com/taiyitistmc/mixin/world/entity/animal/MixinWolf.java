@@ -27,11 +27,11 @@ public abstract class MixinWolf extends TamableAnimal {
     }
 
     @Redirect(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;setOrderedToSit(Z)V"))
-    private void banner$handledBy(Wolf wolfEntity, boolean fire) {
+    private void taiyitist$handledBy(Wolf wolfEntity, boolean fire) {
     }
 
     @Inject(method = "setTame", at = @At("RETURN"))
-    private void banner$healToMax(boolean tamed, CallbackInfo ci) {
+    private void taiyitist$healToMax(boolean tamed, CallbackInfo ci) {
         if (tamed) {
             this.setHealth(this.getMaxHealth());
         }
@@ -54,17 +54,17 @@ public abstract class MixinWolf extends TamableAnimal {
     // CraftBukkit end
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;heal(F)V"))
-    private void banner$healReason(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$healReason(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         pushHealReason(EntityRegainHealthEvent.RegainReason.EATING);
     }
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Wolf;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$attackReason(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$attackReason(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
     }
 
     @ModifyConstant(method = "setTame", constant = @Constant(floatValue = 20.0F))
-    private float banner$resetHealth(float constant) {
+    private float taiyitist$resetHealth(float constant) {
         return this.getMaxHealth(); // CraftBukkit - 20.0 -> getMaxHealth()
     }
 }

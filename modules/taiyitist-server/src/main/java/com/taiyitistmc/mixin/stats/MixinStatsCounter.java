@@ -19,7 +19,7 @@ public abstract class MixinStatsCounter {
 
     @Inject(method = "increment", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/stats/StatsCounter;setValue(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/stats/Stat;I)V"))
-    public void banner$statsIncl(Player player, Stat<?> stat, int amount, CallbackInfo ci, int i) {
+    public void taiyitist$statsIncl(Player player, Stat<?> stat, int amount, CallbackInfo ci, int i) {
         Cancellable cancellable = CraftEventFactory.handleStatisticsIncrease(player, stat, this.getValue(stat), i);
         if (cancellable != null && cancellable.isCancelled()) {
             ci.cancel();

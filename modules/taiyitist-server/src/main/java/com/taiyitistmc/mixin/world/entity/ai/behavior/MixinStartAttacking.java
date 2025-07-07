@@ -24,7 +24,7 @@ public class MixinStartAttacking {
     @Inject(method = "method_47123", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/ai/behavior/declarative/MemoryAccessor;set(Ljava/lang/Object;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private static <E extends Mob> void banner$targetEvent(Predicate<E> predicate, Function<E, Optional<? extends LivingEntity>> function,
+    private static <E extends Mob> void taiyitist$targetEvent(Predicate<E> predicate, Function<E, Optional<? extends LivingEntity>> function,
                                            MemoryAccessor memoryAccessor, MemoryAccessor memoryAccessor2,
                                            ServerLevel serverLevel, Mob mob, long l, CallbackInfoReturnable<Boolean> cir,
                                            Optional optional, LivingEntity livingEntity) {

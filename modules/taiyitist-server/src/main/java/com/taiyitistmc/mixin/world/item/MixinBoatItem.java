@@ -33,7 +33,7 @@ public abstract class MixinBoatItem extends Item {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/BoatItem;getBoat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/vehicle/Boat;",
             shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$boatEvent(Level level, Player player, InteractionHand usedHand,
+    private void taiyitist$boatEvent(Level level, Player player, InteractionHand usedHand,
                                   CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
                                   ItemStack itemStack, HitResult hitResult) {
         // CraftBukkit start - Boat placement
@@ -49,7 +49,7 @@ public abstract class MixinBoatItem extends Item {
     @Redirect(method = "use",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$cancelAddEntity(Level instance, Entity entity) {
+    private boolean taiyitist$cancelAddEntity(Level instance, Entity entity) {
         return false;
     }
 
@@ -58,7 +58,7 @@ public abstract class MixinBoatItem extends Item {
             target = "Lnet/minecraft/world/level/Level;gameEvent(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/gameevent/GameEvent;Lnet/minecraft/world/phys/Vec3;)V",
             shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$handleBoatEntityAdd(Level level, Player player, InteractionHand usedHand,
+    private void taiyitist$handleBoatEntityAdd(Level level, Player player, InteractionHand usedHand,
                                             CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
                                             ItemStack itemStack, HitResult hitResult, Vec3 vec3, double d,
                                             List<Entity> list, Boat boat) {

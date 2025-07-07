@@ -22,17 +22,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinScheduleCommand {
 
     @Unique
-    private static final AtomicReference<CommandSourceStack> banner$source = new AtomicReference<>();
+    private static final AtomicReference<CommandSourceStack> taiyitist$source = new AtomicReference<>();
 
     @Inject(method = "schedule", at = @At("HEAD"))
-    private static void banner$getSource(CommandSourceStack source, Pair<ResourceLocation, Either<CommandFunction, Collection<CommandFunction>>> function, int time, boolean append, CallbackInfoReturnable<Integer> cir) {
-        banner$source.set(source);
+    private static void taiyitist$getSource(CommandSourceStack source, Pair<ResourceLocation, Either<CommandFunction, Collection<CommandFunction>>> function, int time, boolean append, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(source);
     }
 
     @Redirect(method = "schedule",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/storage/ServerLevelData;getScheduledEvents()Lnet/minecraft/world/level/timers/TimerQueue;"))
-    private static TimerQueue<MinecraftServer> banner$resetTimer(ServerLevelData instance) {
-        return banner$source.get().getLevel().bridge$serverLevelDataCB().overworldData().getScheduledEvents(); // CraftBukkit - SPIGOT-6667: Use world specific function timer;
+    private static TimerQueue<MinecraftServer> taiyitist$resetTimer(ServerLevelData instance) {
+        return taiyitist$source.get().getLevel().bridge$serverLevelDataCB().overworldData().getScheduledEvents(); // CraftBukkit - SPIGOT-6667: Use world specific function timer;
     }
 }

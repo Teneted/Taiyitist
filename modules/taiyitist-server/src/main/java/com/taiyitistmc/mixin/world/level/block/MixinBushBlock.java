@@ -19,7 +19,7 @@ public abstract class MixinBushBlock extends Block{
     }
 
     @Redirect(method = "updateShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;defaultBlockState()Lnet/minecraft/world/level/block/state/BlockState;"))
-    public BlockState banner$blockFade(Block block, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState taiyitist$blockFade(Block block, BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!CraftEventFactory.callBlockPhysicsEvent(worldIn, currentPos).isCancelled()) {
             return block.defaultBlockState();
         } else {

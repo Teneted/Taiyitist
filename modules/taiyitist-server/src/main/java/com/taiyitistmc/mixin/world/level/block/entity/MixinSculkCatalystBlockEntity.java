@@ -28,21 +28,21 @@ public abstract class MixinSculkCatalystBlockEntity extends BlockEntity {
     @Override
     public void setLevel(Level level) {
         super.setLevel(level);
-        ((InjectionCatalystListener) this.catalystListener).banner$setLevel(level);
+        ((InjectionCatalystListener) this.catalystListener).taiyitist$setLevel(level);
     }
 
     @Inject(method = "serverTick", at = @At("HEAD"))
-    private static void banner$overrideSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
+    private static void taiyitist$overrideSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
         CraftEventFactory.sourceBlockOverride = blockEntity.getBlockPos();
     }
 
     @Inject(method = "serverTick", at = @At("RETURN"))
-    private static void banner$resetSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
+    private static void taiyitist$resetSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
         CraftEventFactory.sourceBlockOverride = null;
     }
 
     @Inject(method = "load", at = @At("HEAD"))
-    private void banner$load(CompoundTag compoundTag, CallbackInfo ci) {
+    private void taiyitist$load(CompoundTag compoundTag, CallbackInfo ci) {
         super.load(compoundTag); // CraftBukkit - SPIGOT-7393: Load super Bukkit data
     }
 }

@@ -21,7 +21,7 @@ public class MixinPitcherCropBlock {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z",
                     ordinal = 0))
-    private boolean banner$growEvent(ServerLevel instance, BlockPos pos, BlockState state, int i) {
+    private boolean taiyitist$growEvent(ServerLevel instance, BlockPos pos, BlockState state, int i) {
         return CraftEventFactory.handleBlockGrowEvent(instance, pos, state.setValue(AGE, i), 2);
     }
 }

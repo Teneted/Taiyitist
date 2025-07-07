@@ -31,7 +31,7 @@ public class MixinMapItem {
     }
 
     @Inject(method = "createNewSavedData", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$callMapEvent(Level level, int x, int z, int scale,
+    private static void taiyitist$callMapEvent(Level level, int x, int z, int scale,
                                             boolean trackingPosition, boolean unlimitedTracking,
                                             ResourceKey<Level> dimension, CallbackInfoReturnable<Integer> cir,
                                             MapItemSavedData mapItemSavedData, int i) {

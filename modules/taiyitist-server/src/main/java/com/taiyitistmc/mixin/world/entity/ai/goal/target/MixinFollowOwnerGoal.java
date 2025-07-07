@@ -23,24 +23,24 @@ public class MixinFollowOwnerGoal {
     // @formatter:on
 
     @Unique
-    private transient boolean banner$cancelled;
+    private transient boolean taiyitist$cancelled;
 
     @Redirect(method = "maybeTeleportTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/TamableAnimal;moveTo(DDDFF)V"))
-    public void banner$teleport(TamableAnimal tameableEntity, double x, double y, double z, float yaw, float pitch) {
+    public void taiyitist$teleport(TamableAnimal tameableEntity, double x, double y, double z, float yaw, float pitch) {
         CraftEntity craftEntity = this.tamable.getBukkitEntity();
         Location location = new Location(craftEntity.getWorld(), x, y, z, yaw, pitch);
         EntityTeleportEvent event = new EntityTeleportEvent(craftEntity, craftEntity.getLocation(), location);
         Bukkit.getPluginManager().callEvent(event);
-        if (!(banner$cancelled = event.isCancelled())) {
+        if (!(taiyitist$cancelled = event.isCancelled())) {
             tameableEntity.moveTo(event.getTo().getX(), event.getTo().getY(), event.getTo().getZ(), event.getTo().getYaw(), event.getTo().getPitch());
         }
     }
 
     @Inject(method = "maybeTeleportTo", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/navigation/PathNavigation;stop()V"))
-    public void banner$returnIfFail(int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        if (banner$cancelled) {
+    public void taiyitist$returnIfFail(int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (taiyitist$cancelled) {
             cir.setReturnValue(false);
         }
-        banner$cancelled = false;
+        taiyitist$cancelled = false;
     }
 }

@@ -65,23 +65,23 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     public boolean aware = true; // CraftBukkit
 
     @Unique
-    protected transient boolean banner$targetSuccess = false;
+    protected transient boolean taiyitist$targetSuccess = false;
     @Unique
-    private transient EntityTargetEvent.TargetReason banner$reason;
+    private transient EntityTargetEvent.TargetReason taiyitist$reason;
     @Unique
-    private transient boolean banner$fireEvent;
+    private transient boolean taiyitist$fireEvent;
     @Unique
-    private transient ItemEntity banner$item;
+    private transient ItemEntity taiyitist$item;
     @Unique
-    private transient EntityTransformEvent.TransformReason banner$transform;
+    private transient EntityTransformEvent.TransformReason taiyitist$transform;
 
     protected MixinMob(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
 
     @Inject(method = "setCanPickUpLoot", at = @At("HEAD"))
-    public void banner$setPickupLoot(boolean canPickup, CallbackInfo ci) {
-        super.banner$setBukkitPickUpLoot(canPickup);
+    public void taiyitist$setPickupLoot(boolean canPickup, CallbackInfo ci) {
+        super.taiyitist$setBukkitPickUpLoot(canPickup);
     }
 
     /**
@@ -94,29 +94,29 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(EntityType<? extends Mob> type, net.minecraft.world.level.Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<? extends Mob> type, net.minecraft.world.level.Level worldIn, CallbackInfo ci) {
         this.aware = true;
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("HEAD"))
-    private void banner$setAware(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$setAware(CompoundTag compound, CallbackInfo ci) {
         compound.putBoolean("Bukkit.Aware", this.aware);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
-    private void banner$readAware(CompoundTag compound, CallbackInfo ci) {
+    private void taiyitist$readAware(CompoundTag compound, CallbackInfo ci) {
         if (compound.contains("Bukkit.Aware")) {
             this.aware = compound.getBoolean("Bukkit.Aware");
         }
     }
 
     @Redirect(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;setCanPickUpLoot(Z)V"))
-    public void banner$setIfTrue(Mob mobEntity, boolean canPickup) {
+    public void taiyitist$setIfTrue(Mob mobEntity, boolean canPickup) {
         if (canPickup) mobEntity.setCanPickUpLoot(true);
     }
 
     @Inject(method = "serverAiStep", cancellable = true, at = @At("HEAD"))
-    private void banner$unaware(CallbackInfo ci) {
+    private void taiyitist$unaware(CallbackInfo ci) {
         if (!this.aware) {
             ++this.noActionTime;
             ci.cancel();
@@ -125,8 +125,8 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
 
 
     @Inject(method = "pickUpItem", at = @At("HEAD"))
-    private void banner$captureItemEntity(ItemEntity itemEntity, CallbackInfo ci) {
-        banner$item = itemEntity;
+    private void taiyitist$captureItemEntity(ItemEntity itemEntity, CallbackInfo ci) {
+        taiyitist$item = itemEntity;
     }
 
     /**
@@ -135,12 +135,12 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
      */
     @Overwrite
     public void setTarget(@Nullable LivingEntity livingEntity) {
-        boolean fireEvent = banner$fireEvent;
-        banner$fireEvent = false;
-        EntityTargetEvent.TargetReason reason = banner$reason == null ? EntityTargetEvent.TargetReason.UNKNOWN : banner$reason;
-        banner$reason = null;
+        boolean fireEvent = taiyitist$fireEvent;
+        taiyitist$fireEvent = false;
+        EntityTargetEvent.TargetReason reason = taiyitist$reason == null ? EntityTargetEvent.TargetReason.UNKNOWN : taiyitist$reason;
+        taiyitist$reason = null;
         if (getTarget() == livingEntity) {
-            banner$targetSuccess = false;
+            taiyitist$targetSuccess = false;
             return;
         }
         if (fireEvent) {
@@ -157,7 +157,7 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
             EntityTargetLivingEntityEvent event = new EntityTargetLivingEntityEvent(this.getBukkitEntity(), ctarget, reason);            Bukkit.getPluginManager().callEvent(event);
             level().getCraftServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
-                banner$targetSuccess = false;
+                taiyitist$targetSuccess = false;
                 return;
             }
             if (event.getTarget() != null) {
@@ -167,7 +167,7 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
             }
         }
         this.target = livingEntity;
-        banner$targetSuccess = true;
+        taiyitist$targetSuccess = true;
     }
 
     /**
@@ -176,8 +176,8 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
      */
     @Overwrite
     public ItemStack equipItemIfPossible(ItemStack stack) {
-        ItemEntity itemEntity = banner$item;
-        banner$item = null;
+        ItemEntity itemEntity = taiyitist$item;
+        taiyitist$item = null;
         EquipmentSlot equipmentslottype = getEquipmentSlotForItem(stack);
         ItemStack itemstack = this.getItemBySlot(equipmentslottype);
         boolean flag = this.canReplaceCurrentItem(stack, itemstack);
@@ -195,9 +195,9 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
         if (canPickup) {
             double d0 = this.getEquipmentDropChance(equipmentslottype);
             if (!itemstack.isEmpty() && (double) Math.max(this.random.nextFloat() - 0.1F, 0.0F) < d0) {
-                banner$setForceDrops(true);
+                taiyitist$setForceDrops(true);
                 this.spawnAtLocation(itemstack);
-                banner$setForceDrops(false);
+                taiyitist$setForceDrops(false);
             }
 
             if (equipmentslottype.isArmor() && stack.getCount() > 1) {
@@ -214,7 +214,7 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     }
 
     @Inject(method = "interact", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;dropLeash(ZZ)V"))
-    private void banner$unleash(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$unleash(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (CraftEventFactory.callPlayerUnleashEntityEvent((Mob) (Object) this, player, hand).isCancelled()) {
             ((ServerPlayer) player).connection.send(new ClientboundSetEntityLinkPacket((Mob) (Object) this, this.getLeashHolder()));
             cir.setReturnValue(InteractionResult.PASS);
@@ -222,7 +222,7 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     }
 
     @Inject(method = "checkAndHandleImportantInteractions", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;setLeashedTo(Lnet/minecraft/world/entity/Entity;Z)V"))
-    private void banner$leash(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$leash(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (CraftEventFactory.callPlayerLeashEntityEvent((Mob) (Object) this, player, player, hand).isCancelled()) {
             ((ServerPlayer) player).connection.send(new ClientboundSetEntityLinkPacket((Mob) (Object) this, this.getLeashHolder()));
             cir.setReturnValue(InteractionResult.PASS);
@@ -230,52 +230,52 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     }
 
     @Inject(method = "tickLeash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;dropLeash(ZZ)V"))
-    public void banner$unleash2(CallbackInfo ci) {
+    public void taiyitist$unleash2(CallbackInfo ci) {
         Bukkit.getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), this.isAlive() ?
                 EntityUnleashEvent.UnleashReason.HOLDER_GONE : EntityUnleashEvent.UnleashReason.PLAYER_UNLEASH));
     }
 
     @Inject(method = "dropLeash", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Mob;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    public void banner$leashDropPost(boolean sendPacket, boolean dropLead, CallbackInfo ci) {
-        this.banner$setForceDrops(false);
+    public void taiyitist$leashDropPost(boolean sendPacket, boolean dropLead, CallbackInfo ci) {
+        this.taiyitist$setForceDrops(false);
     }
 
     @Inject(method = "dropLeash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    public void banner$leashDropPre(boolean sendPacket, boolean dropLead, CallbackInfo ci) {
-        this.banner$setForceDrops(true);
+    public void taiyitist$leashDropPre(boolean sendPacket, boolean dropLead, CallbackInfo ci) {
+        this.taiyitist$setForceDrops(true);
     }
 
     @Inject(method = "restoreLeashFromSave", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Mob;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$leashRestorePost(CallbackInfo ci) {
-        this.banner$setForceDrops(false);
+    private void taiyitist$leashRestorePost(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(false);
     }
 
     @Inject(method = "restoreLeashFromSave", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$leashRestorePre(CallbackInfo ci) {
-        this.banner$setForceDrops(true);
+    private void taiyitist$leashRestorePre(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(true);
     }
 
     @Inject(method = "startRiding", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;dropLeash(ZZ)V"))
-    private void banner$unleashRide(Entity entityIn, boolean force, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$unleashRide(Entity entityIn, boolean force, CallbackInfoReturnable<Boolean> cir) {
         Bukkit.getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), EntityUnleashEvent.UnleashReason.UNKNOWN));
     }
 
     @Inject(method = "removeAfterChangingDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;dropLeash(ZZ)V"))
-    private void banner$unleashDead(CallbackInfo ci) {
+    private void taiyitist$unleashDead(CallbackInfo ci) {
         Bukkit.getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), EntityUnleashEvent.UnleashReason.UNKNOWN));
     }
 
     @Inject(method = "convertTo", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"), cancellable = true)
-    private void banner$copySpawn(EntityType<?> entityType, boolean transferInventory, CallbackInfoReturnable<?> cir) {
-        EntityTransformEvent.TransformReason transformReason = banner$transform == null ? EntityTransformEvent.TransformReason.UNKNOWN : banner$transform;
-        banner$transform = null;
+    private void taiyitist$copySpawn(EntityType<?> entityType, boolean transferInventory, CallbackInfoReturnable<?> cir) {
+        EntityTransformEvent.TransformReason transformReason = taiyitist$transform == null ? EntityTransformEvent.TransformReason.UNKNOWN : taiyitist$transform;
+        taiyitist$transform = null;
         if (CraftEventFactory.callEntityTransformEvent((Mob) (Object) this, (Mob)entityType.create(this.level()), transformReason).isCancelled()) {
             cir.setReturnValue(null);
         }
     }
 
     @Redirect(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
-    public void banner$attackCombust(Entity entity, int seconds) {
+    public void taiyitist$attackCombust(Entity entity, int seconds) {
         EntityCombustByEntityEvent combustEvent = new EntityCombustByEntityEvent(this.getBukkitEntity(), entity.getBukkitEntity(), seconds);
         org.bukkit.Bukkit.getPluginManager().callEvent(combustEvent);
         if (!combustEvent.isCancelled()) {
@@ -300,24 +300,24 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
 
     @Override
     public void bridge$pushTransformReason(EntityTransformEvent.TransformReason transformReason) {
-        this.banner$transform = transformReason;
+        this.taiyitist$transform = transformReason;
     }
 
     @Override
     public boolean setTarget(LivingEntity entityliving, EntityTargetEvent.TargetReason reason, boolean fireEvent) {
         bridge$pushGoalTargetReason(reason, fireEvent);
         setTarget(entityliving);
-        return banner$targetSuccess;
+        return taiyitist$targetSuccess;
     }
 
     @Override
     public void bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason reason, boolean fireEvent) {
         if (fireEvent) {
-            this.banner$reason = reason;
+            this.taiyitist$reason = reason;
         } else {
-            this.banner$reason = null;
+            this.taiyitist$reason = null;
         }
-        banner$fireEvent = fireEvent;
+        taiyitist$fireEvent = fireEvent;
     }
 
     @Override
@@ -336,12 +336,12 @@ public abstract class MixinMob extends LivingEntity implements InjectionMob {
     }
 
     @Override
-    public void banner$setAware(boolean aware) {
+    public void taiyitist$setAware(boolean aware) {
         this.aware = aware;
     }
 
     @Override
-    public boolean getBanner$targetSuccess() {
-        return banner$targetSuccess;
+    public boolean gettaiyitist$targetSuccess() {
+        return taiyitist$targetSuccess;
     }
 }

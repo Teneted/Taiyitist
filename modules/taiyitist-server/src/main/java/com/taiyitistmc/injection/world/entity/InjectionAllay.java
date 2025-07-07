@@ -15,7 +15,7 @@ public interface InjectionAllay {
         return false;
     }
 
-    default void banner$setForceDancing(boolean forceDancing) {
+    default void taiyitist$setForceDancing(boolean forceDancing) {
 
     }
 }

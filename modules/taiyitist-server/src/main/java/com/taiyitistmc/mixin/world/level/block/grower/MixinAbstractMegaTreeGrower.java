@@ -23,7 +23,7 @@ public abstract class MixinAbstractMegaTreeGrower extends AbstractTreeGrower {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/core/Holder;value()Ljava/lang/Object;"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$setTreeType(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state,
+    private void taiyitist$setTreeType(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state,
                                     RandomSource random, int branchX, int branchY, CallbackInfoReturnable<Boolean> cir,
                                     ResourceKey resourceKey, Holder<ConfiguredFeature<?, ?>> holder) {
         setTreeType(holder); // CraftBukkit

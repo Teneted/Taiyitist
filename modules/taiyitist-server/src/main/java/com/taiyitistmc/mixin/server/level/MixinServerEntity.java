@@ -90,20 +90,20 @@ public abstract class MixinServerEntity implements InjectionServerEntity {
     @Unique private int lastUpdate, lastPosUpdate, lastMapUpdate;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, CallbackInfo ci) {
+    private void taiyitist$init(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, CallbackInfo ci) {
         trackedPlayers = new HashSet<>();
         lastTick = BukkitFieldHooks.currentTick() - 1;
         lastUpdate = lastPosUpdate = lastMapUpdate = -1;
     }
 
     @Unique
-    public void banner$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer) {
+    public void taiyitist$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer) {
         throw new NullPointerException();
     }
 
     @Unique
-    public void banner$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, Set<ServerPlayerConnection> set) {
-        banner$constructor(serverWorld, entity, updateFrequency, sendVelocityUpdates, packetConsumer);
+    public void taiyitist$constructor(ServerLevel serverWorld, Entity entity, int updateFrequency, boolean sendVelocityUpdates, Consumer<Packet<?>> packetConsumer, Set<ServerPlayerConnection> set) {
+        taiyitist$constructor(serverWorld, entity, updateFrequency, sendVelocityUpdates, packetConsumer);
         this.trackedPlayers = set;
     }
 
@@ -339,7 +339,7 @@ public abstract class MixinServerEntity implements InjectionServerEntity {
     }
 
     @Inject(method = "sendDirtyEntityData", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/level/ServerEntity;broadcastAndSend(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void banner$sendScaledHealth(CallbackInfo ci, SynchedEntityData entitydatamanager, List<SynchedEntityData.DataValue<?>> list, Set<AttributeInstance> set) {
+    private void taiyitist$sendScaledHealth(CallbackInfo ci, SynchedEntityData entitydatamanager, List<SynchedEntityData.DataValue<?>> list, Set<AttributeInstance> set) {
         if (this.entity instanceof ServerPlayer player) {
             player.getBukkitEntity().injectScaledMaxHealth(set, false);
         }

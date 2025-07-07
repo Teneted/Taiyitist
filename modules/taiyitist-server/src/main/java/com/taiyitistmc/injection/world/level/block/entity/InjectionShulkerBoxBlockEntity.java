@@ -9,13 +9,13 @@ public interface InjectionShulkerBoxBlockEntity {
         return null;
     }
 
-    default void banner$setTransaction(List<HumanEntity> transaction) {
+    default void taiyitist$setTransaction(List<HumanEntity> transaction) {
     }
 
     default boolean bridge$opened() {
         return false;
     }
 
-    default void banner$setOpened(boolean opened) {
+    default void taiyitist$setOpened(boolean opened) {
     }
 }

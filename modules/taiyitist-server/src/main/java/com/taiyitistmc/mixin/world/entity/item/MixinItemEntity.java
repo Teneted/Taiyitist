@@ -45,14 +45,14 @@ public abstract class MixinItemEntity extends Entity {
     }
 
     @Inject(method = "merge(Lnet/minecraft/world/entity/item/ItemEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/item/ItemEntity;Lnet/minecraft/world/item/ItemStack;)V", cancellable = true, at = @At("HEAD"))
-    private static void banner$itemMerge(ItemEntity from, ItemStack stack1, ItemEntity to, ItemStack stack2, CallbackInfo ci) {
+    private static void taiyitist$itemMerge(ItemEntity from, ItemStack stack1, ItemEntity to, ItemStack stack2, CallbackInfo ci) {
         if (!CraftEventFactory.callItemMergeEvent(to, from)) {
             ci.cancel();
         }
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;markHurt()V"))
-    private void banner$damageNonLiving(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$damageNonLiving(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (CraftEventFactory.handleNonLivingEntityDamageEvent((ItemEntity) (Object) this, source, amount)) {
             cir.setReturnValue(false);
         }
@@ -60,7 +60,7 @@ public abstract class MixinItemEntity extends Entity {
 
     @Redirect(method = "mergeWithNeighbours", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))
-    private AABB banner$resetMerge(AABB instance, double x, double y, double z) {
+    private AABB taiyitist$resetMerge(AABB instance, double x, double y, double z) {
         // Spigot start
         double radius = level().bridge$spigotConfig().itemMerge;
         return instance.inflate(radius, radius - 0.5D, radius);
@@ -74,7 +74,7 @@ public abstract class MixinItemEntity extends Entity {
             target = "Lnet/minecraft/world/entity/item/ItemEntity;pickupDelay:I"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private void banner$pickUpEvent(Player player, CallbackInfo ci, ItemStack itemStack, Item item, int i) {
+    private void taiyitist$pickUpEvent(Player player, CallbackInfo ci, ItemStack itemStack, Item item, int i) {
         // CraftBukkit start - fire PlayerPickupItemEvent
         int canHold = player.getInventory().canHold(itemStack);
         int remaining = i - canHold;
@@ -142,24 +142,24 @@ public abstract class MixinItemEntity extends Entity {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"),
             cancellable = true)
-    private void banner$checkIfFly(Player player, CallbackInfo ci) {
+    private void taiyitist$checkIfFly(Player player, CallbackInfo ci) {
         if (!flyAtPlayer.get()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "setItem", at = @At("RETURN"))
-    private void banner$markDirty(ItemStack stack, CallbackInfo ci) {
+    private void taiyitist$markDirty(ItemStack stack, CallbackInfo ci) {
         this.getEntityData().markDirty(DATA_ITEM);
     }
 
     @Inject(method = "makeFakeItem", at = @At("RETURN"))
-    private void banner$makeFakeItem(CallbackInfo ci) {
+    private void taiyitist$makeFakeItem(CallbackInfo ci) {
         this.age = this.level().bridge$spigotConfig().itemDespawnRate - 1; // Spigot
     }
 
     @Redirect(method = "merge(Lnet/minecraft/world/entity/item/ItemEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;setItem(Lnet/minecraft/world/item/ItemStack;)V"))
-    private static void banner$setNonEmpty(ItemEntity itemEntity, ItemStack stack) {
+    private static void taiyitist$setNonEmpty(ItemEntity itemEntity, ItemStack stack) {
         if (!stack.isEmpty()) {
             itemEntity.setItem(stack);
         }

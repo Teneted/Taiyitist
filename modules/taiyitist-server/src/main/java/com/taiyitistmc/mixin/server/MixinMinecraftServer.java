@@ -236,7 +236,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$loadOptions(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, ChunkProgressListenerFactory chunkProgressListenerFactory, CallbackInfo ci) {
+    private void taiyitist$loadOptions(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, ChunkProgressListenerFactory chunkProgressListenerFactory, CallbackInfo ci) {
         String[] arguments = ManagementFactory.getRuntimeMXBean().getInputArguments().toArray(new String[0]);
         OptionParser parser = new Main();
         try {
@@ -250,7 +250,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", remap = false, ordinal = 0, shift = At.Shift.AFTER, target = "Lorg/slf4j/Logger;info(Ljava/lang/String;)V"))
-    public void banner$unloadPlugins(CallbackInfo ci) {
+    public void taiyitist$unloadPlugins(CallbackInfo ci) {
         if (this.server != null) {
             this.server.disablePlugins();
         }
@@ -360,7 +360,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "stopServer", at = @At("HEAD"), cancellable = true)
-    private void banner$stop(CallbackInfo ci) {
+    private void taiyitist$stop(CallbackInfo ci) {
         synchronized(stopLock) {
             if (hasStopped) ci.cancel();
             hasStopped = true;
@@ -368,23 +368,23 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;removeAll()V"))
-    private void banner$stopThread(CallbackInfo ci) {
+    private void taiyitist$stopThread(CallbackInfo ci) {
         try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
     }
 
     @Inject(method = "loadLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;prepareLevels(Lnet/minecraft/server/level/progress/ChunkProgressListener;)V",
             shift = At.Shift.AFTER))
-    private void banner$loadLevel(CallbackInfo ci) {
+    private void taiyitist$loadLevel(CallbackInfo ci) {
         if (!BannerConfig.skipOtherWorldPreparing) {
             for (ServerLevel worldserver : ((MinecraftServer)(Object)this).getAllLevels()) {
                 if (worldserver != overworld()) {
-                    if (banner$isNether(worldserver) && isNetherEnabled()) {
-                        banner$prepareWorld(worldserver);
-                    }else if (banner$isEnd(worldserver) && this.server.getAllowEnd()) {
-                        banner$prepareWorld(worldserver);
+                    if (taiyitist$isNether(worldserver) && isNetherEnabled()) {
+                        taiyitist$prepareWorld(worldserver);
+                    }else if (taiyitist$isEnd(worldserver) && this.server.getAllowEnd()) {
+                        taiyitist$prepareWorld(worldserver);
                     }
-                    if (banner$isNotNetherAndEnd(worldserver)) {
-                        banner$prepareWorld(worldserver);
+                    if (taiyitist$isNotNetherAndEnd(worldserver)) {
+                        taiyitist$prepareWorld(worldserver);
                     }
                 }
             }
@@ -392,29 +392,29 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Unique
-    private boolean banner$isNotNetherAndEnd(ServerLevel worldserver) {
-        return !banner$isNether(worldserver) && !banner$isEnd(worldserver);
+    private boolean taiyitist$isNotNetherAndEnd(ServerLevel worldserver) {
+        return !taiyitist$isNether(worldserver) && !taiyitist$isEnd(worldserver);
     }
 
     @Unique
-    private boolean banner$isNether(ServerLevel worldserver) {
+    private boolean taiyitist$isNether(ServerLevel worldserver) {
         return worldserver == this.getLevel(net.minecraft.world.level.Level.NETHER);
     }
 
     @Unique
-    private boolean banner$isEnd(ServerLevel worldserver) {
+    private boolean taiyitist$isEnd(ServerLevel worldserver) {
         return worldserver == this.getLevel(net.minecraft.world.level.Level.END);
     }
 
     @Unique
-    private void banner$prepareWorld(ServerLevel worldserver) {
+    private void taiyitist$prepareWorld(ServerLevel worldserver) {
         this.prepareLevels(worldserver.getChunkSource().chunkMap.progressListener, worldserver);
         worldserver.entityManager.tick(); // SPIGOT-6526: Load pending entities so they are available to the API
         this.server.getPluginManager().callEvent(new WorldLoadEvent(worldserver.getWorld()));
     }
 
     @Inject(method = "loadLevel", at = @At("RETURN"))
-    public void banner$enablePlugins(CallbackInfo ci) {
+    public void taiyitist$enablePlugins(CallbackInfo ci) {
         this.server.enablePlugins(PluginLoadOrder.POSTWORLD);
         this.server.getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
         this.connection.acceptConnections();
@@ -423,22 +423,22 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @Inject(method = "createLevels", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;<init>(Lnet/minecraft/server/MinecraftServer;Ljava/util/concurrent/Executor;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;Lnet/minecraft/world/level/storage/ServerLevelData;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/dimension/LevelStem;Lnet/minecraft/server/level/progress/ChunkProgressListener;ZJLjava/util/List;ZLnet/minecraft/world/RandomSequences;)V",
             ordinal = 0))
-    private void banner$registerEnv(ChunkProgressListener p_240787_1_, CallbackInfo ci) {
+    private void taiyitist$registerEnv(ChunkProgressListener p_240787_1_, CallbackInfo ci) {
         BukkitRegistry.registerEnvironments(this.registryAccess().registryOrThrow(Registries.LEVEL_STEM));
     }
 
     @Inject(method = "createLevels", at = @At(value = "INVOKE", remap = false,
             target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$worldInit(ChunkProgressListener listener, CallbackInfo ci, ServerLevelData serverLevelData,
+    private void taiyitist$worldInit(ChunkProgressListener listener, CallbackInfo ci, ServerLevelData serverLevelData,
                                     boolean bl, Registry registry, WorldOptions worldOptions, long l, long m,
                                     List list, LevelStem levelStem, ServerLevel serverLevel) {
-        banner$initLevel(serverLevel);
+        taiyitist$initLevel(serverLevel);
     }
 
     @Redirect(method = "createLevels",
             at = @At(value = "NEW", args = "class=net/minecraft/server/level/ServerLevel", ordinal = 1))
-    private ServerLevel banner$resetListener(MinecraftServer server, Executor dispatcher,
+    private ServerLevel taiyitist$resetListener(MinecraftServer server, Executor dispatcher,
                                              LevelStorageSource.LevelStorageAccess levelStorageAccess,
                                              ServerLevelData serverLevelData, ResourceKey dimension,
                                              LevelStem levelStem, ChunkProgressListener progressListener,
@@ -453,7 +453,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             at = @At(value = "INVOKE",
                     target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$initWorld(ChunkProgressListener chunkProgressListener, CallbackInfo ci,
+    private void taiyitist$initWorld(ChunkProgressListener chunkProgressListener, CallbackInfo ci,
                                    ServerLevelData serverLevelData, boolean bl, Registry registry,
                                    WorldOptions worldOptions, long l, long m, List list, LevelStem
                                            levelStem, ServerLevel serverLevel, DimensionDataStorage
@@ -461,12 +461,12 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
                                    RandomSequences randomSequences, Iterator var16, Map.Entry entry,
                                    ResourceKey resourceKey, ResourceKey resourceKey2, DerivedLevelData derivedLevelData,
                                    ServerLevel serverLevel2) {
-        banner$initLevel(serverLevel2);
-        banner$initializedLevel(serverLevel2, derivedLevelData, worldData, worldOptions);
+        taiyitist$initLevel(serverLevel2);
+        taiyitist$initializedLevel(serverLevel2, derivedLevelData, worldData, worldOptions);
     }
 
     @Inject(method = "getServerModName", at = @At(value = "HEAD"), remap = false, cancellable = true)
-    private void banner$setServerModName(CallbackInfoReturnable<String> cir) {
+    private void taiyitist$setServerModName(CallbackInfoReturnable<String> cir) {
         if (this.server != null) {
             cir.setReturnValue(server.getName());
         }
@@ -480,7 +480,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Override
-    public void banner$setServer(CraftServer server) {
+    public void taiyitist$setServer(CraftServer server) {
         this.server = server;
     }
 
@@ -506,7 +506,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "setInitialSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerChunkCache;getGenerator()Lnet/minecraft/world/level/chunk/ChunkGenerator;", shift = At.Shift.BEFORE), cancellable = true)
-    private static void banner$spawnInit(ServerLevel level, ServerLevelData levelData, boolean generateBonusChest, boolean debug, CallbackInfo ci) {
+    private static void taiyitist$spawnInit(ServerLevel level, ServerLevelData levelData, boolean generateBonusChest, boolean debug, CallbackInfo ci) {
         // CraftBukkit start
         if (level.bridge$generator() != null) {
             Random rand = new Random(level.getSeed());
@@ -525,14 +525,14 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
 
     @Override
     public void initWorld(ServerLevel serverWorld, ServerLevelData worldInfo, WorldData saveData, WorldOptions worldOptions) {
-        banner$initLevel(serverWorld);
+        taiyitist$initLevel(serverWorld);
         WorldBorder worldborder = serverWorld.getWorldBorder();
         worldborder.applySettings(worldInfo.getWorldBorder());
-        banner$initializedLevel(serverWorld, worldInfo, saveData, worldOptions);
+        taiyitist$initializedLevel(serverWorld, worldInfo, saveData, worldOptions);
     }
 
     @Unique
-    private void banner$initLevel(ServerLevel serverWorld) {
+    private void taiyitist$initLevel(ServerLevel serverWorld) {
         this.server.scoreboardManager = new CraftScoreboardManager((MinecraftServer) (Object) this, serverWorld.getScoreboard());
 
         if (serverWorld.bridge$generator() != null) {
@@ -544,7 +544,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Unique
-    private void banner$initializedLevel(ServerLevel serverWorld, ServerLevelData worldInfo, WorldData saveData, WorldOptions worldOptions) {
+    private void taiyitist$initializedLevel(ServerLevel serverWorld, ServerLevelData worldInfo, WorldData saveData, WorldOptions worldOptions) {
         boolean flag = saveData.isDebugWorld();
 
         if (!worldInfo.isInitialized()) {
@@ -671,24 +671,24 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "haveTime", cancellable = true, at = @At("HEAD"))
-    private void banner$forceAheadOfTime(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$forceAheadOfTime(CallbackInfoReturnable<Boolean> cir) {
         if (this.forceTicks) cir.setReturnValue(true);
     }
 
     @Inject(method = "tickChildren", at = @At("HEAD"))
-    private void banner$processStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$processStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         currentTick = (int) (System.currentTimeMillis() / 50);
         server.getScheduler().mainThreadHeartbeat(this.tickCount);
         this.bridge$drainQueuedTasks();
     }
 
     @Inject(method = "tickServer", at = @At("HEAD"))
-    private void banner$serverTickStartEvent(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$serverTickStartEvent(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper
     }
 
     @Inject(method = "tickServer", at = @At("RETURN"))
-    private void banner$watchdogThreadStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$watchdogThreadStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         org.spigotmc.WatchdogThread.tick(); // Spigot
     }
 
@@ -696,14 +696,14 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V",
                     ordinal = 0))
-    private void banner$mainThreadHeartbeat0(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$mainThreadHeartbeat0(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
     }
 
     @Inject(method = "tickChildren",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/ServerFunctionManager;tick()V"))
-    private void banner$mainThreadHeartbeat1(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$mainThreadHeartbeat1(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
     }
 
@@ -711,7 +711,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V",
                     ordinal = 0))
-    private void banner$mainThreadHeartbeat2(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$mainThreadHeartbeat2(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
     }
 
@@ -719,7 +719,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V",
             ordinal = 1))
-    private void banner$tickEndEvent(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$tickEndEvent(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         // Paper start
         long endTime = System.nanoTime();
         long remaining = (TICK_STATS_SPAN - (endTime - lastServerStatus)) - tickCount;
@@ -728,7 +728,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Inject(method = "tickChildren", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getAllLevels()Ljava/lang/Iterable;"))
-    private void banner$checkHeart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+    private void taiyitist$checkHeart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         // CraftBukkit start
         // Run tasks that are waiting on processing
         while (!processQueue.isEmpty()) {
@@ -750,7 +750,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Async Chat Thread - #%d").build());
 
     @ModifyReturnValue(method = "getChatDecorator", at = @At("RETURN"))
-    private ChatDecorator banner$fireChatEvent(ChatDecorator decorator) {
+    private ChatDecorator taiyitist$fireChatEvent(ChatDecorator decorator) {
         return (entityplayer, ichatbasecomponent) -> {
             // SPIGOT-7127: Console /say and similar
             if (entityplayer == null) {
@@ -772,13 +772,13 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
 
     @Inject(method = "method_29440", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/packs/repository/PackRepository;setSelected(Ljava/util/Collection;)V"))
-    private void banner$syncCommands(Collection collection, MinecraftServer.ReloadableResources reloadableResources,
+    private void taiyitist$syncCommands(Collection collection, MinecraftServer.ReloadableResources reloadableResources,
                                      CallbackInfo ci) {
         this.server.syncCommands(); // SPIGOT-5884: Lost on reload
     }
 
     @ModifyConstant(method = "spin", constant = @Constant(intValue = 8))
-    private static int banner$configurePriority(int constant) {
+    private static int taiyitist$configurePriority(int constant) {
         return BannerConfigUtil.serverThread();
     }
 
@@ -819,7 +819,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Override
-    public void banner$setConsole(ConsoleCommandSender console) {
+    public void taiyitist$setConsole(ConsoleCommandSender console) {
         this.console = console;
     }
 
@@ -843,7 +843,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Override
-    public void banner$setProcessQueue(Queue<Runnable> processQueue) {
+    public void taiyitist$setProcessQueue(Queue<Runnable> processQueue) {
         this.processQueue = processQueue;
     }
 
@@ -868,7 +868,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Override
-    public void banner$setAutosavePeriod(int autosavePeriod) {
+    public void taiyitist$setAutosavePeriod(int autosavePeriod) {
         this.autosavePeriod = autosavePeriod;
     }
 }

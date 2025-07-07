@@ -15,12 +15,12 @@ public class MixinLevelChunk_BoundTickingBlockEntity<T extends BlockEntity>  {
     @Shadow @Final private T blockEntity;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntityTicker;tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/BlockEntity;)V"))
-    private void banner$captureBlockEntity(CallbackInfo ci) {
+    private void taiyitist$captureBlockEntity(CallbackInfo ci) {
         BukkitSnapshotCaptures.captureTickingBlockEntity(this.blockEntity);
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/block/entity/BlockEntityTicker;tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/BlockEntity;)V"))
-    private void banner$resetBlockEntity(CallbackInfo ci) {
+    private void taiyitist$resetBlockEntity(CallbackInfo ci) {
         BukkitSnapshotCaptures.resetTickingBlockEntity();
     }
 

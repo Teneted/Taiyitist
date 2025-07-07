@@ -32,7 +32,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         return 0;
     }
 
-    default boolean banner$initialized() {
+    default boolean taiyitist$initialized() {
         return false;
     }
 
@@ -40,98 +40,98 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         return null;
     }
 
-    default void banner$setLocale(String locale) {
+    default void taiyitist$setLocale(String locale) {
     }
 
     default long bridge$timeOffset() {
         return 0;
     }
 
-    default void banner$setTimeOffset(long timeOffset) {
+    default void taiyitist$setTimeOffset(long timeOffset) {
     }
 
     default boolean bridge$relativeTime() {
         return false;
     }
 
-    default void banner$setRelativeTime(boolean relativeTime) {
+    default void taiyitist$setRelativeTime(boolean relativeTime) {
     }
 
     default Component bridge$listName() {
         return null;
     }
 
-    default void banner$setListName(Component listName) {
+    default void taiyitist$setListName(Component listName) {
     }
 
     default org.bukkit.Location bridge$compassTarget() {
         return null;
     }
 
-    default void banner$setCompassTarget(org.bukkit.Location compassTarget) {
+    default void taiyitist$setCompassTarget(org.bukkit.Location compassTarget) {
     }
 
     default int bridge$newExp(){
         return 0;
     }
 
-    default void banner$setNewExp(int newExp) {
+    default void taiyitist$setNewExp(int newExp) {
     }
 
     default int bridge$newLevel() {
         return 0;
     }
 
-    default void banner$setNewLevel(int newLevel) {
+    default void taiyitist$setNewLevel(int newLevel) {
     }
 
     default int bridge$newTotalExp() {
         return 0;
     }
 
-    default void banner$setNewTotalExp(int newTotalExp) {
+    default void taiyitist$setNewTotalExp(int newTotalExp) {
     }
 
     default boolean bridge$keepLevel() {
         return false;
     }
 
-    default void banner$setKeepLevel(boolean keepLevel) {
+    default void taiyitist$setKeepLevel(boolean keepLevel) {
     }
 
     default double bridge$maxHealthCache() {
         return 0;
     }
 
-    default void banner$setMaxHealthCache(double maxHealthCache) {
+    default void taiyitist$setMaxHealthCache(double maxHealthCache) {
     }
 
     default boolean bridge$joining() {
         return false;
     }
 
-    default void banner$setJoining(boolean joining) {
+    default void taiyitist$setJoining(boolean joining) {
     }
 
     default boolean bridge$sentListPacket() {
         return false;
     }
 
-    default void banner$setSentListPacket(boolean sentListPacket) {
+    default void taiyitist$setSentListPacket(boolean sentListPacket) {
     }
 
     default Integer bridge$clientViewDistance() {
         return 0;
     }
 
-    default void banner$setClientViewDistance(Integer clientViewDistance) {
+    default void taiyitist$setClientViewDistance(Integer clientViewDistance) {
     }
 
     default String bridge$kickLeaveMessage() {
         return null;
     }
 
-    default void banner$setKickLeaveMessage(String kickLeaveMessage) {
+    default void taiyitist$setKickLeaveMessage(String kickLeaveMessage) {
     }
 
     default BlockPos getSpawnPoint(ServerLevel worldserver) {
@@ -142,7 +142,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         return null;
     }
 
-    default void banner$setDisplayName(String displayName) {
+    default void taiyitist$setDisplayName(String displayName) {
     }
 
     default void spawnIn(Level world) {
@@ -200,7 +200,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
 
     }
 
-    default PortalInfo banner$findDimensionEntryPoint(ServerLevel destination) {
+    default PortalInfo taiyitist$findDimensionEntryPoint(ServerLevel destination) {
         return null;
     }
 }

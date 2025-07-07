@@ -66,7 +66,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
 
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("RETURN"))
-    private void banner$init(EntityType<?> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<?> type, Level worldIn, CallbackInfo ci) {
         slowWhenEmpty = true;
         derailedX = 0.5;
         derailedY = 0.5;
@@ -133,20 +133,20 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Unique
-    private transient Location banner$prevLocation;
+    private transient Location taiyitist$prevLocation;
 
     @Decorate(method = "tick", inject = true, at = @At("HEAD"))
-    private void banner$storePreviousLocation() {
-        this.banner$prevLocation = new Location(null, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+    private void taiyitist$storePreviousLocation() {
+        this.taiyitist$prevLocation = new Location(null, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;setRot(FF)V"))
-    private void banner$vehicleUpdateEvent(CallbackInfo ci) {
+    private void taiyitist$vehicleUpdateEvent(CallbackInfo ci) {
         org.bukkit.World bworld = this.level().getWorld();
         Location to = new Location(bworld, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
         Vehicle vehicle = (Vehicle) this.getBukkitEntity();
         Bukkit.getPluginManager().callEvent(new VehicleUpdateEvent(vehicle));
-        Location from = this.banner$prevLocation;
+        Location from = this.taiyitist$prevLocation;
         if (from != null) {
             from.setWorld(bworld);
             if (!from.equals(to)) {
@@ -156,7 +156,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Decorate(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;startRiding(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$ridingCollide(Entity instance, Entity entity) throws Throwable {
+    private boolean taiyitist$ridingCollide(Entity instance, Entity entity) throws Throwable {
         VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
         Bukkit.getPluginManager().callEvent(collisionEvent);
         if (collisionEvent.isCancelled()) {
@@ -166,7 +166,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Decorate(method = "tick", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$pushCollide(Entity instance, Entity entity) throws Throwable {
+    private void taiyitist$pushCollide(Entity instance, Entity entity) throws Throwable {
         if (!this.isPassengerOfSameVehicle(instance)) {
             VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
             Bukkit.getPluginManager().callEvent(collisionEvent);
@@ -178,7 +178,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Decorate(method = "tick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$pushCollide2(Entity instance, Entity entity) throws Throwable {
+    private void taiyitist$pushCollide2(Entity instance, Entity entity) throws Throwable {
         VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), instance.getBukkitEntity());
         Bukkit.getPluginManager().callEvent(collisionEvent);
         if (collisionEvent.isCancelled()) {
@@ -220,12 +220,12 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Redirect(method = "applyNaturalSlowdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;isVehicle()Z"))
-    private boolean banner$slowWhenEmpty(AbstractMinecart abstractMinecartEntity) {
+    private boolean taiyitist$slowWhenEmpty(AbstractMinecart abstractMinecartEntity) {
         return this.isVehicle() || !this.slowWhenEmpty;
     }
 
     @Inject(method = "push", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;hasPassenger(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$vehicleCollide(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$vehicleCollide(Entity entityIn, CallbackInfo ci) {
         if (!this.hasPassenger(entityIn)) {
             VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), entityIn.getBukkitEntity());
             Bukkit.getPluginManager().callEvent(collisionEvent);
@@ -265,7 +265,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Override
-    public void banner$setMaxSpeed(double maxSpeed) {
+    public void taiyitist$setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
@@ -275,7 +275,7 @@ public abstract class MixinAbstractMinecart extends Entity implements InjectionA
     }
 
     @Override
-    public void banner$setSlowWhenEmpty(boolean slowWhenEmpty) {
+    public void taiyitist$setSlowWhenEmpty(boolean slowWhenEmpty) {
         this.slowWhenEmpty = slowWhenEmpty;
     }
 }

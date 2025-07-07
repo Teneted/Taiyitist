@@ -25,13 +25,13 @@ public class MixinDyeItem {
 
     @Redirect(method = "interactLivingEntity", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/animal/Sheep;setColor(Lnet/minecraft/world/item/DyeColor;)V"))
-    private void banner$cancelSetColor(Sheep instance, DyeColor dyeColor) {}
+    private void taiyitist$cancelSetColor(Sheep instance, DyeColor dyeColor) {}
 
     @Inject(method = "interactLivingEntity",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$handleDyeEvent(ItemStack stack, Player player, LivingEntity interactionTarget,
+    private void taiyitist$handleDyeEvent(ItemStack stack, Player player, LivingEntity interactionTarget,
                                        InteractionHand usedHand, CallbackInfoReturnable<InteractionResult> cir,
                                        Sheep sheep) {
         // CraftBukkit start

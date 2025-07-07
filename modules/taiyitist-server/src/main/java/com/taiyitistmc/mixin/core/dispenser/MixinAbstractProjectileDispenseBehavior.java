@@ -64,7 +64,7 @@ public abstract class MixinAbstractProjectileDispenseBehavior {
             }
         }
         projectile.shoot(event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ(), this.getPower(), this.getUncertainty());
-        projectile.banner$setProjectileSource(new CraftBlockProjectileSource((DispenserBlockEntity) isourceblock.getEntity()));
+        projectile.taiyitist$setProjectileSource(new CraftBlockProjectileSource((DispenserBlockEntity) isourceblock.getEntity()));
 
         level.addFreshEntity(projectile);
         //stack.shrink(1);// CraftBukkit - Handled during event processing

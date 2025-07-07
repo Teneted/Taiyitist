@@ -16,7 +16,7 @@ public abstract class MixinHangingEntity extends Entity {
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 100))
-    private int banner$modifyTick(int constant) {
+    private int taiyitist$modifyTick(int constant) {
         return this.level().bridge$spigotConfig().hangingTickFrequency;
     }
 }

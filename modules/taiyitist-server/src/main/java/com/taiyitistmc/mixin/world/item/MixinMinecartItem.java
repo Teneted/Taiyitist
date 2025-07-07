@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class MixinMinecartItem {
 
     @Redirect(method = "useOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$cancelAddEntity(Level instance, Entity entity) {
+    private boolean taiyitist$cancelAddEntity(Level instance, Entity entity) {
         return false;
     }
 
     @Inject(method = "useOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$entityPlace(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir, Level level,
+    private void taiyitist$entityPlace(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir, Level level,
                                     BlockPos blockPos, BlockState blockState,
                                     ItemStack itemStack, RailShape railShape, double d,
                                     AbstractMinecart abstractMinecart) {

@@ -23,7 +23,7 @@ public class MixinTemptGoal {
     @Shadow @Final protected PathfinderMob mob;
 
     @Inject(method = "canUse", at = @At("TAIL"), cancellable = true)
-    private void banner$targetEvent(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$targetEvent(CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start
         if (this.player != null) {
             EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent(this.mob, this.player, EntityTargetEvent.TargetReason.TEMPT);

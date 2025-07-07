@@ -12,6 +12,6 @@ public interface MixinCommandSource extends InjectionCommandSource {
 
     @Unique
     default CommandSender getBukkitSender(CommandSourceStack wrapper) {
-        return this.banner$getBukkitSender(wrapper);
+        return this.taiyitist$getBukkitSender(wrapper);
     }
 }

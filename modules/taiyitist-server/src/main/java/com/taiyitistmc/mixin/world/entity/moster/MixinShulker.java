@@ -82,7 +82,7 @@ public abstract class MixinShulker extends AbstractGolem {
     }
 
     @Inject(method = "hitByShulkerBullet", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$breedCause(CallbackInfo ci) {
+    private void taiyitist$breedCause(CallbackInfo ci) {
          this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.BREEDING);
     }
 }

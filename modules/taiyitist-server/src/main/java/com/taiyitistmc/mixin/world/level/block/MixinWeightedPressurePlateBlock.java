@@ -34,7 +34,7 @@ public abstract class MixinWeightedPressurePlateBlock extends BasePressurePlateB
 
     @Redirect(method = "getSignalStrength", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/WeightedPressurePlateBlock;getEntityCount(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/AABB;Ljava/lang/Class;)I"))
-    public int banner$entityInteract(Level level, AABB aabb, Class<Entity> aClass, Level world, BlockPos pos) {
+    public int taiyitist$entityInteract(Level level, AABB aabb, Class<Entity> aClass, Level world, BlockPos pos) {
         int i = 0;
         for (Entity entity : getEntities(level, aabb, aClass)) {
             org.bukkit.event.Cancellable cancellable;

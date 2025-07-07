@@ -268,7 +268,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(MinecraftServer server, Connection networkManagerIn, ServerPlayer playerIn, CallbackInfo ci) {
+    private void taiyitist$init(MinecraftServer server, Connection networkManagerIn, ServerPlayer playerIn, CallbackInfo ci) {
         allowedPlayerTicks = 1;
         dropCount = 0;
         lastPosX = Double.MAX_VALUE;
@@ -323,7 +323,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
         if (event.isCancelled()) {
             return;
         }
-        player.banner$setKickLeaveMessage(event.getLeaveMessage());
+        player.taiyitist$setKickLeaveMessage(event.getLeaveMessage());
         Component textComponent = CraftChatMessage.fromString(event.getReason(), true)[0];
         this.connection.send(new ClientboundDisconnectPacket(textComponent), PacketSendListener.thenRun(() -> this.connection.disconnect(textComponent)));
         this.onDisconnect(textComponent);
@@ -512,12 +512,12 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleAcceptTeleportPacket",
             at = @At(value = "FIELD", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;awaitingPositionFromClient:Lnet/minecraft/world/phys/Vec3;"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension()Z")))
-    private void banner$updateLoc(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$updateLoc(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
         this.player.serverLevel().getChunkSource().move(this.player);
     }
 
     @Inject(method = "handleAcceptTeleportPacket", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;awaitingTeleport:I"))
-    private void banner$confirm(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$confirm(ServerboundAcceptTeleportationPacket packetIn, CallbackInfo ci) {
         if (this.awaitingPositionFromClient == null) {
             ci.cancel();
         }
@@ -526,12 +526,12 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleRecipeBookChangeSettingsPacket",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;getRecipeBook()Lnet/minecraft/stats/ServerRecipeBook;"))
-    private void banner$fireRecipeEvent(ServerboundRecipeBookChangeSettingsPacket serverboundRecipeBookChangeSettingsPacket, CallbackInfo ci) {
+    private void taiyitist$fireRecipeEvent(ServerboundRecipeBookChangeSettingsPacket serverboundRecipeBookChangeSettingsPacket, CallbackInfo ci) {
         CraftEventFactory.callRecipeBookSettingsEvent(this.player, serverboundRecipeBookChangeSettingsPacket.getBookType(), serverboundRecipeBookChangeSettingsPacket.isOpen(), serverboundRecipeBookChangeSettingsPacket.isFiltering()); // CraftBukkit
     }
 
     @Inject(method = "handleSelectTrade", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/MerchantMenu;setSelectionHint(I)V"))
-    private void banner$tradeSelect(ServerboundSelectTradePacket packet, CallbackInfo ci, int i, MerchantMenu merchantMenu) {
+    private void taiyitist$tradeSelect(ServerboundSelectTradePacket packet, CallbackInfo ci, int i, MerchantMenu merchantMenu) {
         var event = CraftEventFactory.callTradeSelectEvent(this.player, i,  (MerchantMenu) this.player.containerMenu);
         if (event.isCancelled()) {
             this.player.getBukkitEntity().updateInventory();
@@ -540,7 +540,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "handleEditBook", at = @At("HEAD"), cancellable = true)
-    private void banner$editBookSpam(ServerboundEditBookPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$editBookSpam(ServerboundEditBookPacket packetIn, CallbackInfo ci) {
         if (this.lastBookTick == 0) {
             this.lastBookTick = BukkitFieldHooks.currentTick() - 20;
         }
@@ -839,18 +839,18 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Redirect(method = "handlePlayerAction",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayer;setItemInHand(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;)V", ordinal = 0))
-    private void banner$cancelHeldItem0(ServerPlayer instance, InteractionHand hand, ItemStack stack) { }
+    private void taiyitist$cancelHeldItem0(ServerPlayer instance, InteractionHand hand, ItemStack stack) { }
 
     @Redirect(method = "handlePlayerAction",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;setItemInHand(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;)V", ordinal = 1))
-    private void banner$cancelHeldItem1(ServerPlayer instance, InteractionHand hand, ItemStack stack) { }
+    private void taiyitist$cancelHeldItem1(ServerPlayer instance, InteractionHand hand, ItemStack stack) { }
 
     @Inject(method = "handlePlayerAction",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayer;stopUsingItem()V"),
             locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void banner$itemSwapEvent(ServerboundPlayerActionPacket packet, CallbackInfo ci,
+    private void taiyitist$itemSwapEvent(ServerboundPlayerActionPacket packet, CallbackInfo ci,
                                       BlockPos blockPos, ServerboundPlayerActionPacket.Action action,
                                       ItemStack itemStack) {
         // CraftBukkit start - inspiration taken from DispenserRegistry (See SpigotCraft#394)
@@ -877,12 +877,12 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleUseItemOn", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;ackBlockChangesUpTo(I)V"),
             cancellable = true)
-    private void banner$checkImmobile(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkImmobile(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
     }
 
     @Inject(method = "handleUseItemOn", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;serverLevel()Lnet/minecraft/server/level/ServerLevel;", ordinal = 1))
-    private void banner$frozenUseItem(ServerboundUseItemOnPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$frozenUseItem(ServerboundUseItemOnPacket packetIn, CallbackInfo ci) {
         if (!this.checkLimit(packetIn.bridge$timestamp())) {
             ci.cancel();
         }
@@ -891,7 +891,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleUseItemOn",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayerGameMode;useItemOn(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
-    private void banner$setStopUsing(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
+    private void taiyitist$setStopUsing(ServerboundUseItemOnPacket packet, CallbackInfo ci) {
         this.player.stopUsingItem(); // CraftBukkit - SPIGOT-4706
     }
 
@@ -918,7 +918,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleUseItem",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;ackBlockChangesUpTo(I)V"), cancellable = true)
-    private void banner$checkUseItem(ServerboundUseItemPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkUseItem(ServerboundUseItemPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) {
             ci.cancel();
         }
@@ -927,7 +927,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     @Inject(method = "handleUseItem", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayerGameMode;useItem(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$handleInteractEvent(ServerboundUseItemPacket packet, CallbackInfo ci, ServerLevel serverLevel,
+    private void taiyitist$handleInteractEvent(ServerboundUseItemPacket packet, CallbackInfo ci, ServerLevel serverLevel,
                                             InteractionHand interactionHand, ItemStack itemStack) {
         // CraftBukkit start
         // Raytrace to look for 'rogue armswings'
@@ -975,12 +975,12 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "handleResourcePackResponse", at = @At("RETURN"))
-    private void banner$handleResourcePackStatus(ServerboundResourcePackPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$handleResourcePackStatus(ServerboundResourcePackPacket packetIn, CallbackInfo ci) {
         this.cserver.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(this.getCraftPlayer(), PlayerResourcePackStatusEvent.Status.values()[packetIn.action.ordinal()]));
     }
 
     @Inject(method = "onDisconnect", cancellable = true, at = @At("HEAD"))
-    private void banner$returnIfProcessed(Component reason, CallbackInfo ci) {
+    private void taiyitist$returnIfProcessed(Component reason, CallbackInfo ci) {
         if (processedDisconnect) {
             ci.cancel();
         } else {
@@ -989,12 +989,12 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
-    public void banner$captureQuit(PlayerList instance, Component p_240618_, boolean p_240644_) {
+    public void taiyitist$captureQuit(PlayerList instance, Component p_240618_, boolean p_240644_) {
         // do nothing
     }
 
     @Inject(method = "onDisconnect", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/players/PlayerList;remove(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void banner$setQuitMsg(Component message, CallbackInfo ci) {
+    private void taiyitist$setQuitMsg(Component message, CallbackInfo ci) {
         String quitMessage = this.server.getPlayerList().bridge$quiltMsg();
         // Banner start - avoid quilt msg NPE
         if (quitMessage == null) {
@@ -1009,13 +1009,13 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V", cancellable = true, at = @At("HEAD"))
-    private void banner$updateCompassTarget(Packet<?> packetIn, PacketSendListener futureListeners, CallbackInfo ci) {
+    private void taiyitist$updateCompassTarget(Packet<?> packetIn, PacketSendListener futureListeners, CallbackInfo ci) {
         if (packetIn == null || processedDisconnect) {
             ci.cancel();
             return;
         }
         if (packetIn instanceof ClientboundSetDefaultSpawnPositionPacket packet6) {
-             this.player.banner$setCompassTarget(new Location(this.getCraftPlayer().getWorld(), packet6.pos.getX(), packet6.pos.getY(), packet6.pos.getZ()));
+             this.player.taiyitist$setCompassTarget(new Location(this.getCraftPlayer().getWorld(), packet6.pos.getX(), packet6.pos.getY(), packet6.pos.getZ()));
         }
     }
 
@@ -1023,7 +1023,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"),
             cancellable = true)
-    private void banner$checkAnimate(ServerboundSwingPacket packet, CallbackInfo ci) {
+    private void taiyitist$checkAnimate(ServerboundSwingPacket packet, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
     }
 
@@ -1031,7 +1031,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"),
             cancellable = true)
-    private void banner$handleAnimateEvent(ServerboundSwingPacket packet, CallbackInfo ci) {
+    private void taiyitist$handleAnimateEvent(ServerboundSwingPacket packet, CallbackInfo ci) {
         // CraftBukkit start - Raytrace to look for 'rogue armswings'
         float f1 = this.player.getXRot();
         float f2 = this.player.getYRot();
@@ -1165,7 +1165,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "tryHandleChat", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;unpackAndApplyLastSeen(Lnet/minecraft/network/chat/LastSeenMessages$Update;)Ljava/util/Optional;"))
-    private void banner$deadMenTellNoTales(String message, Instant timestamp, LastSeenMessages.Update update, CallbackInfoReturnable<Optional<LastSeenMessages>> cir) {
+    private void taiyitist$deadMenTellNoTales(String message, Instant timestamp, LastSeenMessages.Update update, CallbackInfoReturnable<Optional<LastSeenMessages>> cir) {
         if (this.player.isRemoved()) {
             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.disabled.options").withStyle(ChatFormatting.RED), false));
             cir.setReturnValue(Optional.empty());
@@ -1298,7 +1298,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
         } else {
             this.chat(s, playerchatmessage, true);
         }
-        this.server.getPlayerList().banner$chat(false);
+        this.server.getPlayerList().taiyitist$chat(false);
         this.server.getPlayerList().broadcastChatMessage(playerchatmessage, this.player, ChatType.bind(ChatType.CHAT, this.player));
         this.detectRateSpam(s);
     }
@@ -1328,7 +1328,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "handlePlayerCommand", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"))
-    private void banner$toggleAction(ServerboundPlayerCommandPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$toggleAction(ServerboundPlayerCommandPacket packetIn, CallbackInfo ci) {
         if (this.player.isRemoved()) {
             ci.cancel();
             return;
@@ -1350,7 +1350,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
 
     @Inject(method = "handleContainerClose", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;doCloseContainer()V"))
-    private void banner$invClose(ServerboundContainerClosePacket packetIn, CallbackInfo ci) {
+    private void taiyitist$invClose(ServerboundContainerClosePacket packetIn, CallbackInfo ci) {
         if (this.player.isImmobile()) ci.cancel(); // CraftBukkit
         CraftEventFactory.handleInventoryCloseEvent(this.player);
     }
@@ -1682,7 +1682,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "handleContainerButtonClick", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"))
-    private void banner$noEnchant(ServerboundContainerButtonClickPacket packetIn, CallbackInfo ci) {
+    private void taiyitist$noEnchant(ServerboundContainerButtonClickPacket packetIn, CallbackInfo ci) {
         if (player.isImmobile()) {
             ci.cancel();
         }
@@ -1757,13 +1757,13 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Unique
-    private AtomicReference<PlayerRecipeBookClickEvent> banner$recipeClickEvent = new AtomicReference<>();
+    private AtomicReference<PlayerRecipeBookClickEvent> taiyitist$recipeClickEvent = new AtomicReference<>();
 
     @Inject(method = "handlePlaceRecipe",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/MinecraftServer;getRecipeManager()Lnet/minecraft/world/item/crafting/RecipeManager;"),
             cancellable = true)
-    private void banner$recipeClickEvent(ServerboundPlaceRecipePacket packet, CallbackInfo ci) {
+    private void taiyitist$recipeClickEvent(ServerboundPlaceRecipePacket packet, CallbackInfo ci) {
         // CraftBukkit start - implement PlayerRecipeBookClickEvent
         org.bukkit.inventory.Recipe recipe = this.cserver.getRecipe(CraftNamespacedKey.fromMinecraft(packet.getRecipe()));
         if (recipe == null) {
@@ -1771,19 +1771,19 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
         }
         PlayerRecipeBookClickEvent event =
                 CraftEventFactory.callRecipeBookClickEvent(this.player, recipe, packet.isShiftDown());
-        banner$recipeClickEvent.set(event);
+        taiyitist$recipeClickEvent.set(event);
         // Cast to keyed should be safe as the recipe will never be a MerchantRecipe.
     }
 
     @Redirect(method = "method_17820",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/inventory/RecipeBookMenu;handlePlacement(ZLnet/minecraft/world/item/crafting/Recipe;Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private <C extends Container> void banner$recipeClickEvent0(RecipeBookMenu<C> instance, boolean placeAll, Recipe<?> recipe, ServerPlayer player) {
-      ((RecipeBookMenu<?>) this.player.containerMenu).handlePlacement(banner$recipeClickEvent.get().isShiftClick(), recipe, this.player);
+    private <C extends Container> void taiyitist$recipeClickEvent0(RecipeBookMenu<C> instance, boolean placeAll, Recipe<?> recipe, ServerPlayer player) {
+      ((RecipeBookMenu<?>) this.player.containerMenu).handlePlacement(taiyitist$recipeClickEvent.get().isShiftClick(), recipe, this.player);
     }
 
     @Inject(method = "updateSignText", cancellable = true, at = @At("HEAD"))
-    private void banner$updateSignText(ServerboundSignUpdatePacket packet, List<FilteredText> filteredText, CallbackInfo ci) {
+    private void taiyitist$updateSignText(ServerboundSignUpdatePacket packet, List<FilteredText> filteredText, CallbackInfo ci) {
         if (player.isImmobile()) {
             ci.cancel();
         }
@@ -1813,7 +1813,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     private static final ResourceLocation CUSTOM_UNREGISTER = new ResourceLocation("unregister");
 
     @Inject(method = "handleCustomPayload", at = @At("HEAD"))
-    private void banner$handleCustomPayload(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
+    private void taiyitist$handleCustomPayload(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
         PacketUtils.ensureRunningOnSameThread(packet, (ServerGamePacketListenerImpl) (Object) this, this.player.serverLevel());
         var readerIndex = packet.data.readerIndex();
         var buf = new byte[packet.data.readableBytes()];
@@ -1857,11 +1857,11 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Unique
-    private transient PlayerTeleportEvent.TeleportCause banner$cause;
+    private transient PlayerTeleportEvent.TeleportCause taiyitist$cause;
 
 
     @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at = @At("HEAD"), cancellable = true)
-    private void banner$bukkitLikeTp(double pX, double pY, double pZ, float pYaw, float pPitch, Set<RelativeMovement> set, CallbackInfo ci) {
+    private void taiyitist$bukkitLikeTp(double pX, double pY, double pZ, float pYaw, float pPitch, Set<RelativeMovement> set, CallbackInfo ci) {
         this.teleport(pX, pY, pZ, pYaw, pPitch, PlayerTeleportEvent.TeleportCause.UNKNOWN);
         ci.cancel();
     }
@@ -1873,8 +1873,8 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
 
     @Override
     public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set, PlayerTeleportEvent.TeleportCause cause) {
-        cause = banner$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : banner$cause;
-        banner$cause = null;
+        cause = taiyitist$cause == null ? PlayerTeleportEvent.TeleportCause.UNKNOWN : taiyitist$cause;
+        taiyitist$cause = null;
         org.bukkit.entity.Player player = this.getCraftPlayer();
         Location from = player.getLocation();
 
@@ -1914,7 +1914,7 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
     }
 
     @Inject(method = "teleport(DDDFF)V", at = @At("HEAD"))
-    private void banner$tpBukkit(double d, double e, double f, float g, float h, CallbackInfo ci) {
+    private void taiyitist$tpBukkit(double d, double e, double f, float g, float h, CallbackInfo ci) {
         pushTeleportCause(PlayerTeleportEvent.TeleportCause.UNKNOWN);
     }
 
@@ -1971,6 +1971,6 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
 
     @Override
     public void pushTeleportCause(PlayerTeleportEvent.TeleportCause cause) {
-        banner$cause = cause;
+        taiyitist$cause = cause;
     }
 }

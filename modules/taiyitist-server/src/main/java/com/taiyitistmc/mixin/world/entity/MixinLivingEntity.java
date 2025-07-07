@@ -197,51 +197,51 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
 
     // Banner - add fields
     @Unique
-    private AtomicReference<BlockState> banner$FallState = new AtomicReference<>();
+    private AtomicReference<BlockState> taiyitist$FallState = new AtomicReference<>();
     @Unique
-    private AtomicBoolean banner$silent = new AtomicBoolean(false);
+    private AtomicBoolean taiyitist$silent = new AtomicBoolean(false);
     @Unique
-    private transient EntityPotionEffectEvent.Cause banner$cause;
+    private transient EntityPotionEffectEvent.Cause taiyitist$cause;
     @Unique
     public AtomicInteger invulnerableDurationAtom = new AtomicInteger(20);
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setHealth(F)V"))
-    private void banner$muteHealth(LivingEntity entity, float health) {
+    private void taiyitist$muteHealth(LivingEntity entity, float health) {
         // do nothing
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$init(EntityType<? extends LivingEntity> type, Level worldIn, CallbackInfo ci) {
+    private void taiyitist$init(EntityType<? extends LivingEntity> type, Level worldIn, CallbackInfo ci) {
         this.collides = true;
         this.craftAttributes = new CraftAttributeMap(this.attributes);
         this.entityData.set(DATA_HEALTH_ID, (float) this.getAttributeValue(Attributes.MAX_HEALTH));
     }
 
     @Inject(method = "checkFallDamage", at = @At("HEAD"))
-    private void banner$getFallInfo(double y, boolean onGround, BlockState state, BlockPos pos, CallbackInfo ci) {
-        this.banner$FallState.set(state);
+    private void taiyitist$getFallInfo(double y, boolean onGround, BlockState state, BlockPos pos, CallbackInfo ci) {
+        this.taiyitist$FallState.set(state);
     }
 
     @Redirect(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"))
-    private <T extends ParticleOptions>  int banner$addCheckFall(ServerLevel instance, T type, double posX, double posY, double posZ, int particleCount, double xOffset, double yOffset, double zOffset, double speed) {
+    private <T extends ParticleOptions>  int taiyitist$addCheckFall(ServerLevel instance, T type, double posX, double posY, double posZ, int particleCount, double xOffset, double yOffset, double zOffset, double speed) {
         // CraftBukkit start - visiblity api
-        float banner$f = (float) Mth.ceil(this.fallDistance - 3.0F);
-        double banner$d = Math.min((double)(0.2F + banner$f / 15.0F), 2.5);
-        int banner$i = (int)(150.0 * banner$d);
+        float taiyitist$f = (float) Mth.ceil(this.fallDistance - 3.0F);
+        double taiyitist$d = Math.min((double)(0.2F + taiyitist$f / 15.0F), 2.5);
+        int taiyitist$i = (int)(150.0 * taiyitist$d);
         if (((LivingEntity) (Object) this) instanceof ServerPlayer) {
-            return ((ServerLevel) this.level()).sendParticles((ServerPlayer) (Object) this, new BlockParticleOption(ParticleTypes.BLOCK, banner$FallState.get()), this.getX(), this.getY(), this.getZ(), banner$i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, false);
+            return ((ServerLevel) this.level()).sendParticles((ServerPlayer) (Object) this, new BlockParticleOption(ParticleTypes.BLOCK, taiyitist$FallState.get()), this.getX(), this.getY(), this.getZ(), taiyitist$i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, false);
         } else {
-            return ((ServerLevel) this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, banner$FallState.get()), this.getX(), this.getY(), this.getZ(), banner$i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D);
+            return ((ServerLevel) this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, taiyitist$FallState.get()), this.getX(), this.getY(), this.getZ(), taiyitist$i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D);
         }
     }
 
     @Redirect(method = "onEquipItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isClientSide()Z"))
-    private boolean banner$addSilentCheck(Level instance) {
-        return !this.level().isClientSide() && !this.isSilent() && !banner$silent.getAndSet(false);
+    private boolean taiyitist$addSilentCheck(Level instance) {
+        return !this.level().isClientSide() && !this.isSilent() && !taiyitist$silent.getAndSet(false);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
-    public void banner$readMaxHealth(CompoundTag compound, CallbackInfo ci) {
+    public void taiyitist$readMaxHealth(CompoundTag compound, CallbackInfo ci) {
         if (compound.contains("Bukkit.MaxHealth")) {
             Tag nbtbase = compound.get("Bukkit.MaxHealth");
             if (nbtbase.getId() == 5) {
@@ -253,7 +253,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "baseTick", cancellable = true, at = @At("HEAD"))
-    public void banner$baseTick(CallbackInfo ci) {
+    public void taiyitist$baseTick(CallbackInfo ci) {
         if (Bukkit.getTPS()[0] < 15) {
             ci.cancel();
         }
@@ -261,16 +261,16 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
 
 
     @Inject(method = "getHealth", cancellable = true, at = @At("HEAD"))
-    public void banner$scaledHealth(CallbackInfoReturnable<Float> cir) {
-        if (((LivingEntity) (Object) this) instanceof ServerPlayer && ((ServerPlayer) (Object) this).banner$initialized()) {
+    public void taiyitist$scaledHealth(CallbackInfoReturnable<Float> cir) {
+        if (((LivingEntity) (Object) this) instanceof ServerPlayer && ((ServerPlayer) (Object) this).taiyitist$initialized()) {
             cir.setReturnValue((float) ((ServerPlayer) (Object) this).getBukkitEntity().getHealth());
         }
     }
 
     @Inject(method = "setHealth", cancellable = true, at = @At("HEAD"))
-    public void banner$setScaled(float health, CallbackInfo ci) {
+    public void taiyitist$setScaled(float health, CallbackInfo ci) {
         // CraftBukkit start - Handle scaled health
-        if (((LivingEntity) (Object) this) instanceof ServerPlayer && ((ServerPlayer) (Object) this).banner$initialized()) {
+        if (((LivingEntity) (Object) this) instanceof ServerPlayer && ((ServerPlayer) (Object) this).taiyitist$initialized()) {
             CraftPlayer player = ((ServerPlayer) (Object) this).getBukkitEntity();
 
             // Squeeze
@@ -416,7 +416,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "removeEffectNoUpdate", cancellable = true, at = @At("HEAD"))
-    public void banner$clearActive(MobEffect effect, CallbackInfoReturnable<MobEffectInstance> cir) {
+    public void taiyitist$clearActive(MobEffect effect, CallbackInfoReturnable<MobEffectInstance> cir) {
         EntityPotionEffectEvent.Cause cause = getEffectCause().orElse(EntityPotionEffectEvent.Cause.UNKNOWN);
         if (isTickingEffects) {
             effectsToProcess.add(new ProcessableEffect(effect, cause));
@@ -616,9 +616,9 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Unique
-    net.minecraft.world.item.ItemStack banner$itemstack = null;
+    net.minecraft.world.item.ItemStack taiyitist$itemstack = null;
     @Unique
-    net.minecraft.world.item.ItemStack banner$itemstack1 = ItemStack.EMPTY;
+    net.minecraft.world.item.ItemStack taiyitist$itemstack1 = ItemStack.EMPTY;
 
     /**
      * @author wdog5
@@ -633,25 +633,25 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
             org.bukkit.inventory.EquipmentSlot bukkitHand = null;
             for(InteractionHand interactionHand : InteractionHand.values()) {
                 ItemStack itemStack2 = this.getItemInHand(interactionHand);
-                banner$itemstack1 = itemStack2;
+                taiyitist$itemstack1 = itemStack2;
                 if (itemStack2.is(Items.TOTEM_OF_UNDYING)) {
-                    banner$itemstack = itemStack2.copy();
+                    taiyitist$itemstack = itemStack2.copy();
                     bukkitHand = CraftEquipmentSlot.getHand(interactionHand);
                     break;
                 }
             }
 
             EntityResurrectEvent event = new EntityResurrectEvent((org.bukkit.entity.LivingEntity) this.getBukkitEntity(), bukkitHand);
-            event.setCancelled(banner$itemstack == null);
+            event.setCancelled(taiyitist$itemstack == null);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
-                if (!banner$itemstack1.isEmpty()) {
-                    banner$itemstack1.shrink(1);
+                if (!taiyitist$itemstack1.isEmpty()) {
+                    taiyitist$itemstack1.shrink(1);
                 }
-                if (banner$itemstack != null && (Object) this instanceof ServerPlayer serverplayerentity) {
+                if (taiyitist$itemstack != null && (Object) this instanceof ServerPlayer serverplayerentity) {
                     serverplayerentity.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                    CriteriaTriggers.USED_TOTEM.trigger(serverplayerentity, banner$itemstack);
+                    CriteriaTriggers.USED_TOTEM.trigger(serverplayerentity, taiyitist$itemstack);
                 }
 
                 this.setHealth(1.0F);
@@ -670,7 +670,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "actuallyHurt", cancellable = true, at = @At("HEAD"))
-    public void banner$redirectDamageEntity(DamageSource damageSrc, float damageAmount, CallbackInfo ci) {
+    public void taiyitist$redirectDamageEntity(DamageSource damageSrc, float damageAmount, CallbackInfo ci) {
         damageEntity0(damageSrc, damageAmount);
         ci.cancel();
     }
@@ -856,7 +856,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Unique
-    private transient EntityRegainHealthEvent.RegainReason banner$regainReason;
+    private transient EntityRegainHealthEvent.RegainReason taiyitist$regainReason;
 
     @Override
     public void heal(float healAmount, EntityRegainHealthEvent.RegainReason regainReason) {
@@ -866,9 +866,9 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
 
 
     @Redirect(method = "heal", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setHealth(F)V"))
-    public void banner$healEvent(LivingEntity livingEntity, float health) {
-        EntityRegainHealthEvent.RegainReason regainReason = banner$regainReason == null ? EntityRegainHealthEvent.RegainReason.CUSTOM : banner$regainReason;
-        banner$regainReason = null;
+    public void taiyitist$healEvent(LivingEntity livingEntity, float health) {
+        EntityRegainHealthEvent.RegainReason regainReason = taiyitist$regainReason == null ? EntityRegainHealthEvent.RegainReason.CUSTOM : taiyitist$regainReason;
+        taiyitist$regainReason = null;
         float f = this.getHealth();
         float amount = health - f;
         EntityRegainHealthEvent event = new EntityRegainHealthEvent(this.getBukkitEntity(), amount, regainReason);
@@ -882,15 +882,15 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "heal", at = @At(value = "RETURN"))
-    public void banner$resetReason(float healAmount, CallbackInfo ci) {
-        banner$regainReason = null;
+    public void taiyitist$resetReason(float healAmount, CallbackInfo ci) {
+        taiyitist$regainReason = null;
     }
 
     @Redirect(method = "die",
             at = @At(value = "INVOKE",
                     target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
                     remap = false))
-    private void banner$logNamedDeaths(Logger instance, String s, Object o1, Object o2) {
+    private void taiyitist$logNamedDeaths(Logger instance, String s, Object o1, Object o2) {
         if (org.spigotmc.SpigotConfig.logNamedDeaths) LOGGER.info("Named entity {} died: {}", ((LivingEntity) (Object) this), this.getCombatTracker().getDeathMessage().getString()); // Spigot
     }
 
@@ -913,7 +913,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "createWitherRose", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$witherRoseDrop(LivingEntity livingEntity, CallbackInfo ci, boolean flag, ItemEntity
+    private void taiyitist$witherRoseDrop(LivingEntity livingEntity, CallbackInfo ci, boolean flag, ItemEntity
             itemEntity) {
         org.bukkit.event.entity.EntityDropItemEvent event = new org.bukkit.event.entity.EntityDropItemEvent(this.getBukkitEntity(), (org.bukkit.entity.Item) itemEntity.getBukkitEntity());
         CraftEventFactory.callEvent(event);
@@ -923,17 +923,17 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Redirect(method = "createWitherRose", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean banner$fireWitherRoseForm(Level instance, BlockPos pPos, BlockState pNewState, int pFlags) {
+    private boolean taiyitist$fireWitherRoseForm(Level instance, BlockPos pPos, BlockState pNewState, int pFlags) {
         return CraftEventFactory.handleBlockFormEvent(instance, pPos, pNewState, 3, (Entity) (Object) this);
     }
 
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setSharedFlag(IZ)V"))
-    public void banner$stopGlide(Vec3 travelVector, CallbackInfo ci) {
-        BukkitSnapshotCaptures.capturebanner$stopGlide(true);
+    public void taiyitist$stopGlide(Vec3 travelVector, CallbackInfo ci) {
+        BukkitSnapshotCaptures.capturetaiyitist$stopGlide(true);
     }
 
     @Redirect(method = "updateFallFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setSharedFlag(IZ)V"))
-    public void banner$toggleGlide(LivingEntity livingEntity, int flag, boolean set) {
+    public void taiyitist$toggleGlide(LivingEntity livingEntity, int flag, boolean set) {
         if (set != livingEntity.getSharedFlag(flag) && !CraftEventFactory.callToggleGlideEvent(livingEntity, set).isCancelled()) {
             livingEntity.setSharedFlag(flag, set);
         }
@@ -965,7 +965,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     // CraftBukkit end
 
     @Redirect(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack banner$itemConsume(ItemStack itemStack, Level worldIn, LivingEntity
+    private ItemStack taiyitist$itemConsume(ItemStack itemStack, Level worldIn, LivingEntity
             entityLiving, @Cancellable CallbackInfo ci) {
         if (((LivingEntity)(Object) this) instanceof ServerPlayer) {
             final org.bukkit.inventory.ItemStack craftItem = CraftItemStack.asBukkitCopy(itemStack);
@@ -984,7 +984,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Redirect(method = "randomTeleport", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/LivingEntity;teleportTo(DDD)V"))
-    private void banner$entityTeleport(LivingEntity entity, double x, double y, double z, @Cancellable CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$entityTeleport(LivingEntity entity, double x, double y, double z, @Cancellable CallbackInfoReturnable<Boolean> cir) {
         EntityTeleportEvent event = new EntityTeleportEvent(getBukkitEntity(), new Location(this.level().getWorld(), this.getX(), this.getY(), this.getZ()), new Location(this.level().getWorld(), x, y, z));
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -996,13 +996,13 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Inject(method = "addEatEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    public void banner$foodEffectCause(ItemStack food, Level level, LivingEntity livingEntity, CallbackInfo ci) {
+    public void taiyitist$foodEffectCause(ItemStack food, Level level, LivingEntity livingEntity, CallbackInfo ci) {
         livingEntity.pushEffectCause(EntityPotionEffectEvent.Cause.FOOD);
     }
 
     @Inject(method = "setArrowCount", cancellable = true, at = @At("HEAD"))
-    private void banner$onArrowChange(int count, CallbackInfo ci) {
-        if (banner$callArrowCountChange(count, false)) {
+    private void taiyitist$onArrowChange(int count, CallbackInfo ci) {
+        if (taiyitist$callArrowCountChange(count, false)) {
             ci.cancel();
         }
     }
@@ -1010,7 +1010,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Inject(method = "collectEquipmentChanges", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;equipmentHasChanged(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
             shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$fireArmorChangeEvent(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir, Map map,
+    private void taiyitist$fireArmorChangeEvent(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir, Map map,
                                              EquipmentSlot[] var2, int var3, int var4, EquipmentSlot equipmentSlot,
                                              ItemStack itemStack, ItemStack itemStack2) {
         // Paper start - PlayerArmorChangeEvent
@@ -1023,14 +1023,14 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
 
     @Override
     public final void setArrowCount(int count, boolean reset) {
-        if (banner$callArrowCountChange(count, reset)) {
+        if (taiyitist$callArrowCountChange(count, reset)) {
             return;
         }
         this.entityData.set(DATA_ARROW_COUNT_ID, count);
     }
 
     @Unique
-    private boolean banner$callArrowCountChange(int newCount, boolean reset) {
+    private boolean taiyitist$callArrowCountChange(int newCount, boolean reset) {
         return CraftEventFactory.callArrowBodyCountChangeEvent((LivingEntity) (Object) this, this.getArrowCount(), newCount, reset).isCancelled();
     }
 
@@ -1059,7 +1059,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
 
     @Override
     public void onEquipItem(EquipmentSlot enumitemslot, ItemStack itemstack, ItemStack itemstack1, boolean silent) {
-        banner$silent.set(silent);
+        taiyitist$silent.set(silent);
         this.onEquipItem(enumitemslot, itemstack, itemstack1);
     }
 
@@ -1094,7 +1094,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setExpToDrop(int expToDrop) {
+    public void taiyitist$setExpToDrop(int expToDrop) {
         this.expToDrop = expToDrop;
     }
 
@@ -1104,7 +1104,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setForceDrops(boolean forceDrops) {
+    public void taiyitist$setForceDrops(boolean forceDrops) {
         this.forceDrops = forceDrops;
     }
 
@@ -1114,7 +1114,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
+    public void taiyitist$setDrops(ArrayList<org.bukkit.inventory.ItemStack> drops) {
         this.drops = drops;
     }
 
@@ -1124,7 +1124,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setCraftAttributes(CraftAttributeMap craftAttributes) {
+    public void taiyitist$setCraftAttributes(CraftAttributeMap craftAttributes) {
         this.craftAttributes = craftAttributes;
     }
 
@@ -1134,7 +1134,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setCollides(boolean collides) {
+    public void taiyitist$setCollides(boolean collides) {
         this.collides = collides;
     }
 
@@ -1144,7 +1144,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setCollidableExemptions(Set<UUID> collidableExemptions) {
+    public void taiyitist$setCollidableExemptions(Set<UUID> collidableExemptions) {
         this.collidableExemptions = collidableExemptions;
     }
 
@@ -1154,7 +1154,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
+    public void taiyitist$setBukkitPickUpLoot(boolean bukkitPickUpLoot) {
         this.bukkitPickUpLoot = bukkitPickUpLoot;
     }
 
@@ -1164,7 +1164,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setIsTickingEffects(boolean isTickingEffects) {
+    public void taiyitist$setIsTickingEffects(boolean isTickingEffects) {
         this.isTickingEffects = isTickingEffects;
     }
 
@@ -1174,7 +1174,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     }
 
     @Override
-    public void banner$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
+    public void taiyitist$setEffectsToProcess(List<ProcessableEffect> effectsToProcess) {
         this.effectsToProcess = effectsToProcess;
     }
 
@@ -1186,9 +1186,9 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Override
     public Optional<EntityPotionEffectEvent.Cause> getEffectCause() {
         try {
-            return Optional.ofNullable(banner$cause);
+            return Optional.ofNullable(taiyitist$cause);
         } finally {
-            banner$cause = null;
+            taiyitist$cause = null;
         }
     }
 }

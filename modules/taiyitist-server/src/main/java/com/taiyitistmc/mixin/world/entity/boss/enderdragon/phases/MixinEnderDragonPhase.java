@@ -22,7 +22,7 @@ public class MixinEnderDragonPhase implements InjectionEnderDragonPhase {
     @Shadow @Final private String name;
 
     @Inject(method = "create", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static <T extends DragonPhaseInstance> void banner$addPhase(Class<T> phase, String name,
+    private static <T extends DragonPhaseInstance> void taiyitist$addPhase(Class<T> phase, String name,
                                                                         CallbackInfoReturnable<EnderDragonPhase<T>> cir,
                                                                         EnderDragonPhase<T> enderDragonPhase) {
         if (enderDragonPhase.getId() > 10) {

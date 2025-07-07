@@ -38,9 +38,9 @@ public abstract class MixinDoorBlock extends Block{
     }
 
     @Unique
-    private final AtomicInteger banner$power = new AtomicInteger();
+    private final AtomicInteger taiyitist$power = new AtomicInteger();
     @Unique
-    private final AtomicInteger banner$oldPower = new AtomicInteger();
+    private final AtomicInteger taiyitist$oldPower = new AtomicInteger();
     @Unique
     private org.bukkit.block.Block bukkitBlock;
     @Unique
@@ -62,12 +62,12 @@ public abstract class MixinDoorBlock extends Block{
             int power = bukkitBlock.getBlockPower();
             int powerTop = blockTop.getBlockPower();
             if (powerTop > power) power = powerTop;
-            banner$power.set(power);
+            taiyitist$power.set(power);
             int oldPower = (Boolean) state.getValue(POWERED) ? 15 : 0;
-            banner$oldPower.set(oldPower);
+            taiyitist$oldPower.set(oldPower);
         }
-        if (banner$oldPower.get() == 0 ^ banner$power.get() == 0) {
-            eventRedstone = new BlockRedstoneEvent(bukkitBlock, banner$oldPower.get(), banner$power.get());
+        if (taiyitist$oldPower.get() == 0 ^ taiyitist$power.get() == 0) {
+            eventRedstone = new BlockRedstoneEvent(bukkitBlock, taiyitist$oldPower.get(), taiyitist$power.get());
             Bukkit.getPluginManager().callEvent(eventRedstone);
             boolean bl = eventRedstone.getNewCurrent() > 0;
             if (bl != (Boolean) state.getValue(OPEN)) {

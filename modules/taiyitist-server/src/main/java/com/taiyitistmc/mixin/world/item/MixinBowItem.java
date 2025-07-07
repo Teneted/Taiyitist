@@ -36,7 +36,7 @@ public abstract class MixinBowItem extends ProjectileWeaponItem {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$shootBowEvent(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
+    private void taiyitist$shootBowEvent(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
                                       CallbackInfo ci, Player player, boolean bl, ItemStack itemStack, int i,
                                       float f, boolean bl2, ArrowItem arrowItem, AbstractArrow abstractArrow, int j, int k) {
         // CraftBukkit start
@@ -54,7 +54,7 @@ public abstract class MixinBowItem extends ProjectileWeaponItem {
                     target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V",
                     shift = At.Shift.AFTER),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$shootBowEvent0(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
+    private void taiyitist$shootBowEvent0(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
                                       CallbackInfo ci, Player player, boolean bl, ItemStack itemStack, int i,
                                       float f, boolean bl2, ArrowItem arrowItem, AbstractArrow abstractArrow, int j, int k) {
         bl2 = !event.shouldConsumeItem(); // Banner
@@ -63,7 +63,7 @@ public abstract class MixinBowItem extends ProjectileWeaponItem {
     @Redirect(method = "releaseUsing",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$checkAddEntity(Level level, Entity entity) {
+    private boolean taiyitist$checkAddEntity(Level level, Entity entity) {
         return false;
     }
 
@@ -71,7 +71,7 @@ public abstract class MixinBowItem extends ProjectileWeaponItem {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$checkAddEntity(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
+    private void taiyitist$checkAddEntity(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged,
                                        CallbackInfo ci, Player player, boolean bl, ItemStack itemStack, int i, float f,
                                        boolean bl2, ArrowItem arrowItem, AbstractArrow abstractArrow) {
         // CraftBukkit start

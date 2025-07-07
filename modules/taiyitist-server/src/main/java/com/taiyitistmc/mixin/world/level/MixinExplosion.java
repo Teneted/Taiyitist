@@ -86,7 +86,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Explosion$BlockInteraction;)V",
             at = @At("RETURN"))
-    public void banner$adjustSize(Level worldIn, Entity exploderIn, double xIn, double yIn, double zIn, float sizeIn, boolean causesFireIn, Explosion.BlockInteraction modeIn, CallbackInfo ci) {
+    public void taiyitist$adjustSize(Level worldIn, Entity exploderIn, double xIn, double yIn, double zIn, float sizeIn, boolean causesFireIn, Explosion.BlockInteraction modeIn, CallbackInfo ci) {
         this.radius = Math.max(sizeIn, 0F);
     }
 
@@ -182,7 +182,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
                         }
 
                         CraftEventFactory.entityDamage = this.source;
-                        entity.banner$setLastDamageCancelled(false);
+                        entity.taiyitist$setLastDamageCancelled(false);
 
                         if (entity instanceof EnderDragon) {
                             for (EnderDragonPart entityComplexPart : ((EnderDragon) entity).subEntities) {
@@ -371,7 +371,7 @@ public abstract class MixinExplosion implements InjectionExplosion {
     }
 
     @Override
-    public void banner$setWasCanceled(boolean wasCanceled) {
+    public void taiyitist$setWasCanceled(boolean wasCanceled) {
         this.wasCanceled = wasCanceled;
     }
 }

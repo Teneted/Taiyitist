@@ -33,19 +33,19 @@ public abstract class MixinCat extends TamableAnimal {
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Cat;tame(Lnet/minecraft/world/entity/player/Player;)V"))
-    private boolean banner$tameEvent(Cat cat, Player player) {
+    private boolean taiyitist$tameEvent(Cat cat, Player player) {
         return !CraftEventFactory.callEntityTameEvent(this, player).isCancelled(); // CraftBukkit
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Cat;setOrderedToSit(Z)V", ordinal = 1))
-    private boolean banner$tameEvent0(Cat cat, boolean value) {
+    private boolean taiyitist$tameEvent0(Cat cat, boolean value) {
         return !CraftEventFactory.callEntityTameEvent(this, bannerPlayer.get()).isCancelled(); // CraftBukkit
     }
 
     @WrapWithCondition(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;broadcastEntityEvent(Lnet/minecraft/world/entity/Entity;B)V",
             ordinal = 0))
-    private boolean banner$tameEvent1(Level level, Entity entity, byte state) {
+    private boolean taiyitist$tameEvent1(Level level, Entity entity, byte state) {
         return !CraftEventFactory.callEntityTameEvent(this, bannerPlayer.get()).isCancelled(); // CraftBukkit
     }
 

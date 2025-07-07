@@ -27,45 +27,45 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinTntBlock {
 
     @Unique
-    private AtomicReference<BlockPos> banner$fromPos = new AtomicReference<>();
+    private AtomicReference<BlockPos> taiyitist$fromPos = new AtomicReference<>();
     @Unique
-    private AtomicReference<BlockPos> banner$originPos = new AtomicReference<>();
+    private AtomicReference<BlockPos> taiyitist$originPos = new AtomicReference<>();
     @Unique
-    private AtomicReference<Player> banner$useTntPlayer = new AtomicReference<>();
+    private AtomicReference<Player> taiyitist$useTntPlayer = new AtomicReference<>();
 
     @WrapWithCondition(method = "onPlace", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/TntBlock;explode(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"))
-    private boolean banner$warpTntEvent(Level level, BlockPos pos) {
+    private boolean taiyitist$warpTntEvent(Level level, BlockPos pos) {
         return CraftEventFactory.callTNTPrimeEvent(level, pos, TNTPrimeEvent.PrimeCause.REDSTONE, null, null); // CraftBukkit - TNTPrimeEvent
     }
 
     @WrapWithCondition(method = "onPlace", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
-    private boolean banner$warpTntEvent0(Level level, BlockPos pos, boolean isMoving) {
+    private boolean taiyitist$warpTntEvent0(Level level, BlockPos pos, boolean isMoving) {
         return CraftEventFactory.callTNTPrimeEvent(level, pos, TNTPrimeEvent.PrimeCause.REDSTONE, null, null); // CraftBukkit - TNTPrimeEvent
     }
 
     @Inject(method = "neighborChanged", at = @At("HEAD"))
-    private void banner$getFromPos(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving, CallbackInfo ci) {
-        banner$fromPos.set(fromPos);
+    private void taiyitist$getFromPos(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving, CallbackInfo ci) {
+        taiyitist$fromPos.set(fromPos);
     }
 
     @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;hasNeighborSignal(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean banner$addTntCheck0(Level level, BlockPos pos) {
-        return level.hasNeighborSignal(pos) && CraftEventFactory.callTNTPrimeEvent(level, pos, TNTPrimeEvent.PrimeCause.REDSTONE, null, banner$fromPos.get()); // CraftBukkit - TNTPrimeEvent
+    private boolean taiyitist$addTntCheck0(Level level, BlockPos pos) {
+        return level.hasNeighborSignal(pos) && CraftEventFactory.callTNTPrimeEvent(level, pos, TNTPrimeEvent.PrimeCause.REDSTONE, null, taiyitist$fromPos.get()); // CraftBukkit - TNTPrimeEvent
     }
 
     @Inject(method = "playerWillDestroy", at = @At("HEAD"))
-    private void banner$getTntInfo(Level level, BlockPos pos, BlockState state, Player player, CallbackInfo ci) {
-        banner$originPos.set(pos);
-        banner$useTntPlayer.set(player);
+    private void taiyitist$getTntInfo(Level level, BlockPos pos, BlockState state, Player player, CallbackInfo ci) {
+        taiyitist$originPos.set(pos);
+        taiyitist$useTntPlayer.set(player);
     }
 
     @Redirect(method = "playerWillDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isClientSide()Z"))
-    private boolean banner$addTntCheck1(Level level) {
-        return !level.isClientSide() && CraftEventFactory.callTNTPrimeEvent(level, banner$originPos.get(), TNTPrimeEvent.PrimeCause.BLOCK_BREAK, banner$useTntPlayer.get(), null); // CraftBukkit - TNTPrimeEvent
+    private boolean taiyitist$addTntCheck1(Level level) {
+        return !level.isClientSide() && CraftEventFactory.callTNTPrimeEvent(level, taiyitist$originPos.get(), TNTPrimeEvent.PrimeCause.BLOCK_BREAK, taiyitist$useTntPlayer.get(), null); // CraftBukkit - TNTPrimeEvent
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/TntBlock;explode(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/LivingEntity;)V", shift = At.Shift.BEFORE), cancellable = true)
-    private void banner$TntPrime(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$TntPrime(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         // CraftBukkit start - TNTPrimeEvent
         if (!CraftEventFactory.callTNTPrimeEvent(level, pos, TNTPrimeEvent.PrimeCause.PLAYER, player, null)) {
             cir.setReturnValue(InteractionResult.CONSUME);
@@ -74,7 +74,7 @@ public class MixinTntBlock {
     }
 
     @Inject(method = "onProjectileHit", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;isOnFire()Z"))
-    public void banner$entityChangeBlock(Level worldIn, BlockState state, BlockHitResult hit, Projectile projectile, CallbackInfo ci) {
+    public void taiyitist$entityChangeBlock(Level worldIn, BlockState state, BlockHitResult hit, Projectile projectile, CallbackInfo ci) {
         if (!CraftEventFactory.callEntityChangeBlockEvent(projectile, hit.getBlockPos(), Blocks.AIR.defaultBlockState())) {
             ci.cancel();
         }

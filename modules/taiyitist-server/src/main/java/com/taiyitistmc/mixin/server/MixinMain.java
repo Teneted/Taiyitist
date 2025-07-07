@@ -28,7 +28,7 @@ public abstract class MixinMain {
             shift = At.Shift.AFTER),
             remap = false
     )
-    private static void banner$initMain(String[] strings, CallbackInfo ci, @Local OptionParser optionParser) {
+    private static void taiyitist$initMain(String[] strings, CallbackInfo ci, @Local OptionParser optionParser) {
         optionParser.acceptsAll(Arrays.asList("b", "bukkit-settings"), "File for bukkit settings")
                 .withRequiredArg()
                 .ofType(File.class)
@@ -69,7 +69,7 @@ public abstract class MixinMain {
             ordinal = 0),
             remap = false
     )
-    private static void banner$addYmlInfo(String[] strings, CallbackInfo ci, @Local OptionSet optionSet) throws IOException {
+    private static void taiyitist$addYmlInfo(String[] strings, CallbackInfo ci, @Local OptionSet optionSet) throws IOException {
         // CraftBukkit start - SPIGOT-5761: Create bukkit.yml and commands.yml if not present
         File configFile = (File) optionSet.valueOf("bukkit-settings");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
@@ -88,7 +88,7 @@ public abstract class MixinMain {
     @Inject(method = "main", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Ljava/nio/file/Path;)Lnet/minecraft/server/packs/repository/PackRepository;")
     )
-    private static void banner$createBukkitDatapack(String[] strings, CallbackInfo ci, @Local LevelStorageSource.LevelStorageAccess levelStorageAccess) {
+    private static void taiyitist$createBukkitDatapack(String[] strings, CallbackInfo ci, @Local LevelStorageSource.LevelStorageAccess levelStorageAccess) {
         // CraftBukkit start
         File bukkitDataPackFolder = new File(levelStorageAccess.getLevelPath(LevelResource.DATAPACK_DIR).toFile(), "bukkit");
         if (!bukkitDataPackFolder.exists()) {

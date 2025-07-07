@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinEvokerFangs {
 
     @Inject(method = "dealDamageTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private void banner$entityDamage(LivingEntity target, CallbackInfo ci) {
+    private void taiyitist$entityDamage(LivingEntity target, CallbackInfo ci) {
         CraftEventFactory.entityDamage = (EvokerFangs) (Object) this;
     }
 
     @Inject(method = "dealDamageTo", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private void banner$entityDamageReset(LivingEntity target, CallbackInfo ci) {
+    private void taiyitist$entityDamageReset(LivingEntity target, CallbackInfo ci) {
         CraftEventFactory.entityDamage = null;
     }
 }

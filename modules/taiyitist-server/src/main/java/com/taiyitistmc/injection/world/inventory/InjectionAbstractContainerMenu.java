@@ -10,7 +10,7 @@ public interface InjectionAbstractContainerMenu {
         return false;
     }
 
-    default void banner$setCheckReachable(boolean checkReachable) {
+    default void taiyitist$setCheckReachable(boolean checkReachable) {
     }
 
     default InventoryView getBukkitView() {

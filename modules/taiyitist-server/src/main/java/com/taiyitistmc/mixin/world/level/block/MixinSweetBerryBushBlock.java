@@ -29,7 +29,7 @@ public class MixinSweetBerryBushBlock {
 
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean banner$cropGrow(ServerLevel world, BlockPos pos, BlockState newState, int flags, @Cancellable CallbackInfo ci) {
+    private boolean taiyitist$cropGrow(ServerLevel world, BlockPos pos, BlockState newState, int flags, @Cancellable CallbackInfo ci) {
         if (!CraftEventFactory.handleBlockGrowEvent(world, pos, newState, flags)) {
             ci.cancel();
         }
@@ -37,17 +37,17 @@ public class MixinSweetBerryBushBlock {
     }
 
     @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    public void banner$damagePre(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    public void taiyitist$damagePre(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = CraftBlock.at(worldIn, pos);
     }
 
     @Inject(method = "entityInside", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    public void banner$damagePost(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+    public void taiyitist$damagePost(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
         CraftEventFactory.blockDamage = null;
     }
 
     @Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/SweetBerryBushBlock;popResource(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/item/ItemStack;)V"))
-    private void banner$playerHarvest(Level level, BlockPos blockPos, ItemStack itemStack, BlockState state, Level worldIn1, BlockPos pos1, Player player, InteractionHand hand, @Cancellable CallbackInfoReturnable<InteractionResult> cir) {
+    private void taiyitist$playerHarvest(Level level, BlockPos blockPos, ItemStack itemStack, BlockState state, Level worldIn1, BlockPos pos1, Player player, InteractionHand hand, @Cancellable CallbackInfoReturnable<InteractionResult> cir) {
         PlayerHarvestBlockEvent event = CraftEventFactory.callPlayerHarvestBlockEvent(level, blockPos, player, hand, Collections.singletonList(itemStack));
         if (!event.isCancelled()) {
             for (org.bukkit.inventory.ItemStack stack : event.getItemsHarvested()) {

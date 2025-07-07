@@ -21,7 +21,7 @@ public class CraftAgeable extends CraftCreature implements Ageable {
 
     @Override
     public void setAgeLock(boolean lock) {
-        getHandle().banner$setAgeLocked(lock);
+        getHandle().taiyitist$setAgeLocked(lock);
     }
 
     @Override

@@ -22,18 +22,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinConduitBlockEntity {
 
     @Redirect(method = "applyEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private static boolean banner$addEntity(Player player, MobEffectInstance eff) {
+    private static boolean taiyitist$addEntity(Player player, MobEffectInstance eff) {
         player.pushEffectCause(EntityPotionEffectEvent.Cause.CONDUIT);
         return player.addEffect(eff);
     }
 
     @Inject(method = "updateDestroyTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private static void banner$attackReason(Level level, BlockPos pos, BlockState p_155411_, List<BlockPos> p_155412_, ConduitBlockEntity p_155413_, CallbackInfo ci) {
+    private static void taiyitist$attackReason(Level level, BlockPos pos, BlockState p_155411_, List<BlockPos> p_155412_, ConduitBlockEntity p_155413_, CallbackInfo ci) {
         CraftEventFactory.blockDamage = CraftBlock.at(level, pos);
     }
 
     @Inject(method = "updateDestroyTarget", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private static void banner$attackReasonReset(CallbackInfo ci) {
+    private static void taiyitist$attackReasonReset(CallbackInfo ci) {
         CraftEventFactory.blockDamage = null;
     }
 

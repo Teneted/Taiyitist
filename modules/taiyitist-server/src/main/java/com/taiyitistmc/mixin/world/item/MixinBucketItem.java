@@ -48,23 +48,23 @@ public abstract class MixinBucketItem extends Item {
     }
 
     @Unique
-    private AtomicReference<PlayerBucketFillEvent> banner$bucketFillEvent = new AtomicReference<>();
+    private AtomicReference<PlayerBucketFillEvent> taiyitist$bucketFillEvent = new AtomicReference<>();
 
     @Inject(method = "use",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/BucketPickup;pickupBlock(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/item/ItemStack;"),
             cancellable = true)
-    private void banner$use(Level level, Player player, InteractionHand usedHand,
+    private void taiyitist$use(Level level, Player player, InteractionHand usedHand,
                             CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
                             @Local ItemStack itemStack, @Local BlockHitResult blockHitResult, @Local(ordinal = 0) BlockPos blockPos,
                             @Local BlockState blockState, @Local BucketPickup bucketPickup) {
         // CraftBukkit start
         ItemStack dummyFluid = bucketPickup.pickupBlock(DummyGeneratorAccess.INSTANCE, blockPos, blockState);
         if (dummyFluid.isEmpty()) cir.setReturnValue(InteractionResultHolder.fail(itemStack)); // Don't fire event if the bucket won't be filled.);
-        banner$bucketFillEvent.set(CraftEventFactory.callPlayerBucketFillEvent((ServerLevel) level, player, blockPos, blockPos,
+        taiyitist$bucketFillEvent.set(CraftEventFactory.callPlayerBucketFillEvent((ServerLevel) level, player, blockPos, blockPos,
                 blockHitResult.getDirection(), itemStack, dummyFluid.getItem(), usedHand));
 
-        if (banner$bucketFillEvent.get().isCancelled()) {
+        if (taiyitist$bucketFillEvent.get().isCancelled()) {
             ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(level, blockPos)); // SPIGOT-5163 (see PlayerInteractManager)
             ((ServerPlayer) player).getBukkitEntity().updateInventory(); // SPIGOT-4541
             cir.setReturnValue(InteractionResultHolder.fail(itemStack));
@@ -74,13 +74,13 @@ public abstract class MixinBucketItem extends Item {
     @Redirect(method = "use",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack banner$filledResult(ItemStack emptyStack, Player player, ItemStack filledStack) {
-        return ItemUtils.createFilledResult(emptyStack, player, CraftItemStack.asNMSCopy(banner$bucketFillEvent.get().getItemStack())); // CraftBukkit
+    private ItemStack taiyitist$filledResult(ItemStack emptyStack, Player player, ItemStack filledStack) {
+        return ItemUtils.createFilledResult(emptyStack, player, CraftItemStack.asNMSCopy(taiyitist$bucketFillEvent.get().getItemStack())); // CraftBukkit
     }
 
     @Inject(method = "emptyContents", at = @At("HEAD"),
             cancellable = true)
-    private void banner$bucketFillEvent(Player entityhuman, Level world, BlockPos blockposition, BlockHitResult movingobjectpositionblock, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$bucketFillEvent(Player entityhuman, Level world, BlockPos blockposition, BlockHitResult movingobjectpositionblock, CallbackInfoReturnable<Boolean> cir) {
         // CraftBukkit start
         if (this.content instanceof FlowingFluid && movingobjectpositionblock != null) {
             BlockState iblockdata = world.getBlockState(blockposition);

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface InjectionEntity {
 
-    default void banner$setBukkitEntity(CraftEntity bukkitEntity) {
+    default void taiyitist$setBukkitEntity(CraftEntity bukkitEntity) {
 
     }
 
@@ -38,56 +38,56 @@ public interface InjectionEntity {
         return true;
     }
 
-    default void banner$setPersist(boolean persist) {
+    default void taiyitist$setPersist(boolean persist) {
     }
 
     default boolean bridge$visibleByDefault() {
         return false;
     }
 
-    default void banner$setVisibleByDefault(boolean visibleByDefault) {
+    default void taiyitist$setVisibleByDefault(boolean visibleByDefault) {
     }
 
     default boolean bridge$valid() {
         return false;
     }
 
-    default void banner$setValid(boolean valid) {
+    default void taiyitist$setValid(boolean valid) {
     }
 
     default int bridge$maxAirTicks() {
         return 0;
     }
 
-    default void banner$setMaxAirTicks(int maxAirTicks) {
+    default void taiyitist$setMaxAirTicks(int maxAirTicks) {
     }
 
     default org.bukkit.projectiles.ProjectileSource bridge$projectileSource() {
         return null;
     }
 
-    default void banner$setProjectileSource(org.bukkit.projectiles.ProjectileSource projectileSource) {
+    default void taiyitist$setProjectileSource(org.bukkit.projectiles.ProjectileSource projectileSource) {
     }
 
     default boolean bridge$lastDamageCancelled() {
         return false;
     }
 
-    default void banner$setLastDamageCancelled(boolean lastDamageCancelled) {
+    default void taiyitist$setLastDamageCancelled(boolean lastDamageCancelled) {
     }
 
     default boolean bridge$persistentInvisibility() {
         return false;
     }
 
-    default void banner$setPersistentInvisibility(boolean persistentInvisibility) {
+    default void taiyitist$setPersistentInvisibility(boolean persistentInvisibility) {
     }
 
     default BlockPos bridge$lastLavaContact() {
         return null;
     }
 
-    default void banner$setLastLavaContact(BlockPos lastLavaContact) {
+    default void taiyitist$setLastLavaContact(BlockPos lastLavaContact) {
     }
 
     default  boolean teleportTo(ServerLevel worldserver, double d0, double d1, double d2, Set<RelativeMovement> set, float f, float f1, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause) {
@@ -144,7 +144,7 @@ public interface InjectionEntity {
         return 0;
     }
 
-    default void banner$setActivatedTick(long activatedTick) {
+    default void taiyitist$setActivatedTick(long activatedTick) {
 
     }
 
@@ -152,7 +152,7 @@ public interface InjectionEntity {
         return false;
     }
 
-    default void banner$setDefaultActivationState(boolean state) {
+    default void taiyitist$setDefaultActivationState(boolean state) {
 
     }
 
@@ -160,10 +160,10 @@ public interface InjectionEntity {
         return false;
     }
 
-    default void banner$setGeneration(boolean gen) {
+    default void taiyitist$setGeneration(boolean gen) {
     }
 
-    default boolean banner$removePassenger(Entity entity) {
+    default boolean taiyitist$removePassenger(Entity entity) {
         return false;
     }
 

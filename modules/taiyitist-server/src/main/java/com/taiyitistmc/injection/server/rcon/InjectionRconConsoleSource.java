@@ -9,7 +9,7 @@ public interface InjectionRconConsoleSource {
         return null;
     }
 
-    default void banner$setSocketAddress(SocketAddress socketAddress) {
+    default void taiyitist$setSocketAddress(SocketAddress socketAddress) {
 
     }
 

@@ -25,18 +25,18 @@ public abstract class MixinMapItemSavedData_HoldingPlayer {
     @Shadow @Final private MapItemSavedData field_132;
     @Shadow @Final public Player player;
     @Unique
-    private byte[] banner$colors = field_132.colors;
+    private byte[] taiyitist$colors = field_132.colors;
     @Unique
     private java.util.Collection<MapDecoration> icons = new java.util.ArrayList<>();
 
-    private AtomicReference<RenderData> banner$render = new AtomicReference<>();
+    private AtomicReference<RenderData> taiyitist$render = new AtomicReference<>();
 
     @Inject(method = "nextUpdatePacket", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$HoldingPlayer;createPatch()Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$MapPatch;"))
-    private void banner$checkColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
+    private void taiyitist$checkColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
         if (this.player != null) {
             RenderData render = field_132.bridge$mapView().render((CraftPlayer) this.player.getBukkitEntity()); // CraftBukkit
-            banner$render.set(render);
+            taiyitist$render.set(render);
             field_132.colors = render.buffer;
         }
     }
@@ -44,17 +44,17 @@ public abstract class MixinMapItemSavedData_HoldingPlayer {
     @Inject(method = "nextUpdatePacket", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$HoldingPlayer;createPatch()Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData$MapPatch;",
             shift = At.Shift.AFTER))
-    private void banner$setColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
-        if (banner$colors != null) {
-            field_132.colors = banner$colors;
+    private void taiyitist$setColors(int mapId, CallbackInfoReturnable<Packet<?>> cir) {
+        if (taiyitist$colors != null) {
+            field_132.colors = taiyitist$colors;
         }
     }
 
     @Redirect(method = "nextUpdatePacket", at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;"))
-    private Collection<MapDecoration> banner$resetCollections(Map instance) {
-        if (this.player != null && banner$render.get() != null) {
+    private Collection<MapDecoration> taiyitist$resetCollections(Map instance) {
+        if (this.player != null && taiyitist$render.get() != null) {
             // CraftBukkit start
-            for (org.bukkit.map.MapCursor cursor : banner$render.getAndSet(null).cursors) {
+            for (org.bukkit.map.MapCursor cursor : taiyitist$render.getAndSet(null).cursors) {
                 if (cursor.isVisible()) {
                     icons.add(new MapDecoration(MapDecoration.Type.byIcon(cursor.getRawType()), cursor.getX(), cursor.getY(), cursor.getDirection(), CraftChatMessage.fromStringOrNull(cursor.getCaption())));
                 }

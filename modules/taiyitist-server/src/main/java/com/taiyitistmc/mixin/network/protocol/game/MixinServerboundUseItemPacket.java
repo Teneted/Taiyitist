@@ -16,7 +16,7 @@ public class MixinServerboundUseItemPacket implements InjectionServerboundUseIte
     public long timestamp;
 
     @Inject(method = "<init>(Lnet/minecraft/network/FriendlyByteBuf;)V", at = @At("RETURN"))
-    private void banner$read(FriendlyByteBuf buf, CallbackInfo ci) {
+    private void taiyitist$read(FriendlyByteBuf buf, CallbackInfo ci) {
         this.timestamp = System.currentTimeMillis();
     }
 

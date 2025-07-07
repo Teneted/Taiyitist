@@ -17,7 +17,7 @@ public class MixinServerFunctionManager {
     @Shadow @Final MinecraftServer server;
 
     @Inject(method = "getDispatcher", cancellable = true, at = @At("HEAD"))
-    private void banner$useVanillaDispatcher(CallbackInfoReturnable<CommandDispatcher<CommandSourceStack>> cir) {
+    private void taiyitist$useVanillaDispatcher(CallbackInfoReturnable<CommandDispatcher<CommandSourceStack>> cir) {
         cir.setReturnValue(this.server.bridge$getVanillaCommands().getDispatcher());
     }
 }

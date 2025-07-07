@@ -22,7 +22,7 @@ public abstract class CraftProjectile extends AbstractProjectile implements Proj
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().banner$setProjectileSource(shooter);
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override

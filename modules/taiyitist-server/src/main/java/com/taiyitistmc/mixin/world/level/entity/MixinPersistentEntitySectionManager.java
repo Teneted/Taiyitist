@@ -44,7 +44,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
     @Shadow protected abstract void requestChunkLoad(long chunkPosValue);
 
     @Unique
-    private AtomicBoolean banner$fireEvent = new AtomicBoolean(false);
+    private AtomicBoolean taiyitist$fireEvent = new AtomicBoolean(false);
 
     @Override
     public void close(boolean save) throws IOException {
@@ -62,7 +62,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
      */
     @Overwrite
     private boolean storeChunkSections(long chunkPosValue, Consumer<T> consumer) {
-        boolean callEvent = this.banner$fireEvent.getAndSet(false);
+        boolean callEvent = this.taiyitist$fireEvent.getAndSet(false);
         PersistentEntitySectionManager.ChunkLoadStatus chunkLoadStatus = this.chunkLoadStatuses.get(chunkPosValue);
         if (chunkLoadStatus == PersistentEntitySectionManager.ChunkLoadStatus.PENDING) {
             return false;
@@ -94,12 +94,12 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
     }
 
     @Inject(method = "processChunkUnload", at = @At("HEAD"))
-    private void banner$fireEvent(long pChunkPosValue, CallbackInfoReturnable<Boolean> cir) {
-        this.banner$fireEvent.set(true); // Banner
+    private void taiyitist$fireEvent(long pChunkPosValue, CallbackInfoReturnable<Boolean> cir) {
+        this.taiyitist$fireEvent.set(true); // Banner
     }
 
     @Inject(method = "processPendingLoads", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false, target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;put(JLjava/lang/Object;)Ljava/lang/Object;"))
-    private void banner$fireLoad(CallbackInfo ci, ChunkEntities<T> chunkEntities) {
+    private void taiyitist$fireLoad(CallbackInfo ci, ChunkEntities<T> chunkEntities) {
         List<Entity> entities = getEntities(chunkEntities.getPos());
         CraftEventFactory.callEntitiesLoadEvent(((EntityStorage) permanentStorage).level, chunkEntities.getPos(), entities);
     }
@@ -116,7 +116,7 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
 
     private boolean storeChunkSections(long i, Consumer<T> consumer, boolean callEvent) {
         // CraftBukkit start - add boolean for event call
-        this.banner$fireEvent.set(callEvent);
+        this.taiyitist$fireEvent.set(callEvent);
         return storeChunkSections(i, consumer);
     }
 }

@@ -67,7 +67,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
     }
 
     @Redirect(method = "pushItemsTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;tryMoveItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;Ljava/util/function/BooleanSupplier;)Z"))
-    private static boolean banner$hopperCheck(Level level, BlockPos pos, BlockState state, HopperBlockEntity hopper, BooleanSupplier flag) {
+    private static boolean taiyitist$hopperCheck(Level level, BlockPos pos, BlockState state, HopperBlockEntity hopper, BooleanSupplier flag) {
         var result = tryMoveItems(level, pos, state, hopper, flag);
         if (!result && DistValidate.isValid(level) && level.bridge$spigotConfig().hopperCheck > 1) {
             hopper.setCooldown(level.bridge$spigotConfig().hopperCheck);
@@ -76,38 +76,38 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
     }
 
     @Unique
-    private static AtomicReference<HopperBlockEntity> banner$hopperEntity = new AtomicReference<>();
+    private static AtomicReference<HopperBlockEntity> taiyitist$hopperEntity = new AtomicReference<>();
 
     @Inject(method = "tryMoveItems", at = @At("HEAD"))
-    private static void banner$setHopper(Level level, BlockPos pos, BlockState state, HopperBlockEntity blockEntity, BooleanSupplier validator, CallbackInfoReturnable<Boolean> cir) {
-        banner$hopperEntity.set(blockEntity);
+    private static void taiyitist$setHopper(Level level, BlockPos pos, BlockState state, HopperBlockEntity blockEntity, BooleanSupplier validator, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$hopperEntity.set(blockEntity);
     }
 
     @Redirect(method = "tryMoveItems",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;ejectItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/Container;)Z"))
-    private static boolean banner$changeEjects(Level level, BlockPos pos, BlockState state, Container sourceContainer) {
-        return ejectItems(level, pos, state, sourceContainer, banner$hopperEntity.get());
+    private static boolean taiyitist$changeEjects(Level level, BlockPos pos, BlockState state, Container sourceContainer) {
+        return ejectItems(level, pos, state, sourceContainer, taiyitist$hopperEntity.get());
     }
 
     @Unique
-    private static AtomicReference<HopperBlockEntity> banner$hopper = new AtomicReference<>();
+    private static AtomicReference<HopperBlockEntity> taiyitist$hopper = new AtomicReference<>();
     @Unique
-    private static AtomicReference<Level> banner$world = new AtomicReference<>();
+    private static AtomicReference<Level> taiyitist$world = new AtomicReference<>();
     @Unique
-    private static AtomicReference<InventoryMoveItemEvent> banner$moveEvent = new AtomicReference<>();
+    private static AtomicReference<InventoryMoveItemEvent> taiyitist$moveEvent = new AtomicReference<>();
 
     @Unique
     private static boolean ejectItems(Level world, BlockPos blockposition, BlockState iblockdata, Container iinventory, HopperBlockEntity hopper) { // CraftBukkit
-        banner$hopper.set(hopper);
-        banner$world.set(world);
+        taiyitist$hopper.set(hopper);
+        taiyitist$world.set(world);
         return shadow$ejectItems(world, blockposition, iblockdata, iinventory);
     }
 
     @Redirect(method = "ejectItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;"))
-    private static ItemStack banner$moveItem(Container source, Container destination, ItemStack stack, Direction direction) {
-        var entity = banner$hopper.getAndSet(null);
-        var level = banner$world.getAndSet(null);
+    private static ItemStack taiyitist$moveItem(Container source, Container destination, ItemStack stack, Direction direction) {
+        var entity = taiyitist$hopper.getAndSet(null);
+        var level = taiyitist$world.getAndSet(null);
         entity = entity == null ? (HopperBlockEntity) source : entity;
         CraftItemStack original = CraftItemStack.asCraftMirror(stack);
 
@@ -123,7 +123,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         if (destinationInventory != null) {
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(InventoryOwner.getInventory(entity), original.clone(), destinationInventory, true);
             Bukkit.getPluginManager().callEvent(event);
-            banner$moveEvent.set(event);
+            taiyitist$moveEvent.set(event);
             if (event.isCancelled()) {
                 entity.setCooldown(level.bridge$spigotConfig().hopperTransfer); // Delay hopper checks
                 return null;
@@ -139,14 +139,14 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
             shift = At.Shift.BY,
             target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z"),
             cancellable = true)
-    private static void banner$cancelIfNotEject(Level level, BlockPos pos, BlockState state, Container sourceContainer, CallbackInfoReturnable<Boolean> cir) {
-        if (banner$moveEvent.get() != null && banner$moveEvent.getAndSet(null).isCancelled()) {
+    private static void taiyitist$cancelIfNotEject(Level level, BlockPos pos, BlockState state, Container sourceContainer, CallbackInfoReturnable<Boolean> cir) {
+        if (taiyitist$moveEvent.get() != null && taiyitist$moveEvent.getAndSet(null).isCancelled()) {
             cir.setReturnValue(false);
         }
     }
 
     @Redirect(method = "tryTakeInItemFromSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;"))
-    private static ItemStack banner$pullItem(Container source, Container destination, ItemStack stack, Direction direction, Hopper hopper, Container inv, int index) {
+    private static ItemStack taiyitist$pullItem(Container source, Container destination, ItemStack stack, Direction direction, Hopper hopper, Container inv, int index) {
         ItemStack origin = inv.getItem(index).copy();
         CraftItemStack original = CraftItemStack.asCraftMirror(stack);
 
@@ -161,7 +161,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
         if (sourceInventory != null) {
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(sourceInventory, original.clone(), destination.getOwner().getInventory(), false);
             Bukkit.getPluginManager().callEvent(event);
-            banner$moveEvent.set(event);
+            taiyitist$moveEvent.set(event);
             if (event.isCancelled()) {
                 inv.setItem(index, origin);
                 if (destination instanceof HopperBlockEntity) {
@@ -181,14 +181,14 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
             target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z",
                     ordinal = 1),
             cancellable = true)
-    private static void banner$cancelIfNotTaken(Hopper hopper, Container container, int slot, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if (banner$moveEvent.get() != null && banner$moveEvent.getAndSet(null).isCancelled()) {
+    private static void taiyitist$cancelIfNotTaken(Hopper hopper, Container container, int slot, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        if (taiyitist$moveEvent.get() != null && taiyitist$moveEvent.getAndSet(null).isCancelled()) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/entity/item/ItemEntity;)Z", cancellable = true, at = @At("HEAD"))
-    private static void banner$pickupItem(Container inventory, ItemEntity itemEntity, CallbackInfoReturnable<Boolean> cir) {
+    private static void taiyitist$pickupItem(Container inventory, ItemEntity itemEntity, CallbackInfoReturnable<Boolean> cir) {
         InventoryPickupItemEvent event = new InventoryPickupItemEvent(inventory.getOwner().getInventory(), (Item) itemEntity.getBukkitEntity());
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -205,7 +205,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
     }
 
     @Inject(method = "getAttachedContainer", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At("RETURN"))
-    private static void banner$searchTo(Level level, BlockPos pos, BlockState p_155595_, CallbackInfoReturnable<Container> cir, Direction direction) {
+    private static void taiyitist$searchTo(Level level, BlockPos pos, BlockState p_155595_, CallbackInfoReturnable<Container> cir, Direction direction) {
         var container = cir.getReturnValue();
         var hopper = CraftBlock.at(level, pos);
         var searchBlock = CraftBlock.at(level, pos.relative(direction));
@@ -213,7 +213,7 @@ public abstract class MixinHopperBlockEntity extends RandomizableContainerBlockE
     }
 
     @Inject(method = "getSourceContainer", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At("RETURN"))
-    private static void banner$searchFrom(Level level, Hopper hopper, CallbackInfoReturnable<Container> cir) {
+    private static void taiyitist$searchFrom(Level level, Hopper hopper, CallbackInfoReturnable<Container> cir) {
         var container = cir.getReturnValue();
         var blockPos = BlockPos.containing(hopper.getLevelX(), hopper.getLevelY(), hopper.getLevelZ());
         var hopperBlock = CraftBlock.at(level, blockPos);

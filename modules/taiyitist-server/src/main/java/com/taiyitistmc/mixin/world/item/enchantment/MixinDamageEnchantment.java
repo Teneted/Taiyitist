@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinDamageEnchantment {
 
     @Inject(method = "doPostAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    public void banner$entityDamage(LivingEntity user, Entity target, int level, CallbackInfo ci) {
+    public void taiyitist$entityDamage(LivingEntity user, Entity target, int level, CallbackInfo ci) {
         ((LivingEntity) target).pushEffectCause(EntityPotionEffectEvent.Cause.ATTACK);
     }
 }

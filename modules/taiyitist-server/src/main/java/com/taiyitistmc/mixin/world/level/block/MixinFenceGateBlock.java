@@ -21,7 +21,7 @@ public class MixinFenceGateBlock {
     @Shadow @Final public static BooleanProperty POWERED;
 
     @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;hasNeighborSignal(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean banner$blockRedstone(Level world, BlockPos pos, BlockState state) {
+    private boolean taiyitist$blockRedstone(Level world, BlockPos pos, BlockState state) {
         boolean powered = world.hasNeighborSignal(pos);
         boolean oldPowered = state.getValue(POWERED);
         if (oldPowered != powered) {

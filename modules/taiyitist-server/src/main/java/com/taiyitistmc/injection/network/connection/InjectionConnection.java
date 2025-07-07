@@ -8,7 +8,7 @@ public interface InjectionConnection {
         return null;
     }
 
-    default void banner$setHostName(String hostName) {
+    default void taiyitist$setHostName(String hostName) {
 
     }
 

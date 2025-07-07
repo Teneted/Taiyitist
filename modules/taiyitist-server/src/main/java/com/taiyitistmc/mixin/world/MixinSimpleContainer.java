@@ -32,13 +32,13 @@ public abstract class MixinSimpleContainer implements Container, StackedContents
     public List<HumanEntity> transaction = new ArrayList<>();
 
     @Unique
-    public void banner$constructor(int numSlots) {
+    public void taiyitist$constructor(int numSlots) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(int numSlots, InventoryHolder owner) {
-        this.banner$constructor(numSlots);
+    public void taiyitist$constructor(int numSlots, InventoryHolder owner) {
+        this.taiyitist$constructor(numSlots);
         this.bukkitOwner = owner;
     }
 

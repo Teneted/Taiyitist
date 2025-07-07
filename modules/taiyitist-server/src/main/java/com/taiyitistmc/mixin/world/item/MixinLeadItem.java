@@ -32,15 +32,15 @@ public abstract class MixinLeadItem {
     }
 
     @Unique
-    private static AtomicReference<InteractionHand> banner$hand = new AtomicReference<>(InteractionHand.MAIN_HAND);
+    private static AtomicReference<InteractionHand> taiyitist$hand = new AtomicReference<>(InteractionHand.MAIN_HAND);
 
     @Inject(method = "bindPlayerMobs",
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/decoration/LeashFenceKnotEntity;playPlacementSound()V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private static void banner$bindPlayerMobs(Player player, Level level, BlockPos pos, CallbackInfoReturnable<InteractionResult> cir, LeashFenceKnotEntity leashFenceKnotEntity, boolean bl, double d, int i, int j, int k, List list, Iterator var11, Mob mob) {
+    private static void taiyitist$bindPlayerMobs(Player player, Level level, BlockPos pos, CallbackInfoReturnable<InteractionResult> cir, LeashFenceKnotEntity leashFenceKnotEntity, boolean bl, double d, int i, int j, int k, List list, Iterator var11, Mob mob) {
         // CraftBukkit start - fire HangingPlaceEvent
-        org.bukkit.inventory.EquipmentSlot hand = CraftEquipmentSlot.getHand(banner$hand.get());
+        org.bukkit.inventory.EquipmentSlot hand = CraftEquipmentSlot.getHand(taiyitist$hand.get());
         HangingPlaceEvent event = new HangingPlaceEvent((org.bukkit.entity.Hanging) leashFenceKnotEntity.getBukkitEntity(), player != null ? (org.bukkit.entity.Player) player.getBukkitEntity() : null, level.getWorld().getBlockAt(i, j, k), org.bukkit.block.BlockFace.SELF, hand);
         level.getCraftServer().getPluginManager().callEvent(event);
 
@@ -54,16 +54,16 @@ public abstract class MixinLeadItem {
     @Inject(method = "bindPlayerMobs", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/Mob;setLeashedTo(Lnet/minecraft/world/entity/Entity;Z)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$continueSet(Player player, Level level, BlockPos pos, CallbackInfoReturnable<InteractionResult> cir, LeashFenceKnotEntity leashFenceKnotEntity, boolean bl, double d, int i, int j, int k, List list, Iterator var11, Mob mob) {
+    private static void taiyitist$continueSet(Player player, Level level, BlockPos pos, CallbackInfoReturnable<InteractionResult> cir, LeashFenceKnotEntity leashFenceKnotEntity, boolean bl, double d, int i, int j, int k, List list, Iterator var11, Mob mob) {
         // CraftBukkit start
-        if (player != null && CraftEventFactory.callPlayerLeashEntityEvent(mob, leashFenceKnotEntity, player, banner$hand.get()).isCancelled()) {
+        if (player != null && CraftEventFactory.callPlayerLeashEntityEvent(mob, leashFenceKnotEntity, player, taiyitist$hand.get()).isCancelled()) {
             cir.cancel();
         }
     }
 
     @Unique
     private static InteractionResult bindPlayerMobs(Player entityhuman, Level world, BlockPos blockposition, InteractionHand enumhand) { // CraftBukkit - Add EnumHand
-       banner$hand.set(enumhand);
+       taiyitist$hand.set(enumhand);
        return bindPlayerMobs(entityhuman, world, blockposition);
     }
 }

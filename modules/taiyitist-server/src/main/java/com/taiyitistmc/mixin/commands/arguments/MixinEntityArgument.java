@@ -19,17 +19,17 @@ public abstract class MixinEntityArgument implements InjectionEntityArgument {
     @Shadow public abstract EntitySelector parse(StringReader reader) throws CommandSyntaxException;
 
     @Unique
-    private AtomicBoolean banner$overridePerm = new AtomicBoolean(false);
+    private AtomicBoolean taiyitist$overridePerm = new AtomicBoolean(false);
 
     @Override
     public EntitySelector parse(StringReader stringreader, boolean overridePermissions) throws CommandSyntaxException {
-        banner$overridePerm.set(overridePermissions);
+        taiyitist$overridePerm.set(overridePermissions);
         return parse(stringreader);
     }
 
     @Redirect(method = "parse(Lcom/mojang/brigadier/StringReader;)Lnet/minecraft/commands/arguments/selector/EntitySelector;",
     at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;parse()Lnet/minecraft/commands/arguments/selector/EntitySelector;"))
-    private EntitySelector banner$resetParse(EntitySelectorParser instance) throws CommandSyntaxException {
-        return instance.parse(banner$overridePerm.getAndSet(false));
+    private EntitySelector taiyitist$resetParse(EntitySelectorParser instance) throws CommandSyntaxException {
+        return instance.parse(taiyitist$overridePerm.getAndSet(false));
     }
 }

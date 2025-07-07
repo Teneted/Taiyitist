@@ -32,7 +32,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     public void setMinWaitTime(int minWaitTime) {
         Preconditions.checkArgument(minWaitTime >= 0 && minWaitTime <= this.getMaxWaitTime(), "The minimum wait time should be between %s and %s (the maximum wait time)", 0, this.getMaxWaitTime());
         net.minecraft.world.entity.projectile.FishingHook hook = getHandle();
-        hook.banner$setMinWaitTime(minWaitTime);
+        hook.taiyitist$setMinWaitTime(minWaitTime);
     }
 
     @Override
@@ -44,14 +44,14 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     public void setMaxWaitTime(int maxWaitTime) {
         Preconditions.checkArgument(maxWaitTime >= 0 && maxWaitTime >= this.getMinWaitTime(), "The maximum wait time should be between %s and %s (the minimum wait time)", 0, this.getMinWaitTime());
         net.minecraft.world.entity.projectile.FishingHook hook = getHandle();
-        hook.banner$setMaxWaitTime(maxWaitTime);
+        hook.taiyitist$setMaxWaitTime(maxWaitTime);
     }
 
     @Override
     public void setWaitTime(int min, int max) {
         Preconditions.checkArgument(min >= 0 && max >= 0 && min <= max, "The minimum/maximum wait time should be higher than or equal to 0 and the minimum wait time");
-        getHandle().banner$setMinWaitTime(min);
-        getHandle().banner$setMaxWaitTime(max);
+        getHandle().taiyitist$setMinWaitTime(min);
+        getHandle().taiyitist$setMaxWaitTime(max);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     @Override
     public void setMinLureTime(int minLureTime) {
         Preconditions.checkArgument(minLureTime >= 0 && minLureTime <= this.getMaxLureTime(), "The minimum lure time (%s) should be between 0 and %s (the maximum wait time)", minLureTime, this.getMaxLureTime());
-        getHandle().banner$setMinLureTime(minLureTime);
+        getHandle().taiyitist$setMinLureTime(minLureTime);
     }
 
     @Override
@@ -73,13 +73,13 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     @Override
     public void setMaxLureTime(int maxLureTime) {
         Preconditions.checkArgument(maxLureTime >= 0 && maxLureTime >= this.getMinLureTime(), "The maximum lure time (%s) should be higher than or equal to 0 and %s (the minimum wait time)", maxLureTime, this.getMinLureTime());
-        getHandle().banner$setMaxLureTime(maxLureTime);
+        getHandle().taiyitist$setMaxLureTime(maxLureTime);
     }
 
     @Override
     public void setLureTime(int min, int max) {
-        Preconditions.checkArgument(min >= 0 && max >= 0 && min <= max, "The minimum/maximum lure time should be higher than or equal to 0 and the minimum wait time.");        getHandle().banner$setMinLureTime(min);
-        getHandle().banner$setMaxLureTime(max);
+        Preconditions.checkArgument(min >= 0 && max >= 0 && min <= max, "The minimum/maximum lure time should be higher than or equal to 0 and the minimum wait time.");        getHandle().taiyitist$setMinLureTime(min);
+        getHandle().taiyitist$setMaxLureTime(max);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     @Override
     public void setMinLureAngle(float minLureAngle) {
         Preconditions.checkArgument(minLureAngle <= this.getMaxLureAngle(), "The minimum lure angle (%s) should be less than %s (the maximum lure angle)", minLureAngle, this.getMaxLureAngle());
-        getHandle().banner$setMinLureAnglee(minLureAngle);
+        getHandle().taiyitist$setMinLureAnglee(minLureAngle);
     }
 
     @Override
@@ -101,14 +101,14 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
     @Override
     public void setMaxLureAngle(float maxLureAngle) {
         Preconditions.checkArgument(maxLureAngle >= this.getMinLureAngle(), "The minimum lure angle (%s) should be less than %s (the maximum lure angle)", maxLureAngle, this.getMinLureAngle());
-        getHandle().banner$setMaxLureAnglee(maxLureAngle);
+        getHandle().taiyitist$setMaxLureAnglee(maxLureAngle);
     }
 
     @Override
     public void setLureAngle(float min, float max) {
         Preconditions.checkArgument(min <= max, "The minimum lure (%s) angle should be less than the maximum lure angle (%s)", min, max);
-        getHandle().banner$setMinLureAnglee(min);
-        getHandle().banner$setMaxLureAnglee(max);
+        getHandle().taiyitist$setMinLureAnglee(min);
+        getHandle().taiyitist$setMaxLureAnglee(max);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
 
     @Override
     public void setSkyInfluenced(boolean skyInfluenced) {
-        getHandle().banner$setSkyInfluenced(skyInfluenced);
+        getHandle().taiyitist$setSkyInfluenced(skyInfluenced);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
 
     @Override
     public void setRainInfluenced(boolean rainInfluenced) {
-        getHandle().banner$setRainInfluenced(rainInfluenced);
+        getHandle().taiyitist$setRainInfluenced(rainInfluenced);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
 
     @Override
     public void setApplyLure(boolean applyLure) {
-        getHandle().banner$setApplyLure(applyLure);
+        getHandle().taiyitist$setApplyLure(applyLure);
     }
 
     @Override

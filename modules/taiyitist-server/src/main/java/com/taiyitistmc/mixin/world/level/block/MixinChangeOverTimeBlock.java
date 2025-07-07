@@ -14,7 +14,7 @@ public interface MixinChangeOverTimeBlock<T extends Enum<T>> {
 
     @Redirect(method = "method_34726", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private static boolean banner$blockFrom(ServerLevel instance, BlockPos pos, BlockState state) {
+    private static boolean taiyitist$blockFrom(ServerLevel instance, BlockPos pos, BlockState state) {
         return CraftEventFactory.handleBlockFormEvent(instance, pos, state); // CraftBukkit;
     }
 }

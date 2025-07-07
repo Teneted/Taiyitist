@@ -25,7 +25,7 @@ public abstract class MixinWorldBorder_MovingBorderExtent {
     @Shadow @Final private double lerpDuration;
 
     @Inject(method = "update", at = @At("HEAD"))
-    private void banner$borderEvent(CallbackInfoReturnable<WorldBorder.BorderExtent> cir) {
+    private void taiyitist$borderEvent(CallbackInfoReturnable<WorldBorder.BorderExtent> cir) {
         if (outerThis.bridge$world() != null && this.getLerpRemainingTime() <= 0L) new io.papermc.paper.event.world.border.WorldBorderBoundsChangeFinishEvent(outerThis.bridge$world().getWorld(), outerThis.bridge$world().getWorld().getWorldBorder(), this.from, this.to, this.lerpDuration).callEvent(); // Paper
     }
 }

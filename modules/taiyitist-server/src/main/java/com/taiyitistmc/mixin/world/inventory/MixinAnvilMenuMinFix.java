@@ -15,12 +15,12 @@ public class MixinAnvilMenuMinFix implements InjectionAnvilMenu {
     public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, BannerConfig.maximumRepairCost));
 
     @ModifyConstant(method = "createResult", constant = @Constant(intValue = 40))
-    private int banner$maxRepairCost(int constant) {
+    private int taiyitist$maxRepairCost(int constant) {
         return constant - 40 + maximumRepairCost;
     }
 
     @ModifyConstant(method = "createResult", constant = @Constant(intValue = 39), require = 0)
-    private int banner$maximumRepairCost2(int i) {
+    private int taiyitist$maximumRepairCost2(int i) {
         return i - 40 + maximumRepairCost;
     }
 
@@ -30,7 +30,7 @@ public class MixinAnvilMenuMinFix implements InjectionAnvilMenu {
     }
 
     @Override
-    public void banner$setMaximumRepairCost(int maximumRepairCost) {
+    public void taiyitist$setMaximumRepairCost(int maximumRepairCost) {
         this.maximumRepairCost = maximumRepairCost;
     }
 }

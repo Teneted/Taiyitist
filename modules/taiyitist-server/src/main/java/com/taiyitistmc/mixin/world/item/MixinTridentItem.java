@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinTridentItem {
 
     @Redirect(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V"))
-    public void banner$cancelBreak(ItemStack stack, int amount, LivingEntity entityIn, Consumer<LivingEntity> onBroken) {
+    public void taiyitist$cancelBreak(ItemStack stack, int amount, LivingEntity entityIn, Consumer<LivingEntity> onBroken) {
     }
 
     @Redirect(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$cancelAddEntity(Level instance, Entity entity) {
+    private boolean taiyitist$cancelAddEntity(Level instance, Entity entity) {
         return false;
     }
 
@@ -35,7 +35,7 @@ public class MixinTridentItem {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void banner$addEntity(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged, CallbackInfo ci, Player player, int i, int j, ThrownTrident thrownTrident) {
+    public void taiyitist$addEntity(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged, CallbackInfo ci, Player player, int i, int j, ThrownTrident thrownTrident) {
         // CraftBukkit start
         if (!level.addFreshEntity(thrownTrident)) {
             if (player instanceof ServerPlayer) {
@@ -52,7 +52,7 @@ public class MixinTridentItem {
     @Inject(method = "releaseUsing", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/stats/Stat;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$hurtAndBreak(ItemStack stack, Level level, LivingEntity livingEntity,
+    private void taiyitist$hurtAndBreak(ItemStack stack, Level level, LivingEntity livingEntity,
                                      int timeCharged, CallbackInfo ci,
                                      Player player, int i, int j) {
         // CraftBukkit start
@@ -69,7 +69,7 @@ public class MixinTridentItem {
     }
 
     @Inject(method = "releaseUsing", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/player/Player;getYRot()F"))
-    public void banner$riptide(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft, CallbackInfo ci) {
+    public void taiyitist$riptide(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft, CallbackInfo ci) {
         PlayerRiptideEvent event = new PlayerRiptideEvent(((ServerPlayer) entityLiving).getBukkitEntity(), CraftItemStack.asCraftMirror(stack));
         Bukkit.getPluginManager().callEvent(event);
     }

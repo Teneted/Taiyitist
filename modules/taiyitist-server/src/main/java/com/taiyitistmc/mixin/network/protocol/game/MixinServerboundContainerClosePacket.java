@@ -13,13 +13,13 @@ public class MixinServerboundContainerClosePacket {
     @Shadow @Final @Mutable private int containerId;
 
     @Unique
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(int id) {
-        banner$constructor();
+    public void taiyitist$constructor(int id) {
+        taiyitist$constructor();
         this.containerId = id;
     }
 }

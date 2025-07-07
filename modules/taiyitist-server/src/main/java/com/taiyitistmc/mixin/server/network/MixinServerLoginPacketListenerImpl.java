@@ -107,7 +107,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
             // this.gameProfile = this.createFakeProfile(this.gameProfile);
         }
 
-        this.server.getPlayerList().banner$putHandler((ServerLoginPacketListenerImpl)(Object) this);
+        this.server.getPlayerList().taiyitist$putHandler((ServerLoginPacketListenerImpl)(Object) this);
         Component component = this.server.getPlayerList().canPlayerLogin(this.connection.getRemoteAddress(), this.gameProfile);
         if (component != null) {
             this.disconnect(component);
@@ -190,7 +190,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
                 authenticatorPool.execute(() -> {
                     try {
                         this.initUUID();
-                        banner$preLogin();
+                        taiyitist$preLogin();
                     } catch (Exception ex) {
                         this.disconnect("Failed to verify username!");
                         LOGGER.warn("Exception verifying " + this.gameProfile.getName(), ex);
@@ -243,7 +243,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
                         if (!connection.isConnected()) {
                             return;
                         }
-                        banner$preLogin();
+                        taiyitist$preLogin();
                     } else if (server.isSingleplayer()) {
                         LOGGER.warn("Failed to verify username but will let them in anyway!");
                         gameProfile = createFakeProfile(gameprofile);
@@ -281,7 +281,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     }
 
     @Unique
-    void banner$preLogin() throws Exception {
+    void taiyitist$preLogin() throws Exception {
         if (velocityLoginMessageId == -1 && BannerConfig.velocityEnabled) {
             disconnect("This server requires you to connect with Velocity.");
             return;
@@ -358,7 +358,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
             // Proceed with login
             authenticatorPool.execute(() -> {
                 try {
-                    banner$preLogin();
+                    taiyitist$preLogin();
                 } catch (Exception ex) {
                     this.disconnect("Failed to verify username!");
                     LOGGER.warn("Exception verifying " + gameProfile.getName(), ex);

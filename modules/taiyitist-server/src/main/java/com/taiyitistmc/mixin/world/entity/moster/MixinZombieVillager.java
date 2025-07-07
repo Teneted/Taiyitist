@@ -31,18 +31,18 @@ public abstract class MixinZombieVillager extends Zombie {
     }
 
     @Inject(method = "startConverting", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/ZombieVillager;removeEffect(Lnet/minecraft/world/effect/MobEffect;)Z"))
-    private void banner$convert1(UUID conversionStarterIn, int conversionTimeIn, CallbackInfo ci) {
-        this.banner$setPersist(true);
+    private void taiyitist$convert1(UUID conversionStarterIn, int conversionTimeIn, CallbackInfo ci) {
+        this.taiyitist$setPersist(true);
         pushEffectCause(EntityPotionEffectEvent.Cause.CONVERSION);
     }
 
     @Inject(method = "startConverting", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/ZombieVillager;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"))
-    private void banner$convert2(UUID conversionStarterIn, int conversionTimeIn, CallbackInfo ci) {
+    private void taiyitist$convert2(UUID conversionStarterIn, int conversionTimeIn, CallbackInfo ci) {
         pushEffectCause(EntityPotionEffectEvent.Cause.CONVERSION);
     }
 
     @Redirect(method = "finishConversion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/ZombieVillager;convertTo(Lnet/minecraft/world/entity/EntityType;Z)Lnet/minecraft/world/entity/Mob;"))
-    private <T extends Mob> T banner$cure(net.minecraft.world.entity.monster.ZombieVillager zombieVillagerEntity, EntityType<T> entityType, boolean flag, @Cancellable CallbackInfo ci) {
+    private <T extends Mob> T taiyitist$cure(net.minecraft.world.entity.monster.ZombieVillager zombieVillagerEntity, EntityType<T> entityType, boolean flag, @Cancellable CallbackInfo ci) {
         T t = this.convertTo(entityType, flag, EntityTransformEvent.TransformReason.CURED, CreatureSpawnEvent.SpawnReason.CURED);
         if (t == null) {
             ((ZombieVillager) this.getBukkitEntity()).setConversionTime(-1);
@@ -54,13 +54,13 @@ public abstract class MixinZombieVillager extends Zombie {
     }
 
     @Inject(method = "finishConversion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/ZombieVillager;spawnAtLocation(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$dropPre(ServerLevel world, CallbackInfo ci) {
-        this.banner$setForceDrops(true);
+    private void taiyitist$dropPre(ServerLevel world, CallbackInfo ci) {
+        this.taiyitist$setForceDrops(true);
     }
 
     @Inject(method = "finishConversion", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/monster/ZombieVillager;spawnAtLocation(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$dropPost(ServerLevel world, CallbackInfo ci) {
-        this.banner$setForceDrops(false);
+    private void taiyitist$dropPost(ServerLevel world, CallbackInfo ci) {
+        this.taiyitist$setForceDrops(false);
     }
 
     @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)

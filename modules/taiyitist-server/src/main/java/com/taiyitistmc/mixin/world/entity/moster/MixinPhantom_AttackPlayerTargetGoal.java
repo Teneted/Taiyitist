@@ -16,7 +16,7 @@ public class MixinPhantom_AttackPlayerTargetGoal {
 
     // canUse  setTarget
     @Inject(method = "canUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Phantom;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$reason(CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$reason(CallbackInfoReturnable<Boolean> cir) {
         outerThis.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
     }
 }

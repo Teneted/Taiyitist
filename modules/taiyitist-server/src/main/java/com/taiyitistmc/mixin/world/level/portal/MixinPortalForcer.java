@@ -37,76 +37,76 @@ public abstract class MixinPortalForcer implements InjectionPortalForcer {
     // @formatter:on
 
     @Unique
-    private AtomicReference<Integer> banner$searchRadius = new AtomicReference<>();
+    private AtomicReference<Integer> taiyitist$searchRadius = new AtomicReference<>();
     @Unique
-    private transient BlockStateListPopulator banner$populator;
+    private transient BlockStateListPopulator taiyitist$populator;
     @Unique
-    private transient Entity banner$entity;
+    private transient Entity taiyitist$entity;
     @Unique
-    private transient int banner$createRadius = -1;
+    private transient int taiyitist$createRadius = -1;
 
     @Override
     public Optional<BlockUtil.FoundRectangle> findPortalAround(BlockPos pos, WorldBorder worldBorder, int searchRadius) {
-        this.banner$searchRadius.set(searchRadius);
+        this.taiyitist$searchRadius.set(searchRadius);
         try {
             return this.findPortalAround(pos, false, worldBorder);
         } finally {
-            this.banner$searchRadius.set(-1);
+            this.taiyitist$searchRadius.set(-1);
         }
     }
 
     @ModifyArg(method = "createPortal", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;spiralAround(Lnet/minecraft/core/BlockPos;ILnet/minecraft/core/Direction;Lnet/minecraft/core/Direction;)Ljava/lang/Iterable;"))
-    private int banner$changeRadius(int i) {
-        return this.banner$createRadius == -1 ? i : this.banner$createRadius;
+    private int taiyitist$changeRadius(int i) {
+        return this.taiyitist$createRadius == -1 ? i : this.taiyitist$createRadius;
     }
 
     @Redirect(method = "createPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean banner$captureBlocks1(ServerLevel serverWorld, BlockPos pos, BlockState state) {
-        if (this.banner$populator == null) {
-            this.banner$populator = new BlockStateListPopulator(serverWorld);
+    private boolean taiyitist$captureBlocks1(ServerLevel serverWorld, BlockPos pos, BlockState state) {
+        if (this.taiyitist$populator == null) {
+            this.taiyitist$populator = new BlockStateListPopulator(serverWorld);
         }
-        return this.banner$populator.setBlock(pos, state, 3);
+        return this.taiyitist$populator.setBlock(pos, state, 3);
     }
 
     @Redirect(method = "createPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean banner$captureBlocks2(ServerLevel serverWorld, BlockPos pos, BlockState state, int flags) {
-        if (this.banner$populator == null) {
-            this.banner$populator = new BlockStateListPopulator(serverWorld);
+    private boolean taiyitist$captureBlocks2(ServerLevel serverWorld, BlockPos pos, BlockState state, int flags) {
+        if (this.taiyitist$populator == null) {
+            this.taiyitist$populator = new BlockStateListPopulator(serverWorld);
         }
-        return this.banner$populator.setBlock(pos, state, flags);
+        return this.taiyitist$populator.setBlock(pos, state, flags);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Inject(method = "createPortal", cancellable = true, at = @At("RETURN"))
-    private void banner$portalCreate(BlockPos pos, Direction.Axis axis, CallbackInfoReturnable<Optional<BlockUtil.FoundRectangle>> cir) {
+    private void taiyitist$portalCreate(BlockPos pos, Direction.Axis axis, CallbackInfoReturnable<Optional<BlockUtil.FoundRectangle>> cir) {
         CraftWorld craftWorld =  this.level.getWorld();
         List<org.bukkit.block.BlockState> blockStates;
-        if (this.banner$populator == null) {
+        if (this.taiyitist$populator == null) {
             blockStates = new ArrayList<>();
         } else {
-            blockStates = (List) this.banner$populator.getList();
+            blockStates = (List) this.taiyitist$populator.getList();
         }
-        PortalCreateEvent event = new PortalCreateEvent(blockStates, craftWorld, (this.banner$entity == null) ? null : this.banner$entity.getBukkitEntity(), PortalCreateEvent.CreateReason.NETHER_PAIR);
+        PortalCreateEvent event = new PortalCreateEvent(blockStates, craftWorld, (this.taiyitist$entity == null) ? null : this.taiyitist$entity.getBukkitEntity(), PortalCreateEvent.CreateReason.NETHER_PAIR);
 
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             cir.setReturnValue(Optional.empty());
             return;
         }
-        if (this.banner$populator != null) {
-            this.banner$populator.updateList();
+        if (this.taiyitist$populator != null) {
+            this.taiyitist$populator.updateList();
         }
     }
 
     @Override
     public Optional<BlockUtil.FoundRectangle> createPortal(BlockPos pos, Direction.Axis axis, Entity entity, int createRadius) {
-        this.banner$entity = entity;
-        this.banner$createRadius = createRadius;
+        this.taiyitist$entity = entity;
+        this.taiyitist$createRadius = createRadius;
         try {
             return this.createPortal(pos, axis);
         } finally {
-            this.banner$entity = null;
-            this.banner$createRadius = -1;
+            this.taiyitist$entity = null;
+            this.taiyitist$createRadius = -1;
         }
     }
 }

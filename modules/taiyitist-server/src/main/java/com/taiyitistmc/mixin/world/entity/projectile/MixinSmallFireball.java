@@ -28,14 +28,14 @@ public abstract class MixinSmallFireball extends Fireball {
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;DDD)V", at = @At("RETURN"))
-    private void banner$init(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, CallbackInfo ci) {
+    private void taiyitist$init(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, CallbackInfo ci) {
         if (this.getOwner() != null && this.getOwner() instanceof Mob) {
-            this.banner$setIsIncendiary(this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
+            this.taiyitist$setIsIncendiary(this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING));
         }
     }
 
     @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
-    private void banner$entityCombust(Entity entity, int seconds) {
+    private void taiyitist$entityCombust(Entity entity, int seconds) {
         if (this.bridge$isIncendiary()) {
             EntityCombustByEntityEvent event = new EntityCombustByEntityEvent(this.getBukkitEntity(), entity.getBukkitEntity(), seconds);
             Bukkit.getPluginManager().callEvent(event);
@@ -48,7 +48,7 @@ public abstract class MixinSmallFireball extends Fireball {
 
     @Inject(method = "onHitBlock", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private void banner$burnBlock(BlockHitResult result, CallbackInfo ci, Entity entity, BlockPos pos) {
+    private void taiyitist$burnBlock(BlockHitResult result, CallbackInfo ci, Entity entity, BlockPos pos) {
         if (!this.bridge$isIncendiary() || CraftEventFactory.callBlockIgniteEvent(this.level(), pos, (SmallFireball) (Object) this).isCancelled()) {
             ci.cancel();
         }

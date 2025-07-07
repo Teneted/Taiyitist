@@ -20,9 +20,9 @@ public class MixinListPlayersCommand {
                     target = "Lnet/minecraft/network/chat/ComponentUtils;formatList(Ljava/util/Collection;Ljava/util/function/Function;)Lnet/minecraft/network/chat/Component;",
                     shift = At.Shift.BEFORE)
     )
-    private static void banner$format(CommandSourceStack source, Function<ServerPlayer, Component> nameExtractor, CallbackInfoReturnable<Integer> cir, @Local List<ServerPlayer> list) {
+    private static void taiyitist$format(CommandSourceStack source, Function<ServerPlayer, Component> nameExtractor, CallbackInfoReturnable<Integer> cir, @Local List<ServerPlayer> list) {
         // CraftBukkit start
-        if (source.banner$getBukkitSender() instanceof org.bukkit.entity.Player sender) {
+        if (source.taiyitist$getBukkitSender() instanceof org.bukkit.entity.Player sender) {
             list = list.stream().filter((ep) -> sender.canSee(ep.getBukkitEntity())).collect(java.util.stream.Collectors.toList());
         }
         // CraftBukkit end

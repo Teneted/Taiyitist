@@ -24,13 +24,13 @@ public class MixinBaseCommandBlock {
     // @formatter:on
 
     @Redirect(method = "performCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;performPrefixedCommand(Lnet/minecraft/commands/CommandSourceStack;Ljava/lang/String;)I"))
-    private int banner$serverCommand(Commands commands, CommandSourceStack sender, String command) {
+    private int taiyitist$serverCommand(Commands commands, CommandSourceStack sender, String command) {
         Joiner joiner = Joiner.on(" ");
         if (command.startsWith("/")) {
             command = command.substring(1);
         }
 
-        ServerCommandEvent event = new ServerCommandEvent(sender.banner$getBukkitSender(), command);
+        ServerCommandEvent event = new ServerCommandEvent(sender.taiyitist$getBukkitSender(), command);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return 0;
@@ -57,7 +57,7 @@ public class MixinBaseCommandBlock {
     }
 
     @Inject(method = "setName", at = @At("RETURN"))
-    public void banner$setName(Component nameIn, CallbackInfo ci) {
+    public void taiyitist$setName(Component nameIn, CallbackInfo ci) {
         if (this.name == null) {
             this.name = Component.literal("@");
         }

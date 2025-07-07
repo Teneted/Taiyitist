@@ -30,7 +30,7 @@ public abstract class MixinBlockEntity implements InjectionBlockEntity {
     public CraftPersistentDataContainer persistentDataContainer;
 
     @Inject(method = "load", at = @At("RETURN"))
-    public void banner$loadPersistent(CompoundTag compound, CallbackInfo ci) {
+    public void taiyitist$loadPersistent(CompoundTag compound, CallbackInfo ci) {
         this.persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 
         CompoundTag persistentDataTag = compound.getCompound("PublicBukkitValues");
@@ -40,7 +40,7 @@ public abstract class MixinBlockEntity implements InjectionBlockEntity {
     }
 
     @Inject(method = "saveWithoutMetadata", at = @At("RETURN"))
-    private void banner$savePersistent(CallbackInfoReturnable<CompoundTag> cir) {
+    private void taiyitist$savePersistent(CallbackInfoReturnable<CompoundTag> cir) {
         if (this.persistentDataContainer != null && !this.persistentDataContainer.isEmpty()) {
             cir.getReturnValue().put("PublicBukkitValues", this.persistentDataContainer.toTagCompound());
         }

@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinSpawnUtil {
 
     @Inject(method = "trySpawnMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V", shift = At.Shift.BEFORE))
-    private static <T extends Mob> void banner$pushSpawnReason(EntityType<T> entityType, MobSpawnType spawnType, ServerLevel level, BlockPos pos, int attempts, int i, int j, SpawnUtil.Strategy strategy, CallbackInfoReturnable<Optional<T>> cir) {
+    private static <T extends Mob> void taiyitist$pushSpawnReason(EntityType<T> entityType, MobSpawnType spawnType, ServerLevel level, BlockPos pos, int attempts, int i, int j, SpawnUtil.Strategy strategy, CallbackInfoReturnable<Optional<T>> cir) {
         level.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.DEFAULT);
     }
 }

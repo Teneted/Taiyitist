@@ -26,7 +26,7 @@ public class MixinVillagerMakeLove {
     @Inject(method = "breed", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntityWithPassengers(Lnet/minecraft/world/entity/Entity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void banner$breadEvent(ServerLevel level, Villager parent, Villager partner,
+    private void taiyitist$breadEvent(ServerLevel level, Villager parent, Villager partner,
                                   CallbackInfoReturnable<Optional<Villager>> cir,
                                   Villager villager) {
         // CraftBukkit start - call EntityBreedEvent

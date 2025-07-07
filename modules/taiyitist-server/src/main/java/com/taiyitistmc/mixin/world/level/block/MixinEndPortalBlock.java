@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinEndPortalBlock {
 
     @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;"), cancellable = true)
-    public void banner$enterPortal(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
+    public void taiyitist$enterPortal(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (!Bukkit.getAllowEnd()) {
             if (entity instanceof Player player) {
                 player.displayClientMessage(Component.literal("End dimension is not allow at this server"),

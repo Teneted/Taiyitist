@@ -16,8 +16,8 @@ public abstract class MixinGhast_GhastShootFireballGoal {
     @Shadow @Final private Ghast ghast;
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$setYaw(Level world, Entity entityIn) {
-        ((LargeFireball) entityIn).banner$setBukkitYield(this.ghast.getExplosionPower());
+    private boolean taiyitist$setYaw(Level world, Entity entityIn) {
+        ((LargeFireball) entityIn).taiyitist$setBukkitYield(this.ghast.getExplosionPower());
         return world.addFreshEntity(entityIn);
     }
 }

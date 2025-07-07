@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinWorldGenRegion implements WorldGenLevel {
 
     @Inject(method = "addFreshEntity", at = @At("HEAD"))
-    private void banner$addReason(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$addReason(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         entity.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.DEFAULT);
     }
 

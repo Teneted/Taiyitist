@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinServerRecipeBook {
 
     @Redirect(method = "addRecipes", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/Recipe;isSpecial()Z"))
-    public boolean banner$recipeUpdate(Recipe<?> recipe, Collection<Recipe<?>> collection, ServerPlayer playerEntity) {
+    public boolean taiyitist$recipeUpdate(Recipe<?> recipe, Collection<Recipe<?>> collection, ServerPlayer playerEntity) {
         return recipe.isSpecial() || !CraftEventFactory.handlePlayerRecipeListUpdateEvent(playerEntity, recipe.getId());
     }
 
     @Inject(method = "sendRecipes", cancellable = true, at = @At("HEAD"))
-    public void banner$returnIfFail(ClientboundRecipePacket.State state, ServerPlayer player, List<ResourceLocation> recipesIn, CallbackInfo ci) {
+    public void taiyitist$returnIfFail(ClientboundRecipePacket.State state, ServerPlayer player, List<ResourceLocation> recipesIn, CallbackInfo ci) {
         if (player.connection == null) {
             ci.cancel();
         }

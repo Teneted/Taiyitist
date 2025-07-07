@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinDoublePlantBlock {
 
     @Inject(method = "playerWillDestroy", cancellable = true, at = @At("HEAD"))
-    public void banner$blockPhysics(Level worldIn, BlockPos pos, BlockState state, Player player, CallbackInfo ci) {
+    public void taiyitist$blockPhysics(Level worldIn, BlockPos pos, BlockState state, Player player, CallbackInfo ci) {
         if (CraftEventFactory.callBlockPhysicsEvent(worldIn, pos).isCancelled()) {
             ci.cancel();
         }

@@ -8,6 +8,6 @@ public interface InjectionGuardian {
         return null;
     }
 
-    default void banner$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
+    default void taiyitist$setGuardianAttackGoal(Guardian.GuardianAttackGoal guardianAttackGoal) {
     }
 }

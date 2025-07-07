@@ -11,7 +11,7 @@ public interface InjectionBeehiveBlockEntity {
         return 0;
     }
 
-    default void banner$setMaxBees(int maxBees) {
+    default void taiyitist$setMaxBees(int maxBees) {
     }
 
     default List<Entity> releaseBees(BlockState iblockdata, BeehiveBlockEntity.BeeReleaseStatus tileentitybeehive_releasestatus, boolean force) {

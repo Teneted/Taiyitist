@@ -19,7 +19,7 @@ public class MixinDragonEggBlock {
             at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/level/Level;isClientSide:Z"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void banner$tpEvent(BlockState state, Level level, BlockPos pos, CallbackInfo ci,
+    private void taiyitist$tpEvent(BlockState state, Level level, BlockPos pos, CallbackInfo ci,
                                 WorldBorder worldBorder, int i, BlockPos blockPos) {
         // CraftBukkit start
         org.bukkit.block.Block from = level.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());

@@ -45,20 +45,20 @@ public abstract class MixinZombie extends Monster {
     }
 
     @Inject(method = "convertToZombieType", at = @At("HEAD"))
-    private void banner$transformReason(EntityType<? extends net.minecraft.world.entity.monster.Zombie> entityType, CallbackInfo ci) {
+    private void taiyitist$transformReason(EntityType<? extends net.minecraft.world.entity.monster.Zombie> entityType, CallbackInfo ci) {
         this.bridge$pushTransformReason(EntityTransformEvent.TransformReason.DROWNED);
         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.DROWNED);
     }
 
     @Inject(method = "convertToZombieType", locals = LocalCapture.CAPTURE_FAILHARD, at = @At("RETURN"))
-    private void banner$stopConversion(EntityType<? extends net.minecraft.world.entity.monster.Zombie> entityType, CallbackInfo ci) {
+    private void taiyitist$stopConversion(EntityType<? extends net.minecraft.world.entity.monster.Zombie> entityType, CallbackInfo ci) {
         if (entityType == null) {
             ((Zombie) this.getBukkitEntity()).setConversionTime(-1);
         }
     }
 
     @Inject(method = "hurt", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Zombie;setTarget(Lnet/minecraft/world/entity/LivingEntity;)V"))
-    private void banner$spawnWithReason(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, ServerLevel serverLevel, LivingEntity livingEntity, int i, int j, int k, net.minecraft.world.entity.monster.Zombie zombie, int l, int m, int n, int o, BlockPos blockPos, EntityType entityType, SpawnPlacements.Type type) {
+    private void taiyitist$spawnWithReason(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, ServerLevel serverLevel, LivingEntity livingEntity, int i, int j, int k, net.minecraft.world.entity.monster.Zombie zombie, int l, int m, int n, int o, BlockPos blockPos, EntityType entityType, SpawnPlacements.Type type) {
         serverLevel.pushAddEntityReason(CreatureSpawnEvent.SpawnReason.REINFORCEMENTS);
         if (livingEntity != null) {
             zombie.bridge$pushGoalTargetReason(EntityTargetEvent.TargetReason.REINFORCEMENT_TARGET, true);
@@ -66,7 +66,7 @@ public abstract class MixinZombie extends Monster {
     }
 
     @Redirect(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
-    private void banner$entityCombust(Entity entity, int seconds) {
+    private void taiyitist$entityCombust(Entity entity, int seconds) {
         EntityCombustByEntityEvent event = new EntityCombustByEntityEvent(this.getBukkitEntity(),  entity.getBukkitEntity(), seconds);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -75,7 +75,7 @@ public abstract class MixinZombie extends Monster {
     }
 
     @Redirect(method = "killedEntity(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/npc/Villager;convertTo(Lnet/minecraft/world/entity/EntityType;Z)Lnet/minecraft/world/entity/Mob;"))
-    private <T extends Mob> T banner$transform(Villager villagerEntity, EntityType<T> entityType, boolean flag, @Cancellable CallbackInfoReturnable<Boolean> cir) {
+    private <T extends Mob> T taiyitist$transform(Villager villagerEntity, EntityType<T> entityType, boolean flag, @Cancellable CallbackInfoReturnable<Boolean> cir) {
          villagerEntity.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.INFECTION);
          villagerEntity.bridge$pushTransformReason(EntityTransformEvent.TransformReason.INFECTION);
         T t = villagerEntity.convertTo(entityType, flag);
@@ -86,7 +86,7 @@ public abstract class MixinZombie extends Monster {
     }
 
     @Inject(method = "finalizeSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ServerLevelAccessor;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$mount(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag, CallbackInfoReturnable<SpawnGroupData> cir) {
+    private void taiyitist$mount(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag, CallbackInfoReturnable<SpawnGroupData> cir) {
          worldIn.getLevel().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.MOUNT);
     }
 
@@ -112,7 +112,7 @@ public abstract class MixinZombie extends Monster {
             at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/ai/goal/GoalSelector;addGoal(ILnet/minecraft/world/entity/ai/goal/Goal;)V",
                     ordinal = 0))
-    private boolean banner$configTurtleEgg(GoalSelector instance, int priority, Goal goal) {
+    private boolean taiyitist$configTurtleEgg(GoalSelector instance, int priority, Goal goal) {
         return this.level().bridge$bannerConfig().zombiesTargetTurtleEggs;
     }
 }

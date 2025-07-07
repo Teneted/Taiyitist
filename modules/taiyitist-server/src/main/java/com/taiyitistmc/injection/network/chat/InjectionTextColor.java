@@ -8,6 +8,6 @@ public interface InjectionTextColor {
         return null;
     }
 
-    default void banner$setFormat(ChatFormatting format) {
+    default void taiyitist$setFormat(ChatFormatting format) {
     }
 }

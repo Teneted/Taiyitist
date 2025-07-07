@@ -22,7 +22,7 @@ public class MixinCompoundTag {
      * @reason
      */
     @Inject(method = "copy*", at = @At("HEAD"), cancellable = true)
-    private void banner$safeCopy(CallbackInfoReturnable<CompoundTag> cir) {
+    private void taiyitist$safeCopy(CallbackInfoReturnable<CompoundTag> cir) {
         try {
             Map<String, Tag> map = Maps.newHashMap(Maps.transformValues(this.tags, Tag::copy));
             cir.setReturnValue(new CompoundTag(map));

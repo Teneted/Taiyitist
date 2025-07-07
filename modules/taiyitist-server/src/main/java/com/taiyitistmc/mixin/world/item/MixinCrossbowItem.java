@@ -25,13 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinCrossbowItem {
 
     @Unique
-    private static AtomicBoolean banner$capturedBoolean = new AtomicBoolean(true);
+    private static AtomicBoolean taiyitist$capturedBoolean = new AtomicBoolean(true);
 
     @Inject(method = "shootProjectile", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V"))
-    private static void banner$entityShoot(Level worldIn, LivingEntity shooter, InteractionHand handIn, ItemStack crossbow, ItemStack projectile, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle, CallbackInfo ci,
+    private static void taiyitist$entityShoot(Level worldIn, LivingEntity shooter, InteractionHand handIn, ItemStack crossbow, ItemStack projectile, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle, CallbackInfo ci,
                                              boolean flag, Projectile proj) {
         if (!DistValidate.isValid(worldIn)) {
-            banner$capturedBoolean.set(true);
+            taiyitist$capturedBoolean.set(true);
             return;
         }
         EntityShootBowEvent event = CraftEventFactory.callEntityShootBowEvent(shooter, crossbow, projectile, proj, shooter.getUsedItemHand(), soundPitch, true);
@@ -39,12 +39,12 @@ public class MixinCrossbowItem {
             event.getProjectile().remove();
             ci.cancel();
         }
-        banner$capturedBoolean.set(event.getProjectile() == proj.getBukkitEntity());
+        taiyitist$capturedBoolean.set(event.getProjectile() == proj.getBukkitEntity());
     }
 
     @Redirect(method = "shootProjectile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private static boolean banner$addEntity(Level instance, Entity entity, Level worldIn, LivingEntity shooter, @Cancellable CallbackInfo ci) {
-        if (banner$capturedBoolean.get()) {
+    private static boolean taiyitist$addEntity(Level instance, Entity entity, Level worldIn, LivingEntity shooter, @Cancellable CallbackInfo ci) {
+        if (taiyitist$capturedBoolean.get()) {
             if (!instance.addFreshEntity(entity)) {
                 if (shooter instanceof ServerPlayer) {
                     ((ServerPlayer) shooter).getBukkitEntity().updateInventory();

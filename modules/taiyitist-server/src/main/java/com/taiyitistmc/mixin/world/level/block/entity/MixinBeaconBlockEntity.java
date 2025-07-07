@@ -44,7 +44,7 @@ public abstract class MixinBeaconBlockEntity extends BlockEntity implements Inje
     }
 
     @Inject(method = "load", at = @At("RETURN"))
-    public void banner$level(CompoundTag tag, CallbackInfo ci) {
+    public void taiyitist$level(CompoundTag tag, CallbackInfo ci) {
         this.levels = tag.getInt("Levels");
     }
 
@@ -52,7 +52,7 @@ public abstract class MixinBeaconBlockEntity extends BlockEntity implements Inje
             at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/level/block/entity/BeaconBlockEntity;lastCheckY:I", ordinal = 5),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void banner$activationEvent(Level level, BlockPos pos, BlockState state,
+    private static void taiyitist$activationEvent(Level level, BlockPos pos, BlockState state,
                                                BeaconBlockEntity blockEntity, CallbackInfo ci,
                                                int i, int j, int k, BlockPos blockPos,
                                                BeaconBlockEntity.BeaconBeamSection beaconBeamSection,
@@ -69,7 +69,7 @@ public abstract class MixinBeaconBlockEntity extends BlockEntity implements Inje
     }
 
     @Inject(method = "setRemoved", at = @At("HEAD"))
-    private void banner$beaconEvent(CallbackInfo ci) {
+    private void taiyitist$beaconEvent(CallbackInfo ci) {
         // Paper start - BeaconDeactivatedEvent
         org.bukkit.block.Block block = CraftBlock.at(level, worldPosition);
         new io.papermc.paper.event.block.BeaconDeactivatedEvent(block).callEvent();

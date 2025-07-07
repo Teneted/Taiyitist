@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinDirtPathBlock {
 
     @Inject(method = "tick", cancellable = true, at = @At("HEAD"))
-    private void banner$checkValid(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource, CallbackInfo ci) {
+    private void taiyitist$checkValid(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource, CallbackInfo ci) {
         if (!state.canSurvive(level, pos)) {
             ci.cancel();
         }

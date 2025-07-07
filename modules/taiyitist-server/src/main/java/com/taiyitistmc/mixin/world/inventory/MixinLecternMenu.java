@@ -35,29 +35,29 @@ public abstract class MixinLecternMenu extends AbstractContainerMenu implements 
     }
 
     @Unique
-    public void banner$constructor(int i) {
+    public void taiyitist$constructor(int i) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(int i, Container inventory, ContainerData intArray) {
+    public void taiyitist$constructor(int i, Container inventory, ContainerData intArray) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(int i, Inventory playerInventory) {
-        banner$constructor(i);
+    public void taiyitist$constructor(int i, Inventory playerInventory) {
+        taiyitist$constructor(i);
         this.playerInventory = playerInventory;
     }
 
     @Unique
-    public void banner$constructor(int i, Container inventory, ContainerData intArray, Inventory playerInventory) {
-        banner$constructor(i, inventory, intArray);
+    public void taiyitist$constructor(int i, Container inventory, ContainerData intArray, Inventory playerInventory) {
+        taiyitist$constructor(i, inventory, intArray);
         this.playerInventory = playerInventory;
     }
 
     @Inject(method = "clickMenuButton", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Container;removeItemNoUpdate(I)Lnet/minecraft/world/item/ItemStack;"))
-    public void banner$takeBook(Player playerIn, int id, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$takeBook(Player playerIn, int id, CallbackInfoReturnable<Boolean> cir) {
         PlayerTakeLecternBookEvent event = new PlayerTakeLecternBookEvent((org.bukkit.entity.Player) this.playerInventory.player.getBukkitEntity(), ((CraftInventoryLectern) getBukkitView().getTopInventory()).getHolder());
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -66,7 +66,7 @@ public abstract class MixinLecternMenu extends AbstractContainerMenu implements 
     }
 
     @Inject(method = "stillValid", cancellable = true, at = @At("HEAD"))
-    public void banner$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
+    public void taiyitist$unreachable(Player playerIn, CallbackInfoReturnable<Boolean> cir) {
         if (!bridge$checkReachable()) cir.setReturnValue(true);
     }
 

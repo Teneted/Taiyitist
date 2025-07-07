@@ -36,12 +36,12 @@ public abstract class MixinMerchantMenu extends AbstractContainerMenu {
     }
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/trading/Merchant;)V", at = @At("RETURN"))
-    public void banner$init(int id, Inventory playerInventoryIn, Merchant merchantIn, CallbackInfo ci) {
+    public void taiyitist$init(int id, Inventory playerInventoryIn, Merchant merchantIn, CallbackInfo ci) {
         this.playerInventory = playerInventoryIn;
     }
 
     @Inject(method = "playTradeSound", cancellable = true, at = @At("HEAD"))
-    public void banner$returnIfFail(CallbackInfo ci) {
+    public void taiyitist$returnIfFail(CallbackInfo ci) {
         if (!(this.trader instanceof Entity)) {
             ci.cancel();
         }

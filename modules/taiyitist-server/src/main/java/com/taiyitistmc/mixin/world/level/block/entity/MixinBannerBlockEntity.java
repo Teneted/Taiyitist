@@ -18,7 +18,7 @@ public class MixinBannerBlockEntity {
     @Inject(method = "load", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/nbt/CompoundTag;getList(Ljava/lang/String;I)Lnet/minecraft/nbt/ListTag;",
             shift = At.Shift.AFTER))
-    private void banner$checkPattern(CompoundTag tag, CallbackInfo ci) {
+    private void taiyitist$checkPattern(CompoundTag tag, CallbackInfo ci) {
         if (this.itemPatterns != null) {
             // CraftBukkit start
             while (this.itemPatterns.size() > 20) {

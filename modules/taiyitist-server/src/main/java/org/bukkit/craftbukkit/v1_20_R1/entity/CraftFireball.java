@@ -23,12 +23,12 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
 
     @Override
     public void setIsIncendiary(boolean isIncendiary) {
-        getHandle().banner$setIsIncendiary(isIncendiary);
+        getHandle().taiyitist$setIsIncendiary(isIncendiary);
     }
 
     @Override
     public void setYield(float yield) {
-        getHandle().banner$setBukkitYield(yield);
+        getHandle().taiyitist$setBukkitYield(yield);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().banner$setProjectileSource(shooter);
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override

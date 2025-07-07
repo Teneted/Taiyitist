@@ -23,13 +23,13 @@ public abstract class MixinBanListEntry<T> extends StoredUserEntry<T> implements
     @Shadow @Final protected String reason;
 
     @Unique
-    public void banner$constructor$super(T object) {
+    public void taiyitist$constructor$super(T object) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(T object, JsonObject jsonObject) {
-        banner$constructor$super(checkExpiry(object, jsonObject));
+    public void taiyitist$constructor(T object, JsonObject jsonObject) {
+        taiyitist$constructor$super(checkExpiry(object, jsonObject));
     }
 
     public MixinBanListEntry(@Nullable T object) {

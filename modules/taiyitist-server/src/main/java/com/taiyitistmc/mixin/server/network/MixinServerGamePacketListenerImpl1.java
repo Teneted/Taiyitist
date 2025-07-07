@@ -41,14 +41,14 @@ public class MixinServerGamePacketListenerImpl1 {
     private ServerGamePacketListenerImpl outerThis;
 
     @Unique
-    private transient Vec3 banner$interactVec;
+    private transient Vec3 taiyitist$interactVec;
 
     @Decorate(method = "performInteraction", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl$EntityInteraction;run(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"))
-    private InteractionResult banner$playerInteractEvent(ServerGamePacketListenerImpl.EntityInteraction instance, ServerPlayer player, Entity entity, InteractionHand interactionHand) throws Throwable {
+    private InteractionResult taiyitist$playerInteractEvent(ServerGamePacketListenerImpl.EntityInteraction instance, ServerPlayer player, Entity entity, InteractionHand interactionHand) throws Throwable {
         PlayerInteractEntityEvent event;
-        if (banner$interactVec != null) {
+        if (taiyitist$interactVec != null) {
             event = new PlayerInteractAtEntityEvent((Player) player.getBukkitEntity(), entity.getBukkitEntity(),
-                    new org.bukkit.util.Vector(banner$interactVec.x, banner$interactVec.y, banner$interactVec.z), (interactionHand == InteractionHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+                    new org.bukkit.util.Vector(taiyitist$interactVec.x, taiyitist$interactVec.y, taiyitist$interactVec.z), (interactionHand == InteractionHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
         } else {
             event = new PlayerInteractEntityEvent((Player) player.getBukkitEntity(), entity.getBukkitEntity(),
                     (interactionHand == InteractionHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
@@ -90,17 +90,17 @@ public class MixinServerGamePacketListenerImpl1 {
     }
 
     @Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"))
-    private void banner$setInteractVec(InteractionHand interactionHand, Vec3 vec3, CallbackInfo ci) {
-        this.banner$interactVec = vec3;
+    private void taiyitist$setInteractVec(InteractionHand interactionHand, Vec3 vec3, CallbackInfo ci) {
+        this.taiyitist$interactVec = vec3;
     }
 
     @Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At("RETURN"))
-    private void banner$resetInteractVec(InteractionHand interactionHand, Vec3 vec3, CallbackInfo ci) {
-        this.banner$interactVec = null;
+    private void taiyitist$resetInteractVec(InteractionHand interactionHand, Vec3 vec3, CallbackInfo ci) {
+        this.taiyitist$interactVec = null;
     }
 
     @Decorate(method = "onAttack", inject = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/level/ServerPlayer;attack(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$sendDirty(@Local(ordinal = -1) ItemStack itemstack) {
+    private void taiyitist$sendDirty(@Local(ordinal = -1) ItemStack itemstack) {
         if (!itemstack.isEmpty() && itemstack.getCount() <= -1) {
             outerThis.player.containerMenu.sendAllDataToRemote();
         }

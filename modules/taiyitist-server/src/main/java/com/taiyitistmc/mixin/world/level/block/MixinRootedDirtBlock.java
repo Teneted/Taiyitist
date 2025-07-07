@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinRootedDirtBlock {
 
     @Redirect(method = "performBonemeal", require = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean banner$blockSpread(ServerLevel instance, BlockPos pos, BlockState state) {
+    private boolean taiyitist$blockSpread(ServerLevel instance, BlockPos pos, BlockState state) {
         return CraftEventFactory.handleBlockSpreadEvent(instance, pos.above(), pos, state);
     }
 }

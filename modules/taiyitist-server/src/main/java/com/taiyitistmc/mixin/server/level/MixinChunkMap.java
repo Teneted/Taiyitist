@@ -57,7 +57,7 @@ public abstract class MixinChunkMap extends ChunkStorage implements InjectionChu
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void banner$updateRandom(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess levelStorageAccess, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop blockableEventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusUpdateListener, Supplier supplier, int i, boolean bl, CallbackInfo ci) {
+    private void taiyitist$updateRandom(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess levelStorageAccess, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop blockableEventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusUpdateListener, Supplier supplier, int i, boolean bl, CallbackInfo ci) {
         this.setChunkGenerator(this.generator);
     }
 
@@ -75,12 +75,12 @@ public abstract class MixinChunkMap extends ChunkStorage implements InjectionChu
     }
 
     @Redirect(method = "upgradeChunkTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;dimension()Lnet/minecraft/resources/ResourceKey;"))
-    private ResourceKey<LevelStem> banner$useTypeKey(ServerLevel serverWorld) {
+    private ResourceKey<LevelStem> taiyitist$useTypeKey(ServerLevel serverWorld) {
         return serverWorld.getTypeKey();
     }
 
     @Redirect(method = "postLoadProtoChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;loadEntitiesRecursive(Ljava/util/List;Lnet/minecraft/world/level/Level;)Ljava/util/stream/Stream;"))
-    private static Stream<Entity> banner$resetChunkMap(List<? extends Tag> tags, Level level) {
+    private static Stream<Entity> taiyitist$resetChunkMap(List<? extends Tag> tags, Level level) {
         // CraftBukkit start - these are spawned serialized (DefinedStructure) and we don't call an add event below at the moment due to ordering complexities
         return EntityType.loadEntitiesRecursive(tags, level).filter((entity) -> {
             boolean needsRemoval = false;

@@ -374,7 +374,7 @@ public final class CraftServer implements Server {
         ignoreVanillaPermissions = commandsConfiguration.getBoolean("ignore-vanilla-permissions");
         pluginManager.useTimings(configuration.getBoolean("settings.plugin-profiling"));
         overrideSpawnLimits();
-        console.banner$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
+        console.taiyitist$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
         BukkitFieldHooks.pluginTicket().timeout = configuration.getInt("chunk-gc.period-in-ticks");
         minimumAPI = configuration.getString("settings.minimum-api");
@@ -1134,7 +1134,7 @@ public final class CraftServer implements Server {
             worlddata = new PrimaryLevelData(worldsettings, worldoptions, worlddimensions_b.specialWorldProperty(), lifecycle);
             iregistry = worlddimensions_b.dimensions();
         }
-        worlddata.banner$setCustomDimensions(iregistry);
+        worlddata.taiyitist$setCustomDimensions(iregistry);
         worlddata.checkName(name);
         worlddata.setModdedInfo(console.getServerModName(), console.getModdedStatus().shouldReportAsModified());
 
@@ -1164,8 +1164,8 @@ public final class CraftServer implements Server {
         ServerLevel internal = new ServerLevel(console, console.executor, worldSession, worlddata, worldKey, worlddimension, getServer().progressListenerFactory.create(11),
                 worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, console.overworld().getRandomSequences());
         name = name.contains("DIM") ? name : name.toLowerCase(java.util.Locale.ENGLISH);
-        internal.banner$setGenerator(generator);
-        internal.banner$setBiomeProvider(biomeProvider);
+        internal.taiyitist$setGenerator(generator);
+        internal.taiyitist$setBiomeProvider(biomeProvider);
         if (!(worlds.containsKey(name.toLowerCase(java.util.Locale.ENGLISH)))) {
             return null;
         }
@@ -1181,9 +1181,9 @@ public final class CraftServer implements Server {
         pluginManager.callEvent(new WorldLoadEvent(internal.getWorld()));
         ServerWorldEvents.LOAD.invoker().onWorldLoad(console, internal); // Banner - add for fabric events
         /*
-        FabricHooks.banner$captureBiomeModified(false);
+        FabricHooks.taiyitist$captureBiomeModified(false);
         BiomeModificationImpl.INSTANCE.finalizeWorldGen(console.registryAccess());// Banner - generate mod biomes
-        FabricHooks.banner$captureBiomeModified(true);*/
+        FabricHooks.taiyitist$captureBiomeModified(true);*/
         return internal.getWorld();
     }
 

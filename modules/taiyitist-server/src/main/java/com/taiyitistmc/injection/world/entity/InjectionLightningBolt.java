@@ -6,6 +6,6 @@ public interface InjectionLightningBolt {
         return false;
     }
 
-    default void banner$setIsSilent(boolean isSilent) {
+    default void taiyitist$setIsSilent(boolean isSilent) {
     }
 }

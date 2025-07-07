@@ -34,9 +34,9 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseItemBehavior {
 
     @Unique
-    private static AtomicReference<Block> banner$bukkitBlock = new AtomicReference<>();
+    private static AtomicReference<Block> taiyitist$bukkitBlock = new AtomicReference<>();
     @Unique
-    private static AtomicReference<CraftItemStack> banner$craftItem = new AtomicReference<>();
+    private static AtomicReference<CraftItemStack> taiyitist$craftItem = new AtomicReference<>();
     @Shadow
     private static boolean tryShearBeehive(ServerLevel level, BlockPos pos) {
         return false;
@@ -85,8 +85,8 @@ public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseIt
     }
 
     private static void bukkitBlockAndcraftItem(org.bukkit.block.Block bukkitBlock, CraftItemStack craftItem) {
-        banner$bukkitBlock.set(bukkitBlock);
-        banner$craftItem.set(craftItem);
+        taiyitist$bukkitBlock.set(bukkitBlock);
+        taiyitist$craftItem.set(craftItem);
     }
 
     // CraftBukkit - add args
@@ -108,7 +108,7 @@ public abstract class MixinShearsDispenseItemBehavior extends OptionalDispenseIt
             if (livingEntity instanceof Shearable shearable) {
                 if (shearable.readyForShearing()) {
                     // CraftBukkit start
-                    if (CraftEventFactory.callBlockShearEntityEvent(livingEntity, banner$bukkitBlock.getAndSet(null), banner$craftItem.getAndSet(null)).isCancelled()) {
+                    if (CraftEventFactory.callBlockShearEntityEvent(livingEntity, taiyitist$bukkitBlock.getAndSet(null), taiyitist$craftItem.getAndSet(null)).isCancelled()) {
                         shearable.shear(SoundSource.BLOCKS);
                         level.gameEvent((Entity) null, GameEvent.SHEAR, pos);
                         return true;

@@ -28,12 +28,12 @@ public abstract class MixinProjectile extends Entity implements InjectionProject
     private boolean hitCancelled = false;
 
     @Inject(method = "setOwner", at = @At("RETURN"))
-    private void banner$updateSource(Entity entityIn, CallbackInfo ci) {
-        this.banner$setProjectileSource((entityIn != null && entityIn.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entityIn.getBukkitEntity() : null);
+    private void taiyitist$updateSource(Entity entityIn, CallbackInfo ci) {
+        this.taiyitist$setProjectileSource((entityIn != null && entityIn.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entityIn.getBukkitEntity() : null);
     }
 
     @Inject(method = "onHitBlock", cancellable = true, at = @At("HEAD"))
-    private void banner$cancelBlockHit(BlockHitResult result, CallbackInfo ci) {
+    private void taiyitist$cancelBlockHit(BlockHitResult result, CallbackInfo ci) {
         if (hitCancelled) {
             ci.cancel();
         }
@@ -45,7 +45,7 @@ public abstract class MixinProjectile extends Entity implements InjectionProject
     }
 
     @Override
-    public void banner$setHitCancelled(boolean cancelled) {
+    public void taiyitist$setHitCancelled(boolean cancelled) {
         hitCancelled = cancelled;
     }
 

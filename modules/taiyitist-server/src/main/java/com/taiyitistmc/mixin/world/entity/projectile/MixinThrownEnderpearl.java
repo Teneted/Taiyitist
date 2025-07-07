@@ -20,17 +20,17 @@ public abstract class MixinThrownEnderpearl extends ThrowableItemProjectile {
     }
 
     @Inject(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$spawnEndermite(HitResult result, CallbackInfo ci) {
+    private void taiyitist$spawnEndermite(HitResult result, CallbackInfo ci) {
         this.level().pushAddEntityReason(CreatureSpawnEvent.SpawnReason.ENDER_PEARL);
     }
 
     @Inject(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private void banner$entityDamage(CallbackInfo ci) {
+    private void taiyitist$entityDamage(CallbackInfo ci) {
         CraftEventFactory.entityDamage = (ThrownEnderpearl) (Object) this;
     }
 
     @Inject(method = "onHit", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private void banner$entityDamageReset(CallbackInfo ci) {
+    private void taiyitist$entityDamageReset(CallbackInfo ci) {
         CraftEventFactory.entityDamage = null;
     }
 }

@@ -50,7 +50,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
 
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;setHurtDir(I)V"))
-    private void banner$damageVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$damageVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Vehicle vehicle = (Vehicle) this.getBukkitEntity();
         org.bukkit.entity.Entity attacker = (source.getEntity() == null) ? null : source.getEntity().getBukkitEntity();
 
@@ -63,7 +63,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Inject(method = "hurt", cancellable = true, at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/vehicle/Boat;getDamage()F"))
-    private void banner$destroyVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void taiyitist$destroyVehicle(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (this.getDamage() > 40.0F) {
             Vehicle vehicle = (Vehicle) this.getBukkitEntity();
             org.bukkit.entity.Entity attacker = (source.getEntity() == null) ? null : source.getEntity().getBukkitEntity();
@@ -79,7 +79,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Inject(method = "push", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
-    private void banner$collideVehicle(Entity entityIn, CallbackInfo ci) {
+    private void taiyitist$collideVehicle(Entity entityIn, CallbackInfo ci) {
         if (!isPassengerOfSameVehicle(entityIn)) {
             VehicleEntityCollisionEvent event = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), entityIn.getBukkitEntity());
             Bukkit.getPluginManager().callEvent(event);
@@ -91,7 +91,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"))
-    private void banner$updateVehicle(CallbackInfo ci) {
+    private void taiyitist$updateVehicle(CallbackInfo ci) {
         org.bukkit.World bworld = this.level().getWorld();
         Location to = CraftLocation.toBukkit(this.position(), bworld, this.getYRot(), this.getXRot());
         Vehicle vehicle = (Vehicle) this.getBukkitEntity();
@@ -104,7 +104,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Redirect(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;isRemoved()Z"))
-    private boolean banner$breakVehicle(Boat boatEntity) {
+    private boolean taiyitist$breakVehicle(Boat boatEntity) {
         if (!boatEntity.isRemoved()) {
             final Vehicle vehicle = (Vehicle) this.getBukkitEntity();
             final VehicleDestroyEvent event = new VehicleDestroyEvent(vehicle, null);
@@ -121,7 +121,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Override
-    public void banner$setMaxSpeed(double maxSpeed) {
+    public void taiyitist$setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
@@ -131,7 +131,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Override
-    public void banner$setOccupiedDeceleration(double occupiedDeceleration) {
+    public void taiyitist$setOccupiedDeceleration(double occupiedDeceleration) {
         this.occupiedDeceleration = occupiedDeceleration;
     }
 
@@ -141,7 +141,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Override
-    public void banner$setUnoccupiedDeceleration(double unoccupiedDeceleration) {
+    public void taiyitist$setUnoccupiedDeceleration(double unoccupiedDeceleration) {
         this.unoccupiedDeceleration = unoccupiedDeceleration;
     }
 
@@ -151,7 +151,7 @@ public abstract class MixinBoat extends Entity implements InjectionBoat {
     }
 
     @Override
-    public void banner$setLandBoats(boolean landBoats) {
+    public void taiyitist$setLandBoats(boolean landBoats) {
         this.landBoats = landBoats;
     }
 }

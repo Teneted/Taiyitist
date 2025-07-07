@@ -18,7 +18,7 @@ public class MixinCat_CatRelaxOnOwnerGoal {
     @Shadow @Final private Cat cat;
 
     @Redirect(method = "giveMorningGift", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean banner$dropItem(Level instance, Entity entity) {
+    private boolean taiyitist$dropItem(Level instance, Entity entity) {
         var event = new EntityDropItemEvent(this.cat.getBukkitEntity(), (Item) entity.getBukkitEntity());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {

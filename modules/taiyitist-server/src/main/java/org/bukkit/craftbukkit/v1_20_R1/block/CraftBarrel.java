@@ -43,7 +43,7 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
                 }
             }
         }
-        getTileEntity().openersCounter.banner$setOpened(true);
+        getTileEntity().openersCounter.taiyitist$setOpened(true);
     }
 
     @Override
@@ -56,6 +56,6 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
                 getTileEntity().playSound(blockData, SoundEvents.BARREL_CLOSE);
             }
         }
-        getTileEntity().openersCounter.banner$setOpened(false);
+        getTileEntity().openersCounter.taiyitist$setOpened(false);
     }
 }

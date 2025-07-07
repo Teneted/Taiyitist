@@ -31,17 +31,17 @@ public abstract class MixinSheep extends Animal {
     }
 
     @Inject(method = "shear", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Sheep;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;I)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$forceDrop(CallbackInfo ci) {
-        this.banner$setForceDrops(true);
+    private void taiyitist$forceDrop(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(true);
     }
 
     @Inject(method = "shear", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/animal/Sheep;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;I)Lnet/minecraft/world/entity/item/ItemEntity;"))
-    private void banner$forceDropReset(CallbackInfo ci) {
-        this.banner$setForceDrops(false);
+    private void taiyitist$forceDropReset(CallbackInfo ci) {
+        this.taiyitist$setForceDrops(false);
     }
 
     @Inject(method = "ate", cancellable = true, at = @At("HEAD"))
-    private void banner$regrow(CallbackInfo ci) {
+    private void taiyitist$regrow(CallbackInfo ci) {
         SheepRegrowWoolEvent event = new SheepRegrowWoolEvent((Sheep) this.getBukkitEntity());
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -50,12 +50,12 @@ public abstract class MixinSheep extends Animal {
     }
 
     @Inject(method = "makeContainer", locals = LocalCapture.CAPTURE_FAILHARD, at = @At("RETURN"))
-    private static void banner$resultInv(DyeColor color, DyeColor color1, CallbackInfoReturnable<CraftingContainer> cir, CraftingContainer craftingInventory) {
+    private static void taiyitist$resultInv(DyeColor color, DyeColor color1, CallbackInfoReturnable<CraftingContainer> cir, CraftingContainer craftingInventory) {
          ((TransientCraftingContainer) craftingInventory).bridge$setResultInventory(new ResultContainer());
     }
 
     @Inject(method = "mobInteract", require = 0, cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Sheep;shear(Lnet/minecraft/sounds/SoundSource;)V"))
-    private void banner$shear(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack stack) {
+    private void taiyitist$shear(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack stack) {
         if (!CraftEventFactory.handlePlayerShearEntityEvent(player, (Entity) (Object) this, stack, hand)) {
             cir.setReturnValue(InteractionResult.PASS);
         }

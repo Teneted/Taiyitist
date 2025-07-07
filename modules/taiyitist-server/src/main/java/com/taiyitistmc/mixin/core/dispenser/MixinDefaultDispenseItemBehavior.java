@@ -22,20 +22,20 @@ public class MixinDefaultDispenseItemBehavior {
     @Unique
     private boolean dropper;
     @Unique
-    private static transient BlockSource banner$isourceblock;
+    private static transient BlockSource taiyitist$isourceblock;
     @Unique
-    private static transient boolean banner$dropper;
+    private static transient boolean taiyitist$dropper;
     @Unique
-    private static transient ItemEntity banner$itemEntity;
+    private static transient ItemEntity taiyitist$itemEntity;
 
     @Unique
-    public void banner$constructor() {
+    public void taiyitist$constructor() {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(boolean dropper) {
-        banner$constructor();
+    public void taiyitist$constructor(boolean dropper) {
+        taiyitist$constructor();
         this.dropper = dropper;
     }
 
@@ -46,7 +46,7 @@ public class MixinDefaultDispenseItemBehavior {
     /*
     @Overwrite
     public static void spawnItem(Level level, ItemStack stack, int speed, Direction facing, Position position) {
-       position = DispenserBlock.getDispensePosition(banner$isourceblock);
+       position = DispenserBlock.getDispensePosition(taiyitist$isourceblock);
         double d = position.x();
         double e = position.y();
         double f = position.z();
@@ -57,24 +57,24 @@ public class MixinDefaultDispenseItemBehavior {
         }
 
         ItemEntity itemEntity = new ItemEntity(level, d, e, f, stack);
-        banner$itemEntity = itemEntity;
+        taiyitist$itemEntity = itemEntity;
         double g = level.random.nextDouble() * 0.1 + 0.2;
         itemEntity.setDeltaMovement(level.random.triangle((double)facing.getStepX() * g, 0.0172275 * (double)speed), level.random.triangle(0.2, 0.0172275 * (double)speed), level.random.triangle((double)facing.getStepZ() * g, 0.0172275 * (double)speed));
-        //spawnItem(level, stack, speed, facing, banner$isourceblock, banner$dropper);
+        //spawnItem(level, stack, speed, facing, taiyitist$isourceblock, taiyitist$dropper);
         level.addFreshEntity(itemEntity);
     }*/
 
     @Unique
     private static boolean spawnItem(Level level, ItemStack stack, int speed, Direction facing, BlockSource isourceblock, boolean dropper) {
-        banner$dropper = dropper;
-        banner$isourceblock = isourceblock;
+        taiyitist$dropper = dropper;
+        taiyitist$isourceblock = isourceblock;
         if (stack.isEmpty()) return true;
 
         // CraftBukkit start
         org.bukkit.block.Block block = level.getWorld().getBlockAt(isourceblock.getPos().getX(), isourceblock.getPos().getY(), isourceblock.getPos().getZ());
         CraftItemStack craftItem = CraftItemStack.asCraftMirror(stack);
 
-        BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), CraftVector.toBukkit(banner$itemEntity.getDeltaMovement()));
+        BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), CraftVector.toBukkit(taiyitist$itemEntity.getDeltaMovement()));
         if (!BukkitFieldHooks.isEventFired()) {
             level.getCraftServer().getPluginManager().callEvent(event);
         }
@@ -83,8 +83,8 @@ public class MixinDefaultDispenseItemBehavior {
             return false;
         }
 
-        banner$itemEntity.setItem(CraftItemStack.asNMSCopy(event.getItem()));
-        banner$itemEntity.setDeltaMovement(CraftVector.toNMS(event.getVelocity()));
+        taiyitist$itemEntity.setItem(CraftItemStack.asNMSCopy(event.getItem()));
+        taiyitist$itemEntity.setDeltaMovement(CraftVector.toNMS(event.getVelocity()));
 
         if (!dropper && !event.getItem().getType().equals(craftItem.getType())) {
             // Chain to handler for new item
@@ -93,7 +93,7 @@ public class MixinDefaultDispenseItemBehavior {
             if (idispensebehavior != DispenseItemBehavior.NOOP && idispensebehavior.getClass() != DispenseItemBehavior.class) {
                     idispensebehavior.dispense(isourceblock, eventStack);
             } else {
-                level.addFreshEntity(banner$itemEntity);
+                level.addFreshEntity(taiyitist$itemEntity);
             }
             return false;
         }

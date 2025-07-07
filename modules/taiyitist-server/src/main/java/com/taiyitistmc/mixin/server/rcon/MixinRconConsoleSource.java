@@ -23,13 +23,13 @@ public abstract class MixinRconConsoleSource implements InjectionRconConsoleSour
     private CraftRemoteConsoleCommandSender remoteConsole = null;
 
     @Unique
-    public void banner$constructor(MinecraftServer pServer) {
+    public void taiyitist$constructor(MinecraftServer pServer) {
         throw new RuntimeException();
     }
 
     @Unique
-    public void banner$constructor(MinecraftServer pServer, SocketAddress socketAddress) {
-        banner$constructor(pServer);
+    public void taiyitist$constructor(MinecraftServer pServer, SocketAddress socketAddress) {
+        taiyitist$constructor(pServer);
         this.socketAddress = socketAddress;
     }
 
@@ -39,7 +39,7 @@ public abstract class MixinRconConsoleSource implements InjectionRconConsoleSour
     }
 
     @Override
-    public void banner$setSocketAddress(SocketAddress socketAddress) {
+    public void taiyitist$setSocketAddress(SocketAddress socketAddress) {
         this.socketAddress = socketAddress;
     }
 

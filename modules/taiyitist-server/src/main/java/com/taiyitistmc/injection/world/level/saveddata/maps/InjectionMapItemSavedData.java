@@ -13,13 +13,13 @@ public interface InjectionMapItemSavedData {
         return null;
     }
 
-    default void banner$setUniqueId(UUID uuid) {
+    default void taiyitist$setUniqueId(UUID uuid) {
     }
 
     default String bridge$id() {
         return null;
     }
 
-    default void banner$setId(String id) {
+    default void taiyitist$setId(String id) {
     }
 }

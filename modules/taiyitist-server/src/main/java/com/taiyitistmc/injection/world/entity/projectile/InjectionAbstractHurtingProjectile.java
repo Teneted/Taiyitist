@@ -13,9 +13,9 @@ public interface InjectionAbstractHurtingProjectile {
         return false;
     }
 
-    default void banner$setBukkitYield(float yield) {
+    default void taiyitist$setBukkitYield(float yield) {
     }
 
-    default void banner$setIsIncendiary(boolean incendiary) {
+    default void taiyitist$setIsIncendiary(boolean incendiary) {
     }
 }

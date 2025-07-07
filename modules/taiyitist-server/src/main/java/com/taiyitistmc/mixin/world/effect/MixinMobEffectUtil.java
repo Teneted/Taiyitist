@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.Unique;
 public class MixinMobEffectUtil {
 
     @Unique
-    private static AtomicReference<EntityPotionEffectEvent.Cause> banner$cause = new AtomicReference<>();
+    private static AtomicReference<EntityPotionEffectEvent.Cause> taiyitist$cause = new AtomicReference<>();
 
     /**
     @Inject(method = "addEffectToPlayersAround", locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
-    private static void banner$pushCause(ServerLevel level, Entity source, Vec3 pos, double radius, MobEffectInstance effect, int durate, CallbackInfoReturnable<List<ServerPlayer>> cir, int duration, MobEffect mobEffect, List<ServerPlayer> list) {
-        EntityPotionEffectEvent.Cause cause = banner$cause.get();
+    private static void taiyitist$pushCause(ServerLevel level, Entity source, Vec3 pos, double radius, MobEffectInstance effect, int durate, CallbackInfoReturnable<List<ServerPlayer>> cir, int duration, MobEffect mobEffect, List<ServerPlayer> list) {
+        EntityPotionEffectEvent.Cause cause = taiyitist$cause.get();
         cause = cause == null ? EntityPotionEffectEvent.Cause.UNKNOWN : BukkitCaptures.getEffectCause();
         if (cause != null) {
             for (ServerPlayer player : list) {

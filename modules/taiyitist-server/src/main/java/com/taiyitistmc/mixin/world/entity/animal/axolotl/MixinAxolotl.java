@@ -24,7 +24,7 @@ public abstract class MixinAxolotl extends Animal {
     @Shadow @Final private static int AXOLOTL_TOTAL_AIR_SUPPLY;
 
     @Inject(method = "getMaxAirSupply", cancellable = true, at = @At("RETURN"))
-    private void banner$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
+    private void taiyitist$useBukkitMaxAir(CallbackInfoReturnable<Integer> cir) {
         cir.setReturnValue(this.bridge$maxAirTicks());
     }
 
@@ -34,7 +34,7 @@ public abstract class MixinAxolotl extends Animal {
     }
 
     @Inject(method = "applySupportingEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
-    private void banner$cause(Player player, CallbackInfo ci) {
+    private void taiyitist$cause(Player player, CallbackInfo ci) {
          player.pushEffectCause(EntityPotionEffectEvent.Cause.AXOLOTL);
     }
 }
