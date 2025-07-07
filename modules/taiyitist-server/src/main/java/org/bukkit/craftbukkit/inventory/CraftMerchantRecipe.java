@@ -32,7 +32,7 @@ public class CraftMerchantRecipe extends MerchantRecipe {
 
    public CraftMerchantRecipe(ItemStack result, int uses, int maxUses, boolean experienceReward, int experience, float priceMultiplier, int demand, int specialPrice) {
       super(result, uses, maxUses, experienceReward, experience, priceMultiplier, demand, specialPrice);
-      this.handle = new MerchantOffer(new ItemCost(Items.AIR), Optional.empty(), CraftItemStack.asNMSCopy(result), uses, maxUses, experience, priceMultiplier, demand, this);
+      this.handle = new MerchantOffer(new ItemCost(Items.AIR), Optional.empty(), CraftItemStack.asNMSCopy(result), uses, maxUses, experience, priceMultiplier, demand/*, this Taiyitist - TODO fimxe*/);
       this.setSpecialPrice(specialPrice);
       this.setExperienceReward(experienceReward);
    }

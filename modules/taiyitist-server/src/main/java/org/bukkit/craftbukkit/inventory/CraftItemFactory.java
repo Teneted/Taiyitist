@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Optional;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
@@ -112,7 +114,7 @@ public final class CraftItemFactory implements ItemFactory {
 
    public ItemStack createItemStack(String input) throws IllegalArgumentException {
       try {
-         ItemParser.ItemResult arg = (new ItemParser(MinecraftServer.getDefaultRegistryAccess())).parse(new StringReader(input));
+         ItemParser.ItemResult arg = (new ItemParser(BukkitMethodHooks.getDefaultRegistryAccess())).parse(new StringReader(input));
          Item item = (Item)arg.item().value();
          net.minecraft.world.item.ItemStack nmsItemStack = new net.minecraft.world.item.ItemStack(item);
          DataComponentPatch nbt = arg.components();
@@ -154,8 +156,8 @@ public final class CraftItemFactory implements ItemFactory {
    private static ItemStack enchantItem(RandomSource source, ItemStack itemStack, int level, boolean allowTreasures) {
       Preconditions.checkArgument(itemStack != null, "ItemStack must not be null");
       Preconditions.checkArgument(!itemStack.getType().isAir(), "ItemStack must not be air");
-      ItemStack itemStack = CraftItemStack.asCraftCopy(itemStack);
-      CraftItemStack craft = (CraftItemStack)itemStack;
+      ItemStack itemStack1 = CraftItemStack.asCraftCopy(itemStack);
+      CraftItemStack craft = (CraftItemStack)itemStack1;
       RegistryAccess registry = CraftRegistry.getMinecraftRegistry();
       Optional<HolderSet.Named<Enchantment>> optional = allowTreasures ? Optional.empty() : registry.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.IN_ENCHANTING_TABLE);
       return CraftItemStack.asCraftMirror(EnchantmentHelper.enchantItem(source, craft.handle, level, registry, optional));

@@ -359,7 +359,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public boolean isTransferred() {
-      return this.getHandle().transferCookieConnection.isTransferred();
+      return this.getHandle().bridge$transferCookieConnection().isTransferred();
    }
 
    public CompletableFuture<byte[]> retrieveCookie(NamespacedKey key) {
@@ -367,7 +367,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
       CompletableFuture<byte[]> future = new CompletableFuture();
       ResourceLocation nms = CraftNamespacedKey.toMinecraft(key);
       this.requestedCookies.add(new CookieFuture(nms, future));
-      this.getHandle().transferCookieConnection.sendPacket(new ClientboundCookieRequestPacket(nms));
+      this.getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundCookieRequestPacket(nms));
       return future;
    }
 
@@ -375,14 +375,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
       Preconditions.checkArgument(key != null, "Cookie key cannot be null");
       Preconditions.checkArgument(value != null, "Cookie value cannot be null");
       Preconditions.checkArgument(value.length <= 5120, "Cookie value too large, must be smaller than 5120 bytes");
-      Preconditions.checkState(this.getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.CONFIGURATION || this.getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only store cookie in CONFIGURATION or PLAY protocol.");
-      this.getHandle().transferCookieConnection.sendPacket(new ClientboundStoreCookiePacket(CraftNamespacedKey.toMinecraft(key), value));
+      Preconditions.checkState(this.getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.CONFIGURATION || this.getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.PLAY, "Can only store cookie in CONFIGURATION or PLAY protocol.");
+      this.getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundStoreCookiePacket(CraftNamespacedKey.toMinecraft(key), value));
    }
 
    public void transfer(String host, int port) {
       Preconditions.checkArgument(host != null, "Host cannot be null");
-      Preconditions.checkState(this.getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.CONFIGURATION || this.getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only transfer in CONFIGURATION or PLAY protocol.");
-      this.getHandle().transferCookieConnection.sendPacket(new ClientboundTransferPacket(host, port));
+      Preconditions.checkState(this.getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.CONFIGURATION || this.getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.PLAY, "Can only transfer in CONFIGURATION or PLAY protocol.");
+      this.getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundTransferPacket(host, port));
    }
 
    public double getEyeHeight(boolean ignorePose) {
@@ -444,15 +444,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public String getDisplayName() {
-      return this.getHandle().displayName;
+      return this.getHandle().bridge$displayName();
    }
 
    public void setDisplayName(String name) {
-      this.getHandle().displayName = name == null ? this.getName() : name;
+      this.getHandle().taiyitist$setDisplayName(name == null ? this.getName() : name);
    }
 
    public String getPlayerListName() {
-      return this.getHandle().listName == null ? this.getName() : CraftChatMessage.fromComponent(this.getHandle().listName);
+      return this.getHandle().taiyitist$setListName(null ? this.getName() : CraftChatMessage.fromComponent(this.getHandle().bridge$listName()));
    }
 
    public void setPlayerListName(String name) {

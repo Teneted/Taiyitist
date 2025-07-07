@@ -13,7 +13,8 @@ public class RecipeIterator implements Iterator<Recipe> {
    private final Iterator<Map.Entry<RecipeType<?>, RecipeHolder<?>>> recipes;
 
    public RecipeIterator() {
-      this.recipes = BukkitMethodHooks.getServer().getRecipeManager().getRecipes().byType.entries().iterator();
+      this.recipes = null; // Taiyitist - TODO fixme
+     /* this.recipes = BukkitMethodHooks.getServer().getRecipeManager().getRecipes().byType.entries().iterator();*/
    }
 
    public boolean hasNext() {

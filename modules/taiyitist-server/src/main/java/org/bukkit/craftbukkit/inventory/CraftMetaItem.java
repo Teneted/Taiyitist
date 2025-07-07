@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
@@ -702,7 +704,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
          try {
             CompoundTag unhandledTag = NbtIo.readCompressed(buf, NbtAccounter.unlimitedHeap());
-            DataComponentPatch unhandledPatch = (DataComponentPatch)DataComponentPatch.CODEC.parse(MinecraftServer.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), unhandledTag).result().get();
+            DataComponentPatch unhandledPatch = (DataComponentPatch)DataComponentPatch.CODEC.parse(BukkitMethodHooks.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), unhandledTag).result().get();
             this.unhandledTags.copy(unhandledPatch);
             var34 = unhandledPatch.entrySet().iterator();
 
@@ -769,7 +771,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
       for(int i = 0; i < size; ++i) {
          CompoundTag entry = mods.getCompoundOrEmpty(i);
          if (!entry.isEmpty()) {
-            net.minecraft.world.entity.ai.attributes.AttributeModifier nmsModifier = (net.minecraft.world.entity.ai.attributes.AttributeModifier)entry.read(net.minecraft.world.entity.ai.attributes.AttributeModifier.MAP_CODEC).orElse((Object)null);
+            net.minecraft.world.entity.ai.attributes.AttributeModifier nmsModifier = (net.minecraft.world.entity.ai.attributes.AttributeModifier)entry.read(net.minecraft.world.entity.ai.attributes.AttributeModifier.MAP_CODEC).orElse((net.minecraft.world.entity.ai.attributes.AttributeModifier) null);
             if (nmsModifier != null) {
                AttributeModifier attribMod = CraftAttributeInstance.convert(nmsModifier);
                String attributeName = entry.getStringOr(ATTRIBUTES_IDENTIFIER.NBT, (String)null);
@@ -1678,7 +1680,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
       Applicator tag = new Applicator();
       this.applyToItem(tag);
       DataComponentPatch patch = tag.build();
-      net.minecraft.nbt.Tag nbt = (net.minecraft.nbt.Tag)DataComponentPatch.CODEC.encodeStart(MinecraftServer.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), patch).getOrThrow();
+      net.minecraft.nbt.Tag nbt = (net.minecraft.nbt.Tag)DataComponentPatch.CODEC.encodeStart(BukkitMethodHooks.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), patch).getOrThrow();
       return nbt.toString();
    }
 
@@ -2335,7 +2337,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
       }
 
       if (!this.unhandledTags.isEmpty()) {
-         net.minecraft.nbt.Tag unhandled = (net.minecraft.nbt.Tag)DataComponentPatch.CODEC.encodeStart(MinecraftServer.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), this.unhandledTags.build()).getOrThrow(IllegalStateException::new);
+         net.minecraft.nbt.Tag unhandled = (net.minecraft.nbt.Tag)DataComponentPatch.CODEC.encodeStart(BukkitMethodHooks.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), this.unhandledTags.build()).getOrThrow(IllegalStateException::new);
 
          try {
             buf = new ByteArrayOutputStream();
@@ -2371,8 +2373,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             NbtIo.writeCompressed(this.customTag, buf);
             builder.put("custom", Base64.getEncoder().encodeToString(buf.toByteArray()));
-         } catch (IOException var10) {
-            IOException ex = var10;
+         } catch (IOException ex) {
             Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, (String)null, ex);
          }
       }
