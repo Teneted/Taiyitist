@@ -41,7 +41,7 @@ public abstract class CraftAbstractHorse extends CraftAnimals implements Abstrac
 
    public void setMaxDomestication(int value) {
       Preconditions.checkArgument(value > 0, "Max domestication (%s) cannot be zero or less", value);
-      this.getHandle().maxDomestication = value;
+      this.getHandle().taiyitist$setMaxDomestication(value);
    }
 
    public double getJumpStrength() {

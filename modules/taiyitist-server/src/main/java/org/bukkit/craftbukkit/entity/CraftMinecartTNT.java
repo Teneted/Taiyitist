@@ -20,7 +20,7 @@ public final class CraftMinecartTNT extends CraftMinecart implements ExplosiveMi
    }
 
    public void setIsIncendiary(boolean isIncendiary) {
-      this.getHandle().isIncendiary = isIncendiary;
+      this.getHandle().taiyitist$setIsIncendiary(isIncendiary);
    }
 
    public void setYield(float yield) {

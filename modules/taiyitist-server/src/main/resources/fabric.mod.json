@@ -34,6 +34,7 @@
   "accessWidener": "taiyitist-access-wideners.accesswidener",
   "custom": {
     "loom:injected_interfaces": {
+      "net/minecraft/class_1701": ["com/taiyitistmc/injection/world/entity/vehicle/InjectionMinecartTNT"],
       "net/minecraft/class_1646": ["com/taiyitistmc/injection/world/entity/npc/InjectionVillager"],
       "net/minecraft/class_1282": ["com/taiyitistmc/injection/world/damagesource/InjectionDamageSource"],
       "net/minecraft/class_1281": ["com/taiyitistmc/injection/world/damagesource/InjectionCombatEntry"],
