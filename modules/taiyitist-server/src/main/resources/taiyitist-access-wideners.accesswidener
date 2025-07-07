@@ -231,6 +231,7 @@ accessible method net/minecraft/world/entity/animal/wolf/Wolf getVariant ()Lnet/
 accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/minecraft/core/Holder;)V
 accessible method net/minecraft/world/entity/animal/Parrot setVariant (Lnet/minecraft/world/entity/animal/Parrot$Variant;)V
 accessible method net/minecraft/world/entity/AreaEffectCloud updateParticle ()V
+accessible method net/minecraft/world/entity/Entity isInvulnerableToBase (Lnet/minecraft/world/damagesource/DamageSource;)Z
 
 # public fields
 accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionPowerBase F

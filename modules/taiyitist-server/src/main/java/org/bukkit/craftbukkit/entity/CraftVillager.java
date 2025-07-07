@@ -143,7 +143,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
       Preconditions.checkArgument(changeReason != null, "Change reason cannot be null");
-      this.getHandle().getGossips().add(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount, changeReason);
+      this.getHandle().getGossips().add(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount/*, changeReason Taiyitist TODO fimxe*/);
    }
 
    public void removeReputation(UUID uuid, Villager.ReputationType reputationType, int amount) {
@@ -154,7 +154,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
       Preconditions.checkArgument(changeReason != null, "Change reason cannot be null");
-      this.getHandle().getGossips().remove(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount, changeReason);
+      this.getHandle().getGossips().remove(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount/*, changeReason Taiyitist - TODO fixme*/);
    }
 
    public void setReputation(UUID uuid, Villager.ReputationType reputationType, int amount) {
@@ -165,15 +165,15 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       Preconditions.checkArgument(uuid != null, "UUID cannot be null");
       Preconditions.checkArgument(reputationType != null, "Reputation type cannot be null");
       Preconditions.checkArgument(changeReason != null, "Change reason cannot be null");
-      this.getHandle().getGossips().add(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount, changeReason);
+      this.getHandle().getGossips().add(uuid, CraftVillager.CraftReputationType.bukkitToMinecraft(reputationType), amount/*, changeReason Taiyitist - TODO fixme*/);
    }
 
    public void setGossipDecayTime(long ticks) {
-      this.getHandle().gossipDecayInterval = ticks;
+      this.getHandle().taiyitist$setGossipDecayInterval(ticks);
    }
 
    public long getGossipDecayTime() {
-      return this.getHandle().gossipDecayInterval;
+      return this.getHandle().bridge$gossipDecayInterval();
    }
 
    public static class CraftProfession extends CraftOldEnumRegistryItem<Villager.Profession, VillagerProfession> implements Villager.Profession {
@@ -228,8 +228,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
       public static Holder<VillagerType> bukkitToMinecraftHolder(Villager.Type bukkit) {
          Preconditions.checkArgument(bukkit != null);
          net.minecraft.core.Registry<VillagerType> registry = CraftRegistry.getMinecraftRegistry(Registries.VILLAGER_TYPE);
-         Holder var3 = registry.wrapAsHolder(bukkitToMinecraft(bukkit));
-         if (var3 instanceof Holder.Reference<VillagerType> holder) {
+         if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.Reference<VillagerType> holder) {
             return holder;
          } else {
             throw new IllegalArgumentException("No Reference holder found for " + String.valueOf(bukkit) + ", this can happen if a plugin creates its own villager type without properly registering it.");

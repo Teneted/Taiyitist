@@ -220,4 +220,12 @@ public interface InjectionEntity {
     default void igniteForSeconds(float i, boolean callEvent) {
         throw new IllegalStateException("Not implemented");
     }
+
+    default boolean bridge$pluginRemoved() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setPluginRemoved(boolean pluginRemoved) {
+        throw new IllegalStateException("Not implemented");
+    }
 }

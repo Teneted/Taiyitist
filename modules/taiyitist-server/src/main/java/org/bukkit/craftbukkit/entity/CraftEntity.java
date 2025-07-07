@@ -80,7 +80,7 @@ public abstract class CraftEntity implements Entity {
 
    public CraftEntity(CraftServer server, net.minecraft.world.entity.Entity entity) {
       this.persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
-      this.spigot = new Entity.Spigot(this) {
+      this.spigot = new Entity.Spigot() {
          public void sendMessage(BaseComponent component) {
          }
 
@@ -191,8 +191,8 @@ public abstract class CraftEntity implements Entity {
       if (!this.entity.isVehicle() && !this.entity.isRemoved()) {
          this.entity.stopRiding();
          if (location.getWorld() != null && !location.getWorld().equals(this.getWorld())) {
-            Preconditions.checkState(!this.entity.generation, "Cannot teleport entity to an other world during world generation");
-            this.entity.teleport(new TeleportTransition(((CraftWorld)location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3.ZERO, location.getPitch(), location.getYaw(), Set.of(), TeleportTransition.DO_NOTHING, TeleportCause.PLUGIN));
+            Preconditions.checkState(!this.entity.bridge$generation(), "Cannot teleport entity to an other world during world generation");
+            this.entity.teleport(new TeleportTransition(((CraftWorld)location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3.ZERO, location.getPitch(), location.getYaw(), Set.of(), TeleportTransition.DO_NOTHING/*, TeleportCause.PLUGIN*/)); // Taiyitist - TODO fixme
             return true;
          } else {
             this.entity.absSnapTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
@@ -213,7 +213,7 @@ public abstract class CraftEntity implements Entity {
    }
 
    public List<Entity> getNearbyEntities(double x, double y, double z) {
-      Preconditions.checkState(!this.entity.generation, "Cannot get nearby entities during world generation");
+      Preconditions.checkState(!this.entity.bridge$generation(), "Cannot get nearby entities during world generation");
       AsyncCatcher.catchOp("getNearbyEntities");
       List<net.minecraft.world.entity.Entity> notchEntityList = this.entity.level().getEntities(this.entity, this.entity.getBoundingBox().inflate(x, y, z), Predicates.alwaysTrue());
       List<Entity> bukkitEntityList = new ArrayList(notchEntityList.size());
@@ -269,8 +269,8 @@ public abstract class CraftEntity implements Entity {
    }
 
    public void remove() {
-      this.entity.pluginRemoved = true;
-      this.entity.discard(this.getHandle().generation ? null : Cause.PLUGIN);
+      this.entity.taiyitist$setPluginRemoved(true);
+      this.entity.discard(this.getHandle().bridge$generation() ? null : Cause.PLUGIN);
    }
 
    public boolean isDead() {
@@ -278,7 +278,7 @@ public abstract class CraftEntity implements Entity {
    }
 
    public boolean isValid() {
-      return this.entity.isAlive() && this.entity.valid && this.entity.isChunkLoaded() && this.isInWorld();
+      return this.entity.isAlive() && this.entity.bridge$valid() && this.entity.isChunkLoaded() && this.isInWorld();
    }
 
    public Server getServer() {
@@ -286,11 +286,11 @@ public abstract class CraftEntity implements Entity {
    }
 
    public boolean isPersistent() {
-      return this.entity.persist;
+      return this.entity.bridge$persist();
    }
 
    public void setPersistent(boolean persistent) {
-      this.entity.persist = persistent;
+      this.entity.banner$setPersist(persistent);
    }
 
    public Vector getMomentum() {
@@ -385,7 +385,7 @@ public abstract class CraftEntity implements Entity {
 
    public void playEffect(EntityEffect type) {
       Preconditions.checkArgument(type != null, "Type cannot be null");
-      Preconditions.checkState(!this.entity.generation, "Cannot play effect during world generation");
+      Preconditions.checkState(!this.entity.bridge$generation(), "Cannot play effect during world generation");
       if (type.getApplicable().isInstance(this)) {
          this.getHandle().level().broadcastEntityEvent(this.getHandle(), type.getData());
       }
@@ -484,7 +484,7 @@ public abstract class CraftEntity implements Entity {
    }
 
    public void setVisibleByDefault(boolean visible) {
-      if (this.getHandle().visibleByDefault != visible) {
+      if (this.getHandle().bridge$visibleByDefault() != visible) {
          Iterator var2;
          org.bukkit.entity.Player player;
          if (visible) {
@@ -503,17 +503,17 @@ public abstract class CraftEntity implements Entity {
             }
          }
 
-         this.getHandle().visibleByDefault = visible;
+         this.getHandle().banner$setVisibleByDefault(visible);
       }
 
    }
 
    public boolean isVisibleByDefault() {
-      return this.getHandle().visibleByDefault;
+      return this.getHandle().bridge$visibleByDefault();
    }
 
    public Set<org.bukkit.entity.Player> getTrackedBy() {
-      Preconditions.checkState(!this.entity.generation, "Cannot get tracking players during world generation");
+      Preconditions.checkState(!this.entity.bridge$generation(), "Cannot get tracking players during world generation");
       ImmutableSet.Builder<org.bukkit.entity.Player> players = ImmutableSet.builder();
       ServerLevel world = ((CraftWorld)this.getWorld()).getHandle();
       ChunkMap.TrackedEntity entityTracker = (ChunkMap.TrackedEntity)world.getChunkSource().chunkMap.entityMap.get(this.getEntityId());
@@ -672,12 +672,12 @@ public abstract class CraftEntity implements Entity {
    }
 
    public boolean isInWorld() {
-      return this.getHandle().inWorld;
+      return this.getHandle().bridge$inWorld();
    }
 
    public String getAsString() {
       TagValueOutput tag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, this.getHandle().registryAccess());
-      return !this.getHandle().saveAsPassenger(tag, false) ? null : tag.buildResult().toString();
+      return !this.getHandle().saveAsPassenger(tag/*, false Taiyitist TODO fixme*/) ? null : tag.buildResult().toString();
    }
 
    public EntitySnapshot createSnapshot() {
@@ -700,7 +700,7 @@ public abstract class CraftEntity implements Entity {
 
    private net.minecraft.world.entity.Entity copy(Level level) {
       TagValueOutput compoundTag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, this.getHandle().registryAccess());
-      this.getHandle().saveAsPassenger(compoundTag, false);
+      this.getHandle().saveAsPassenger(compoundTag/*, false*/);// Taiyisit - TODO fixme
       return net.minecraft.world.entity.EntityType.loadEntityRecursive(compoundTag.buildResult(), level, EntitySpawnReason.LOAD, Function.identity());
    }
 
