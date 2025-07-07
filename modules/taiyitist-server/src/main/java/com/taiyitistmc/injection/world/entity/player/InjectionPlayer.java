@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public interface InjectionPlayer extends InjectionLivingEntity {
     default void causeFoodExhaustion(float f, EntityExhaustionEvent.ExhaustionReason reason) {
     }
 
-    default boolean spawnEntityFromShoulder(CompoundTag nbttagcompound) { // CraftBukkit void->boolean
+    default Entity getEntityOnShoulder(CompoundTag nbttagcompound) { // CraftBukkit void->boolean
         throw new IllegalStateException("Not implemented");
     }
 

@@ -29,95 +29,95 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
    public void setMinWaitTime(int minWaitTime) {
       Preconditions.checkArgument(minWaitTime >= 0 && minWaitTime <= this.getMaxWaitTime(), "The minimum wait time should be between %s and %s (the maximum wait time)", 0, this.getMaxWaitTime());
       FishingHook hook = this.getHandle();
-      hook.minWaitTime = minWaitTime;
+      hook.taiyitist$setMinWaitTime(minWaitTime);
    }
 
    public int getMaxWaitTime() {
-      return this.getHandle().maxWaitTime;
+      return this.getHandle().bridge$maxWaitTime();
    }
 
    public void setMaxWaitTime(int maxWaitTime) {
       Preconditions.checkArgument(maxWaitTime >= 0 && maxWaitTime >= this.getMinWaitTime(), "The maximum wait time should be between %s and %s (the minimum wait time)", 0, this.getMinWaitTime());
       FishingHook hook = this.getHandle();
-      hook.maxWaitTime = maxWaitTime;
+      hook.taiyitist$setMaxWaitTime(maxWaitTime);
    }
 
    public void setWaitTime(int min, int max) {
       Preconditions.checkArgument(min >= 0 && max >= 0 && min <= max, "The minimum/maximum wait time should be higher than or equal to 0 and the minimum wait time");
-      this.getHandle().minWaitTime = min;
-      this.getHandle().maxWaitTime = max;
+      this.getHandle().taiyitist$setMinWaitTime(min);
+      this.getHandle().taiyitist$setMaxWaitTime(max);
    }
 
    public int getMinLureTime() {
-      return this.getHandle().minLureTime;
+      return this.getHandle().bridge$minLureTime();
    }
 
    public void setMinLureTime(int minLureTime) {
       Preconditions.checkArgument(minLureTime >= 0 && minLureTime <= this.getMaxLureTime(), "The minimum lure time (%s) should be between 0 and %s (the maximum wait time)", minLureTime, this.getMaxLureTime());
-      this.getHandle().minLureTime = minLureTime;
+      this.getHandle().taiyitist$setMinLureTime(minLureTime);
    }
 
    public int getMaxLureTime() {
-      return this.getHandle().maxLureTime;
+      return this.getHandle().bridge$maxLureTime();
    }
 
    public void setMaxLureTime(int maxLureTime) {
       Preconditions.checkArgument(maxLureTime >= 0 && maxLureTime >= this.getMinLureTime(), "The maximum lure time (%s) should be higher than or equal to 0 and %s (the minimum wait time)", maxLureTime, this.getMinLureTime());
-      this.getHandle().maxLureTime = maxLureTime;
+      this.getHandle().taiyitist$setMaxLureTime(maxLureTime);
    }
 
    public void setLureTime(int min, int max) {
       Preconditions.checkArgument(min >= 0 && max >= 0 && min <= max, "The minimum/maximum lure time should be higher than or equal to 0 and the minimum wait time.");
-      this.getHandle().minLureTime = min;
-      this.getHandle().maxLureTime = max;
+      this.getHandle().taiyitist$setMinLureTime(min);
+      this.getHandle().taiyitist$setMaxLureTime(max);
    }
 
    public float getMinLureAngle() {
-      return this.getHandle().minLureAngle;
+      return this.getHandle().bridge$minLureAngle();
    }
 
    public void setMinLureAngle(float minLureAngle) {
       Preconditions.checkArgument(minLureAngle <= this.getMaxLureAngle(), "The minimum lure angle (%s) should be less than %s (the maximum lure angle)", minLureAngle, this.getMaxLureAngle());
-      this.getHandle().minLureAngle = minLureAngle;
+      this.getHandle().taiyitist$setMinLureAngle(minLureAngle);
    }
 
    public float getMaxLureAngle() {
-      return this.getHandle().maxLureAngle;
+      return this.getHandle().bridge$maxLureAngle();
    }
 
    public void setMaxLureAngle(float maxLureAngle) {
       Preconditions.checkArgument(maxLureAngle >= this.getMinLureAngle(), "The minimum lure angle (%s) should be less than %s (the maximum lure angle)", maxLureAngle, this.getMinLureAngle());
-      this.getHandle().maxLureAngle = maxLureAngle;
+      this.getHandle().taiyitist$setMaxLureAngle(maxLureAngle);
    }
 
    public void setLureAngle(float min, float max) {
       Preconditions.checkArgument(min <= max, "The minimum lure (%s) angle should be less than the maximum lure angle (%s)", min, max);
-      this.getHandle().minLureAngle = min;
-      this.getHandle().maxLureAngle = max;
+      this.getHandle().taiyitist$setMinLureAngle(min);
+      this.getHandle().taiyitist$setMaxLureAngle(max);
    }
 
    public boolean isSkyInfluenced() {
-      return this.getHandle().skyInfluenced;
+      return this.getHandle().bridge$skyInfluenced();
    }
 
    public void setSkyInfluenced(boolean skyInfluenced) {
-      this.getHandle().skyInfluenced = skyInfluenced;
+      this.getHandle().taiyitist$setSkyInfluenced(skyInfluenced);
    }
 
    public boolean isRainInfluenced() {
-      return this.getHandle().rainInfluenced;
+      return this.getHandle().bridge$rainInfluenced();
    }
 
    public void setRainInfluenced(boolean rainInfluenced) {
-      this.getHandle().rainInfluenced = rainInfluenced;
+      this.getHandle().taiyitist$setRainInfluenced(rainInfluenced);
    }
 
    public boolean getApplyLure() {
-      return this.getHandle().applyLure;
+      return this.getHandle().bridge$applyLure();
    }
 
    public void setApplyLure(boolean applyLure) {
-      this.getHandle().applyLure = applyLure;
+      this.getHandle().taiyitist$setApplyLure(applyLure);
    }
 
    public double getBiteChance() {

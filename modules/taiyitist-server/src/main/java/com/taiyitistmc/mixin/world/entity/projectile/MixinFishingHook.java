@@ -268,7 +268,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void taiyitist$setMinLureAnglee(float minLureAngle) {
+    public void taiyitist$setMinLureAngle(float minLureAngle) {
         this.minLureAngle = minLureAngle;
     }
 
@@ -278,7 +278,7 @@ public abstract class MixinFishingHook extends Projectile implements InjectionFi
     }
 
     @Override
-    public void taiyitist$setMaxLureAnglee(float maxLureAngle) {
+    public void taiyitist$setMaxLureAngle(float maxLureAngle) {
         this.maxLureAngle = maxLureAngle;
     }
 

@@ -22,7 +22,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$setMinLureAnglee(float minLureAngle) {
+    default void taiyitist$setMinLureAngle(float minLureAngle) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -30,7 +30,7 @@ public interface InjectionFishingHook {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$setMaxLureAnglee(float maxLureAngle) {
+    default void taiyitist$setMaxLureAngle(float maxLureAngle) {
         throw new IllegalStateException("Not implemented");
     }
 

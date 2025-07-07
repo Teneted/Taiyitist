@@ -289,7 +289,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
          if (this.getHandle().containerMenu == formerContainer) {
             return null;
          } else {
-            this.getHandle().containerMenu.checkReachable = false;
+            this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
             return this.getHandle().containerMenu.getBukkitView();
          }
       }
@@ -298,8 +298,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
    private static void openCustomInventory(Inventory inventory, ServerPlayer player, MenuType<?> windowType) {
       if (player.connection != null) {
          Preconditions.checkArgument(windowType != null, "Unknown windowType");
-         AbstractContainerMenu container = new CraftContainer(inventory, player, player.nextContainerCounter());
-         AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(player, container);
+         AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(player, new CraftContainer(inventory, player, player.nextContainerCounterInt()));
          if (container != null) {
             String title = container.getBukkitView().getTitle();
             player.connection.send(new ClientboundOpenScreenPacket(container.containerId, windowType, CraftChatMessage.fromString(title)[0]));
@@ -323,7 +322,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
       this.getHandle().openMenu(Blocks.CRAFTING_TABLE.defaultBlockState().getMenuProvider(this.getHandle().level(), CraftLocation.toBlockPosition(location)));
       if (force) {
-         this.getHandle().containerMenu.checkReachable = false;
+         this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
       }
 
       return this.getHandle().containerMenu.getBukkitView();
@@ -344,7 +343,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
       BlockPos pos = CraftLocation.toBlockPosition(location);
       this.getHandle().openMenu(Blocks.ENCHANTING_TABLE.defaultBlockState().getMenuProvider(this.getHandle().level(), pos));
       if (force) {
-         this.getHandle().containerMenu.checkReachable = false;
+         this.getHandle().containerMenu.taiyitist$setCheckReachable(false);
       }
 
       return this.getHandle().containerMenu.getBukkitView();
@@ -359,14 +358,14 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
             }
 
             ServerPlayer player = (ServerPlayer)this.getHandle();
-            Object container;
+            AbstractContainerMenu container;
             if (inventory instanceof CraftInventoryView) {
                container = ((CraftInventoryView)inventory).getHandle();
             } else {
-               container = new CraftContainer(inventory, this.getHandle(), player.nextContainerCounter());
+               container = new CraftContainer(inventory, this.getHandle(), player.nextContainerCounterInt());
             }
 
-            AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(player, (AbstractContainerMenu)container);
+            container = CraftEventFactory.callInventoryOpenEvent(player, (AbstractContainerMenu)container);
             if (container != null) {
                MenuType<?> windowType = CraftContainer.getNotchInventoryType(inventory.getTopInventory());
                if (windowType == MenuType.MERCHANT) {
@@ -593,31 +592,31 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
    }
 
    public int getSaturatedRegenRate() {
-      return this.getHandle().getFoodData().saturatedRegenRate;
+      return this.getHandle().getFoodData().bridge$saturatedRegenRate();
    }
 
    public void setSaturatedRegenRate(int i) {
-      this.getHandle().getFoodData().saturatedRegenRate = i;
+      this.getHandle().getFoodData().taiyitist$setSaturatedRegenRate(i);
    }
 
    public int getUnsaturatedRegenRate() {
-      return this.getHandle().getFoodData().unsaturatedRegenRate;
+      return this.getHandle().getFoodData().bridge$unsaturatedRegenRate();
    }
 
    public void setUnsaturatedRegenRate(int i) {
-      this.getHandle().getFoodData().unsaturatedRegenRate = i;
+      this.getHandle().getFoodData().taiyitist$setUnsaturatedRegenRate(i);
    }
 
    public int getStarvationRate() {
-      return this.getHandle().getFoodData().starvationRate;
+      return this.getHandle().getFoodData().bridge$starvationRate();
    }
 
    public void setStarvationRate(int i) {
-      this.getHandle().getFoodData().starvationRate = i;
+      this.getHandle().getFoodData().taiyitist$setStarvationRate(i);
    }
 
    public Location getLastDeathLocation() {
-      return (Location)this.getHandle().getLastDeathLocation().map(CraftMemoryMapper::fromNms).orElse((Object)null);
+      return (Location)this.getHandle().getLastDeathLocation().map(CraftMemoryMapper::fromNms).orElse((Location) null);
    }
 
    public void setLastDeathLocation(Location location) {
