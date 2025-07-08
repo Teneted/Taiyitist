@@ -16,6 +16,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.Lifecycle;
 import com.taiyitistmc.bukkit.BukkitFieldHooks;
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -104,6 +106,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.PatrolSpawner;
@@ -432,7 +435,7 @@ public final class CraftServer implements Server {
       this.overrideSpawnLimits();
       console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
       this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
-      TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
+      BukkitFieldHooks.setPluginTimeout((long)this.configuration.getInt("chunk-gc.period-in-ticks"));
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
       this.loadIcon();
       this.loadCompatibilities();
@@ -575,7 +578,7 @@ public final class CraftServer implements Server {
    }
 
    private void setVanillaCommands(boolean first) {
-      Commands dispatcher = this.console.vanillaCommandDispatcher;
+      Commands dispatcher = this.console.bridge$getVanillaCommands();
       Iterator var3 = dispatcher.getDispatcher().getRoot().getChildren().iterator();
 
       while(var3.hasNext()) {
@@ -593,7 +596,7 @@ public final class CraftServer implements Server {
    }
 
    public void syncCommands() {
-      Commands dispatcher = this.console.resources.managers().commands = new Commands();
+      Commands dispatcher = this.console.resources.managers().commands = new Commands(null, null);
       Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
 
       while(true) {
@@ -821,7 +824,7 @@ public final class CraftServer implements Server {
    }
 
    public ResourcePack getServerResourcePack() {
-      return (ResourcePack)this.getServer().getServerResourcePack().map(CraftResourcePack::new).orElse((Object)null);
+      return (ResourcePack)this.getServer().getServerResourcePack().map(CraftResourcePack::new).orElse((CraftResourcePack) null);
    }
 
    public String getResourcePack() {
@@ -965,14 +968,14 @@ public final class CraftServer implements Server {
       ++this.reloadCount;
       this.configuration = YamlConfiguration.loadConfiguration(this.getConfigFile());
       this.commandsConfiguration = YamlConfiguration.loadConfiguration(this.getCommandsConfigFile());
-      this.console.settings = new DedicatedServerSettings(this.console.bridge$options());
+      this.console.settings = new DedicatedServerSettings((Path) this.console.bridge$options());
       DedicatedServerProperties config = this.console.settings.getProperties();
       this.console.setPvpAllowed(config.pvp);
       this.console.setFlightAllowed(config.allowFlight);
       this.console.setMotd(config.motd);
       this.overrideSpawnLimits();
       this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
-      TicketType.pluginTimeout = (long)this.configuration.getInt("chunk-gc.period-in-ticks");
+      BukkitFieldHooks.setPluginTimeout((long)this.configuration.getInt("chunk-gc.period-in-ticks"));
       this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
       this.printSaveWarning = false;
       this.console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
@@ -998,12 +1001,12 @@ public final class CraftServer implements Server {
          this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
       }
 
-      SpigotConfig.init((File)this.console.options.valueOf("spigot-settings"));
+      SpigotConfig.init((File)this.console.bridge$options().valueOf("spigot-settings"));
       Iterator var13 = this.console.getAllLevels().iterator();
 
       while(var13.hasNext()) {
          ServerLevel world = (ServerLevel)var13.next();
-         world.L.setDifficulty(config.difficulty);
+         world.bridge$serverLevelDataCB().setDifficulty(config.difficulty);
          world.setSpawnSettings(config.spawnMonsters);
          SpawnCategory[] var4 = SpawnCategory.values();
          int var5 = var4.length;
@@ -1053,7 +1056,7 @@ public final class CraftServer implements Server {
    }
 
    public void reloadData() {
-      ReloadCommand.reload(this.console);
+      BukkitMethodHooks.reload(this.console);
    }
 
    private void loadIcon() {
@@ -1231,7 +1234,7 @@ public final class CraftServer implements Server {
          }
 
          boolean hardcore = creator.hardcore();
-         WorldLoader.DataLoadContext worldloader_a = this.console.worldLoader;
+         WorldLoader.DataLoadContext worldloader_a = this.console.bridge$worldLoader();
          RegistryAccess.Frozen iregistrycustom_dimension = worldloader_a.datapackDimensions();
          net.minecraft.core.Registry<LevelStem> iregistry = iregistrycustom_dimension.lookupOrThrow(Registries.LEVEL_STEM);
          PrimaryLevelData worlddata;
@@ -1279,10 +1282,13 @@ public final class CraftServer implements Server {
          }
 
          if (!creator.keepSpawnInMemory()) {
-            ((GameRules.IntegerValue)worlddata.getGameRules().getRule(GameRules.RULE_SPAWN_CHUNK_RADIUS)).set(0, (ServerLevel)null);
+            ((GameRules.IntegerValue)worlddata.getGameRules().getRule(GameRules.RULE_SPAWN_CHUNK_RADIUS)).set(0, null);
          }
 
-         ServerLevel internal = new ServerLevel(this.console, this.console.executor, worldSession, worlddata, worldKey, worlddimension, this.getServer().progressListenerFactory.create(worlddata.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS)), worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, this.console.overworld().getRandomSequences(), creator.environment(), generator, biomeProvider);
+         ServerLevel internal = new ServerLevel(this.console, this.console.executor, worldSession, worlddata, worldKey, worlddimension, this.getServer().progressListenerFactory.create(worlddata.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS)), worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, this.console.overworld().getRandomSequences()/*, creator.environment(), generator, biomeProvider*/);
+         internal.taiyitist$setEnvironment(creator.environment());
+         internal.taiyitist$setGenerator(generator);
+         internal.taiyitist$setBiomeProvider(biomeProvider);
          if (!this.worlds.containsKey(name.toLowerCase(Locale.ROOT))) {
             return null;
          } else {
@@ -1382,7 +1388,7 @@ public final class CraftServer implements Server {
    }
 
    public ConsoleReader getReader() {
-      return this.console.reader;
+      return this.console.bridge$reader();
    }
 
    public PluginCommand getPluginCommand(String name) {
@@ -1397,7 +1403,7 @@ public final class CraftServer implements Server {
 
    public boolean addRecipe(Recipe recipe) {
       if (recipe instanceof CraftRecipe toAdd) {
-         ;
+
       } else if (recipe instanceof ShapedRecipe) {
          toAdd = CraftShapedRecipe.fromBukkitRecipe((ShapedRecipe)recipe);
       } else if (recipe instanceof ShapelessRecipe) {
@@ -1428,7 +1434,7 @@ public final class CraftServer implements Server {
          toAdd = CraftTransmuteRecipe.fromBukkitRecipe((TransmuteRecipe)recipe);
       }
 
-      ((CraftRecipe)toAdd).addToCraftingManager();
+      ((CraftRecipe).toAdd).addToCraftingManager();
       return true;
    }
 
@@ -1457,7 +1463,7 @@ public final class CraftServer implements Server {
 
    public Recipe getRecipe(NamespacedKey recipeKey) {
       Preconditions.checkArgument(recipeKey != null, "NamespacedKey recipeKey cannot be null");
-      return (Recipe)this.getServer().getRecipeManager().byKey(CraftRecipe.toMinecraft(recipeKey)).map(RecipeHolder::toBukkitRecipe).orElse((Object)null);
+      return (Recipe)this.getServer().getRecipeManager().byKey(CraftRecipe.toMinecraft(recipeKey)).map(RecipeHolder::toBukkitRecipe).orElse((Recipe) null);
    }
 
    private CraftingContainer createInventoryCrafting() {
@@ -1726,7 +1732,7 @@ public final class CraftServer implements Server {
    @Deprecated
    public CraftMapView getMap(int id) {
       MapItemSavedData worldmap = this.console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData(new MapId(id));
-      return worldmap == null ? null : worldmap.mapView;
+      return worldmap == null ? null : worldmap.bridge$mapView();
    }
 
    public CraftMapView createMap(World world) {
@@ -1734,7 +1740,7 @@ public final class CraftServer implements Server {
       ServerLevel minecraftWorld = ((CraftWorld)world).getHandle();
       BlockPos spawn = minecraftWorld.getLevelData().getSpawnPos();
       MapId newId = MapItem.createNewSavedData(minecraftWorld, spawn.getX(), spawn.getZ(), 3, false, false, minecraftWorld.dimension());
-      return minecraftWorld.getMapData(newId).mapView;
+      return minecraftWorld.getMapData(newId).bridge$mapView();
    }
 
    public ItemStack createExplorerMap(World world, Location location, StructureType structureType) {
@@ -1941,7 +1947,7 @@ public final class CraftServer implements Server {
    }
 
    public GameMode getDefaultGameMode() {
-      return GameMode.getByValue(this.console.getLevel(net.minecraft.world.level.Level.OVERWORLD).L.getGameType().getId());
+      return GameMode.getByValue(this.console.getLevel(net.minecraft.world.level.Level.OVERWORLD).bridge$serverLevelDataCB().getGameType().getId());
    }
 
    public void setDefaultGameMode(GameMode mode) {
@@ -1950,13 +1956,13 @@ public final class CraftServer implements Server {
 
       while(var2.hasNext()) {
          World world = (World)var2.next();
-         ((CraftWorld)world).getHandle().L.setGameType(GameType.byId(mode.getValue()));
+         ((CraftWorld)world).getHandle().bridge$serverLevelDataCB().setGameType(GameType.byId(mode.getValue()));
       }
 
    }
 
    public ConsoleCommandSender getConsoleSender() {
-      return this.console.console;
+      return this.console.bridge$console();
    }
 
    public EntityMetadataStore getEntityMetadata() {
@@ -2384,28 +2390,28 @@ public final class CraftServer implements Server {
             Preconditions.checkArgument(clazz == Material.class, "Block namespace (%s) must have material type", clazz.getName());
             damageTagKey = TagKey.create(Registries.BLOCK, key);
             if (BuiltInRegistries.BLOCK.get(damageTagKey).isPresent()) {
-               return new CraftBlockTag(BuiltInRegistries.BLOCK, damageTagKey);
+               return (Tag<T>) new CraftBlockTag(BuiltInRegistries.BLOCK, damageTagKey);
             }
             break;
          case "items":
             Preconditions.checkArgument(clazz == Material.class, "Item namespace (%s) must have material type", clazz.getName());
             damageTagKey = TagKey.create(Registries.ITEM, key);
             if (BuiltInRegistries.ITEM.get(damageTagKey).isPresent()) {
-               return new CraftItemTag(BuiltInRegistries.ITEM, damageTagKey);
+               return (Tag<T>) new CraftItemTag(BuiltInRegistries.ITEM, damageTagKey);
             }
             break;
          case "fluids":
             Preconditions.checkArgument(clazz == Fluid.class, "Fluid namespace (%s) must have fluid type", clazz.getName());
             damageTagKey = TagKey.create(Registries.FLUID, key);
             if (BuiltInRegistries.FLUID.get(damageTagKey).isPresent()) {
-               return new CraftFluidTag(BuiltInRegistries.FLUID, damageTagKey);
+               return (Tag<T>) new CraftFluidTag(BuiltInRegistries.FLUID, damageTagKey);
             }
             break;
          case "entity_types":
             Preconditions.checkArgument(clazz == EntityType.class, "Entity type namespace (%s) must have entity type", clazz.getName());
             damageTagKey = TagKey.create(Registries.ENTITY_TYPE, key);
             if (BuiltInRegistries.ENTITY_TYPE.get(damageTagKey).isPresent()) {
-               return new CraftEntityTag(BuiltInRegistries.ENTITY_TYPE, damageTagKey);
+               return (Tag<T>) new CraftEntityTag(BuiltInRegistries.ENTITY_TYPE, damageTagKey);
             }
             break;
          case "damage_types":
@@ -2413,7 +2419,7 @@ public final class CraftServer implements Server {
             damageTagKey = TagKey.create(Registries.DAMAGE_TYPE, key);
             net.minecraft.core.Registry<net.minecraft.world.damagesource.DamageType> damageRegistry = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
             if (damageRegistry.get(damageTagKey).isPresent()) {
-               return new CraftDamageTag(damageRegistry, damageTagKey);
+               return (Tag<T>) new CraftDamageTag(damageRegistry, damageTagKey);
             }
             break;
          default:
@@ -2423,46 +2429,42 @@ public final class CraftServer implements Server {
       return null;
    }
 
-   public <T extends Keyed> Iterable<Tag<T>> getTags(String registry, Class<T> clazz) {
+   @Override
+   @SuppressWarnings("unchecked")
+   public <T extends Keyed> Iterable<org.bukkit.Tag<T>> getTags(String registry, Class<T> clazz) {
       Preconditions.checkArgument(registry != null, "registry cannot be null");
       Preconditions.checkArgument(clazz != null, "Class clazz cannot be null");
-      DefaultedRegistry entityTags;
       switch (registry) {
-         case "blocks":
-            Preconditions.checkArgument(clazz == Material.class, "Block namespace (%s) must have material type", clazz.getName());
-            entityTags = BuiltInRegistries.BLOCK;
-            return (Iterable)entityTags.getTags().map((pair) -> {
-               return new CraftBlockTag(entityTags, pair.key());
-            }).collect(ImmutableList.toImmutableList());
-         case "items":
-            Preconditions.checkArgument(clazz == Material.class, "Item namespace (%s) must have material type", clazz.getName());
-            entityTags = BuiltInRegistries.ITEM;
-            return (Iterable)entityTags.getTags().map((pair) -> {
-               return new CraftItemTag(entityTags, pair.key());
-            }).collect(ImmutableList.toImmutableList());
-         case "fluids":
-            Preconditions.checkArgument(clazz == Fluid.class, "Fluid namespace (%s) must have fluid type", clazz.getName());
-            entityTags = BuiltInRegistries.FLUID;
-            return (Iterable)entityTags.getTags().map((pair) -> {
-               return new CraftFluidTag(entityTags, pair.key());
-            }).collect(ImmutableList.toImmutableList());
-         case "entity_types":
-            Preconditions.checkArgument(clazz == EntityType.class, "Entity type namespace (%s) must have entity type", clazz.getName());
-            entityTags = BuiltInRegistries.ENTITY_TYPE;
-            return (Iterable)entityTags.getTags().map((pair) -> {
-               return new CraftEntityTag(entityTags, pair.key());
-            }).collect(ImmutableList.toImmutableList());
-         case "damage_types":
-            Preconditions.checkArgument(clazz == DamageType.class, "Damage type namespace (%s) must have damage type", clazz.getName());
-            net.minecraft.core.Registry<net.minecraft.world.damagesource.DamageType> damageTags = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
-            return (Iterable)damageTags.getTags().map((pair) -> {
-               return new CraftDamageTag(damageTags, pair.key());
-            }).collect(ImmutableList.toImmutableList());
-         default:
-            throw new IllegalArgumentException();
+         case org.bukkit.Tag.REGISTRY_BLOCKS -> {
+            Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Block namespace (%s) must have material type", clazz.getName());
+            Registry<Block> blockTags = BuiltInRegistries.BLOCK;
+            return blockTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftBlockTag(blockTags, pair.key())).collect(ImmutableList.toImmutableList());
+         }
+         case org.bukkit.Tag.REGISTRY_ITEMS -> {
+            Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Item namespace (%s) must have material type", clazz.getName());
+            IRegistry<Item> itemTags = BuiltInRegistries.ITEM;
+            return itemTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftItemTag(itemTags, pair.key())).collect(ImmutableList.toImmutableList());
+         }
+         case org.bukkit.Tag.REGISTRY_FLUIDS -> {
+            Preconditions.checkArgument(clazz == org.bukkit.Fluid.class, "Fluid namespace (%s) must have fluid type", clazz.getName());
+            IRegistry<FluidType> fluidTags = BuiltInRegistries.FLUID;
+            return fluidTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftFluidTag(fluidTags, pair.key())).collect(ImmutableList.toImmutableList());
+         }
+         case org.bukkit.Tag.REGISTRY_ENTITY_TYPES -> {
+            Preconditions.checkArgument(clazz == org.bukkit.entity.EntityType.class, "Entity type namespace (%s) must have entity type", clazz.getName());
+            IRegistry<EntityTypes<?>> entityTags = BuiltInRegistries.ENTITY_TYPE;
+            return entityTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftEntityTag(entityTags, pair.key())).collect(ImmutableList.toImmutableList());
+         }
+         case org.bukkit.tag.DamageTypeTags.REGISTRY_DAMAGE_TYPES -> {
+            Preconditions.checkArgument(clazz == org.bukkit.damage.DamageType.class, "Damage type namespace (%s) must have damage type", clazz.getName());
+            Registry<DamageType> damageTags = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
+            return damageTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftDamageTag(damageTags, pair.key())).collect(ImmutableList.toImmutableList());
+         }
+         default -> throw new IllegalArgumentException();
       }
    }
 
+   @Override
    public LootTable getLootTable(NamespacedKey key) {
       Preconditions.checkArgument(key != null, "NamespacedKey key cannot be null");
       ReloadableServerRegistries.Holder registry = this.getServer().reloadableRegistries();
@@ -2470,33 +2472,34 @@ public final class CraftServer implements Server {
          return lookup.get(CraftLootTable.bukkitKeyToMinecraft(key));
       }).map((holder) -> {
          return new CraftLootTable(key, (net.minecraft.world.level.storage.loot.LootTable)holder.value());
-      }).orElse((Object)null);
+      }).orElse((CraftLootTable) null);
    }
 
+   @Override
    public List<Entity> selectEntities(CommandSender sender, String selector) {
       Preconditions.checkArgument(selector != null, "selector cannot be null");
       Preconditions.checkArgument(sender != null, "CommandSender sender cannot be null");
-      EntityArgument arg = EntityArgument.entities();
 
-      List nms;
+      EntityArgument arg = EntityArgument.entities();
+      List<? extends net.minecraft.world.entity.Entity> nms;
+
       try {
          StringReader reader = new StringReader(selector);
          nms = arg.parse(reader, true, true).findEntities(VanillaCommandWrapper.getListener(sender));
          Preconditions.checkArgument(!reader.canRead(), "Spurious trailing data in selector: %s", selector);
-      } catch (CommandSyntaxException var6) {
-         CommandSyntaxException ex = var6;
+      } catch (CommandSyntaxException ex) {
          throw new IllegalArgumentException("Could not parse selector: " + selector, ex);
       }
 
-      return new ArrayList(Lists.transform(nms, (entity) -> {
-         return entity.getBukkitEntity();
-      }));
+      return new ArrayList<>(Lists.transform(nms, (entity) -> entity.getBukkitEntity()));
    }
 
+   @Override
    public StructureManager getStructureManager() {
       return this.structureManager;
    }
 
+   @Override
    public <T extends Keyed> Registry<T> getRegistry(Class<T> aClass) {
       return (Registry)this.registries.computeIfAbsent(aClass, (key) -> {
          return CraftRegistry.createRegistry(aClass, this.console.registryAccess());

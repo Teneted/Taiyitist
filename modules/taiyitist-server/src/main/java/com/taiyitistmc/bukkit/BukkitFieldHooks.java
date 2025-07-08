@@ -20,6 +20,7 @@ public class BukkitFieldHooks {
     private static final VarHandle pluginTicket;
     private static final VarHandle pluginTicketType;
     private static final VarHandle openSign;
+    private static final VarHandle pluginTimeout;
 
     static {
         try {
@@ -33,6 +34,8 @@ public class BukkitFieldHooks {
             pluginTicket = MethodHandles.lookup().unreflectVarHandle(pluginTicketField);
             var pluginTicketTypeField = TicketType.class.getDeclaredField("PLUGIN_TICKET");
             pluginTicketType = MethodHandles.lookup().unreflectVarHandle(pluginTicketTypeField);
+            var pluginTimeoutField = TicketType.class.getDeclaredField("pluginTimeout");
+            pluginTimeout = MethodHandles.lookup().unreflectVarHandle(pluginTimeoutField);
             var openSignField = SignItem.class.getDeclaredField("openSign");
             openSign = MethodHandles.lookup().unreflectVarHandle(openSignField);
         } catch (Throwable t) {
@@ -64,12 +67,12 @@ public class BukkitFieldHooks {
         treeType.set(newType);
     }
 
-    public static TicketType<Unit> pluginTicket() {
-        return (TicketType<Unit>) pluginTicket.get();
+    public static TicketType pluginTicket() {
+        return (TicketType) pluginTicket.get();
     }
 
-    public static TicketType<Plugin> pluginTicketType() {
-        return (TicketType<Plugin>) pluginTicketType.get();
+    public static TicketType pluginTicketType() {
+        return (TicketType) pluginTicketType.get();
     }
 
     public static BlockPos openSign() {
@@ -78,5 +81,13 @@ public class BukkitFieldHooks {
 
     public static void setOpenSign(BlockPos newSign) {
         openSign.set(newSign);
+    }
+
+    public static long pluginTimeout() {
+        return (long) pluginTimeout.get();
+    }
+
+    public static void setPluginTimeout(long newPluginTimeout) {
+        pluginTimeout.set(newPluginTimeout);
     }
 }
