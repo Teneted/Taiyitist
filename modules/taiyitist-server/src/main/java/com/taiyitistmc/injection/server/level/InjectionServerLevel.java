@@ -64,4 +64,8 @@ public interface InjectionServerLevel extends InjectionLevel {
     default boolean canAddFreshEntity() {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void sendParticlesSource(ServerPlayer serverPlayer, ParticleOptions particleParam, boolean force, boolean b, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+        throw new IllegalStateException("Not implemented");
+    }
 }
