@@ -1,0 +1,59 @@
+package com.taiyitistmc.mixin.world.level.block.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.entity.HumanEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+@Mixin(BarrelBlockEntity.class)
+public abstract class MixinBarrelBlockEntity extends RandomizableContainerBlockEntity {
+
+    // CraftBukkit start - add fields and methods
+    public List<HumanEntity> transaction = new ArrayList<>();
+    @Shadow
+    private NonNullList<ItemStack> items;
+    private int maxStack = MAX_STACK;
+    protected MixinBarrelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
+    }
+
+    @Override
+    public List<ItemStack> getContents() {
+        return this.items;
+    }
+
+    @Override
+    public void onOpen(CraftHumanEntity who) {
+        transaction.add(who);
+    }
+
+    @Override
+    public void onClose(CraftHumanEntity who) {
+        transaction.remove(who);
+    }
+
+    @Override
+    public List<HumanEntity> getViewers() {
+        return transaction;
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return maxStack;
+    }
+
+    @Override
+    public void setMaxStackSize(int size) {
+        maxStack = size;
+    }
+    // CraftBukkit end
+}

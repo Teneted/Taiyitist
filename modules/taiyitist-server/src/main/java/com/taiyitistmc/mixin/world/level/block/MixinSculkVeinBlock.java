@@ -1,0 +1,71 @@
+package com.taiyitistmc.mixin.world.level.block;
+
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SculkSpreader;
+import net.minecraft.world.level.block.SculkVeinBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+@Mixin(SculkVeinBlock.class)
+public abstract class MixinSculkVeinBlock {
+
+
+    private final AtomicReference<BlockPos> taiyitist$source = new AtomicReference<>();
+    private final AtomicReference<BlockPos> taiyitist$pos = new AtomicReference<>();
+
+    @Shadow
+    protected abstract boolean attemptPlaceSculk(SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random);
+
+    @Inject(method = "attemptUseCharge", at = @At("HEAD"))
+    private void taiyitist$getSource(SculkSpreader.ChargeCursor cursor,
+                                  LevelAccessor level,
+                                  BlockPos pos, RandomSource random, SculkSpreader spreader,
+                                  boolean bl, CallbackInfoReturnable<Integer> cir) {
+        taiyitist$source.set(pos);
+    }
+
+    @Redirect(method = "attemptUseCharge", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/level/block/SculkVeinBlock;attemptPlaceSculk(Lnet/minecraft/world/level/block/SculkSpreader;Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)Z"))
+    private boolean taiyitist$attemptPlace(SculkVeinBlock instance, SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random) {
+        return attemptPlaceSculk(spreader, level, pos, random, taiyitist$source.get());
+    }
+
+    private boolean attemptPlaceSculk(SculkSpreader spreader, LevelAccessor level, BlockPos pos, RandomSource random, BlockPos sourceBlock) {
+        taiyitist$pos.set(sourceBlock);
+        return attemptPlaceSculk(spreader, level, pos, random);
+    }
+
+    @Redirect(method = "attemptPlaceSculk", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/level/LevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+    private boolean taiyitist$cancelSetBlock(LevelAccessor instance, BlockPos pos, BlockState state, int i) {
+        return false;
+    }
+
+    @Inject(method = "attemptPlaceSculk", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/level/LevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"),
+            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void taiyitist$setBlock(SculkSpreader spreader, LevelAccessor level, BlockPos pos,
+                                 RandomSource random, CallbackInfoReturnable<Boolean> cir,
+                                 BlockState blockState, TagKey<Block> tagKey, Iterator var7, Direction direction,
+                                 BlockPos blockPos, BlockState blockState2, BlockState blockState3) {
+        // CraftBukkit start - Call BlockSpreadEvent
+        if (!CraftEventFactory.handleBlockSpreadEvent(level, taiyitist$pos.get(), blockPos, blockState2, 3)) {
+            cir.setReturnValue(false);
+        }
+        // CraftBukkit end
+    }
+}
