@@ -13,8 +13,16 @@
   },
   "mixinPriority": 400,
   "mixins": [
+    "server.MixinMain",
     "server.MixinMinecraftServer",
     "server.MixinWorldLoader",
-    "server.dedicated.MixinDedicatedServer"
+    "server.dedicated.MixinDedicatedServer",
+    "server.level.MixinServerLevel",
+    "server.level.MixinTicketType",
+    "server.players.MixinPlayerList",
+    "world.level.MixinLevel",
+    "world.level.block.MixinDispenserBlock",
+    "world.level.block.MixinSaplingBlock",
+    "world.level.item.MixinSignItem"
   ]
 }

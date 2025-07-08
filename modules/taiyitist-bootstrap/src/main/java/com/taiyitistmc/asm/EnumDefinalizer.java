@@ -12,14 +12,11 @@ public class EnumDefinalizer implements Implementer {
     static final Set<String> ENUM = Set.of(
             "org/bukkit/Material",
             "org/bukkit/entity/EntityType",
-            "org/bukkit/block/Biome",
-            "org/bukkit/Art",
             "org/bukkit/Statistic",
             "org/bukkit/inventory/CreativeCategory",
             "org/bukkit/entity/SpawnCategory",
             "org/bukkit/entity/EnderDragon$Phase",
             "org/bukkit/inventory/recipe/CookingBookCategory",
-            "org/bukkit/Fluid",
             "org/bukkit/entity/Spellcaster$Spell",
             "org/bukkit/entity/Pose"
     );
