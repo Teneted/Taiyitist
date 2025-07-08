@@ -11,6 +11,6 @@ public class MixinAdvancementHolder implements InjectionAdvancementHolder {
 
     @Override
     public Advancement toBukkit() {
-        return new CraftAdvancement(((AdvancementHolder) (Object) this)); // CraftBukkit
+        return new CraftAdvancement(((AdvancementHolder) (Object) this));
     }
 }

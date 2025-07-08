@@ -13,6 +13,8 @@
   },
   "mixinPriority": 400,
   "mixins": [
+    "advancements.MixinAdvancementHolder",
+    "advancements.MixinAdvancementTree",
     "server.MixinMain",
     "server.MixinMinecraftServer",
     "server.MixinWorldLoader",
