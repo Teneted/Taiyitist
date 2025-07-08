@@ -26,7 +26,7 @@ public class TaiyitistMCStart {
             LOGGER.info("  | |      / /| | | |  \\ \\/ /  | |   | |   | | | |___    | |   ");
             LOGGER.info("  | |     / /_| | | |   \\  /   | |   | |   | | \\___  \\   | |   ");
             LOGGER.info("  | |    / ___  | | |   / /    | |   | |   | |  ___| |   | |   ");
-            LOGGER.info(" |_|   /_/   |_| |_|  /_/     |_|   |_|   |_| /_____/   |_|   ");
+            LOGGER.info("  |_|   /_/   |_| |_|  /_/     |_|   |_|   |_| /_____/   |_|   ");
             LOGGER.info("{} {}, Java {}", I18n.as("taiyitist.launch.welcomemessage"), getVersion(), javaVersion);
         }
         if(I18N.isCN()) {
