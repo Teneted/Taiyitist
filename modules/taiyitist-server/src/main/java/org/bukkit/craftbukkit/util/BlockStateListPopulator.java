@@ -62,7 +62,7 @@ public class BlockStateListPopulator extends DummyGeneratorAccess {
       if (data.hasBlockEntity()) {
          this.entityMap.put(position, ((EntityBlock)data.getBlock()).newBlockEntity(position, data));
       } else {
-         this.entityMap.put(position, (Object)null);
+         this.entityMap.put(position, (BlockEntity) null);
       }
 
       CraftBlockState state = (CraftBlockState)CraftBlock.at(this, position).getState();

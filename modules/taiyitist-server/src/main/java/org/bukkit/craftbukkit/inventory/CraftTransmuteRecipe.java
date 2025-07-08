@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.bukkit.NamespacedKey;
@@ -24,6 +25,6 @@ public class CraftTransmuteRecipe extends TransmuteRecipe implements CraftRecipe
    }
 
    public void addToCraftingManager() {
-      MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.TransmuteRecipe(this.getGroup(), CraftRecipe.getCategory(this.getCategory()), this.toNMS(this.getInput(), true), this.toNMS(this.getMaterial(), true), this.toNMS(this.getResult()))));
+      BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.TransmuteRecipe(this.getGroup(), CraftRecipe.getCategory(this.getCategory()), this.toNMS(this.getInput(), true), this.toNMS(this.getMaterial(), true), this.toNMS(this.getResult()))));
    }
 }

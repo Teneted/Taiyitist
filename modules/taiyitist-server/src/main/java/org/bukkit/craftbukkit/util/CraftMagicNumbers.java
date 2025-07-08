@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.commands.Commands;
@@ -194,7 +196,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
       net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
 
       try {
-         nmsStack.applyComponents((new ItemParser(Commands.createValidationContext(MinecraftServer.getDefaultRegistryAccess()))).parse(new StringReader(arguments)).components());
+         nmsStack.applyComponents((new ItemParser(Commands.createValidationContext(BukkitMethodHooks.getDefaultRegistryAccess()))).parse(new StringReader(arguments)).components());
       } catch (CommandSyntaxException var5) {
          CommandSyntaxException ex = var5;
          Logger.getLogger(CraftMagicNumbers.class.getName()).log(Level.SEVERE, (String)null, ex);
@@ -205,7 +207,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
    }
 
    private static File getBukkitDataPackFolder() {
-      return new File(MinecraftServer.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toFile(), "bukkit");
+      return new File(BukkitMethodHooks.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toFile(), "bukkit");
    }
 
    public Advancement loadAdvancement(NamespacedKey key, String advancement) {
@@ -214,7 +216,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
       JsonElement jsonelement = JsonParser.parseString(advancement);
       net.minecraft.advancements.Advancement nms = (net.minecraft.advancements.Advancement)net.minecraft.advancements.Advancement.CODEC.parse(JsonOps.INSTANCE, jsonelement).getOrThrow(JsonParseException::new);
       if (nms != null) {
-         MinecraftServer.getServer().getAdvancements().advancements.put(minecraftkey, new AdvancementHolder(minecraftkey, nms));
+         BukkitMethodHooks.getServer().getAdvancements().advancements.put(minecraftkey, new AdvancementHolder(minecraftkey, nms));
          Advancement bukkit = Bukkit.getAdvancement(key);
          if (bukkit != null) {
             File var10002 = getBukkitDataPackFolder();
@@ -229,7 +231,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
                Bukkit.getLogger().log(Level.SEVERE, "Error saving advancement " + String.valueOf(key), ex);
             }
 
-            MinecraftServer.getServer().getPlayerList().reloadResources();
+            BukkitMethodHooks.getServer().getPlayerList().reloadResources();
             return bukkit;
          }
       }
@@ -246,7 +248,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
 
    public void checkSupported(PluginDescriptionFile pdf) throws InvalidPluginException {
       ApiVersion toCheck = ApiVersion.getOrCreateVersion(pdf.getAPIVersion());
-      ApiVersion minimumVersion = MinecraftServer.getServer().server.minimumAPI;
+      ApiVersion minimumVersion = BukkitMethodHooks.getServer().bridge$server().minimumAPI;
       if (toCheck.isNewerThan(ApiVersion.CURRENT)) {
          throw new InvalidPluginException("Unsupported API version " + pdf.getAPIVersion());
       } else if (toCheck.isOlderThan(minimumVersion)) {
@@ -350,9 +352,11 @@ public final class CraftMagicNumbers implements UnsafeValues {
    }
 
    public Villager.ReputationEvent createReputationEvent(String key) {
-      return (Villager.ReputationEvent)Optional.ofNullable((ReputationEventType)ReputationEventType.BY_ID.get(key)).map(CraftVillager.CraftReputationEvent::new).orElseThrow(() -> {
-         return new IllegalArgumentException("Invalid ReputationEvent key: " + key);
-      });
+      // Taiyitist TODO fixme
+      /*
+      return Optional.ofNullable(Villager.ReputationEvent.BY_ID.get(key)).map(CraftVillager.CraftReputationEvent::new)
+              .orElseThrow(() -> new IllegalArgumentException("Invalid ReputationEvent key: " + key));*/
+       return null;
    }
 
    static {

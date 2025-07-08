@@ -3,6 +3,8 @@ package org.spigotmc;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Locale;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.command.Command;
@@ -21,7 +23,7 @@ public class RestartCommand extends Command {
 
    public boolean execute(CommandSender sender, String currentAlias, String[] args) {
       if (this.testPermission(sender)) {
-         MinecraftServer.getServer().processQueue.add(new Runnable(this) {
+         BukkitMethodHooks.getServer().bridge$processQueue().add(new Runnable() {
             public void run() {
                RestartCommand.restart();
             }
@@ -45,7 +47,7 @@ public class RestartCommand extends Command {
             if (split.length > 0 && (new File(split[0])).isFile()) {
                System.out.println("Attempting to restart with " + restartScript);
                WatchdogThread.doStop();
-               Iterator var2 = MinecraftServer.getServer().getPlayerList().players.iterator();
+               Iterator var2 = BukkitMethodHooks.getServer().getPlayerList().players.iterator();
 
                while(var2.hasNext()) {
                   ServerPlayer p = (ServerPlayer)var2.next();
@@ -57,7 +59,7 @@ public class RestartCommand extends Command {
                } catch (InterruptedException var7) {
                }
 
-               MinecraftServer.getServer().getConnection().stop();
+               BukkitMethodHooks.getServer().getConnection().stop();
 
                try {
                   Thread.sleep(100L);
@@ -65,7 +67,7 @@ public class RestartCommand extends Command {
                }
 
                try {
-                  MinecraftServer.getServer().close();
+                  BukkitMethodHooks.getServer().close();
                } catch (Throwable var5) {
                }
 
@@ -91,7 +93,7 @@ public class RestartCommand extends Command {
                System.out.println("Startup script '" + SpigotConfig.restartScript + "' does not exist! Stopping server.");
 
                try {
-                  MinecraftServer.getServer().close();
+                  BukkitMethodHooks.getServer().close();
                } catch (Throwable var4) {
                }
             }

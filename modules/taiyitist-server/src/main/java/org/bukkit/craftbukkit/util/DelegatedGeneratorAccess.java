@@ -89,9 +89,11 @@ public abstract class DelegatedGeneratorAccess implements WorldGenLevel {
       this.handle.addFreshEntityWithPassengers(entity);
    }
 
+   // Taiyitist TODO fixme
+   /*
    public void addFreshEntityWithPassengers(Entity entity, CreatureSpawnEvent.SpawnReason reason) {
       this.handle.addFreshEntityWithPassengers(entity, reason);
-   }
+   }*/
 
    public ServerLevel getMinecraftWorld() {
       return this.handle.getMinecraftWorld();

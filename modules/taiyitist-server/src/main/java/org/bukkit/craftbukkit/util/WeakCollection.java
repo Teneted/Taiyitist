@@ -97,7 +97,7 @@ public final class WeakCollection<T> implements Collection<T> {
             if (!this.hasNext()) {
                throw new NoSuchElementException("No more elements");
             } else {
-               T value = this.value;
+               T value = (T) this.value;
                this.value = WeakCollection.NO_VALUE;
                return value;
             }
@@ -160,7 +160,7 @@ public final class WeakCollection<T> implements Collection<T> {
       int s = 0;
 
       for(Iterator var2 = this.iterator(); var2.hasNext(); ++s) {
-         T value = var2.next();
+         T value = (T) var2.next();
       }
 
       return s;
@@ -175,14 +175,10 @@ public final class WeakCollection<T> implements Collection<T> {
    }
 
    private Collection<T> toCollection() {
-      ArrayList<T> collection = new ArrayList();
-      Iterator var2 = this.iterator();
-
-      while(var2.hasNext()) {
-         T value = var2.next();
+      ArrayList<T> collection = new ArrayList<>();
+      for (T value : this) {
          collection.add(value);
       }
-
       return collection;
    }
 }

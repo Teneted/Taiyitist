@@ -45,16 +45,16 @@ public class UnsafeList<E> extends AbstractList<E> implements List<E>, RandomAcc
 
    public E get(int index) {
       this.rangeCheck(index);
-      return this.data[index];
+      return (E) this.data[index];
    }
 
    public E unsafeGet(int index) {
-      return this.data[index];
+      return (E) this.data[index];
    }
 
    public E set(int index, E element) {
       this.rangeCheck(index);
-      E old = this.data[index];
+      E old = (E) this.data[index];
       this.data[index] = element;
       return old;
    }
@@ -74,7 +74,7 @@ public class UnsafeList<E> extends AbstractList<E> implements List<E>, RandomAcc
 
    public E remove(int index) {
       this.rangeCheck(index);
-      E old = this.data[index];
+      E old = (E) this.data[index];
       int movedCount = this.size - index - 1;
       if (movedCount > 0) {
          System.arraycopy(this.data, index + 1, this.data, index, movedCount);
@@ -251,7 +251,7 @@ public class UnsafeList<E> extends AbstractList<E> implements List<E>, RandomAcc
                throw new ConcurrentModificationException();
             } else {
                this.index = i + 1;
-               return UnsafeList.this.data[this.lastRet = i];
+               return (E) UnsafeList.this.data[this.lastRet = i];
             }
          }
       }

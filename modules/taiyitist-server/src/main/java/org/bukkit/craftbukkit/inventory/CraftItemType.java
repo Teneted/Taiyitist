@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -71,7 +73,7 @@ public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> i
    @NotNull
    public <Other extends ItemMeta> ItemType.Typed<Other> typed(@NotNull Class<Other> itemMetaType) {
       if (itemMetaType.isAssignableFrom(((CraftItemMetas.ItemMetaData)this.itemMetaData.get()).metaClass())) {
-         return this;
+         return (Typed<Other>) this;
       } else {
          String var10002 = String.valueOf(this.isRegistered() ? this.getKeyOrThrow() : this.toString());
          throw new IllegalArgumentException("Cannot type item type " + var10002 + " to meta type " + itemMetaType.getSimpleName());
@@ -93,24 +95,23 @@ public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> i
       return this.createItemStack(1, metaConfigurator);
    }
 
-   @NotNull
-   public ItemStack createItemStack(int amount, @Nullable Consumer<? super M> metaConfigurator) {
-      ItemStack itemStack = new ItemStack(this.asMaterial(), amount);
+   @Override
+   public ItemStack createItemStack(final int amount, final @Nullable Consumer<? super M> metaConfigurator) {
+      final ItemStack itemStack = new ItemStack(this.asMaterial(), amount);
       if (metaConfigurator != null) {
-         ItemMeta itemMeta = itemStack.getItemMeta();
-         metaConfigurator.accept(itemMeta);
+         final ItemMeta itemMeta = itemStack.getItemMeta();
+         metaConfigurator.accept((M) itemMeta);
          itemStack.setItemMeta(itemMeta);
       }
-
       return itemStack;
    }
 
    public M getItemMeta(net.minecraft.world.item.ItemStack itemStack) {
-      return (ItemMeta)((CraftItemMetas.ItemMetaData)this.itemMetaData.get()).fromItemStack().apply(itemStack);
+      return (M) ((CraftItemMetas.ItemMetaData)this.itemMetaData.get()).fromItemStack().apply(itemStack);
    }
 
    public M getItemMeta(ItemMeta itemMeta) {
-      return (ItemMeta)((CraftItemMetas.ItemMetaData)this.itemMetaData.get()).fromItemMeta().apply(this, (CraftMetaItem)itemMeta);
+      return (M) ((CraftItemMetas.ItemMetaData)this.itemMetaData.get()).fromItemMeta().apply(this, (CraftMetaItem)itemMeta);
    }
 
    public boolean hasBlockType() {
@@ -153,7 +154,7 @@ public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> i
    }
 
    public boolean isFuel() {
-      return MinecraftServer.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack((ItemLike)this.getHandle()));
+      return BukkitMethodHooks.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack((ItemLike)this.getHandle()));
    }
 
    public boolean isCompostable() {

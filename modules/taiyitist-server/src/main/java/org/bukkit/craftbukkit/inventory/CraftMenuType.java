@@ -28,7 +28,7 @@ public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuild
    }
 
    public B builder() {
-      return (InventoryViewBuilder)((CraftMenus.MenuTypeData)this.typeData.get()).viewBuilder().get();
+      return (B) ((CraftMenus.MenuTypeData)this.typeData.get()).viewBuilder().get();
    }
 
    public org.bukkit.inventory.MenuType.Typed<InventoryView, InventoryViewBuilder<InventoryView>> typed() {
@@ -37,7 +37,7 @@ public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuild
 
    public <V extends InventoryView, B extends InventoryViewBuilder<V>> org.bukkit.inventory.MenuType.Typed<V, B> typed(Class<V> clazz) {
       if (clazz.isAssignableFrom(((CraftMenus.MenuTypeData)this.typeData.get()).viewClass())) {
-         return this;
+         return (Typed<V, B>) this;
       } else {
          String var10002 = String.valueOf(this.isRegistered() ? this.getKeyOrThrow() : this.toString());
          throw new IllegalArgumentException("Cannot type InventoryView " + var10002 + " to InventoryView type " + clazz.getSimpleName());

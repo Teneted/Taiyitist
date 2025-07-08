@@ -44,14 +44,14 @@ public class CraftMerchantInventoryViewBuilder<V extends InventoryView> extends 
       ServerPlayer serverPlayer = (ServerPlayer)craftHuman.getHandle();
       MerchantMenu container;
       if (this.merchant == null) {
-         container = new MerchantMenu(serverPlayer.nextContainerCounter(), serverPlayer.getInventory(), (new CraftMerchantCustom(this.title)).getMerchant());
+         container = new MerchantMenu(serverPlayer.nextContainerCounterInt(), serverPlayer.getInventory(), (new CraftMerchantCustom(this.title)).getMerchant());
       } else {
-         container = new MerchantMenu(serverPlayer.nextContainerCounter(), serverPlayer.getInventory(), this.merchant);
+         container = new MerchantMenu(serverPlayer.nextContainerCounterInt(), serverPlayer.getInventory(), this.merchant);
       }
 
-      container.checkReachable = super.checkReachable;
+      container.taiyitist$setCheckReachable(super.checkReachable);
       container.setTitle(CraftChatMessage.fromString(this.title)[0]);
-      return container.getBukkitView();
+      return (V) container.getBukkitView();
    }
 
    protected AbstractContainerMenu buildContainer(ServerPlayer player) {

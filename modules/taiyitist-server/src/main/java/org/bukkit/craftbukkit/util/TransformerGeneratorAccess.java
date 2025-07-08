@@ -38,11 +38,13 @@ public class TransformerGeneratorAccess extends DelegatedGeneratorAccess {
       }
    }
 
+   // Taiyitist TODO fixme
+   /**
    public void addFreshEntityWithPassengers(Entity arg0, CreatureSpawnEvent.SpawnReason arg1) {
       if (this.structureTransformer == null || this.structureTransformer.transformEntity(arg0)) {
          super.addFreshEntityWithPassengers(arg0, arg1);
       }
-   }
+   }*/
 
    public boolean setCraftBlock(BlockPos position, CraftBlockState craftBlockState, int i, int j) {
       if (this.structureTransformer != null) {

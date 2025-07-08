@@ -1,5 +1,6 @@
 package org.spigotmc;
 
+import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,7 +19,7 @@ public class TicksPerSecondCommand extends Command {
          return true;
       } else {
          StringBuilder sb = new StringBuilder(String.valueOf(ChatColor.GOLD) + "TPS from last 1m, 5m, 15m: ");
-         double[] var5 = MinecraftServer.getServer().recentTps;
+         double[] var5 = BukkitMethodHooks.getServer().getTPS();
          int var6 = var5.length;
 
          for(int var7 = 0; var7 < var6; ++var7) {
