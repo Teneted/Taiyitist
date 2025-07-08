@@ -35,7 +35,9 @@
     "org.spongepowered:configurate-core:3.6.1": "67189657080b278d0288153c581b720316f5323a",
     "com.typesafe:config:1.3.1": "2cf7a6cc79732e3bdf1647d7404279900ca63eb0",
     "javax.inject:javax.inject:1": "6975da39a7040257bd51d21a231b76c915872d38",
-    "net.md-5:bungeecord-chat:1.20-R0.2": "2e0ca3471fddce2b66028478ceaca16f85e10fef",
+    "net.md-5:bungeecord-chat:1.21-R0.3": "bec16f2314f19e73b8a639e60830894b3aaa89fa",
+    "net.md-5:bungeecord-dialog:1.21-R0.3": "4a1c58d9f97534206973a36f28736251fa880a9e",
+    "net.md-5:bungeecord-serializer:1.21-R0.3": "52fdbbfa5edd5776dbdf5a6e8c79efdf6370cc49",
     "commons-lang:commons-lang:2.6-mohist": "ba4c0aff5685f259dba499e8241f746820511f6e",
     "com.mohistmc:i18n:0.6": "bf7bd8d618437aaf47d7a32b5a2735aafa5f7363",
     "com.mohistmc:json:0.5": "340abfd7dcf4dfcc99a020f7e6de3f61c8fde509",
@@ -56,7 +58,7 @@
     "org.jline:jline-reader:3.12.1": "4382ab1382c7b6f379377ed5f665dc2f6e1218bc",
     "org.fusesource.jansi:jansi:1.18": "d9205bbcd4b5f9cd1effe752d18f73bd942d783f",
     "org.apache.maven:maven-artifact:3.8.5": "4433f50c07debefaed0553bd0068f4f48d449313",
-    "net.fabricmc:intermediary:1.21.1": "4b96f58657aa282efa6bb8ae9369c2d42cf96e8c",
-    "net.fabricmc.fabric-api:fabric-api:0.102.1+1.21.1": "c7d381d76c22ada6679ef9683da9384751db3874"
+    "net.fabricmc:intermediary:1.21.7": "2c2c3d140ecbf9ad2c724bdaf6d4a300f4b3cf5a",
+    "net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.7": "cc4edcec406d1d80acba028b50cf51ad021ba0b4"
   }
 }
