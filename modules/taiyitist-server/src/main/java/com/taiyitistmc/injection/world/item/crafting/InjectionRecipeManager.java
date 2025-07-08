@@ -2,7 +2,10 @@ package com.taiyitistmc.injection.world.item.crafting;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.util.Map;
+
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -16,11 +19,11 @@ public interface InjectionRecipeManager {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean removeRecipe(ResourceLocation mcKey) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default void clearRecipes() {
         throw new IllegalStateException("Not implemented");
     }
+
+   default boolean removeRecipe(ResourceKey<Recipe<?>> minecraft) {
+       throw new IllegalStateException("Not implemented");
+   }
 }

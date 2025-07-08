@@ -97,6 +97,7 @@ import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -1402,39 +1403,37 @@ public final class CraftServer implements Server {
    }
 
    public boolean addRecipe(Recipe recipe) {
-      if (recipe instanceof CraftRecipe toAdd) {
-
-      } else if (recipe instanceof ShapedRecipe) {
-         toAdd = CraftShapedRecipe.fromBukkitRecipe((ShapedRecipe)recipe);
-      } else if (recipe instanceof ShapelessRecipe) {
-         toAdd = CraftShapelessRecipe.fromBukkitRecipe((ShapelessRecipe)recipe);
-      } else if (recipe instanceof FurnaceRecipe) {
-         toAdd = CraftFurnaceRecipe.fromBukkitRecipe((FurnaceRecipe)recipe);
-      } else if (recipe instanceof BlastingRecipe) {
-         toAdd = CraftBlastingRecipe.fromBukkitRecipe((BlastingRecipe)recipe);
-      } else if (recipe instanceof CampfireRecipe) {
-         toAdd = CraftCampfireRecipe.fromBukkitRecipe((CampfireRecipe)recipe);
-      } else if (recipe instanceof SmokingRecipe) {
-         toAdd = CraftSmokingRecipe.fromBukkitRecipe((SmokingRecipe)recipe);
-      } else if (recipe instanceof StonecuttingRecipe) {
-         toAdd = CraftStonecuttingRecipe.fromBukkitRecipe((StonecuttingRecipe)recipe);
-      } else if (recipe instanceof SmithingTransformRecipe) {
-         toAdd = CraftSmithingTransformRecipe.fromBukkitRecipe((SmithingTransformRecipe)recipe);
-      } else if (recipe instanceof SmithingTrimRecipe) {
-         toAdd = CraftSmithingTrimRecipe.fromBukkitRecipe((SmithingTrimRecipe)recipe);
+      CraftRecipe toAdd;
+      if (recipe instanceof CraftRecipe) {
+         toAdd = (CraftRecipe) recipe;
       } else {
-         if (!(recipe instanceof TransmuteRecipe)) {
-            if (recipe instanceof ComplexRecipe) {
-               throw new UnsupportedOperationException("Cannot add custom complex recipe");
-            }
-
+         if (recipe instanceof ShapedRecipe) {
+            toAdd = CraftShapedRecipe.fromBukkitRecipe((ShapedRecipe) recipe);
+         } else if (recipe instanceof ShapelessRecipe) {
+            toAdd = CraftShapelessRecipe.fromBukkitRecipe((ShapelessRecipe) recipe);
+         } else if (recipe instanceof FurnaceRecipe) {
+            toAdd = CraftFurnaceRecipe.fromBukkitRecipe((FurnaceRecipe) recipe);
+         } else if (recipe instanceof BlastingRecipe) {
+            toAdd = CraftBlastingRecipe.fromBukkitRecipe((BlastingRecipe) recipe);
+         } else if (recipe instanceof CampfireRecipe) {
+            toAdd = CraftCampfireRecipe.fromBukkitRecipe((CampfireRecipe) recipe);
+         } else if (recipe instanceof SmokingRecipe) {
+            toAdd = CraftSmokingRecipe.fromBukkitRecipe((SmokingRecipe) recipe);
+         } else if (recipe instanceof StonecuttingRecipe) {
+            toAdd = CraftStonecuttingRecipe.fromBukkitRecipe((StonecuttingRecipe) recipe);
+         } else if (recipe instanceof SmithingTransformRecipe) {
+            toAdd = CraftSmithingTransformRecipe.fromBukkitRecipe((SmithingTransformRecipe) recipe);
+         } else if (recipe instanceof SmithingTrimRecipe) {
+            toAdd = CraftSmithingTrimRecipe.fromBukkitRecipe((SmithingTrimRecipe) recipe);
+         } else if (recipe instanceof TransmuteRecipe) {
+            toAdd = CraftTransmuteRecipe.fromBukkitRecipe((TransmuteRecipe) recipe);
+         } else if (recipe instanceof ComplexRecipe) {
+            throw new UnsupportedOperationException("Cannot add custom complex recipe");
+         } else {
             return false;
          }
-
-         toAdd = CraftTransmuteRecipe.fromBukkitRecipe((TransmuteRecipe)recipe);
       }
-
-      ((CraftRecipe).toAdd).addToCraftingManager();
+      toAdd.addToCraftingManager();
       return true;
    }
 
@@ -1467,7 +1466,7 @@ public final class CraftServer implements Server {
    }
 
    private CraftingContainer createInventoryCrafting() {
-      AbstractContainerMenu container = new AbstractContainerMenu(this, (MenuType)null, -1) {
+      AbstractContainerMenu container = new AbstractContainerMenu((MenuType)null, -1) {
          public InventoryView getBukkitView() {
             return null;
          }
@@ -1485,7 +1484,7 @@ public final class CraftServer implements Server {
    }
 
    public Recipe getCraftingRecipe(ItemStack[] craftingMatrix, World world) {
-      return (Recipe)this.getNMSRecipe(craftingMatrix, this.createInventoryCrafting(), (CraftWorld)world).map(RecipeHolder::toBukkitRecipe).orElse((Object)null);
+      return (Recipe)this.getNMSRecipe(craftingMatrix, this.createInventoryCrafting(), (CraftWorld)world).map(RecipeHolder::toBukkitRecipe).orElse((Recipe) null);
    }
 
    public ItemStack craftItem(ItemStack[] craftingMatrix, World world, Player player) {
@@ -1498,7 +1497,7 @@ public final class CraftServer implements Server {
       CraftWorld craftWorld = (CraftWorld)world;
       CraftPlayer craftPlayer = (CraftPlayer)player;
       CraftingMenu container = new CraftingMenu(-1, craftPlayer.getHandle().getInventory());
-      CraftingContainer inventoryCrafting = container.m;
+      CraftingContainer inventoryCrafting = container.craftSlots;
       ResultContainer craftResult = container.resultSlots;
       Optional<RecipeHolder<CraftingRecipe>> recipe = this.getNMSRecipe(craftingMatrix, inventoryCrafting, craftWorld);
       net.minecraft.world.item.ItemStack itemstack = net.minecraft.world.item.ItemStack.EMPTY;
@@ -1802,7 +1801,7 @@ public final class CraftServer implements Server {
       if (result == null) {
          GameProfile profile = null;
          if (this.getOnlineMode() || SpigotConfig.bungee) {
-            profile = (GameProfile)this.console.getProfileCache().get(name).orElse((Object)null);
+            profile = (GameProfile)this.console.getProfileCache().get(name).orElse((GameProfile) null);
          }
 
          if (profile == null) {
@@ -1889,20 +1888,10 @@ public final class CraftServer implements Server {
 
    public <T extends BanList<?>> T getBanList(BanList.Type type) {
       Preconditions.checkArgument(type != null, "BanList.Type cannot be null");
-      BanList var10000;
-      switch (type) {
-         case IP:
-            var10000 = (BanList)(new CraftIpBanList(this.playerList.getIpBans()));
-            break;
-         case PROFILE:
-         case NAME:
-            var10000 = (BanList)(new CraftProfileBanList(this.playerList.getBans()));
-            break;
-         default:
-            throw new MatchException((String)null, (Throwable)null);
-      }
-
-      return var10000;
+      return switch (type) {
+         case IP -> (T) new CraftIpBanList(this.playerList.getIpBans());
+         case PROFILE, NAME -> (T) new CraftProfileBanList(this.playerList.getBans());
+      };
    }
 
    public void setWhitelist(boolean value) {
@@ -2218,7 +2207,7 @@ public final class CraftServer implements Server {
    }
 
    public void checkSaveState() {
-      if (!this.playerCommandState && !this.printSaveWarning && this.console.autosavePeriod > 0) {
+      if (!this.playerCommandState && !this.printSaveWarning && this.console.bridge$autosavePeriod() > 0) {
          this.printSaveWarning = true;
          this.getLogger().log(Level.WARNING, "A manual (plugin-induced) save has been detected while server is configured to auto-save. This may affect performance.", this.warningState == WarningState.ON ? new Throwable() : null);
       }
@@ -2299,7 +2288,7 @@ public final class CraftServer implements Server {
    }
 
    public Iterator<KeyedBossBar> getBossBars() {
-      return Iterators.unmodifiableIterator(Iterators.transform(this.getServer().getCustomBossEvents().getEvents().iterator(), new Function<CustomBossEvent, KeyedBossBar>(this) {
+      return Iterators.unmodifiableIterator(Iterators.transform(this.getServer().getCustomBossEvents().getEvents().iterator(), new Function<CustomBossEvent, KeyedBossBar>() {
          public KeyedBossBar apply(CustomBossEvent bossBattleCustom) {
             return bossBattleCustom.getBukkitEntity();
          }
@@ -2348,7 +2337,7 @@ public final class CraftServer implements Server {
    }
 
    public Iterator<Advancement> advancementIterator() {
-      return Iterators.unmodifiableIterator(Iterators.transform(this.console.getAdvancements().getAllAdvancements().iterator(), new Function<AdvancementHolder, Advancement>(this) {
+      return Iterators.unmodifiableIterator(Iterators.transform(this.console.getAdvancements().getAllAdvancements().iterator(), new Function<AdvancementHolder, Advancement>() {
          public Advancement apply(AdvancementHolder advancement) {
             return advancement.toBukkit();
          }
@@ -2437,27 +2426,27 @@ public final class CraftServer implements Server {
       switch (registry) {
          case org.bukkit.Tag.REGISTRY_BLOCKS -> {
             Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Block namespace (%s) must have material type", clazz.getName());
-            Registry<Block> blockTags = BuiltInRegistries.BLOCK;
+            net.minecraft.core.Registry<Block> blockTags = BuiltInRegistries.BLOCK;
             return blockTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftBlockTag(blockTags, pair.key())).collect(ImmutableList.toImmutableList());
          }
          case org.bukkit.Tag.REGISTRY_ITEMS -> {
             Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Item namespace (%s) must have material type", clazz.getName());
-            IRegistry<Item> itemTags = BuiltInRegistries.ITEM;
+            net.minecraft.core.Registry<Item> itemTags = BuiltInRegistries.ITEM;
             return itemTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftItemTag(itemTags, pair.key())).collect(ImmutableList.toImmutableList());
          }
          case org.bukkit.Tag.REGISTRY_FLUIDS -> {
             Preconditions.checkArgument(clazz == org.bukkit.Fluid.class, "Fluid namespace (%s) must have fluid type", clazz.getName());
-            IRegistry<FluidType> fluidTags = BuiltInRegistries.FLUID;
+            net.minecraft.core.Registry<net.minecraft.world.level.material.Fluid> fluidTags = BuiltInRegistries.FLUID;
             return fluidTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftFluidTag(fluidTags, pair.key())).collect(ImmutableList.toImmutableList());
          }
          case org.bukkit.Tag.REGISTRY_ENTITY_TYPES -> {
             Preconditions.checkArgument(clazz == org.bukkit.entity.EntityType.class, "Entity type namespace (%s) must have entity type", clazz.getName());
-            IRegistry<EntityTypes<?>> entityTags = BuiltInRegistries.ENTITY_TYPE;
+            net.minecraft.core.Registry<net.minecraft.world.entity.EntityType<?>> entityTags = BuiltInRegistries.ENTITY_TYPE;
             return entityTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftEntityTag(entityTags, pair.key())).collect(ImmutableList.toImmutableList());
          }
          case org.bukkit.tag.DamageTypeTags.REGISTRY_DAMAGE_TYPES -> {
             Preconditions.checkArgument(clazz == org.bukkit.damage.DamageType.class, "Damage type namespace (%s) must have damage type", clazz.getName());
-            Registry<DamageType> damageTags = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
+            net.minecraft.core.Registry<net.minecraft.world.damagesource.DamageType> damageTags = CraftRegistry.getMinecraftRegistry(Registries.DAMAGE_TYPE);
             return damageTags.getTags().map(pair -> (org.bukkit.Tag<T>) new CraftDamageTag(damageTags, pair.key())).collect(ImmutableList.toImmutableList());
          }
          default -> throw new IllegalArgumentException();
