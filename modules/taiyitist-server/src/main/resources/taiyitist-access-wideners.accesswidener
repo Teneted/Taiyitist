@@ -234,6 +234,7 @@ accessible method net/minecraft/world/entity/AreaEffectCloud updateParticle ()V
 accessible method net/minecraft/world/entity/Entity isInvulnerableToBase (Lnet/minecraft/world/damagesource/DamageSource;)Z
 
 # public fields
+accessible field net/minecraft/commands/Commands COMMAND_NODE_INSPECTOR Lnet/minecraft/network/protocol/game/ClientboundCommandsPacket$NodeInspector;
 accessible field net/minecraft/world/entity/animal/horse/AbstractHorse owner Lnet/minecraft/world/entity/EntityReference;
 accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionPowerBase F
 accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionSpeedFactor F
