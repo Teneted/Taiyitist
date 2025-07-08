@@ -29,13 +29,4 @@ public class LevelPersistentData extends SavedData {
         this.tag = new CompoundTag();
         world.storeBukkitValues(this.tag);
     }
-
-    public static Factory<LevelPersistentData> factory() {
-        return new SavedData.Factory<>(() -> new LevelPersistentData(null, null), LevelPersistentData::new, BUKKIT_PDC);
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        return tag;
-    }
 }

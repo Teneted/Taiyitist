@@ -21,11 +21,10 @@ public class BannerShapedRecipe extends CraftShapedRecipe {
 
     @Override
     public @NotNull ItemStack getResult() {
-        return CraftItemStack.asCraftMirror(this.recipe.getResultItem(BukkitMethodHooks.getServer().registryAccess()));
+        return null;
     }
 
     @Override
     public void addToCraftingManager() {
-        BukkitMethodHooks.getServer().getRecipeManager().addRecipe((new RecipeHolder<>(CraftNamespacedKey.toMinecraft(this.getKey()), this.recipe)));
     }
 }

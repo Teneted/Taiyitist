@@ -429,7 +429,7 @@ public class CraftBlockData implements BlockData {
    }
 
    protected <N extends Enum<N> & StringRepresentable, B extends Enum<B>> B get(CraftBlockStateEnum<N, B> nms) {
-      return nms.toBukkit((Enum)this.state.getValue(nms.nms()));
+      return nms.toBukkit((N) this.state.getValue(nms.nms()));
    }
 
    protected <N extends Enum<N> & StringRepresentable, B extends Enum<B>> Set<B> getValues(CraftBlockStateEnum<N, B> nms) {

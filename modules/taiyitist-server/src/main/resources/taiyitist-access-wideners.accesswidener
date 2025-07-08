@@ -585,6 +585,9 @@ accessible field net/minecraft/world/level/block/ChestBlock MENU_PROVIDER_COMBIN
 accessible field net/minecraft/server/level/DistanceManager ticketStorage Lnet/minecraft/world/level/TicketStorage;
 accessible field net/minecraft/world/level/TicketStorage tickets Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
 accessible field net/minecraft/server/level/ServerChunkCache ticketStorage Lnet/minecraft/world/level/TicketStorage;
+accessible field net/minecraft/server/level/ServerPlayer server Lnet/minecraft/server/MinecraftServer;
+accessible field net/minecraft/stats/ServerRecipeBook known Ljava/util/Set;
+accessible field net/minecraft/world/level/chunk/storage/SerializableChunkData BLOCK_STATE_CODEC Lcom/mojang/serialization/Codec;
 
 # public -f fields
 accessible field net/minecraft/world/item/trading/MerchantOffer maxUses I

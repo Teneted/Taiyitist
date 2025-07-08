@@ -64,7 +64,8 @@ public class CraftCreeper extends CraftMonster implements Creeper {
 
    public void ignite(Entity entity) {
       Preconditions.checkNotNull(entity, "entity cannot be null");
-      this.getHandle().entityIgniter = ((CraftEntity)entity).getHandle();
+      // Taiyitist TODO fixme
+      // this.getHandle().entityIgniter = ((CraftEntity)entity).getHandle();
       this.getHandle().ignite();
    }
 
@@ -73,7 +74,9 @@ public class CraftCreeper extends CraftMonster implements Creeper {
    }
 
    public Entity getIgniter() {
-      return this.getHandle().entityIgniter != null ? this.getHandle().entityIgniter.getBukkitEntity() : null;
+    //  return this.getHandle().entityIgniter != null ? this.getHandle().entityIgniter.getBukkitEntity() : null;
+      // Taiyitist TODO fixme
+       return null;
    }
 
    public net.minecraft.world.entity.monster.Creeper getHandle() {

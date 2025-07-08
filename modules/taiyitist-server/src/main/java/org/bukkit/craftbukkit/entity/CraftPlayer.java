@@ -238,7 +238,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    private Component playerListFooter;
    private final Player.Spigot spigot = new Player.Spigot() {
       public InetSocketAddress getRawAddress() {
-         return (InetSocketAddress)CraftPlayer.this.getHandle().connection.getRawAddress();
+         return (InetSocketAddress)CraftPlayer.this.getHandle().connection.connection.getRawAddress();
       }
 
       public void respawn() {
@@ -292,7 +292,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
       public void sendMessage(ChatMessageType position, UUID sender, BaseComponent... components) {
          if (CraftPlayer.this.getHandle().connection != null) {
-            CraftPlayer.this.getHandle().connection.send(new ClientboundSystemChatPacket(components, position == ChatMessageType.ACTION_BAR));
+            // Taiyitist TODO fixme
+            //CraftPlayer.this.getHandle().connection.send(new ClientboundSystemChatPacket(components, position == ChatMessageType.ACTION_BAR));
          }
       }
    };
@@ -452,7 +453,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public String getPlayerListName() {
-      return this.getHandle().taiyitist$setListName(null ? this.getName() : CraftChatMessage.fromComponent(this.getHandle().bridge$listName()));
+      return getHandle().getTabListDisplayName() == null ? getName() : CraftChatMessage.fromComponent(getHandle().getTabListDisplayName());
    }
 
    public void setPlayerListName(String name) {
@@ -460,7 +461,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          name = this.getName();
       }
 
-      this.getHandle().listName = name.equals(this.getName()) ? null : CraftChatMessage.fromStringOrNull(name);
+      this.getHandle().taiyitist$setListName(name.equals(this.getName()) ? null : CraftChatMessage.fromStringOrNull(name));
       Iterator var2 = this.server.getHandle().players.iterator();
 
       while(var2.hasNext()) {
@@ -473,12 +474,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public int getPlayerListOrder() {
-      return this.getHandle().listOrder;
+      return this.getHandle().bridge$listOrder();
    }
 
    public void setPlayerListOrder(int order) {
       Preconditions.checkArgument(order >= 0, "order cannot be negative");
-      this.getHandle().listOrder = order;
+      this.getHandle().taiyitist$setListOrder(order);
    }
 
    public String getPlayerListHeader() {
@@ -530,7 +531,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
    public void kickPlayer(String message) {
       AsyncCatcher.catchOp("player kick");
-      this.getHandle().transferCookieConnection.kickPlayer(CraftChatMessage.fromStringOrEmpty(message, true));
+      this.getHandle().bridge$transferCookieConnection().kickPlayer(CraftChatMessage.fromStringOrEmpty(message, true));
    }
 
    public void setCompassTarget(Location loc) {
@@ -541,7 +542,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public Location getCompassTarget() {
-      return this.getHandle().compassTarget;
+      return this.getHandle().bridge$compassTarget();
    }
 
    public void chat(String msg) {
@@ -754,9 +755,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          while(var3.hasNext()) {
             Map.Entry<SectionPos, ChunkSectionChanges> entry = (Map.Entry)var3.next();
             ChunkSectionChanges chunkChanges = (ChunkSectionChanges)entry.getValue();
-            ClientboundSectionBlocksUpdatePacket packet = new ClientboundSectionBlocksUpdatePacket((SectionPos)entry.getKey(), chunkChanges.positions(), (net.minecraft.world.level.block.state.BlockState[])chunkChanges.blockData().toArray((x$0) -> {
-               return new net.minecraft.world.level.block.state.BlockState[x$0];
-            }));
+            // Taiyitist start
+            ClientboundSectionBlocksUpdatePacket packet = new ClientboundSectionBlocksUpdatePacket(entry.getKey(), chunkChanges.positions(), null);
+            packet.putBukkitPacket(chunkChanges.blockData().toArray(net.minecraft.world.level.block.state.BlockState[]::new));
+            getHandle().connection.send(packet);
+            // Taiyitist end
             this.getHandle().connection.send(packet);
          }
 
@@ -1068,12 +1071,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public void setSleepingIgnored(boolean isSleeping) {
-      this.getHandle().fauxSleeping = isSleeping;
+      this.getHandle().taiyitist$setFauxSleeping(isSleeping);
       ((CraftWorld)this.getWorld()).getHandle().updateSleepingPlayerList();
    }
 
    public boolean isSleepingIgnored() {
-      return this.getHandle().fauxSleeping;
+      return this.getHandle().bridge$fauxSleeping();
    }
 
    public Location getBedSpawnLocation() {
@@ -1113,9 +1116,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
    public void setRespawnLocation(Location location, boolean override) {
       if (location == null) {
-         this.getHandle().setRespawnPosition((ServerPlayer.RespawnConfig)null, override, Cause.PLUGIN);
+         this.getHandle().setRespawnPosition((ServerPlayer.RespawnConfig)null, override/*, Cause.PLUGIN Tayitist TODO fixme*/);
       } else {
-         this.getHandle().setRespawnPosition(new ServerPlayer.RespawnConfig(((CraftWorld)location.getWorld()).getHandle().dimension(), CraftLocation.toBlockPosition(location), location.getYaw(), false), override, Cause.PLUGIN);
+         this.getHandle().setRespawnPosition(new ServerPlayer.RespawnConfig(((CraftWorld)location.getWorld()).getHandle().dimension(), CraftLocation.toBlockPosition(location), location.getYaw(), false), override/*, Cause.PLUGIN Tayitist TODO fixme*/);
       }
 
    }
@@ -1222,12 +1225,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public void setPlayerTime(long time, boolean relative) {
-      this.getHandle().timeOffset = time;
-      this.getHandle().relativeTime = relative;
+      this.getHandle().taiyitist$setTimeOffset(time);
+      this.getHandle().taiyitist$setRelativeTime(relative);
    }
 
    public long getPlayerTimeOffset() {
-      return this.getHandle().timeOffset;
+      return this.getHandle().bridge$timeOffset();
    }
 
    public long getPlayerTime() {
@@ -1235,7 +1238,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    public boolean isPlayerTimeRelative() {
-      return this.getHandle().relativeTime;
+      return this.getHandle().bridge$relativeTime();
    }
 
    public void resetPlayerTime() {
@@ -1438,7 +1441,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          invertedPlugins.add(getPluginWeakReference(plugin));
          return false;
       } else {
-         Set<WeakReference<Plugin>> invertedPlugins = new HashSet();
+         invertedPlugins = new HashSet();
          invertedPlugins.add(getPluginWeakReference(plugin));
          this.invertedVisibilityEntities.put(entity.getUniqueId(), invertedPlugins);
          return true;
@@ -1454,7 +1457,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
       }
 
       if (other instanceof ServerPlayer otherPlayer) {
-         if (otherPlayer.sentListPacket) {
+         if (otherPlayer.bridge$sentListPacket()) {
             this.getHandle().connection.send(new ClientboundPlayerInfoRemovePacket(List.of(otherPlayer.getUUID())));
          }
       }
@@ -1613,22 +1616,22 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          this.firstPlayed = data.getLongOr("firstPlayed", this.firstPlayed);
          this.lastPlayed = data.getLongOr("lastPlayed", this.lastPlayed);
          ServerPlayer handle = this.getHandle();
-         handle.newExp = data.getIntOr("newExp", handle.newExp);
-         handle.newTotalExp = data.getIntOr("newTotalExp", handle.newTotalExp);
-         handle.newLevel = data.getIntOr("newLevel", handle.newLevel);
-         handle.expToDrop = data.getIntOr("expToDrop", handle.expToDrop);
-         handle.keepLevel = data.getBooleanOr("keepLevel", handle.keepLevel);
+         handle.taiyitist$setNewExp(data.getIntOr("newExp", handle.bridge$newExp()));
+         handle.taiyitist$setNewTotalExp(data.getIntOr("newTotalExp", handle.bridge$newTotalExp()));
+         handle.taiyitist$setNewLevel(data.getIntOr("newLevel", handle.bridge$newLevel()));
+         handle.taiyitist$setExpToDrop(data.getIntOr("expToDrop", handle.bridge$expToDrop()));
+         handle.taiyitist$setKeepLevel(data.getBooleanOr("keepLevel", handle.bridge$keepLevel()));
       });
    }
 
    public void setExtraData(ValueOutput valueoutput) {
       ValueOutput data = valueoutput.child("bukkit");
       ServerPlayer handle = this.getHandle();
-      data.putInt("newExp", handle.newExp);
-      data.putInt("newTotalExp", handle.newTotalExp);
-      data.putInt("newLevel", handle.newLevel);
-      data.putInt("expToDrop", handle.expToDrop);
-      data.putBoolean("keepLevel", handle.keepLevel);
+      data.putInt("newExp", handle.bridge$newExp());
+      data.putInt("newTotalExp", handle.bridge$newTotalExp());
+      data.putInt("newLevel", handle.bridge$newLevel());
+      data.putInt("expToDrop", handle.bridge$expToDrop());
+      data.putBoolean("keepLevel", handle.bridge$keepLevel());
       data.putLong("firstPlayed", this.getFirstPlayed());
       data.putLong("lastPlayed", System.currentTimeMillis());
       data.putString("lastKnownName", handle.getScoreboardName());
@@ -1666,7 +1669,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
    }
 
    private void sendCustomPayload(ResourceLocation id, byte[] message) {
-      ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(new DiscardedPayload(id, Unpooled.wrappedBuffer(message)));
+      ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(new DiscardedPayload(id/*, Unpooled.wrappedBuffer(message) Taiyitist TODO fixme*/));
       this.getHandle().connection.send(packet);
    }
 
@@ -1942,7 +1945,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
       }
 
       this.getHandle().getEntityData().set(net.minecraft.world.entity.LivingEntity.DATA_HEALTH_ID, this.getScaledHealth());
-      this.getHandle().maxHealthCache = this.getMaxHealth();
+      this.getHandle().taiyitist$setMaxHealthCache(this.getMaxHealth());
    }
 
    public void sendHealthUpdate(double health, int foodLevel, float saturation) {

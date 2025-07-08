@@ -229,4 +229,12 @@ public interface InjectionServerPlayer extends InjectionPlayer {
     default CraftPlayer.TransferCookieConnection bridge$transferCookieConnection() {
         throw new IllegalStateException("Not implemented");
     }
+
+    default int bridge$listOrder() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setListOrder(int listOrder) {
+        throw new IllegalStateException("Not implemented");
+    }
 }

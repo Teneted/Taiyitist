@@ -154,72 +154,65 @@ public final class CraftChatMessage {
    }
 
    public static String fromComponent(Component component) {
-      if (component == null) {
-         return "";
-      } else {
-         StringBuilder out = new StringBuilder();
-         boolean hadFormat = false;
+      if (component == null) return "";
+      StringBuilder out = new StringBuilder();
 
-         Component c;
-         for(Iterator var3 = component.iterator(); var3.hasNext(); c.getContents().visit((x) -> {
-            out.append(x);
-            return Optional.empty();
-         })) {
-            c = (Component)var3.next();
-            Style modi = c.getStyle();
-            TextColor color = modi.getColor();
-            if (c.getContents() != PlainTextContents.EMPTY || color != null) {
-               if (color == null) {
-                  if (hadFormat) {
-                     out.append(ChatColor.RESET);
-                     hadFormat = false;
-                  }
+      boolean hadFormat = false;
+      for (Component c : list(component)) {
+         Style modi = c.getStyle();
+         TextColor color = modi.getColor();
+         if (c.getContents() != PlainTextContents.EMPTY || color != null) {
+            if (color != null) {
+               if (color.bridge$format() != null) {
+                  out.append(color.bridge$format());
                } else {
-                  if (color.bridge$format() != null) {
-                     out.append(color.bridge$format());
-                  } else {
-                     out.append('§').append("x");
-                     char[] var7 = color.serialize().substring(1).toCharArray();
-                     int var8 = var7.length;
-
-                     for(int var9 = 0; var9 < var8; ++var9) {
-                        char magic = var7[var9];
-                        out.append('§').append(magic);
-                     }
+                  out.append(ChatColor.COLOR_CHAR).append("x");
+                  for (char magic : color.serialize().substring(1).toCharArray()) {
+                     out.append(ChatColor.COLOR_CHAR).append(magic);
                   }
-
-                  hadFormat = true;
                }
-            }
-
-            if (modi.isBold()) {
-               out.append(ChatFormatting.BOLD);
                hadFormat = true;
-            }
-
-            if (modi.isItalic()) {
-               out.append(ChatFormatting.ITALIC);
-               hadFormat = true;
-            }
-
-            if (modi.isUnderlined()) {
-               out.append(ChatFormatting.UNDERLINE);
-               hadFormat = true;
-            }
-
-            if (modi.isStrikethrough()) {
-               out.append(ChatFormatting.STRIKETHROUGH);
-               hadFormat = true;
-            }
-
-            if (modi.isObfuscated()) {
-               out.append(ChatFormatting.OBFUSCATED);
-               hadFormat = true;
+            } else if (hadFormat) {
+               out.append(ChatColor.RESET);
+               hadFormat = false;
             }
          }
-
-         return out.toString();
+         if (modi.isBold()) {
+            out.append(ChatFormatting.BOLD);
+            hadFormat = true;
+         }
+         if (modi.isItalic()) {
+            out.append(ChatFormatting.ITALIC);
+            hadFormat = true;
+         }
+         if (modi.isUnderlined()) {
+            out.append(ChatFormatting.UNDERLINE);
+            hadFormat = true;
+         }
+         if (modi.isStrikethrough()) {
+            out.append(ChatFormatting.STRIKETHROUGH);
+            hadFormat = true;
+         }
+         if (modi.isObfuscated()) {
+            out.append(ChatFormatting.OBFUSCATED);
+            hadFormat = true;
+         }
+         c.getContents().visit((x) -> {
+            out.append(x);
+            return Optional.empty();
+         });
       }
+      return out.toString();
+   }
+
+   public static ArrayList<Component> list(Component txt) {
+      ArrayList<Component> arr = new ArrayList<>();
+      if (!arr.contains(txt))
+         arr.add(txt);
+      for (Component tx : txt.getSiblings()) {
+         arr.addAll(list(tx) );
+      }
+      return arr;
    }
 
    public static Component fixComponent(MutableComponent component) {

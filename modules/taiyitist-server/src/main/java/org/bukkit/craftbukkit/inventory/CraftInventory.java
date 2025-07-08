@@ -305,54 +305,68 @@ public class CraftInventory implements Inventory {
 
    public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
       Preconditions.checkArgument(items != null, "items cannot be null");
-      HashMap<Integer, ItemStack> leftover = new HashMap();
+      HashMap<Integer, ItemStack> leftover = new HashMap<>();
 
-      label49:
-      for(int i = 0; i < items.length; ++i) {
+      /* TODO: some optimization
+       *  - Create a 'firstPartial' with a 'fromIndex'
+       *  - Record the lastPartial per Material
+       *  - Cache firstEmpty result
+       */
+
+      for (int i = 0; i < items.length; i++) {
          ItemStack item = items[i];
          Preconditions.checkArgument(item != null, "ItemStack cannot be null");
-         if (!item.getType().isAir()) {
-            while(true) {
-               while(true) {
-                  int firstPartial = this.firstPartial(item);
-                  int maxAmount;
-                  if (firstPartial == -1) {
-                     int firstFree = this.firstEmpty();
-                     if (firstFree == -1) {
-                        leftover.put(i, item);
-                        continue label49;
-                     }
+         while (true) {
+            // Do we already have a stack of it?
+            int firstPartial = this.firstPartial(item);
 
-                     maxAmount = this.getMaxItemStack(item);
-                     if (item.getAmount() <= maxAmount) {
-                        this.setItem(firstFree, item);
-                        continue label49;
-                     }
+            // Drat! no partial stack
+            if (firstPartial == -1) {
+               // Find a free spot!
+               int firstFree = this.firstEmpty();
 
+               if (firstFree == -1) {
+                  // No space at all!
+                  leftover.put(i, item);
+                  break;
+               } else {
+                  // More than a single stack!
+                  int maxAmount = this.getMaxItemStack(item);
+                  if (item.getAmount() > maxAmount) {
                      CraftItemStack stack = CraftItemStack.asCraftCopy(item);
                      stack.setAmount(maxAmount);
                      this.setItem(firstFree, stack);
                      item.setAmount(item.getAmount() - maxAmount);
                   } else {
-                     ItemStack partialItem = this.getItem(firstPartial);
-                     maxAmount = item.getAmount();
-                     int partialAmount = partialItem.getAmount();
-                     int maxAmount = this.getMaxItemStack(partialItem);
-                     if (maxAmount + partialAmount <= maxAmount) {
-                        partialItem.setAmount(maxAmount + partialAmount);
-                        this.setItem(firstPartial, partialItem);
-                        continue label49;
-                     }
-
-                     partialItem.setAmount(maxAmount);
-                     this.setItem(firstPartial, partialItem);
-                     item.setAmount(maxAmount + partialAmount - maxAmount);
+                     // Just store it
+                     this.setItem(firstFree, item);
+                     break;
                   }
                }
+            } else {
+               // So, apparently it might only partially fit, well lets do just that
+               ItemStack partialItem = this.getItem(firstPartial);
+
+               int amount = item.getAmount();
+               int partialAmount = partialItem.getAmount();
+               int maxAmount = this.getMaxItemStack(partialItem);
+
+               // Check if it fully fits
+               if (amount + partialAmount <= maxAmount) {
+                  partialItem.setAmount(amount + partialAmount);
+                  // To make sure the packet is sent to the client
+                  this.setItem(firstPartial, partialItem);
+                  break;
+               }
+
+               // It fits partially
+               partialItem.setAmount(maxAmount);
+               // To make sure the packet is sent to the client
+               this.setItem(firstPartial, partialItem);
+               item.setAmount(amount + partialAmount - maxAmount);
             }
          }
       }
-
       return leftover;
    }
 
@@ -491,8 +505,10 @@ public class CraftInventory implements Inventory {
          return InventoryType.SHULKER_BOX;
       } else if (this.inventory instanceof BarrelBlockEntity) {
          return InventoryType.BARREL;
+         // Taiyitist- TODO fixme
+         /*
       } else if (this.inventory instanceof LecternBlockEntity.LecternInventory) {
-         return InventoryType.LECTERN;
+         return InventoryType.LECTERN;*/
       } else if (this.inventory instanceof ChiseledBookShelfBlockEntity) {
          return InventoryType.CHISELED_BOOKSHELF;
       } else if (this instanceof CraftInventoryLoom) {

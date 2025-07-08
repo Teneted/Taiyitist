@@ -260,7 +260,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
       if (data == null) {
          return null;
       } else {
-         ServerPlayer.RespawnConfig respawn = (ServerPlayer.RespawnConfig)data.read("respawn", RespawnConfig.CODEC).orElse((Object)null);
+         ServerPlayer.RespawnConfig respawn = (ServerPlayer.RespawnConfig)data.read("respawn", RespawnConfig.CODEC).orElse((RespawnConfig) null);
          if (respawn != null) {
             ServerLevel world = this.server.getServer().getLevel(respawn.dimension());
             if (world == null) {

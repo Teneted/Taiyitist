@@ -1685,23 +1685,23 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
    }
 
    public String getAsComponentString() {
-      Applicator tag = new Applicator();
-      this.applyToItem(tag);
+      CraftMetaItem.Applicator tag = new CraftMetaItem.Applicator();
+      applyToItem(tag);
       DataComponentPatch patch = tag.build();
+
       RegistryAccess registryAccess = CraftRegistry.getMinecraftRegistry();
       DynamicOps<net.minecraft.nbt.Tag> ops = registryAccess.createSerializationContext(NbtOps.INSTANCE);
       net.minecraft.core.Registry<DataComponentType<?>> componentTypeRegistry = registryAccess.lookupOrThrow(Registries.DATA_COMPONENT_TYPE);
-      StringJoiner componentString = new StringJoiner(",", "[", "]");
-      Iterator var7 = patch.entrySet().iterator();
 
-      while(var7.hasNext()) {
-         Map.Entry<DataComponentType<?>, Optional<?>> entry = (Map.Entry)var7.next();
-         DataComponentType<?> componentType = (DataComponentType)entry.getKey();
-         Optional<?> componentValue = (Optional)entry.getValue();
-         String componentKey = ((ResourceKey)componentTypeRegistry.getResourceKey(componentType).orElseThrow()).location().toString();
+      StringJoiner componentString = new StringJoiner(",", "[", "]");
+      for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
+         DataComponentType<?> componentType = entry.getKey();
+         Optional<?> componentValue = entry.getValue();
+         String componentKey = componentTypeRegistry.getResourceKey(componentType).orElseThrow().location().toString();
+
          if (componentValue.isPresent()) {
-            net.minecraft.nbt.Tag componentValueAsNBT = (net.minecraft.nbt.Tag)componentType.codecOrThrow().encodeStart(ops, componentValue.get()).getOrThrow();
-            String componentValueAsNBTString = (new SnbtPrinterTagVisitor("", 0, new ArrayList())).visit(componentValueAsNBT);
+            net.minecraft.nbt.Tag componentValueAsNBT = (net.minecraft.nbt.Tag) ((DataComponentType) componentType).codecOrThrow().encodeStart(ops, componentValue.get()).getOrThrow();
+            String componentValueAsNBTString = new SnbtPrinterTagVisitor("", 0, new ArrayList<>()).visit(componentValueAsNBT);
             componentString.add(componentKey + "=" + componentValueAsNBTString);
          } else {
             componentString.add("!" + componentKey);
@@ -2177,204 +2177,186 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
    @Overridden
    ImmutableMap.Builder<String, Object> serialize(ImmutableMap.Builder<String, Object> builder) {
-      if (this.hasDisplayName()) {
-         builder.put(NAME.BUKKIT, CraftChatMessage.toJSON(this.displayName));
+      if (hasDisplayName()) {
+         builder.put(NAME.BUKKIT, CraftChatMessage.toJSON(displayName));
       }
 
-      if (this.hasItemName()) {
-         builder.put(ITEM_NAME.BUKKIT, CraftChatMessage.toJSON(this.itemName));
+      if (hasItemName()) {
+         builder.put(ITEM_NAME.BUKKIT, CraftChatMessage.toJSON(itemName));
       }
 
-      ArrayList hideFlags;
-      Iterator var3;
-      if (this.hasLore()) {
-         hideFlags = new ArrayList();
-         var3 = this.lore.iterator();
+      if (hasLore()) {
+         // SPIGOT-7625: Convert lore to json before serializing it
+         List<String> jsonLore = new ArrayList<>();
 
-         while(var3.hasNext()) {
-            Component component = (Component)var3.next();
-            hideFlags.add(CraftChatMessage.toJSON(component));
+         for (Component component : lore) {
+            jsonLore.add(CraftChatMessage.toJSON(component));
          }
 
-         builder.put(LORE.BUKKIT, hideFlags);
+         builder.put(LORE.BUKKIT, jsonLore);
       }
 
-      if (this.hasCustomModelDataComponent()) {
-         builder.put(CUSTOM_MODEL_DATA.BUKKIT, this.customModelData);
+      if (hasCustomModelDataComponent()) {
+         builder.put(CUSTOM_MODEL_DATA.BUKKIT, customModelData);
+      }
+      if (hasEnchantable()) {
+         builder.put(ENCHANTABLE.BUKKIT, enchantableValue);
+      }
+      if (hasBlockData()) {
+         builder.put(BLOCK_DATA.BUKKIT, blockData);
       }
 
-      if (this.hasEnchantable()) {
-         builder.put(ENCHANTABLE.BUKKIT, this.enchantableValue);
+      serializeEnchantments(enchantments, builder, ENCHANTMENTS);
+      serializeModifiers(attributeModifiers, builder, ATTRIBUTES);
+
+      if (hasRepairCost()) {
+         builder.put(REPAIR.BUKKIT, repairCost);
       }
 
-      if (this.hasBlockData()) {
-         builder.put(BLOCK_DATA.BUKKIT, this.blockData);
-      }
-
-      serializeEnchantments(this.enchantments, builder, ENCHANTMENTS);
-      serializeModifiers(this.attributeModifiers, builder, ATTRIBUTES);
-      if (this.hasRepairCost()) {
-         builder.put(REPAIR.BUKKIT, this.repairCost);
-      }
-
-      hideFlags = new ArrayList();
-      var3 = this.getItemFlags().iterator();
-
-      while(var3.hasNext()) {
-         ItemFlag hideFlagEnum = (ItemFlag)var3.next();
+      List<String> hideFlags = new ArrayList<String>();
+      for (ItemFlag hideFlagEnum : getItemFlags()) {
          hideFlags.add(CraftItemFlag.bukkitToString(hideFlagEnum));
       }
-
       if (!hideFlags.isEmpty()) {
          builder.put(HIDEFLAGS.BUKKIT, hideFlags);
       }
 
-      if (this.isHideTooltip()) {
-         builder.put(HIDE_TOOLTIP.BUKKIT, this.hideTooltip);
+      if (isHideTooltip()) {
+         builder.put(HIDE_TOOLTIP.BUKKIT, hideTooltip);
       }
 
-      if (this.hasTooltipStyle()) {
-         builder.put(TOOLTIP_STYLE.BUKKIT, this.tooltipStyle.toString());
+      if (hasTooltipStyle()) {
+         builder.put(TOOLTIP_STYLE.BUKKIT, tooltipStyle.toString());
       }
 
-      if (this.hasItemModel()) {
-         builder.put(ITEM_MODEL.BUKKIT, this.itemModel.toString());
+      if (hasItemModel()) {
+         builder.put(ITEM_MODEL.BUKKIT, itemModel.toString());
       }
 
-      if (this.isUnbreakable()) {
-         builder.put(UNBREAKABLE.BUKKIT, this.unbreakable);
+      if (isUnbreakable()) {
+         builder.put(UNBREAKABLE.BUKKIT, unbreakable);
       }
 
-      if (this.hasEnchantmentGlintOverride()) {
-         builder.put(ENCHANTMENT_GLINT_OVERRIDE.BUKKIT, this.enchantmentGlintOverride);
+      if (hasEnchantmentGlintOverride()) {
+         builder.put(ENCHANTMENT_GLINT_OVERRIDE.BUKKIT, enchantmentGlintOverride);
       }
 
-      if (this.isGlider()) {
-         builder.put(GLIDER.BUKKIT, this.glider);
+      if (isGlider()) {
+         builder.put(GLIDER.BUKKIT, glider);
       }
 
-      if (this.hasDamageResistant()) {
-         builder.put(DAMAGE_RESISTANT.BUKKIT, this.damageResistant.location().toString());
+      if (hasDamageResistant()) {
+         builder.put(DAMAGE_RESISTANT.BUKKIT, damageResistant.location().toString());
       }
 
-      if (this.hasMaxStackSize()) {
-         builder.put(MAX_STACK_SIZE.BUKKIT, this.maxStackSize);
+      if (hasMaxStackSize()) {
+         builder.put(MAX_STACK_SIZE.BUKKIT, maxStackSize);
       }
 
-      if (this.hasRarity()) {
-         builder.put(RARITY.BUKKIT, this.rarity.name());
+      if (hasRarity()) {
+         builder.put(RARITY.BUKKIT, rarity.name());
       }
 
-      if (this.hasUseRemainder()) {
-         builder.put(USE_REMAINDER.BUKKIT, this.useRemainder);
+      if (hasUseRemainder()) {
+         builder.put(USE_REMAINDER.BUKKIT, useRemainder);
       }
 
-      if (this.hasUseCooldown()) {
-         builder.put(USE_COOLDOWN.BUKKIT, this.useCooldown);
+      if (hasUseCooldown()) {
+         builder.put(USE_COOLDOWN.BUKKIT, useCooldown);
       }
 
-      if (this.hasFood()) {
-         builder.put(FOOD.BUKKIT, this.food);
+      if (hasFood()) {
+         builder.put(FOOD.BUKKIT, food);
       }
 
-      if (this.hasConsumable()) {
-         builder.put(CONSUMABLE.BUKKIT, this.consumable);
+      if (hasConsumable()) {
+         builder.put(CONSUMABLE.BUKKIT, consumable);
       }
 
-      if (this.hasTool()) {
-         builder.put(TOOL.BUKKIT, this.tool);
+      if (hasTool()) {
+         builder.put(TOOL.BUKKIT, tool);
       }
 
-      if (this.hasBlocksAttacks()) {
-         builder.put(BLOCKS_ATTACKS.BUKKIT, this.blocksAttacks);
+      if (hasBlocksAttacks()) {
+         builder.put(BLOCKS_ATTACKS.BUKKIT, blocksAttacks);
       }
 
-      if (this.hasWeapon()) {
-         builder.put(WEAPON.BUKKIT, this.weapon);
+      if (hasWeapon()) {
+         builder.put(WEAPON.BUKKIT, weapon);
       }
 
-      if (this.hasEquippable()) {
-         builder.put(EQUIPPABLE.BUKKIT, this.equippable);
+      if (hasEquippable()) {
+         builder.put(EQUIPPABLE.BUKKIT, equippable);
       }
 
-      if (this.hasJukeboxPlayable()) {
-         builder.put(JUKEBOX_PLAYABLE.BUKKIT, this.jukebox);
+      if (hasJukeboxPlayable()) {
+         builder.put(JUKEBOX_PLAYABLE.BUKKIT, jukebox);
       }
 
-      if (this.hasBreakSound()) {
-         builder.put(BREAK_SOUND.BUKKIT, this.getBreakSound().getKey().toString());
+      if (hasBreakSound()) {
+         builder.put(BREAK_SOUND.BUKKIT, getBreakSound().getKey().toString());
       }
 
-      if (this.hasDamage()) {
-         builder.put(DAMAGE.BUKKIT, this.damage);
+      if (hasDamage()) {
+         builder.put(DAMAGE.BUKKIT, damage);
       }
 
-      if (this.hasMaxDamage()) {
-         builder.put(MAX_DAMAGE.BUKKIT, this.maxDamage);
+      if (hasMaxDamage()) {
+         builder.put(MAX_DAMAGE.BUKKIT, maxDamage);
       }
 
-      Map<String, net.minecraft.nbt.Tag> internalTags = new HashMap();
-      this.serializeInternal(internalTags);
-      IOException ex;
-      ByteArrayOutputStream buf;
+      final Map<String, net.minecraft.nbt.Tag> internalTags = new HashMap<String, net.minecraft.nbt.Tag>();
+      serializeInternal(internalTags);
       if (!internalTags.isEmpty()) {
          CompoundTag internal = new CompoundTag();
-         Iterator var5 = internalTags.entrySet().iterator();
-
-         while(var5.hasNext()) {
-            Map.Entry<String, net.minecraft.nbt.Tag> e = (Map.Entry)var5.next();
-            internal.put((String)e.getKey(), (net.minecraft.nbt.Tag)e.getValue());
+         for (Map.Entry<String, net.minecraft.nbt.Tag> e : internalTags.entrySet()) {
+            internal.put(e.getKey(), e.getValue());
          }
-
          try {
-            buf = new ByteArrayOutputStream();
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
             NbtIo.writeCompressed(internal, buf);
             builder.put("internal", Base64.getEncoder().encodeToString(buf.toByteArray()));
-         } catch (IOException var12) {
-            ex = var12;
-            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, (String)null, ex);
+         } catch (IOException ex) {
+            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
 
-      if (!this.unhandledTags.isEmpty()) {
-         net.minecraft.nbt.Tag unhandled = (net.minecraft.nbt.Tag)DataComponentPatch.CODEC.encodeStart(BukkitMethodHooks.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), this.unhandledTags.build()).getOrThrow(IllegalStateException::new);
-
+      if (!unhandledTags.isEmpty()) {
+         net.minecraft.nbt.Tag unhandled = DataComponentPatch.CODEC.encodeStart(BukkitMethodHooks.getDefaultRegistryAccess().createSerializationContext(NbtOps.INSTANCE), unhandledTags.build()).getOrThrow(IllegalStateException::new);
          try {
-            buf = new ByteArrayOutputStream();
-            NbtIo.writeCompressed((CompoundTag)unhandled, buf);
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            NbtIo.writeCompressed((CompoundTag) unhandled, buf);
             builder.put("unhandled", Base64.getEncoder().encodeToString(buf.toByteArray()));
-         } catch (IOException var11) {
-            ex = var11;
-            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, (String)null, ex);
+         } catch (IOException ex) {
+            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
 
       if (!this.removedTags.isEmpty()) {
          RegistryAccess registryAccess = CraftRegistry.getMinecraftRegistry();
          net.minecraft.core.Registry<DataComponentType<?>> componentTypeRegistry = registryAccess.lookupOrThrow(Registries.DATA_COMPONENT_TYPE);
-         List<String> removedTags = new ArrayList();
-         Iterator var7 = this.removedTags.iterator();
 
-         while(var7.hasNext()) {
-            DataComponentType<?> removed = (DataComponentType)var7.next();
-            String componentKey = ((ResourceKey)componentTypeRegistry.getResourceKey(removed).orElseThrow()).location().toString();
+         List<String> removedTags = new ArrayList<>();
+         for (DataComponentType<?> removed : this.removedTags) {
+            String componentKey = componentTypeRegistry.getResourceKey(removed).orElseThrow().location().toString();
+
             removedTags.add(componentKey);
          }
 
          builder.put("removed", removedTags);
       }
 
-      if (!this.persistentDataContainer.isEmpty()) {
-         builder.put(BUKKIT_CUSTOM_TAG.BUKKIT, this.persistentDataContainer.serialize());
+      if (!persistentDataContainer.isEmpty()) { // Store custom tags, wrapped in their compound
+         builder.put(BUKKIT_CUSTOM_TAG.BUKKIT, persistentDataContainer.serialize());
       }
 
-      if (this.customTag != null) {
+      if (customTag != null) {
          try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            NbtIo.writeCompressed(this.customTag, buf);
+            NbtIo.writeCompressed(customTag, buf);
             builder.put("custom", Base64.getEncoder().encodeToString(buf.toByteArray()));
          } catch (IOException ex) {
-            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, (String)null, ex);
+            Logger.getLogger(CraftMetaItem.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
 

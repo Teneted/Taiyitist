@@ -66,7 +66,7 @@ public class CraftChunk implements Chunk {
    private static final byte[] EMPTY_LIGHT;
 
    public CraftChunk(LevelChunk chunk) {
-      this.worldServer = chunk.r;
+      this.worldServer = chunk.taiyitist$r();
       this.x = chunk.getPos().x;
       this.z = chunk.getPos().z;
    }
@@ -197,7 +197,7 @@ public class CraftChunk implements Chunk {
    }
 
    public boolean isSlimeChunk() {
-      return WorldgenRandom.seedSlimeChunk(this.getX(), this.getZ(), this.getWorld().getSeed(), (long)this.worldServer.spigotConfig.slimeSeed).nextInt(10) == 0;
+      return WorldgenRandom.seedSlimeChunk(this.getX(), this.getZ(), this.getWorld().getSeed(), (long)this.worldServer.bridge$spigotConfig().slimeSeed).nextInt(10) == 0;
    }
 
    public boolean unload(boolean save) {
@@ -320,7 +320,7 @@ public class CraftChunk implements Chunk {
    }
 
    public PersistentDataContainer getPersistentDataContainer() {
-      return this.getHandle(ChunkStatus.STRUCTURE_STARTS).persistentDataContainer;
+      return this.getHandle(ChunkStatus.STRUCTURE_STARTS).bridge$persistentDataContainer();
    }
 
    public Chunk.LoadLevel getLoadLevel() {

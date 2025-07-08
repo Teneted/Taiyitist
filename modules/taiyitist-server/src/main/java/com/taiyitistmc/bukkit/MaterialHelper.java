@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 public class MaterialHelper {
 
+    /*
     public static Material addMaterial(String materialName, int id, int stack, boolean isBlock, boolean isItem, ResourceLocation resourceLocation) {
         if (isBlock) {
             Material material = Material.BY_NAME.get(materialName);
@@ -25,5 +26,5 @@ public class MaterialHelper {
             material.key = CraftNamespacedKey.fromMinecraft(resourceLocation);
             return material;
         }
-    }
+    }*/
 }

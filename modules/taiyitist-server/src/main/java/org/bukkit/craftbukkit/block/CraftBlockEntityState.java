@@ -95,7 +95,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
       to.loadWithComponents(this.createInput(nbtTagCompound));
    }
 
-   protected T getTileEntity() {
+   public T getTileEntity() {
       return this.tileEntity;
    }
 

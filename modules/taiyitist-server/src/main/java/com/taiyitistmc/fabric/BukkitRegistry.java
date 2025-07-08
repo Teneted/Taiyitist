@@ -104,6 +104,7 @@ public class BukkitRegistry {
     }
 
     public static void loadItems() {
+        /*
         var registry = BuiltInRegistries.ITEM;
         var newTypes = new ArrayList<Material>();
         for (Item item : registry) {
@@ -121,10 +122,11 @@ public class BukkitRegistry {
                 TaiyitistMod.LOGGER.debug("Save-ITEM: " + material.name() + " - " + material.key);
             }
         }
-        TaiyitistMod.LOGGER.info(I18n.as("registry.item"), newTypes.size());
+        TaiyitistMod.LOGGER.info(I18n.as("registry.item"), newTypes.size());*/
     }
 
     public static void loadBlocks() {
+        /*
         var registry = BuiltInRegistries.BLOCK;
         var newTypes = new ArrayList<Material>();
 
@@ -164,7 +166,7 @@ public class BukkitRegistry {
                 }
             }
         }
-        TaiyitistMod.LOGGER.info(I18n.as("registry.block"), newTypes.size());
+        TaiyitistMod.LOGGER.info(I18n.as("registry.block"), newTypes.size());*/
     }
 
     private static void loadFluids() {
@@ -201,6 +203,7 @@ public class BukkitRegistry {
     }
 
     private static void loadSpawnCategory() {
+        /*
         for (var category : MobCategory.values()) {
             try {
                 CraftSpawnCategory.toBukkit(category);
@@ -210,7 +213,7 @@ public class BukkitRegistry {
                 spawnCategory.isMods = true;
                 TaiyitistMod.LOGGER.debug("Registered {} as spawn category {}", name, spawnCategory);
             }
-        }
+        }*/
     }
 
     private static void loadStats() {
@@ -248,6 +251,7 @@ public class BukkitRegistry {
     }
 
     private static void loadArts(DedicatedServer console) {
+        /*
         int i = Art.values().length;
         var registry = console.registryAccess().registryOrThrow(Registries.PAINTING_VARIANT);
         for (var entry : registry) {
@@ -262,10 +266,11 @@ public class BukkitRegistry {
                 TaiyitistMod.LOGGER.debug("Registered mod PaintingType as Art {}", art);
                 i++;
             }
-        }
+        }*/
     }
 
     public static void loadParticles() {
+        /*
         var registry = BuiltInRegistries.PARTICLE_TYPE;
         for (ParticleType<?> particleType : BuiltInRegistries.PARTICLE_TYPE) {
             ResourceLocation resourceLocation = registry.getKey(particleType);
@@ -279,10 +284,11 @@ public class BukkitRegistry {
                     TaiyitistMod.LOGGER.debug("Save-ParticleType:" + name + " - " + particle.name());
                 }
             }
-        }
+        }*/
     }
 
     private static void loadBiomes(DedicatedServer console) {
+        /*
         List<String> map = new ArrayList<>();
         var registry = console.registryAccess().registryOrThrow(Registries.BIOME);
         for (net.minecraft.world.level.biome.Biome biome : registry) {
@@ -294,7 +300,7 @@ public class BukkitRegistry {
                 biomeBiomeMap.put(biome, biomeCB);
                 TaiyitistMod.LOGGER.debug("Save-BIOME:" + biomeCB.name() + " - " + biomeName);
             }
-        }
+        }*/
     }
 
     private static void loadVillagerProfessions() {
@@ -329,6 +335,7 @@ public class BukkitRegistry {
     }
 
     private static void loadEntities() {
+        /*
         var registry = BuiltInRegistries.ENTITY_TYPE;
         for (var entity : registry) {
             ResourceLocation resourceLocation = registry.getKey(entity);
@@ -347,7 +354,7 @@ public class BukkitRegistry {
             } else {
                 ServerAPI.entityTypeMap.put(entity, normalizeName(resourceLocation.getPath()));
             }
-        }
+        }*/
     }
 
     private static void loadEnchantments() {
