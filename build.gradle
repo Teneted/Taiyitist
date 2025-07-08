@@ -206,8 +206,9 @@ tasks.register('countPatchProgress') {
             return count
         }
 
-        def patchesDir = file("$projectDir/nms-patches")
-        def injectsDir = file("$projectDir/modules/taiyitist-server/src/main/java/com/mohistmc/taiyitist/mixin")
+        def patchesDir = file("$rootDir/nms-patches")
+        def injectsDir = file("$rootDir/modules/taiyitist-server/src/main/java/com/taiyitistmc/mixin")
+
 
         if (!patchesDir.exists() || !injectsDir.exists()) {
             throw new GradleException("Can not found the dir!")
