@@ -3,9 +3,12 @@ package com.taiyitistmc.injection.server;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
 import net.minecraft.commands.Commands;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerLinks;
 import net.minecraft.server.WorldLoader;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.server.rcon.RconConsoleSource;
 import net.minecraft.world.level.levelgen.WorldOptions;
@@ -15,7 +18,13 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.craftbukkit.CraftServer;
 
+import java.util.Optional;
+
 public interface InjectionMinecraftServer {
+
+    default void handleCustomClickAction(ResourceLocation minecraftkey, Optional<Tag> optional, ServerPlayer player) {
+        throw new IllegalStateException("Not implemented");
+    }
 
     default void bridge$drainQueuedTasks() {
         throw new IllegalStateException("Not implemented");

@@ -9,11 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(AdvancementHolder.class)
 public class MixinAdvancementHolder implements InjectionAdvancementHolder {
 
-    public final org.bukkit.advancement.Advancement bukkit =
-            new CraftAdvancement(((AdvancementHolder) (Object) this)); // CraftBukkit
-
     @Override
     public Advancement toBukkit() {
-        return bukkit;
+        return new CraftAdvancement(((AdvancementHolder) (Object) this)); // CraftBukkit
     }
 }

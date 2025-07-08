@@ -2,20 +2,17 @@ package com.taiyitistmc.mixin.server;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.taiyitistmc.api.color.ColorsAPI;
 import com.taiyitistmc.asm.annotation.TransformAccess;
 import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.config.BannerConfig;
 import com.taiyitistmc.config.BannerConfigUtil;
-import com.taiyitistmc.fabric.BukkitRegistry;
 import com.taiyitistmc.injection.server.InjectionMinecraftServer;
-import com.taiyitistmc.util.I18n;
 import com.mojang.datafixers.DataFixer;
 import io.izzel.arclight.mixin.Decorate;
 import io.izzel.arclight.mixin.DecorationOps;
 import io.izzel.arclight.mixin.Local;
-import it.unimi.dsi.fastutil.longs.LongIterator;
+
 import java.lang.management.ManagementFactory;
 import java.net.Proxy;
 import java.util.Arrays;
@@ -23,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -40,10 +38,11 @@ import net.minecraft.Util;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerLinks;
 import net.minecraft.server.Services;
@@ -53,19 +52,18 @@ import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
 import net.minecraft.server.network.ServerConnectionListener;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.util.Mth;
 import net.minecraft.util.TimeUtil;
-import net.minecraft.util.Unit;
 import net.minecraft.util.thread.ReentrantBlockableEventLoop;
 import net.minecraft.world.RandomSequences;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.ForcedChunksSavedData;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.TicketStorage;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldOptions;
@@ -78,6 +76,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.Main;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
@@ -105,20 +104,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements InjectionMinecraftServer {
 
     private static final int TPS = 20;
-    private static final int TICK_TIME = 1000000000 / TPS;
-    private static final long MAX_CATCHUP_BUFFER = TICK_TIME * TPS * 60L;
-    private static final int SAMPLE_INTERVAL = 20; // Paper
-    // Paper start - Further improve server tick loop
-    private static final long SEC_IN_NANO = 1000000000;
-    private static final java.math.BigDecimal TPS_BASE = new java.math.BigDecimal("1E9").multiply(new java.math.BigDecimal(SAMPLE_INTERVAL));
     @Shadow @Final public static org.slf4j.Logger LOGGER;
     @Mutable
     @Shadow
     @Final
     private static long OVERLOADED_THRESHOLD_NANOS;
     // @formatter:on
-    @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
-    private static int currentTick = (int) (System.currentTimeMillis() / 50);
     public final double[] recentTps = new double[4];
     // CraftBukkit start
     public final java.util.concurrent.ExecutorService chatExecutor = java.util.concurrent.Executors.newCachedThreadPool(
@@ -143,6 +134,8 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     public OptionSet options;
     public org.bukkit.command.ConsoleCommandSender console;
     public ConsoleReader reader;
+    @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
+    private static int currentTick = (int) (System.currentTimeMillis() / 50);
     public java.util.Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<>();
     public int autosavePeriod;
     public Commands vanillaCommandDispatcher;
@@ -151,8 +144,8 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     private long nextTickTimeNanos;
     private boolean forceTicks;
     private boolean hasStopped = false;
-    private final long lastTick = 0;
-    private final long catchupTime = 0;
+    private static final int SAMPLE_INTERVAL = 20; // Paper
+
     @Unique
     private ServerLinks serverLinksVanilla = ServerLinks.EMPTY;
     public MixinMinecraftServer(String string) {
@@ -202,9 +195,6 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     }
 
     @Shadow public abstract boolean isSpawningMonsters();
-
-    @Shadow public abstract boolean isSpawningAnimals();
-
     @Shadow public abstract PlayerList getPlayerList();
 
     @Shadow public abstract boolean isStopped();
@@ -229,7 +219,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @Nullable
     public abstract ServerLevel getLevel(ResourceKey<net.minecraft.world.level.Level> dimension);
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Shadow public abstract GameRules getGameRules();@Shadow@Final private static long PREPARE_LEVELS_DEFAULT_DELAY_NANOS;@Shadow protected abstract void waitUntilNextTick();@Shadow protected abstract void updateMobSpawningFlags();@Inject(method = "<init>", at = @At("RETURN"))
     private void taiyitist$loadOptions(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, ChunkProgressListenerFactory chunkProgressListenerFactory, CallbackInfo ci) {
         OVERLOADED_THRESHOLD_NANOS = 30L * TimeUtil.NANOSECONDS_PER_SECOND / 20L; // CraftBukkit
         String[] arguments = ManagementFactory.getRuntimeMXBean().getInputArguments().toArray(new String[0]);
@@ -261,7 +251,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
         return serverStatus;
     }
 
-    @Decorate(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;startMetricsRecordingTick()V"))
+    @Decorate(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;startMeasuringTaskExecutionTime()V"))
     private void taiyitist$updateTickParam(MinecraftServer instance, @Local(allocate = "tickSection") long tickSection, @Local(allocate = "tickCount") long tickCount) throws Throwable {
         if (tickCount++ % SAMPLE_INTERVAL == 0) {
             long curTime = Util.getMillis();
@@ -292,15 +282,6 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
             if (hasStopped) ci.cancel();
             hasStopped = true;
         }
-    }
-
-    /**
-     * @author wdog5
-     * @reason colorful motd
-     */
-    @Overwrite
-    public String getMotd() {
-        return ColorsAPI.of(BannerConfigUtil.motdFirstLine() + "\n" + BannerConfigUtil.motdSecondLine());
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;removeAll()V"))
@@ -353,13 +334,6 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
         this.server.enablePlugins(PluginLoadOrder.POSTWORLD);
         this.server.getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
         this.connection.acceptConnections();
-    }
-
-    @Inject(method = "createLevels", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/level/ServerLevel;<init>(Lnet/minecraft/server/MinecraftServer;Ljava/util/concurrent/Executor;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;Lnet/minecraft/world/level/storage/ServerLevelData;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/dimension/LevelStem;Lnet/minecraft/server/level/progress/ChunkProgressListener;ZJLjava/util/List;ZLnet/minecraft/world/RandomSequences;)V",
-            ordinal = 0))
-    private void taiyitist$registerEnv(ChunkProgressListener p_240787_1_, CallbackInfo ci) {
-        BukkitRegistry.registerEnvironments(this.registryAccess().registryOrThrow(Registries.LEVEL_STEM));
     }
 
     @Inject(method = "createLevels", at = @At(value = "INVOKE", remap = false,
@@ -473,122 +447,71 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
      */
     @Overwrite
     public final void prepareLevels(ChunkProgressListener listener) {
-        ServerLevel worldserver = this.overworld();
+        ServerLevel serverLevel = this.overworld();
         this.forceTicks = true;
-        // CraftBukkit end
-
-        LOGGER.info(I18n.as("server.region.prepare"), worldserver.dimension().location());
-        BlockPos blockposition = worldserver.getSharedSpawnPos();
-
-        listener.updateSpawnPos(new ChunkPos(blockposition));
-        ServerChunkCache chunkproviderserver = worldserver.getChunkSource();
-
+        LOGGER.info("Preparing start region for dimension {}", serverLevel.dimension().location());
+        BlockPos blockPos = serverLevel.getSharedSpawnPos();
+        listener.updateSpawnPos(new ChunkPos(blockPos));
+        ServerChunkCache serverChunkCache = serverLevel.getChunkSource();
         this.nextTickTimeNanos = Util.getNanos();
-        // CraftBukkit start
-        if (worldserver.getWorld().getKeepSpawnInMemory()) {
-            chunkproviderserver.addRegionTicket(TicketType.START, new ChunkPos(blockposition), 11, Unit.INSTANCE);
+        serverLevel.setDefaultSpawnPos(blockPos, serverLevel.getSharedSpawnAngle());
+        int i = this.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS);
+        int j = i > 0 ? Mth.square(ChunkProgressListener.calculateDiameter(i)) : 0;
 
-            while (chunkproviderserver.getTickingGenerated() != 441) {
-                // this.nextTickTime = SystemUtils.getMillis() + 10L;
-                this.executeModerately();
-            }
+        while(serverChunkCache.getTickingGenerated() < j) {
+            this.executeModerately();
         }
 
-        // this.nextTickTime = SystemUtils.getMillis() + 10L;
         this.executeModerately();
-        // Iterator iterator = this.levels.values().iterator();
-        Iterator var5 = this.levels.values().iterator();
 
-        while (true) {
-            ServerLevel serverLevel2;
-            ForcedChunksSavedData forcedChunksSavedData;
-            do {
-                if (!var5.hasNext()) {
-                    // CraftBukkit start
-                    // this.nextTickTime = SystemUtils.getMillis() + 10L;
-                    this.executeModerately();
-                    // CraftBukkit end
-                    listener.stop();
-                    // CraftBukkit start
-                    // this.updateMobSpawningFlags();
-                    worldserver.setSpawnSettings(this.isSpawningMonsters(), this.isSpawningAnimals());
-
-                    this.forceTicks = false;
-                    // CraftBukkit end
-                    return;
-                }
-
-                serverLevel2 = (ServerLevel) var5.next();
-                forcedChunksSavedData = serverLevel2.getDataStorage().get(ForcedChunksSavedData.factory(), "chunks");
-            } while (forcedChunksSavedData == null);
-
-            LongIterator longIterator = forcedChunksSavedData.getChunks().iterator();
-
-            while (longIterator.hasNext()) {
-                long l = longIterator.nextLong();
-                ChunkPos chunkPos = new ChunkPos(l);
-                serverLevel2.getChunkSource().updateChunkForced(chunkPos, true);
+        for(ServerLevel serverLevel2: this.levels.values()){
+            TicketStorage ticketStorage = serverLevel2.getDataStorage().get(TicketStorage.TYPE);
+            if (ticketStorage != null) {
+                ticketStorage.activateAllDeactivatedTickets();
             }
-
-            worldserver.entityManager.tick(); // SPIGOT-6526: Load pending entities so they are available to the API // Banner - tick to sync chunks
-            Bukkit.getPluginManager().callEvent(new WorldLoadEvent(serverLevel2.getWorld()));
         }
+
+        this.executeModerately();
+        listener.stop();
+        this.forceTicks = false;
     }
 
     @Override
     public void prepareLevels(ChunkProgressListener listener, ServerLevel worldserver) {
-        ServerWorldEvents.LOAD.invoker().onWorldLoad(((MinecraftServer) (Object) this), worldserver);// Banner
-        // WorldServer worldserver = this.overworld();
+        ServerWorldEvents.LOAD.invoker().onWorldLoad(((MinecraftServer) (Object) this), worldserver);// Taiyitist
         this.forceTicks = true;
-        // CraftBukkit end
-
-        LOGGER.info(I18n.as("server.region.prepare"), worldserver.dimension().location());
-        BlockPos blockposition = worldserver.getSharedSpawnPos();
-
-        listener.updateSpawnPos(new ChunkPos(blockposition));
-        ServerChunkCache chunkproviderserver = worldserver.getChunkSource();
-
+        LOGGER.info("Preparing start region for dimension {}", worldserver.dimension().location());
+        BlockPos blockPos = worldserver.getSharedSpawnPos();
+        listener.updateSpawnPos(new ChunkPos(blockPos));
+        ServerChunkCache serverChunkCache = worldserver.getChunkSource();
         this.nextTickTimeNanos = Util.getNanos();
-        // CraftBukkit start
-        if (worldserver.getWorld().getKeepSpawnInMemory()) {
-            chunkproviderserver.addRegionTicket(TicketType.START, new ChunkPos(blockposition), 11, Unit.INSTANCE);
+        worldserver.setDefaultSpawnPos(blockPos, worldserver.getSharedSpawnAngle());
+        int i = worldserver.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS);
+        int j = i > 0 ? Mth.square(ChunkProgressListener.calculateDiameter(i)) : 0;
 
-            while (chunkproviderserver.getTickingGenerated() != 441) {
-                // this.nextTickTime = SystemUtils.getMillis() + 10L;
-                this.executeModerately();
-            }
+        while(serverChunkCache.getTickingGenerated() < j) {
+            // CraftBukkit start
+            // this.nextTickTimeNanos = SystemUtils.getNanos() + MinecraftServer.PREPARE_LEVELS_DEFAULT_DELAY_NANOS;
+            this.executeModerately();
         }
 
-        // this.nextTickTime = SystemUtils.getMillis() + 10L;
+        // this.nextTickTimeNanos = SystemUtils.getNanos() + MinecraftServer.PREPARE_LEVELS_DEFAULT_DELAY_NANOS;
         this.executeModerately();
-        // Iterator iterator = this.levels.values().iterator();
 
-        if (true) {
-            ServerLevel worldserver1 = worldserver;
-            // CraftBukkit end
-            ForcedChunksSavedData forcedchunk = worldserver1.getDataStorage().get(ForcedChunksSavedData.factory(), "chunks");
-
-            if (forcedchunk != null) {
-                LongIterator longiterator = forcedchunk.getChunks().iterator();
-
-                while (longiterator.hasNext()) {
-                    long i = longiterator.nextLong();
-                    ChunkPos chunkcoordintpair = new ChunkPos(i);
-
-                    worldserver1.getChunkSource().updateChunkForced(chunkcoordintpair, true);
-                }
+        if(true){
+            ServerLevel serverLevel2 = worldserver;
+            TicketStorage ticketStorage = (TicketStorage)serverLevel2.getDataStorage().get(TicketStorage.TYPE);
+            if (ticketStorage != null) {
+                ticketStorage.activateAllDeactivatedTickets();
             }
         }
 
         // CraftBukkit start
-        // this.nextTickTime = SystemUtils.getMillis() + 10L;
+        // this.nextTickTimeNanos = SystemUtils.getNanos() + MinecraftServer.PREPARE_LEVELS_DEFAULT_DELAY_NANOS;
         this.executeModerately();
         // CraftBukkit end
         listener.stop();
-        // CraftBukkit start
-        // this.updateMobSpawningFlags();
-        worldserver.setSpawnSettings(this.isSpawningMonsters(), this.isSpawningAnimals());
-
+        worldserver.setSpawnSettings(this.isSpawningMonsters());
         this.forceTicks = false;
         // CraftBukkit end
     }
@@ -613,7 +536,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @Inject(method = "tickChildren", at = @At("HEAD"))
     private void taiyitist$processStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
         BukkitFieldHooks.setCurrentTick((int) (System.currentTimeMillis() / 50));
-        server.getScheduler().mainThreadHeartbeat(this.tickCount);
+        server.getScheduler().mainThreadHeartbeat();
         this.bridge$drainQueuedTasks();
     }
 
@@ -622,14 +545,14 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
                     target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V",
                     ordinal = 0))
     private void taiyitist$mainThreadHeartbeat0(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
-        this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
+        this.server.getScheduler().mainThreadHeartbeat(); // CraftBukkit
     }
 
     @Inject(method = "tickChildren",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/ServerFunctionManager;tick()V"))
     private void taiyitist$mainThreadHeartbeat1(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
-        this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
+        this.server.getScheduler().mainThreadHeartbeat(); // CraftBukkit
     }
 
     @Inject(method = "tickChildren",
@@ -637,7 +560,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
                     target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V",
                     ordinal = 0))
     private void taiyitist$mainThreadHeartbeat2(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
-        this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // CraftBukkit
+        this.server.getScheduler().mainThreadHeartbeat(); // CraftBukkit
     }
 
     @Inject(method = "tickChildren", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getAllLevels()Ljava/lang/Iterable;"))
@@ -757,6 +680,12 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @ModifyReturnValue(method = "serverLinks", at = @At("RETURN"))
     private ServerLinks taiyitist$resetServerLinks(ServerLinks original) {
         return serverLinksVanilla;
+    }
+
+    @Override
+    public void handleCustomClickAction(ResourceLocation minecraftkey, Optional<Tag> optional, ServerPlayer player) {
+        LOGGER.debug("Received custom click action {} with payload {}", minecraftkey, optional.orElse((Tag)null));
+        CraftEventFactory.callPlayerCustomClickEvent(minecraftkey, optional, player);
     }
 
     @Override
