@@ -99,7 +99,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// Banner - TODO fix inject method
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements InjectionMinecraftServer {
 
@@ -132,11 +131,11 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     public WorldLoader.DataLoadContext worldLoader;
     public CraftServer server;
     public OptionSet options;
-    public org.bukkit.command.ConsoleCommandSender console;
+    public ConsoleCommandSender console;
     public ConsoleReader reader;
     @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
     private static int currentTick = (int) (System.currentTimeMillis() / 50);
-    public java.util.Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<>();
+    public Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<>();
     public int autosavePeriod;
     public Commands vanillaCommandDispatcher;
     @Shadow private int tickCount;
@@ -530,7 +529,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
 
     @Inject(method = "tickServer", at = @At("RETURN"))
     private void taiyitist$watchdogThreadStart(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
-        org.spigotmc.WatchdogThread.tick(); // Spigot
+        WatchdogThread.tick(); // Spigot
     }
 
     @Inject(method = "tickChildren", at = @At("HEAD"))
