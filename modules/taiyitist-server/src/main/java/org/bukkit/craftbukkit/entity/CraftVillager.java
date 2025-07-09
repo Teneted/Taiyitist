@@ -112,7 +112,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
    }
 
    public ZombieVillager zombify() {
-      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = BukkitMethodHooks.zombifyVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(),/* TransformReason.INFECTION, TODO fixme*/ SpawnReason.CUSTOM);
+      net.minecraft.world.entity.monster.ZombieVillager entityzombievillager = BukkitMethodHooks.convertVillagerToZombieVillager(this.getHandle().level().getMinecraftWorld(), this.getHandle(), this.getHandle().blockPosition(), this.isSilent(), TransformReason.INFECTION, SpawnReason.CUSTOM);
       return entityzombievillager != null ? (ZombieVillager)entityzombievillager.getBukkitEntity() : null;
    }
 

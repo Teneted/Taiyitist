@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.BoneMealItem;
@@ -24,10 +25,11 @@ import net.minecraft.world.level.block.entity.ConduitBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityTransformEvent;
 
 public class BukkitMethodHooks {
 
-    private static final MethodHandle zombifyVillager;
+    private static final MethodHandle convertVillagerToZombieVillager;
     private static final MethodHandle defaultRegistryAccess;
     private static final MethodHandle cbServer;
     private static final MethodHandle calculateBoundingBoxStaticItemFrame;
@@ -41,8 +43,8 @@ public class BukkitMethodHooks {
 
     static {
         try {
-            var zombifyVillagerMethod = ZombieVillager.class.getDeclaredMethod("zombifyVillager", ServerLevel.class, Villager.class, BlockPos.class, boolean.class, CreatureSpawnEvent.SpawnReason.class);
-            zombifyVillager = MethodHandles.lookup().unreflect(zombifyVillagerMethod);
+            var convertVillagerToZombieVillagerMethod = Zombie.class.getDeclaredMethod("convertVillagerToZombieVillager", ServerLevel.class, Villager.class, BlockPos.class, boolean.class, EntityTransformEvent.TransformReason.class, CreatureSpawnEvent.SpawnReason.class);
+            convertVillagerToZombieVillager = MethodHandles.lookup().unreflect(convertVillagerToZombieVillagerMethod);
             var defaultRegistryAccessMethod = MinecraftServer.class.getDeclaredMethod("getDefaultRegistryAccess");
             defaultRegistryAccess = MethodHandles.lookup().unreflect(defaultRegistryAccessMethod);
             var cbServerMethod = MinecraftServer.class.getDeclaredMethod("getServer");
@@ -68,9 +70,9 @@ public class BukkitMethodHooks {
         }
     }
 
-    public static ZombieVillager zombifyVillager(ServerLevel level, Villager villager, BlockPos blockPosition, boolean silent, CreatureSpawnEvent.SpawnReason spawnReason) {
+    public static ZombieVillager convertVillagerToZombieVillager(ServerLevel level, Villager villager, BlockPos blockPosition, boolean silent, EntityTransformEvent.TransformReason transformReason, CreatureSpawnEvent.SpawnReason spawnReason) {
         try {
-            return (ZombieVillager) zombifyVillager.invokeWithArguments(level, villager, blockPosition, silent, spawnReason);
+            return (ZombieVillager) convertVillagerToZombieVillager.invokeWithArguments(level, villager, blockPosition, silent, transformReason, spawnReason);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
