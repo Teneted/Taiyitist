@@ -36,6 +36,10 @@
     "stats.MixinStatsCounter",
     "util.MixinSpawnUtil",
     "util.MixinTickThrottler",
+    "world.MixinBlockGetter",
+    "world.MixinCompoundContainer",
+    "world.MixinContainer",
+    "world.MixinSimpleContainer",
     "world.damagesource.MixinDamageSource",
     "world.damagesource.MixinDamageSources",
     "world.effect.MixinHealOrHarmMobEffect",
@@ -48,7 +52,10 @@
     "world.effect.MixinSaturationMobEffect",
     "world.level.MixinLevel",
     "world.level.block.MixinDispenserBlock",
+    "world.level.block.MixinFenceGateBlock",
     "world.level.block.MixinSaplingBlock",
-    "world.level.item.MixinSignItem"
+    "world.level.block.MixinSnowLayerBlock",
+    "world.level.item.MixinSignItem",
+    "world.waypoints.MixinWaypointTransmitter"
   ]
 }
