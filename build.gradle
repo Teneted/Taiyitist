@@ -206,7 +206,7 @@ tasks.register('countPatchProgress') {
             return count
         }
 
-        def patchesDir = file("$rootDir/nms-patches")
+        def patchesDir = file("$rootDir/nms-patches/net")
         def injectsDir = file("$rootDir/modules/taiyitist-server/src/main/java/com/taiyitistmc/mixin")
 
 
