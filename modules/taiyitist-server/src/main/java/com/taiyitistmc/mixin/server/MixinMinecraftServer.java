@@ -13,6 +13,7 @@ import io.izzel.arclight.mixin.Decorate;
 import io.izzel.arclight.mixin.DecorationOps;
 import io.izzel.arclight.mixin.Local;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.Proxy;
 import java.util.Arrays;
@@ -231,6 +232,30 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
         Main.handleParser(parser, options);
         this.vanillaCommandDispatcher = worldStem.dataPackResources().getCommands();
         this.worldLoader = BukkitSnapshotCaptures.getDataLoadContext();
+
+        // Try to see if we're actually running in a terminal, disable jline if not
+        if (System.console() == null && System.getProperty("jline.terminal") == null) {
+            System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
+            Main.useJline = false;
+        }
+
+        try {
+            reader = new ConsoleReader(System.in, System.out);
+            reader.setExpandEvents(false); // Avoid parsing exceptions for uncommonly used event designators
+        } catch (Throwable e) {
+            try {
+                // Try again with jline disabled for Windows users without C++ 2008 Redistributable
+                System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
+                System.setProperty("user.language", "en");
+                Main.useJline = false;
+                reader = new ConsoleReader(System.in, System.out);
+                reader.setExpandEvents(false);
+            } catch (IOException ex) {
+                LOGGER.warn((String) null, ex);
+            }
+        }
+        Runtime.getRuntime().addShutdownHook(new org.bukkit.craftbukkit.util.ServerShutdownThread(((MinecraftServer) (Object) this)));
+        // CraftBukkit end
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", remap = false, ordinal = 0, shift = At.Shift.AFTER, target = "Lorg/slf4j/Logger;info(Ljava/lang/String;)V"))

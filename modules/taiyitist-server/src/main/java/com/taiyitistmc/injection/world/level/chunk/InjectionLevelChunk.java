@@ -1,8 +1,6 @@
 package com.taiyitistmc.injection.world.level.chunk;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
 
 public interface InjectionLevelChunk {
 
@@ -11,10 +9,6 @@ public interface InjectionLevelChunk {
     }
 
     default ServerLevel taiyitist$r() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default BlockState setBlockState(BlockPos pos, BlockState state, boolean isMoving, boolean doPlace) {
         throw new IllegalStateException("Not implemented");
     }
 

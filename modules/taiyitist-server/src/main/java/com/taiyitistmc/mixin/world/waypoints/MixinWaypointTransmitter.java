@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WaypointTransmitter.class)
-public class MixinWaypointTransmitter {
+public interface MixinWaypointTransmitter {
 
     @Inject(method = "doesSourceIgnoreReceiver", at = @At("HEAD"), cancellable = true)
     private static void taiyitist$checkCanSee(LivingEntity livingEntity, ServerPlayer serverPlayer, CallbackInfoReturnable<Boolean> cir) {

@@ -597,7 +597,8 @@ public final class CraftServer implements Server {
    }
 
    public void syncCommands() {
-      Commands dispatcher = this.console.resources.managers().commands = new Commands(null, null);
+      // Clear existing commands // Taiyitist - do not clear
+      Commands dispatcher = console.resources.managers().commands;
       Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
 
       while(true) {

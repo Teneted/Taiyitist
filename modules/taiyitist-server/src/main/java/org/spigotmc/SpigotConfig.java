@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -57,7 +56,7 @@ public class SpigotConfig
       config = new YamlConfiguration();
       try
       {
-         config.load(CONFIG_FILE);
+         config.load( CONFIG_FILE );
       } catch ( IOException ex )
       {
       } catch ( InvalidConfigurationException ex )
@@ -79,8 +78,9 @@ public class SpigotConfig
 
    public static void registerCommands()
    {
-      for ( Map.Entry<String, Command> entry : commands.entrySet() ) {
-         Objects.requireNonNull(BukkitMethodHooks.getServer()).bridge$server().getCommandMap().register(entry.getKey(), "Spigot", entry.getValue());
+      for ( Map.Entry<String, Command> entry : commands.entrySet() )
+      {
+         BukkitMethodHooks.getServer().bridge$server().getCommandMap().register( entry.getKey(), "Spigot", entry.getValue() );
       }
    }
 
@@ -210,6 +210,7 @@ public class SpigotConfig
       restartOnCrash = getBoolean( "settings.restart-on-crash", restartOnCrash );
       restartScript = getString( "settings.restart-script", restartScript );
       restartMessage = transform( getString( "messages.restart", "Server is restarting" ) );
+      commands.put( "restart", new RestartCommand( "restart" ) );
       WatchdogThread.doStart( timeoutTime, restartOnCrash );
    }
 
@@ -218,7 +219,7 @@ public class SpigotConfig
       if ( version < 4 )
       {
          set( "settings.bungeecord", false );
-         System.out.println( "Oudated config, disabling BungeeCord support!" );
+         System.out.println( "Outdated config, disabling BungeeCord support!" );
       }
       bungee = getBoolean( "settings.bungeecord", false );
    }
@@ -331,17 +332,20 @@ public class SpigotConfig
       movedTooQuicklyMultiplier = getDouble( "settings.moved-too-quickly-multiplier", 10.0D );
    }
 
+   public static double maxAbsorption = 2048;
    public static double maxHealth = 2048;
    public static double movementSpeed = 2048;
    public static double attackDamage = 2048;
    private static void attributeMaxes()
    {
+      maxAbsorption = getDouble( "settings.attribute.maxAbsorption.max", maxAbsorption );
+      ( (RangedAttribute) Attributes.MAX_ABSORPTION.value() ).maxValue = maxAbsorption;
       maxHealth = getDouble( "settings.attribute.maxHealth.max", maxHealth );
-      ( (RangedAttribute) Attributes.MAX_HEALTH ).maxValue = maxHealth;
+      ( (RangedAttribute) Attributes.MAX_HEALTH.value() ).maxValue = maxHealth;
       movementSpeed = getDouble( "settings.attribute.movementSpeed.max", movementSpeed );
-      ( (RangedAttribute) Attributes.MOVEMENT_SPEED ).maxValue = movementSpeed;
+      ( (RangedAttribute) Attributes.MOVEMENT_SPEED.value() ).maxValue = movementSpeed;
       attackDamage = getDouble( "settings.attribute.attackDamage.max", attackDamage );
-      ( (RangedAttribute) Attributes.ATTACK_DAMAGE ).maxValue = attackDamage;
+      ( (RangedAttribute) Attributes.ATTACK_DAMAGE.value() ).maxValue = attackDamage;
    }
 
    public static boolean debug;
@@ -377,8 +381,8 @@ public class SpigotConfig
    public static boolean logVillagerDeaths;
    public static boolean logNamedDeaths;
    private static void logDeaths() {
-      logVillagerDeaths = getBoolean("settings.log-villager-deaths", false);
-      logNamedDeaths = getBoolean("settings.log-named-deaths", false);
+      logVillagerDeaths = getBoolean("settings.log-villager-deaths", true);
+      logNamedDeaths = getBoolean("settings.log-named-deaths", true);
    }
 
    public static boolean disablePlayerDataSaving;

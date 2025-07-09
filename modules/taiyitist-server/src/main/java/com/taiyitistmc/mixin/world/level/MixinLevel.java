@@ -107,8 +107,6 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     private CraftWorld world;
     private BannerWorldConfig bannerConfig;
     private final AtomicBoolean captured = new AtomicBoolean(false);
-    private final AtomicReference<BlockState> taiyitist$state = new AtomicReference<>();
-
     @Shadow public abstract WorldBorder getWorldBorder();
 
     @Shadow public abstract LevelChunk getChunk(int chunkX, int chunkZ);
@@ -240,36 +238,6 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
             cir.setReturnValue(false);
         }
         // CraftBukkit end
-    }
-
-    @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;")
-    )
-    private void taiyitist$captrueBlock(BlockPos blockPos, BlockState blockState, int i, int j,
-                                        CallbackInfoReturnable<Boolean> cir, @Local LevelChunk levelChunk) {
-        // CraftBukkit start - capture blockstates
-        if (this.captureBlockStates && !this.capturedBlockStates.containsKey(blockPos)) {
-            CapturedBlockState blockstate = CapturedBlockState.getBlockState(((Level) (Object) this), blockPos, i);
-            this.capturedBlockStates.put(blockPos.immutable(), blockstate);
-            captured.set(true);
-        }
-        // CraftBukkit end
-        BlockState taiyitist$blockState2 = levelChunk.setBlockState(blockPos, blockState, (i & 64) != 0, (i & 1024) == 0); // CraftBukkit custom NO_PLACE flag
-        taiyitist$state.set(taiyitist$blockState2);
-    }
-
-    @Redirect(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;"))
-    private BlockState taiyitist$resetState(LevelChunk instance, BlockPos blockPos, BlockState blockState, int i) {
-        BlockState taiyitist$state1 = taiyitist$state.get();
-        taiyitist$state1 = taiyitist$state1 == null ? instance.setBlockState(blockPos, blockState, i) : taiyitist$state1;
-        BlockState taiyitist$state2 = taiyitist$state1;
-        if (taiyitist$state2 == null && captured.get()) {
-            this.capturedBlockStates.remove(blockPos);
-        }
-        return taiyitist$state2;
     }
 
     @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",

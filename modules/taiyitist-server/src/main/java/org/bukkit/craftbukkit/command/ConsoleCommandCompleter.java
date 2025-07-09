@@ -40,8 +40,7 @@ public class ConsoleCommandCompleter implements Completer {
          }
 
          return cursor - (buffer.length() - lastSpace - 1);
-      } catch (ExecutionException var7) {
-         ExecutionException e = var7;
+      } catch (ExecutionException e) {
          this.server.getLogger().log(Level.WARNING, "Unhandled exception when tab completing", e);
       } catch (InterruptedException var8) {
          Thread.currentThread().interrupt();

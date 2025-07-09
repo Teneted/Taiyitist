@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(DispenserBlock.class)
 public class MixinDispenserBlock {
 
-    @TransformAccess(Opcodes.ACC_STATIC | Opcodes.ACC_FINAL)
+    @TransformAccess(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC)
     private static boolean eventFired = false; // CraftBukkit
 }

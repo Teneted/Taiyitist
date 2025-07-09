@@ -1,20 +1,16 @@
 package com.taiyitistmc.injection.world.entity;
 
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.event.CraftPortalEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.jetbrains.annotations.Nullable;
 
 public interface InjectionEntity {
 
@@ -30,21 +26,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void setOrigin(@javax.annotation.Nonnull Location location) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default void refreshEntityData(ServerPlayer to) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Nullable
-    default org.bukkit.util.Vector getOriginVector() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    @Nullable
-    default UUID getOriginWorld() {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -129,10 +111,6 @@ public interface InjectionEntity {
     }
 
     default void postTick() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default void taiyitist$setSecondsOnFire(float i, boolean callEvent) {
         throw new IllegalStateException("Not implemented");
     }
 
