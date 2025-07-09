@@ -30,7 +30,7 @@ public abstract class MixinProjectile extends Entity implements InjectionProject
     @Shadow
     protected abstract ProjectileDeflection hitTargetOrDeflectSelf(HitResult hitResult);
 
-    @Inject(method = "setOwner", at = @At("RETURN"))
+    @Inject(method = "setOwner(Lnet/minecraft/world/entity/Entity;)V", at = @At("RETURN"))
     private void taiyitist$updateSource(Entity entityIn, CallbackInfo ci) {
         this.taiyitist$setProjectileSource((entityIn != null && entityIn.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entityIn.getBukkitEntity() : null);
     }

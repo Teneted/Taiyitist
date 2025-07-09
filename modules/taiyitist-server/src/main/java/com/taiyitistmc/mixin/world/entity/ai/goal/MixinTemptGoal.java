@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.world.entity.ai.goal;
 
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.player.Player;
@@ -22,9 +23,7 @@ public class MixinTemptGoal {
     @Nullable
     protected Player player;
 
-    @Shadow
-    @Final
-    protected PathfinderMob mob;
+    @Shadow @Final protected Mob mob;
 
     @Inject(method = "canUse", at = @At("TAIL"), cancellable = true)
     private void taiyitist$targetEvent(CallbackInfoReturnable<Boolean> cir) {
