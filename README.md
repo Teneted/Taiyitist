@@ -13,6 +13,7 @@
 
 | Version | Support     | Stability | Mod compatibility | Plugin compatibility |
 |---------|-------------|-----------|-------------------|----------------------| 
+| 1.21.7  | Active      | Poor      | Poor              | Poor                 |
 | 1.21.1  | Active      | Poor      | Poor              | Poor                 |
 | 1.20.1  | Active      | Good      | Good              | Good                 |
 
