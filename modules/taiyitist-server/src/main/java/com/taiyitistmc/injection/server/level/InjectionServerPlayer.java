@@ -237,4 +237,8 @@ public interface InjectionServerPlayer extends InjectionPlayer {
     default void taiyitist$setListOrder(int listOrder) {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void resendItemInHarnds() {
+        throw new IllegalStateException("Not implemented");
+    }
 }

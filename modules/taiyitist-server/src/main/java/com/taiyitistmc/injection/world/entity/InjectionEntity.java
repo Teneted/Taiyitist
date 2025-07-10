@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.event.CraftPortalEvent;
@@ -204,6 +205,18 @@ public interface InjectionEntity {
     }
 
     default void taiyitist$setPluginRemoved(boolean pluginRemoved) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default boolean saveAsPassenger(ValueOutput valueoutput, boolean includeAll) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void saveWithoutId(ValueOutput valueoutput, boolean includeAll) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void addAdditionalSaveData(ValueOutput valueOutput, boolean includeAll) {
         throw new IllegalStateException("Not implemented");
     }
 }

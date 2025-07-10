@@ -232,6 +232,7 @@ accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/m
 accessible method net/minecraft/world/entity/animal/Parrot setVariant (Lnet/minecraft/world/entity/animal/Parrot$Variant;)V
 accessible method net/minecraft/world/entity/AreaEffectCloud updateParticle ()V
 accessible method net/minecraft/world/entity/Entity isInvulnerableToBase (Lnet/minecraft/world/damagesource/DamageSource;)Z
+accessible method net/minecraft/world/entity/Entity setLevel (Lnet/minecraft/world/level/Level;)V
 
 # public fields
 accessible field net/minecraft/commands/Commands COMMAND_NODE_INSPECTOR Lnet/minecraft/network/protocol/game/ClientboundCommandsPacket$NodeInspector;
