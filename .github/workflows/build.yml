@@ -48,5 +48,5 @@ jobs:
           allowUpdates: true
           makeLatest: true
           tag: "${{ env.MINECRAFT_VERSION }}"
-          artifacts: "Taiyitist launcher.jar"
+          artifacts: ./build/libs/*.jar
           token: ${{ secrets.GITHUB_TOKEN }}
