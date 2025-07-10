@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.event.entity.EntityExhaustionEvent;
+import org.bukkit.event.player.PlayerSpawnChangeEvent;
 
 public interface InjectionPlayer extends InjectionLivingEntity {
 
@@ -67,6 +68,10 @@ public interface InjectionPlayer extends InjectionLivingEntity {
     }
 
     default AtomicBoolean bridge$startSleepInBed_force() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void pushSpawnChangeCause(PlayerSpawnChangeEvent.Cause cause) {
         throw new IllegalStateException("Not implemented");
     }
 }
