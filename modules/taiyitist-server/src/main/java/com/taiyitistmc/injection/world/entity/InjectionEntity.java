@@ -1,19 +1,26 @@
 package com.taiyitistmc.injection.world.entity;
 
 import com.taiyitistmc.injection.world.level.entity.InjectionEntityAccess;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.Vec3;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.event.CraftPortalEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRemoveEvent;
+import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public interface InjectionEntity extends InjectionEntityAccess {
 
@@ -137,7 +144,7 @@ public interface InjectionEntity extends InjectionEntityAccess {
         throw new IllegalStateException("Not implemented");
     }
 
-    default Entity teleportTo(ServerLevel worldserver, Vec3 location) {
+    default boolean teleportTo(ServerLevel worldserver, double d0, double d1, double d2, Set<Relative> set, float f, float f1, boolean flag, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -169,7 +176,7 @@ public interface InjectionEntity extends InjectionEntityAccess {
         throw new IllegalStateException("Not implemented");
     }
 
-    default CraftPortalEvent callPortalEvent(Entity entity, ServerLevel exitWorldServer, Vec3 exitPosition, PlayerTeleportEvent.TeleportCause cause, int searchRadius, int creationRadius) {
+    default CraftPortalEvent callPortalEvent(Entity entity, Location exit, PlayerTeleportEvent.TeleportCause cause, int searchRadius, int creationRadius) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -219,6 +226,22 @@ public interface InjectionEntity extends InjectionEntityAccess {
     }
 
     default void addAdditionalSaveData(ValueOutput valueOutput, boolean includeAll) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void pushUnleashReason(EntityUnleashEvent.UnleashReason reason) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default boolean dropAllLeashConnections(@Nullable Player player, EntityUnleashEvent.UnleashReason reason) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default CommandSource bridge$commandSource() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setCommandSource(CommandSource commandSource) {
         throw new IllegalStateException("Not implemented");
     }
 }

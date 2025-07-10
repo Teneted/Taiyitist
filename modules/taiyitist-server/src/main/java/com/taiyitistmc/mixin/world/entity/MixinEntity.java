@@ -1,18 +1,28 @@
 package com.taiyitistmc.mixin.world.entity;
 
+import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.serialization.Codec;
 import com.taiyitistmc.injection.world.entity.InjectionEntity;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,32 +34,58 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Leashable;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityInLevelCallback;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.event.CraftPortalEvent;
+import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityAirChangeEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.entity.EntityMountEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityPoseChangeEvent;
 import org.bukkit.event.entity.EntityRemoveEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.EntityUnleashEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 import org.spigotmc.ActivationRange;
@@ -68,7 +104,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+// Taiyitist - TODO fix mixin
 @Mixin(Entity.class)
 public abstract class MixinEntity implements InjectionEntity {
 
@@ -115,7 +153,8 @@ public abstract class MixinEntity implements InjectionEntity {
 
     @Shadow @Nullable private Entity.RemovalReason removalReason;
 
-    @Shadow @Nullable protected abstract String getEncodeId();
+    @Shadow @Nullable
+    public abstract String getEncodeId();
 
     @Shadow @Nullable private Entity vehicle;
 
@@ -167,6 +206,36 @@ public abstract class MixinEntity implements InjectionEntity {
     @Shadow public abstract void setInvisible(boolean bl);
 
     @Shadow protected abstract void addAdditionalSaveData(ValueOutput valueOutput);
+
+    @Shadow public abstract void gameEvent(Holder<GameEvent> holder);
+
+    @Shadow public abstract void gameEvent(Holder<GameEvent> holder, @Nullable Entity entity);
+
+    @Shadow public abstract Level level();
+
+    @Shadow protected abstract void removePassenger(Entity entity);
+
+    @Shadow private ImmutableList<Entity> passengers;
+
+    @Shadow public abstract boolean isSwimming();
+
+    @Shadow @Final protected SynchedEntityData entityData;
+    @Shadow @Final private static EntityDataAccessor<Integer> DATA_AIR_SUPPLY_ID;
+    @Shadow private AABB bb;
+
+    @Shadow public abstract boolean fireImmune();
+
+    @Shadow public abstract boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f);
+
+    @Shadow public abstract void teleportRelative(double d, double e, double f);
+
+    @Shadow public abstract void stopRiding();
+
+    @Shadow private EntityInLevelCallback levelCallback;
+
+    @Shadow public abstract void onRemoval(Entity.RemovalReason removalReason);
+
+    @Shadow @Nullable public abstract Entity teleport(TeleportTransition teleportTransition);
 
     // CraftBukkit start
     private static final int CURRENT_LEVEL = 2;
@@ -223,6 +292,46 @@ public abstract class MixinEntity implements InjectionEntity {
         return level.hasChunk((int) Math.floor(this.getX()) >> 4, (int) Math.floor(this.getZ()) >> 4);
     }
     // CraftBukkit end
+
+    // CraftBukkit start
+    private CommandSource commandSource = new CommandSource() {
+
+        @Override
+        public void sendSystemMessage(Component ichatbasecomponent) {
+        }
+
+        @Override
+        public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
+            return getBukkitEntity();
+        }
+
+        @Override
+        public boolean acceptsSuccess() {
+            return ((ServerLevel) level()).getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK);
+        }
+
+        @Override
+        public boolean acceptsFailure() {
+            return true;
+        }
+
+        @Override
+        public boolean shouldInformAdmins() {
+            return true;
+        }
+    };
+    // CraftBukkit end
+
+
+    @Override
+    public CommandSource bridge$commandSource() {
+        return commandSource;
+    }
+
+    @Override
+    public void taiyitist$setCommandSource(CommandSource commandSource) {
+        this.commandSource = commandSource;
+    }
 
     @Inject(method = "kill", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;remove(Lnet/minecraft/world/entity/Entity$RemovalReason;)V"))
     private void taiyitist$killReason(ServerLevel serverLevel, CallbackInfo ci) {
@@ -407,6 +516,11 @@ public abstract class MixinEntity implements InjectionEntity {
         // CraftBukkit end
     }
 
+    @Inject(method = "setRemoved", at = @At("HEAD"))
+    private void taiyitist$callEntityRemoveEvent(Entity.RemovalReason removalReason, CallbackInfo ci) {
+        CraftEventFactory.callEntityRemoveEvent(((Entity) (Object) this), taiyitist$removeCause != null ? taiyitist$removeCause : null);
+    }
+
     @Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/ValueOutput;store(Ljava/lang/String;Lcom/mojang/serialization/Codec;Ljava/lang/Object;)V", ordinal = 4))
     private void taiyitist$setUUID(ValueOutput valueOutput, CallbackInfo ci) {
         // PAIL: Check above UUID reads 1.8 properly, ie: UUIDMost / UUIDLeast
@@ -523,6 +637,369 @@ public abstract class MixinEntity implements InjectionEntity {
         // CraftBukkit end
     }
 
+    @Inject(method = "shearOffAllLeashConnections", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;dropAllLeashConnections(Lnet/minecraft/world/entity/player/Player;)Z"))
+    private void taiyitist$pushShearOffReason(Player player, CallbackInfoReturnable<Boolean> cir) {
+        taiyitist$unleashReason.set(EntityUnleashEvent.UnleashReason.SHEAR);
+    }
+
+    @Inject(method = "dropAllLeashConnections", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Leashable;dropLeash()V", ordinal = 0))
+    private void taiyitist$dropLeashEvent(Player player, CallbackInfoReturnable<Boolean> cir) {
+        this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), taiyitist$unleashReason.get() != null ? taiyitist$unleashReason.get() : EntityUnleashEvent.UnleashReason.UNKNOWN)); // CraftBukkit
+    }
+
+    @Inject(method = "dropAllLeashConnections", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Leashable;dropLeash()V", ordinal = 1))
+    private void taiyitist$dropLeashEvent0(Player player, CallbackInfoReturnable<Boolean> cir, @Local Leashable leashable2) {
+        // CraftBukkit start
+        if (leashable2 instanceof Entity entity) {
+            this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(entity.getBukkitEntity(), taiyitist$unleashReason.get() != null ? taiyitist$unleashReason.get() : EntityUnleashEvent.UnleashReason.UNKNOWN));
+        }
+        // CraftBukkit end
+    }
+
+    @Inject(method = "attemptToShearEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;spawnAtLocation(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/entity/item/ItemEntity;"))
+    private void taiyitist$markDrop(Player player, InteractionHand interactionHand, ItemStack itemStack, Mob mob, CallbackInfoReturnable<Boolean> cir) {
+        this.forceDrops = true; // CraftBukkit
+    }
+
+    @Inject(method = "attemptToShearEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/PlayerInteractTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/Entity;)V"))
+    private void taiyitist$markDrop0(Player player, InteractionHand interactionHand, ItemStack itemStack, Mob mob, CallbackInfoReturnable<Boolean> cir) {
+        this.forceDrops = false; // CraftBukkit
+    }
+
+    @ModifyExpressionValue(method = "startRiding(Lnet/minecraft/world/entity/Entity;Z)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;canSerialize()Z"))
+    private boolean taiyitist$addBukkitFlag(boolean original, @Local(argsOnly = true) boolean bl) {
+        return original && !bl;
+    }
+
+    @Inject(method = "startRiding(Lnet/minecraft/world/entity/Entity;Z)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isPassenger()Z"), cancellable = true)
+    private void taiyitist$handleEntityMountEvent(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> cir) {
+        // CraftBukkit start
+        if (entity.getBukkitEntity() instanceof Vehicle && this.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
+            VehicleEnterEvent event = new VehicleEnterEvent((Vehicle) entity.getBukkitEntity(), this.getBukkitEntity());
+            // Suppress during worldgen
+            if (this.valid) {
+                Bukkit.getPluginManager().callEvent(event);
+            }
+            if (event.isCancelled()) {
+                cir.setReturnValue(false);
+            }
+        }
+
+        EntityMountEvent event = new EntityMountEvent(this.getBukkitEntity(), entity.getBukkitEntity());
+        // Suppress during worldgen
+        if (this.valid) {
+            Bukkit.getPluginManager().callEvent(event);
+        }
+        if (event.isCancelled()) {
+            cir.setReturnValue(false);
+        }
+        // CraftBukkit end
+    }
+
+    @Redirect(method = "removeVehicle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;removePassenger(Lnet/minecraft/world/entity/Entity;)V"))
+    private void taiyitist$setEntity(Entity instance, Entity entity) {
+        if (!entity.taiyitist$removePassenger(((Entity) (Object) this))) this.vehicle = entity; // CraftBukkit
+    }
+
+    @Inject(method = "removePassenger", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;size()I"), cancellable = true)
+    private void taiyitist$handleVehicleExitEvent(Entity entity, CallbackInfo ci) {
+        // CraftBukkit start
+        CraftEntity craft = (CraftEntity) entity.getBukkitEntity().getVehicle();
+        Entity orig = craft == null ? null : craft.getHandle();
+        if (getBukkitEntity() instanceof Vehicle && entity.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
+            VehicleExitEvent event = new VehicleExitEvent(
+                    (Vehicle) getBukkitEntity(),
+                    (org.bukkit.entity.LivingEntity) entity.getBukkitEntity()
+            );
+            // Suppress during worldgen
+            if (this.valid) {
+                Bukkit.getPluginManager().callEvent(event);
+            }
+            CraftEntity craftn = (CraftEntity) entity.getBukkitEntity().getVehicle();
+            Entity n = craftn == null ? null : craftn.getHandle();
+            if (event.isCancelled() || n != orig) {
+                ci.cancel();
+            }
+        }
+
+        EntityDismountEvent event = new EntityDismountEvent(entity.getBukkitEntity(), this.getBukkitEntity());
+        // Suppress during worldgen
+        if (this.valid) {
+            Bukkit.getPluginManager().callEvent(event);
+        }
+        if (event.isCancelled()) {
+            ci.cancel();
+        }
+        // CraftBukkit end
+    }
+
+    @ModifyExpressionValue(method = "handlePortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isLevelEnabled(Lnet/minecraft/world/level/Level;)Z"))
+    private boolean taiyitist$checkPlayer(boolean original) {
+        return original || ((Entity) (Object) this) instanceof ServerPlayer;
+    }
+
+    @Inject(method = "setSwimming", at = @At("HEAD"), cancellable = true)
+    private void taiyitist$callToggleSwimEvent(boolean flag, CallbackInfo ci) {
+        // CraftBukkit start
+        if (valid && this.isSwimming() != flag && ((Entity) (Object) this) instanceof LivingEntity) {
+            if (CraftEventFactory.callToggleSwimEvent((LivingEntity) (Object) this, flag).isCancelled()) {
+                ci.cancel();
+            }
+        }
+        // CraftBukkit end
+    }
+
+    @WrapWithCondition(method = "setInvisible", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSharedFlag(IZ)V"))
+    private boolean taiyitist$checkInvisibility(Entity instance, int i, boolean bl) {
+        return !this.persistentInvisibility;// Prevent Minecraft from removing our invisibility flag
+    }
+
+    @ModifyReturnValue(method = "getMaxAirSupply", at = @At("RETURN"))
+    private int taiyitist$useMaxAirTikcks(int original) {
+        return maxAirTicks; // CraftBukkit - SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
+    }
+
+    @Redirect(method = "setAirSupply", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;)V"))
+    private void taiyitist$handleEntityAirChangeEvent(SynchedEntityData instance, EntityDataAccessor<Integer> entityDataAccessor, Object object, @Local(argsOnly = true) int i) {
+        // CraftBukkit start
+        EntityAirChangeEvent event = new EntityAirChangeEvent(this.getBukkitEntity(), i);
+        // Suppress during worldgen
+        if (this.valid) {
+            event.getEntity().getServer().getPluginManager().callEvent(event);
+        }
+        if (event.isCancelled() && this.getAirSupply() != i) {
+            this.entityData.markDirty(DATA_AIR_SUPPLY_ID);
+            return;
+        }
+        this.entityData.set(DATA_AIR_SUPPLY_ID, event.getAmount());
+        // CraftBukkit end
+    }
+
+    @Redirect(method = "thunderHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(F)V"))
+    private void taiyitist$entityCombustEvent(Entity instance, float f,
+                                              @Local(argsOnly = true) LightningBolt lightningBolt,
+                                              @Share("taiyitist$thisBukkitEntity") LocalRef<org.bukkit.entity.Entity> taiyitist$thisBukkitEntity,
+                                              @Share("taiyitist$stormBukkitEntity") LocalRef<org.bukkit.entity.Entity> taiyitist$stormBukkitEntity,
+                                              @Share("taiyitist$pluginManager") LocalRef<PluginManager> taiyitist$pluginManager) {
+        // CraftBukkit start
+        final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
+        final org.bukkit.entity.Entity stormBukkitEntity = lightningBolt.getBukkitEntity();
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+        taiyitist$thisBukkitEntity.set(thisBukkitEntity);
+        taiyitist$stormBukkitEntity.set(stormBukkitEntity);
+        taiyitist$pluginManager.set(pluginManager);
+        // CraftBukkit end
+        // CraftBukkit start - Call a combust event when lightning strikes
+        EntityCombustByEntityEvent entityCombustEvent = new EntityCombustByEntityEvent(stormBukkitEntity, thisBukkitEntity, 8.0F);
+        pluginManager.callEvent(entityCombustEvent);
+        if (!entityCombustEvent.isCancelled()) {
+            this.igniteForSeconds(entityCombustEvent.getDuration(), false);
+        }
+        // CraftBukkit end
+    }
+
+    @Redirect(method = "thunderHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private boolean taiyitist$hangingEvent(Entity instance, ServerLevel serverLevel,
+                                           DamageSource damageSource, float v,
+                                           @Local(argsOnly = true) LightningBolt lightningBolt,
+                                           @Share("taiyitist$thisBukkitEntity") LocalRef<org.bukkit.entity.Entity> taiyitist$thisBukkitEntity,
+                                           @Share("taiyitist$stormBukkitEntity") LocalRef<org.bukkit.entity.Entity> taiyitist$stormBukkitEntity,
+                                           @Share("taiyitist$pluginManager") LocalRef<PluginManager> taiyitist$pluginManager,
+                                           @Cancellable CallbackInfo ci) {
+        // CraftBukkit start
+        if (taiyitist$thisBukkitEntity.get() instanceof Hanging) {
+            HangingBreakByEntityEvent hangingEvent = new HangingBreakByEntityEvent((Hanging) taiyitist$thisBukkitEntity.get(), taiyitist$stormBukkitEntity.get());
+            taiyitist$pluginManager.get().callEvent(hangingEvent);
+
+            if (hangingEvent.isCancelled()) {
+                ci.cancel();
+            }
+        }
+
+        if (this.fireImmune()) {
+            ci.cancel();
+        }
+
+        if (!this.hurtServer(serverLevel, this.damageSources().lightningBolt().customEntityDamager(lightningBolt), 5.0F)) {
+            ci.cancel();
+        }
+        // CraftBukkit end
+        return true;
+    }
+
+    @Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/portal/TeleportTransition;newLevel()Lnet/minecraft/server/level/ServerLevel;"), cancellable = true)
+    private void taiyitist$handleTpEvent(TeleportTransition teleportTransition, CallbackInfoReturnable<Entity> cir) {
+        // CraftBukkit start
+        PositionMoveRotation absolutePosition = PositionMoveRotation.calculateAbsolute(PositionMoveRotation.of(((Entity) (Object) this)), PositionMoveRotation.of(teleportTransition), teleportTransition.relatives());
+        Location to = CraftLocation.toBukkit(absolutePosition.position(), teleportTransition.newLevel().getWorld(), absolutePosition.yRot(), absolutePosition.xRot());
+        EntityTeleportEvent teleEvent = CraftEventFactory.callEntityTeleportEvent(((Entity) (Object) this), to);
+        if (teleEvent.isCancelled()) {
+            cir.setReturnValue(null);
+        }
+        if (!to.equals(teleEvent.getTo())) {
+            to = teleEvent.getTo();
+            teleportTransition = new TeleportTransition(((CraftWorld) to.getWorld()).getHandle(), CraftLocation.toVec3D(to), Vec3.ZERO, to.getYaw(), to.getPitch(), teleportTransition.missingRespawnBlock(), teleportTransition.asPassenger(), Set.of(), teleportTransition.postTeleportTransition());
+            teleportTransition.setTeleportCause(teleportTransition.getTeleportCause());
+        }
+        // CraftBukkit end
+    }
+
+    @Inject(method = "teleportCrossDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;teleportSetPosition(Lnet/minecraft/world/entity/PositionMoveRotation;Ljava/util/Set;)V"))
+    private void taiyitist$forwardEntity(ServerLevel serverLevel, ServerLevel serverLevel2, TeleportTransition teleportTransition, CallbackInfoReturnable<Entity> cir, @Local(ordinal = 0, argsOnly = true) Entity entity) {
+        // CraftBukkit start - Forward the CraftEntity to the new entity
+        this.getBukkitEntity().setHandle(entity);
+        entity.taiyitist$setBukkitEntity(this.getBukkitEntity());
+        // CraftBukkit end
+    }
+
+    @WrapWithCondition(method = "teleportCrossDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addDuringTeleport(Lnet/minecraft/world/entity/Entity;)V"))
+    private boolean taiyitist$checkInWorld(ServerLevel instance, Entity entity) {
+        return this.inWorld;
+    }
+
+    @Inject(method = "removeAfterChangingDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setRemoved(Lnet/minecraft/world/entity/Entity$RemovalReason;)V"))
+    private void taiyitist$pushremoveAfterChangingDimensionsCause(CallbackInfo ci) {
+        pushRemoveCause(null);
+    }
+
+    @Inject(method = "removeAfterChangingDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Leashable;removeLeash()V"))
+    private void taiyitist$handleEntityUnleashEvent(CallbackInfo ci) {
+        this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), taiyitist$unleashReason.get() != null ? taiyitist$unleashReason.get() : EntityUnleashEvent.UnleashReason.UNKNOWN)); // CraftBukkit
+    }
+
+    @Redirect(method = "setBoundingBox", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/Entity;bb:Lnet/minecraft/world/phys/AABB;"))
+    private void taiyitist$resetBB(Entity instance, AABB value) {
+        // CraftBukkit start - block invalid bounding boxes
+        double minX = value.minX,
+                minY = value.minY,
+                minZ = value.minZ,
+                maxX = value.maxX,
+                maxY = value.maxY,
+                maxZ = value.maxZ;
+        double len = value.maxX - value.minX;
+        if (len < 0) maxX = minX;
+        if (len > 64) maxX = minX + 64.0;
+
+        len = value.maxY - value.minY;
+        if (len < 0) maxY = minY;
+        if (len > 64) maxY = minY + 64.0;
+
+        len = value.maxZ - value.minZ;
+        if (len < 0) maxZ = minZ;
+        if (len > 64) maxZ = minZ + 64.0;
+        this.bb = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        // CraftBukkit end
+    }
+
+    // CraftBukkit start
+    @Override
+    public CraftPortalEvent callPortalEvent(Entity entity, Location exit, PlayerTeleportEvent.TeleportCause cause, int searchRadius, int creationRadius) {
+        org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+        Location enter = bukkitEntity.getLocation();
+
+        EntityPortalEvent event = new EntityPortalEvent(bukkitEntity, enter, exit, searchRadius, true, creationRadius);
+        event.getEntity().getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled() || event.getTo() == null || event.getTo().getWorld() == null || !entity.isAlive()) {
+            return null;
+        }
+        return new CraftPortalEvent(event);
+    }
+    // CraftBukkit end
+
+    @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FFZ)Z", at = @At("HEAD"))
+    private void taiyitist$tpCause(ServerLevel serverLevel, double d, double e, double f, Set<Relative> set, float g, float h, boolean bl, CallbackInfoReturnable<Boolean> cir) {
+        // Taiyitist - TODO fixme
+    }
+
+    @Override
+    public boolean teleportTo(ServerLevel serverLevel, double d, double e, double f, Set<Relative> set, float g, float h, boolean bl, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause) {
+        Entity entity = this.teleport(new TeleportTransition(serverLevel, new Vec3(d, e, f), Vec3.ZERO, g, h, set, TeleportTransition.DO_NOTHING));
+        return entity != null;
+    }
+
+    @Override
+    public boolean taiyitist$removePassenger(Entity entity) {
+        if (entity.getVehicle() == ((Entity) (Object) this)) {
+            throw new IllegalStateException("Use x.stopRiding(y), not y.removePassenger(x)");
+        } else {
+            if (this.passengers.size() == 1 && this.passengers.get(0) == entity) {
+                this.passengers = ImmutableList.of();
+            } else {
+                // CraftBukkit start
+                CraftEntity craft = (CraftEntity) entity.getBukkitEntity().getVehicle();
+                Entity orig = craft == null ? null : craft.getHandle();
+                if (getBukkitEntity() instanceof Vehicle && entity.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
+                    VehicleExitEvent event = new VehicleExitEvent(
+                            (Vehicle) getBukkitEntity(),
+                            (org.bukkit.entity.LivingEntity) entity.getBukkitEntity()
+                    );
+                    // Suppress during worldgen
+                    if (this.valid) {
+                        Bukkit.getPluginManager().callEvent(event);
+                    }
+                    CraftEntity craftn = (CraftEntity) entity.getBukkitEntity().getVehicle();
+                    Entity n = craftn == null ? null : craftn.getHandle();
+                    if (event.isCancelled() || n != orig) {
+                        return false;
+                    }
+                }
+
+                EntityDismountEvent event = new EntityDismountEvent(entity.getBukkitEntity(), this.getBukkitEntity());
+                // Suppress during worldgen
+                if (this.valid) {
+                    Bukkit.getPluginManager().callEvent(event);
+                }
+                if (event.isCancelled()) {
+                    return false;
+                }
+                // CraftBukkit end
+                this.passengers = (ImmutableList)this.passengers.stream().filter((entity2) -> {
+                    return entity2 != entity;
+                }).collect(ImmutableList.toImmutableList());
+            }
+
+            entity.boardingCooldown = 60;
+            this.gameEvent(GameEvent.ENTITY_DISMOUNT, entity);
+        }
+        return true; // CraftBukkit
+    }
+
+    @Override
+    public boolean dropAllLeashConnections(@Nullable Player player, EntityUnleashEvent.UnleashReason reason) {
+        taiyitist$unleashReason.set(reason);
+        List<Leashable> list = Leashable.leashableLeashedTo(((Entity) (Object) this));
+        boolean bl = !list.isEmpty();
+        if (this instanceof Leashable leashable) {
+            if (leashable.isLeashed()) {
+                this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), reason)); // CraftBukkit
+                leashable.dropLeash();
+                bl = true;
+            }
+        }
+
+        for (Leashable leashable2 : list) {
+            // CraftBukkit start
+            if (leashable2 instanceof Entity entity) {
+                this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(entity.getBukkitEntity(), reason));
+            }
+            // CraftBukkit end
+            leashable2.dropLeash();
+        }
+
+        if (bl) {
+            this.gameEvent(GameEvent.SHEAR, player);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private AtomicReference<EntityUnleashEvent.UnleashReason> taiyitist$unleashReason = new AtomicReference<>();
+
+    @Override
+    public void pushUnleashReason(EntityUnleashEvent.UnleashReason reason) {
+        taiyitist$unleashReason.set(reason);
+    }
 
     // CraftBukkit start - allow excluding certain data when saving
     @Override
@@ -669,7 +1146,19 @@ public abstract class MixinEntity implements InjectionEntity {
 
     @Override
     public void remove(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
-        this.setRemoved(entity_removalreason, cause);
+        CraftEventFactory.callEntityRemoveEvent(((Entity) (Object) this), cause);
+        // CraftBukkit end
+        if (this.removalReason == null) {
+            this.removalReason = entity_removalreason;
+        }
+
+        if (this.removalReason.shouldDestroy()) {
+            this.stopRiding();
+        }
+
+        this.getPassengers().forEach(Entity::stopRiding);
+        this.levelCallback.onRemove(removalReason);
+        this.onRemoval(removalReason);
         // CraftBukkit end
     }
 
@@ -677,6 +1166,23 @@ public abstract class MixinEntity implements InjectionEntity {
     public void discard(EntityRemoveEvent.Cause cause) {
         this.remove(Entity.RemovalReason.DISCARDED, cause);
         // CraftBukkit end
+    }
+
+    @Override
+    public void setRemoved(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
+        taiyitist$removeCause = cause;
+        CraftEventFactory.callEntityRemoveEvent(((Entity) (Object) this), cause);
+        if (this.removalReason == null) {
+            this.removalReason = entity_removalreason;
+        }
+
+        if (this.removalReason.shouldDestroy()) {
+            this.stopRiding();
+        }
+
+        this.getPassengers().forEach(Entity::stopRiding);
+        this.levelCallback.onRemove(removalReason);
+        this.onRemoval(removalReason);
     }
 
     // CraftBukkit end

@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 public class EntityEventDispatcher {
 
     public static void dispatchEntityEvent() {
+        /*
         ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register((originalEntity, newEntity, origin, destination) -> {
             var pos = originalEntity.getOnPos();
             if (destination.getTypeKey() == LevelStem.NETHER) {
@@ -27,7 +28,7 @@ public class EntityEventDispatcher {
                         PlayerTeleportEvent.TeleportCause.UNKNOWN,
                         0, 0);
             }
-        });
+        });*/
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
             // CraftBukkit start
             PlayerChangedWorldEvent changeEvent = new PlayerChangedWorldEvent(player.getBukkitEntity(), origin.getWorld());

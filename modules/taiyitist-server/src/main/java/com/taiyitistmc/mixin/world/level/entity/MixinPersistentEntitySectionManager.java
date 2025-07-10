@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.io.IOException;
 import java.util.List;
@@ -124,12 +125,10 @@ public abstract class MixinPersistentEntitySectionManager<T extends EntityAccess
         instance.setRemoved(removalReason, EntityRemoveEvent.Cause.UNLOAD);
     }
 
-    @Inject(method = "processPendingLoads", at = @At("TAIL"))
-    private void taiyitist$callEntitiesLoadEvent(CallbackInfo ci, @Local ChunkEntities chunkEntities) {
-        // CraftBukkit start - call entity load event
+    @Inject(method = "processPendingLoads", at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false, target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;put(JLjava/lang/Object;)Ljava/lang/Object;"))
+    private void taiyitist$fireLoad(CallbackInfo ci, @Local ChunkEntities<T> chunkEntities) {
         List<Entity> entities = getEntities(chunkEntities.getPos());
         CraftEventFactory.callEntitiesLoadEvent(((EntityStorage) permanentStorage).level, chunkEntities.getPos(), entities);
-        // CraftBukkit end
     }
 
     private AtomicBoolean tayitist$save = new AtomicBoolean(false);

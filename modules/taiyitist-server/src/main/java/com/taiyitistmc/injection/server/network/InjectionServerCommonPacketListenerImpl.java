@@ -16,7 +16,7 @@ public interface InjectionServerCommonPacketListenerImpl {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean taiyitist$isDisconnected() {
+    default boolean isDisconnected() {
         throw new IllegalStateException("Not implemented");
     }
 
