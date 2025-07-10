@@ -344,6 +344,7 @@
     "world.level.chunk.MixinLevelChunk",
     "world.level.chunk.MixinLevelChunk_BoundTickingBlockEntity",
     "world.level.chunk.MixinLevelChunkSection",
+    "world.level.chunk.storage.MixinChunkStorage",
     "world.level.chunk.storage.MixinRegionFileStorage",
     "world.level.dimension.end.MixinDragonRespawnAnimation",
     "world.level.dimension.end.MixinEndDragonFight",

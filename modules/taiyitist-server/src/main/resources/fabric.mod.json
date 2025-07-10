@@ -113,6 +113,7 @@
       "net/minecraft/class_8609": ["com/taiyitistmc/injection/server/network/InjectionServerCommonPacketListenerImpl"],
       "net/minecraft/class_3242": ["com/taiyitistmc/injection/server/network/InjectionServerConnectionListener"],
       "net/minecraft/class_3248": ["com/taiyitistmc/injection/server/network/InjectionServerLoginPacketListenerImpl"],
+      "net/minecraft/class_3977": ["com/taiyitistmc/injection/world/level/chunk/storage/InjectionChunkStorage"],
       "net/minecraft/class_52": ["com/taiyitistmc/injection/world/level/storage/loot/InjectionLootTable"],
       "net/minecraft/class_29": ["com/taiyitistmc/injection/world/level/storage/InjectionPlayerDataStorage"],
       "net/minecraft/class_32": ["com/taiyitistmc/injection/world/level/storage/InjectionLevelStorageSource"],
