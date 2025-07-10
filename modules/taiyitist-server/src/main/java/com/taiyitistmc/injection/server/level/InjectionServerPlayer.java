@@ -159,7 +159,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void spawnIn(Level world) {
+    default void spawnIn(Level world, boolean flag) {
         throw new IllegalStateException("Not implemented");
     }
 

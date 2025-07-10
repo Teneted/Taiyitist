@@ -14,6 +14,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.attribute.CraftAttributeMap;
 import org.bukkit.event.entity.EntityExhaustionEvent;
@@ -177,6 +178,14 @@ public interface InjectionLivingEntity extends InjectionEntity {
     }
 
     default void setItemSlot(EquipmentSlot enumitemslot, ItemStack itemstack, boolean silent) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default ItemEntity drop(net.minecraft.world.item.ItemStack itemStack, boolean bl, boolean bl2, boolean callEvent) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default MobEffectInstance removeEffectNoUpdate(Holder<MobEffect> holder, EntityPotionEffectEvent.Cause cause) {
         throw new IllegalStateException("Not implemented");
     }
 }

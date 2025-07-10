@@ -32,10 +32,6 @@ public interface InjectionPlayer extends InjectionLivingEntity {
     default void pushExhaustReason(EntityExhaustionEvent.ExhaustionReason reason) {
     }
 
-    default ItemEntity drop(ItemStack itemstack, boolean flag, boolean flag1, boolean callEvent) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default Either<Player.BedSleepingProblem, Unit> startSleepInBed(BlockPos blockposition, boolean force) {
         throw new IllegalStateException("Not implemented");
     }

@@ -10,6 +10,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.serialization.Codec;
 import com.taiyitistmc.injection.world.entity.InjectionEntity;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -24,9 +25,12 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,6 +53,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityInLevelCallback;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -91,12 +97,14 @@ import org.jetbrains.annotations.Nullable;
 import org.spigotmc.ActivationRange;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 import java.util.List;
@@ -106,7 +114,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-// Taiyitist - TODO fix mixin
 @Mixin(Entity.class)
 public abstract class MixinEntity implements InjectionEntity {
 
@@ -237,6 +244,21 @@ public abstract class MixinEntity implements InjectionEntity {
 
     @Shadow @Nullable public abstract Entity teleport(TeleportTransition teleportTransition);
 
+    @Shadow public abstract Component getName();
+
+    @Shadow public abstract Component getDisplayName();
+
+    @Shadow public abstract Vec2 getRotationVector();
+
+    @Shadow public abstract boolean touchingUnloadedChunk();
+
+    @Shadow public abstract AABB getBoundingBox();
+
+    @Shadow public abstract boolean isPushedByFluid();
+
+    @Shadow public abstract void setDeltaMovement(Vec3 vec3);
+
+    @Shadow protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
     // CraftBukkit start
     private static final int CURRENT_LEVEL = 2;
 
@@ -909,6 +931,88 @@ public abstract class MixinEntity implements InjectionEntity {
     @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FFZ)Z", at = @At("HEAD"))
     private void taiyitist$tpCause(ServerLevel serverLevel, double d, double e, double f, Set<Relative> set, float g, float h, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         // Taiyitist - TODO fixme
+    }
+
+    @Redirect(method = "createCommandSourceStackForNameResolution", at = @At(value = "NEW", target = "(Lnet/minecraft/commands/CommandSource;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec2;Lnet/minecraft/server/level/ServerLevel;ILjava/lang/String;Lnet/minecraft/network/chat/Component;Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/commands/CommandSourceStack;"))
+    private CommandSourceStack taiyitist$resetSource(CommandSource commandSource, Vec3 vec3, Vec2 vec2, ServerLevel serverLevel, int i, String string, Component component, MinecraftServer minecraftServer, Entity entity) {
+        return new CommandSourceStack(commandSource, this.position(), this.getRotationVector(), serverLevel, 0, this.getName().getString(), this.getDisplayName(), serverLevel.getServer(), ((Entity) (Object) this));
+    }
+
+    /**
+     * @author wdog5
+     * @reason bukkit
+     */
+    @Overwrite
+    public boolean updateFluidHeightAndDoFluidPushing(TagKey<Fluid> tagKey, double d) {
+        if (this.touchingUnloadedChunk()) {
+            return false;
+        } else {
+            AABB aABB = this.getBoundingBox().deflate(0.001);
+            int i = Mth.floor(aABB.minX);
+            int j = Mth.ceil(aABB.maxX);
+            int k = Mth.floor(aABB.minY);
+            int l = Mth.ceil(aABB.maxY);
+            int m = Mth.floor(aABB.minZ);
+            int n = Mth.ceil(aABB.maxZ);
+            double e = 0.0;
+            boolean bl = this.isPushedByFluid();
+            boolean bl2 = false;
+            Vec3 vec3 = Vec3.ZERO;
+            int o = 0;
+            BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+
+            for(int p = i; p < j; ++p) {
+                for(int q = k; q < l; ++q) {
+                    for(int r = m; r < n; ++r) {
+                        mutableBlockPos.set(p, q, r);
+                        FluidState fluidState = this.level().getFluidState(mutableBlockPos);
+                        if (fluidState.is(tagKey)) {
+                            double f = (double)((float)q + fluidState.getHeight(this.level(), mutableBlockPos));
+                            if (f >= aABB.minY) {
+                                bl2 = true;
+                                e = Math.max(f - aABB.minY, e);
+                                if (bl) {
+                                    Vec3 vec32 = fluidState.getFlow(this.level(), mutableBlockPos);
+                                    if (e < 0.4) {
+                                        vec32 = vec32.scale(e);
+                                    }
+
+                                    vec3 = vec3.add(vec32);
+                                    ++o;
+                                }
+                                // CraftBukkit start - store last lava contact location
+                                if (tagKey == FluidTags.LAVA) {
+                                    this.lastLavaContact = mutableBlockPos.immutable();
+                                }
+                                // CraftBukkit end
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (vec3.length() > 0.0) {
+                if (o > 0) {
+                    vec3 = vec3.scale(1.0 / (double)o);
+                }
+
+                if (!(((Entity) (Object) this) instanceof Player)) {
+                    vec3 = vec3.normalize();
+                }
+
+                Vec3 vec33 = this.getDeltaMovement();
+                vec3 = vec3.scale(d);
+                double g = 0.003;
+                if (Math.abs(vec33.x) < 0.003 && Math.abs(vec33.z) < 0.003 && vec3.length() < 0.0045000000000000005) {
+                    vec3 = vec3.normalize().scale(0.0045000000000000005);
+                }
+
+                this.setDeltaMovement(this.getDeltaMovement().add(vec3));
+            }
+
+            this.fluidHeight.put(tagKey, e);
+            return bl2;
+        }
     }
 
     @Override

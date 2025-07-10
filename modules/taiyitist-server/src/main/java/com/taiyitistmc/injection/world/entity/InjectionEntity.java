@@ -193,10 +193,6 @@ public interface InjectionEntity extends InjectionEntityAccess {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void pushEffectCause(EntityPotionEffectEvent.Cause cause) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default void pushRemoveCause(EntityRemoveEvent.Cause cause) {
         throw new IllegalStateException("Not implemented");
     }
