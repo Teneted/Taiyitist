@@ -47,6 +47,6 @@ jobs:
         with:
           allowUpdates: true
           makeLatest: true
-          tag: "${{ env.MINECRAFT_VERSION }}"
+          tag: "1.21.4-release"
           artifacts: ./build/libs/*.jar
           token: ${{ secrets.GITHUB_TOKEN }}
