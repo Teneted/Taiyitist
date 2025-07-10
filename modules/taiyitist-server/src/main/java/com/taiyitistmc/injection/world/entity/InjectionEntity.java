@@ -1,5 +1,6 @@
 package com.taiyitistmc.injection.world.entity;
 
+import com.taiyitistmc.injection.world.level.entity.InjectionEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +15,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public interface InjectionEntity {
+public interface InjectionEntity extends InjectionEntityAccess {
 
     default boolean bridge$inWorld() {
         throw new IllegalStateException("Not implemented");
@@ -180,6 +181,7 @@ public interface InjectionEntity {
         throw new IllegalStateException("Not implemented");
     }
 
+    @Override
     default void setRemoved(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
         throw new IllegalStateException("Not implemented");
     }

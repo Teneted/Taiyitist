@@ -236,12 +236,9 @@ accessible method net/minecraft/world/entity/Entity setLevel (Lnet/minecraft/wor
 accessible method net/minecraft/world/entity/animal/Pig setVariant (Lnet/minecraft/core/Holder;)V
 
 # public fields
-accessible field net/minecraft/util/worldupdate/WorldUpgrader levels Ljava/util/Set;
 accessible field net/minecraft/commands/Commands COMMAND_NODE_INSPECTOR Lnet/minecraft/network/protocol/game/ClientboundCommandsPacket$NodeInspector;
 accessible field net/minecraft/world/entity/animal/horse/AbstractHorse owner Lnet/minecraft/world/entity/EntityReference;
 accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionPowerBase F
-accessible field net/minecraft/util/worldupdate/WorldUpgrader dimensions Lnet/minecraft/core/Registry;
-accessible field net/minecraft/util/worldupdate/WorldUpgrader overworldDataStorage Lnet/minecraft/world/level/storage/DimensionDataStorage;
 accessible field net/minecraft/world/entity/vehicle/MinecartTNT explosionSpeedFactor F
 accessible field net/minecraft/world/entity/item/PrimedTnt explosionPower F
 accessible field net/minecraft/world/entity/animal/wolf/Wolf isWet Z
