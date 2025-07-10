@@ -496,20 +496,6 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
         this.lastSentExp = -1;
     }
 
-    @Inject(method = "updateOptions", at = @At("HEAD"))
-    private void taiyitist$settingChange(ClientInformation packetIn, CallbackInfo ci) {
-        if (this.getMainArm() != packetIn.mainHand()) {
-            PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), (this.getMainArm() == HumanoidArm.LEFT) ? MainHand.LEFT : MainHand.RIGHT);
-            Bukkit.getPluginManager().callEvent(event);
-        }
-        if (this.locale == null || !this.locale.equals(packetIn.language())) { // Paper - check for null
-            PlayerLocaleChangeEvent event2 = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packetIn.language());
-            Bukkit.getPluginManager().callEvent(event2);
-        }
-        this.locale = packetIn.language();
-        this.clientViewDistance = packetIn.viewDistance();
-    }
-
     @Inject(method = "setCamera",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FFZ)Z"))
