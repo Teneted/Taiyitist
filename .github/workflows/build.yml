@@ -6,15 +6,15 @@ name: Build
 on : [push, pull_request]
 
 env:
-  MINECRAFT_VERSION: 1.21.1
-  VERSION: 1.21.1
-  RELEASE_NAME: taiyitist-1.21.1
+  MINECRAFT_VERSION: 1.21.7
+  VERSION: 1.21.7
+  RELEASE_NAME: taiyitist-1.21.7
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
       - name: Cache
         uses: actions/cache@v4
@@ -47,6 +47,6 @@ jobs:
         with:
           allowUpdates: true
           makeLatest: true
-          tag: "${{ env.MINECRAFT_VERSION }} + {{env.BUILD_ID.substring(0, 8)}}"
+          tag: "${{ env.MINECRAFT_VERSION }}"
           artifacts: ./build/libs/*.jar
           token: ${{ secrets.GITHUB_TOKEN }}
