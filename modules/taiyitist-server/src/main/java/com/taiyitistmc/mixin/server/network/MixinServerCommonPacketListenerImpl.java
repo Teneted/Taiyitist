@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Taiyitist - TODO fix mixin
 @Mixin(ServerCommonPacketListenerImpl.class)
-public abstract class MixnServerCommonPacketListenerImpl implements ServerCommonPacketListener, InjectionServerCommonPacketListenerImpl, CraftPlayer.TransferCookieConnection {
+public abstract class MixinServerCommonPacketListenerImpl implements ServerCommonPacketListener, InjectionServerCommonPacketListenerImpl, CraftPlayer.TransferCookieConnection {
 
     @Shadow @Final private boolean transferred;
 

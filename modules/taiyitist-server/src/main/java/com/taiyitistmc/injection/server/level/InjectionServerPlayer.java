@@ -224,7 +224,7 @@ public interface InjectionServerPlayer extends InjectionPlayer {
     }
 
     default void taiyitist$setTransferCookieConnection(CraftPlayer.TransferCookieConnection transferCookieConnection) {
-
+        throw new IllegalStateException("Not implemented");
     }
 
     default CraftPlayer.TransferCookieConnection bridge$transferCookieConnection() {

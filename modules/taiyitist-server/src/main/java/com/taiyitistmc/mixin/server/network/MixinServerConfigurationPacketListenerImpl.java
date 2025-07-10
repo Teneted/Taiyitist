@@ -30,6 +30,7 @@ public abstract class MixinServerConfigurationPacketListenerImpl extends ServerC
         super(minecraftServer, connection, commonListenerCookie);
     }
 
+    /*
     @Redirect(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;"))
     private Component taiyitist$skipLoginCheck(PlayerList instance, SocketAddress address, GameProfile gameProfile) {
         return null;
@@ -39,5 +40,5 @@ public abstract class MixinServerConfigurationPacketListenerImpl extends ServerC
     private ServerPlayer taiyitist$useCurrentPlayer(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, ClientInformation clientInformation) {
         this.bridge$player().updateOptions(this.clientInformation);
         return this.bridge$player();
-    }
+    }*/
 }
