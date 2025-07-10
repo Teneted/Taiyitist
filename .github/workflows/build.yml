@@ -42,3 +42,11 @@ jobs:
         with:
           name: Taiyitist launcher
           path: ./build/libs/*.jar
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          allowUpdates: true
+          makeLatest: true
+          tag: "${{ env.MINECRAFT_VERSION }} + {{env.BUILD_ID.substring(0, 8)}}"
+          artifacts: ./build/libs/*.jar
+          token: ${{ secrets.GITHUB_TOKEN }}
