@@ -845,7 +845,7 @@ public abstract class MixinEntity implements InjectionEntity {
     }
 
     @Inject(method = "teleportCrossDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;teleportSetPosition(Lnet/minecraft/world/entity/PositionMoveRotation;Ljava/util/Set;)V"))
-    private void taiyitist$forwardEntity(ServerLevel serverLevel, ServerLevel serverLevel2, TeleportTransition teleportTransition, CallbackInfoReturnable<Entity> cir, @Local(ordinal = 0, argsOnly = true) Entity entity) {
+    private void taiyitist$forwardEntity(ServerLevel serverLevel, ServerLevel serverLevel2, TeleportTransition teleportTransition, CallbackInfoReturnable<Entity> cir, @Local(ordinal = 1) Entity entity) {
         // CraftBukkit start - Forward the CraftEntity to the new entity
         this.getBukkitEntity().setHandle(entity);
         entity.taiyitist$setBukkitEntity(this.getBukkitEntity());

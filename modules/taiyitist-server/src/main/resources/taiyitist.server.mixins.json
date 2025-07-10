@@ -179,6 +179,7 @@
     "world.entity.monster.piglin.MixinAbstractPiglin",
     "world.entity.monster.warden.MixinWarden",
     "world.entity.npc.MixinAbstractVillager",
+    "world.entity.player.MixinPlayer",
     "world.entity.projectile.MixinAbstractHurtingProjectile",
     "world.entity.projectile.MixinFireworkRocketEntity",
     "world.entity.projectile.MixinFishingHook",
