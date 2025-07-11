@@ -15,12 +15,12 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
 import org.jetbrains.annotations.NotNull;
 
-public class BannerServerListPingEvent extends ServerListPingEvent {
+public class TaiyitistServerListPingEvent extends ServerListPingEvent {
 
     public CraftIconCache icon;
     private final Object[] players;
 
-    public BannerServerListPingEvent(Connection connection, MinecraftServer server) {
+    public TaiyitistServerListPingEvent(Connection connection, MinecraftServer server) {
         super(connection.bridge$hostname(), ((InetSocketAddress) connection.getRemoteAddress()).getAddress(), server.bridge$server().getMotd(), server.getPlayerList().getMaxPlayers());
         this.icon = ((CraftServer) Bukkit.getServer()).getServerIcon();
         this.players = server.getPlayerList().players.toArray();

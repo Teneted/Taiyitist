@@ -52,8 +52,9 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
     private void taiyitist$preHandlePlayer(MinecraftServer minecraftServer, Connection connection,
                                            ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie,
                                            CallbackInfo ci) {
-        taiyitist$setPlayer(serverPlayer);
+        this.player = serverPlayer;
         this.player.taiyitist$setTransferCookieConnection(this);
+        this.cserver = minecraftServer.bridge$server();
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))

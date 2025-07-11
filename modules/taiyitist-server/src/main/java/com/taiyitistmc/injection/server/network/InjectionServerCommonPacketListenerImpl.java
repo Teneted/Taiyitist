@@ -20,10 +20,6 @@ public interface InjectionServerCommonPacketListenerImpl {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$setPlayer(ServerPlayer player) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default void taiyitist$setProcessedDisconnect(boolean processedDisconnect) {
         throw new IllegalStateException("Not implemented");
     }
@@ -45,10 +41,6 @@ public interface InjectionServerCommonPacketListenerImpl {
     }
 
     default void kickPlayer(Component reason) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default ServerPlayer bridge$player() {
         throw new IllegalStateException("Not implemented");
     }
 }

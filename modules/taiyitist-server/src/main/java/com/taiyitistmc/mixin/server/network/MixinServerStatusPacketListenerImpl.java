@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.server.network;
 
-import com.taiyitistmc.bukkit.BannerServerListPingEvent;
+import com.taiyitistmc.bukkit.TaiyitistServerListPingEvent;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.mojang.authlib.GameProfile;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class MixinServerStatusPacketListenerImpl {
         // CraftBukkit start
         MinecraftServer server = BukkitMethodHooks.getServer();
 
-        BannerServerListPingEvent event = new BannerServerListPingEvent(networkManager, server);
+        TaiyitistServerListPingEvent event = new TaiyitistServerListPingEvent(networkManager, server);
         Bukkit.getPluginManager().callEvent(event);
 
         final Object[] players = event.getPlayers();

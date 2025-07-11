@@ -1,6 +1,8 @@
 package com.taiyitistmc.injection.server.players;
 
 import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +58,7 @@ public interface InjectionPlayerList {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$putHandler(ServerLoginPacketListenerImpl handler) {
+    default ServerPlayer canPlayerLogin(ServerLoginPacketListenerImpl loginlistener, GameProfile gameProfile) {
+        throw new IllegalStateException("Not implemented");
     }
 }

@@ -63,18 +63,8 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     }
 
     @Override
-    public void taiyitist$setPlayer(ServerPlayer player) {
-        this.player = player;
-    }
-
-    @Override
     public void taiyitist$setProcessedDisconnect(boolean processedDisconnect) {
         this.processedDisconnect = processedDisconnect;
-    }
-
-    @Override
-    public ServerPlayer bridge$player() {
-        return player;
     }
 
     @Override
