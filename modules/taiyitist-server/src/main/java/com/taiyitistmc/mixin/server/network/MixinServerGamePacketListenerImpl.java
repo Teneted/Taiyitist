@@ -59,7 +59,7 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
         lastYaw = Float.MAX_VALUE;
         justTeleported = false;
         this.chatMessageChain = new FutureChain(server.bridge$chatExecutor());
-        taiyitist$setPlayer(serverPlayer);
+        this.player = serverPlayer;
     }
 
 }
