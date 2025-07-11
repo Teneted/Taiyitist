@@ -1,7 +1,6 @@
 package com.taiyitistmc.mixin.commands;
 
 import com.google.common.base.Joiner;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.brigadier.tree.RootCommandNode;
 import com.taiyitistmc.asm.annotation.CreateConstructor;
 import com.taiyitistmc.bukkit.BukkitDispatcher;
@@ -18,16 +17,15 @@ import java.util.Map;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.ExecutionCommandSource;
+import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Commands.class)
 public abstract class MixinCommands implements InjectionCommands {
@@ -45,6 +43,8 @@ public abstract class MixinCommands implements InjectionCommands {
     @Shadow
     private static <S> void fillUsableCommands(CommandNode<S> commandNode, CommandNode<S> commandNode2, S object, Map<CommandNode<S>, CommandNode<S>> map) {
     }
+
+    @Shadow @Final private static ClientboundCommandsPacket.NodeInspector<CommandSourceStack> COMMAND_NODE_INSPECTOR;
 
     @CreateConstructor
     public void taiyitist$constructor() {
@@ -99,19 +99,26 @@ public abstract class MixinCommands implements InjectionCommands {
     }
     // CraftBukkit end
 
-    @Inject(method = "sendCommands", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/tree/RootCommandNode;<init>()V"))
-    private void taiyitist$initCMD(ServerPlayer serverPlayer, CallbackInfo ci,
-                                   @Local Map<CommandNode<CommandSourceStack>,
-                                           CommandNode<CommandSourceStack>> map) {
-        map = new IdentityHashMap<>(); // Use identity to prevent aliasing issues
+    /**
+     * @author wdog5
+     * @reason bukkit
+     */
+    @Overwrite
+    public void sendCommands(ServerPlayer serverPlayer) {
+        // CraftBukkit start
+        // Register Vanilla commands into builtRoot as before
+        Map<CommandNode<CommandSourceStack>, CommandNode<CommandSourceStack>> map = new IdentityHashMap<>(); // Use identity to prevent aliasing issues
         RootCommandNode<CommandSourceStack> vanillaRoot = new RootCommandNode();
+
         RootCommandNode<CommandSourceStack> vanilla = serverPlayer.server.bridge$getVanillaCommands().getDispatcher().getRoot();
         map.put(vanilla, vanillaRoot);
         fillUsableCommands(vanilla, vanillaRoot, serverPlayer.createCommandSourceStack(), (Map) map);
-    }
 
-    @Inject(method = "sendCommands", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void taiyitist$fireCMDEvent(ServerPlayer serverPlayer, CallbackInfo ci, @Local RootCommandNode<CommandSourceStack> rootCommandNode) {
+        // Now build the global commands in a second pass
+        RootCommandNode<CommandSourceStack> rootCommandNode = new RootCommandNode();
+        map.put(this.dispatcher.getRoot(), rootCommandNode);
+        fillUsableCommands(this.dispatcher.getRoot(), rootCommandNode, serverPlayer.createCommandSourceStack(), map);
+
         Collection<String> bukkit = new LinkedHashSet<>();
         for (CommandNode node : rootCommandNode.getChildren()) {
             bukkit.add(node.getName());
@@ -127,5 +134,6 @@ public abstract class MixinCommands implements InjectionCommands {
             }
         }
         // CraftBukkit end
+        serverPlayer.connection.send(new ClientboundCommandsPacket(rootCommandNode, COMMAND_NODE_INSPECTOR));
     }
 }

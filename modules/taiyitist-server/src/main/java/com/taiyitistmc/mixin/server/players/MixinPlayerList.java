@@ -53,6 +53,7 @@ import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.command.ColouredConsoleSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -61,12 +62,14 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -111,6 +114,28 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         BukkitRegistry.registerAll((DedicatedServer) minecraftServer);
         minecraftServer.taiyitist$setConsole(ColouredConsoleSender.getInstance());
         minecraftServer.bridge$reader().addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(minecraftServer.bridge$server()));
+    }
+
+    @Redirect(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"))
+    private ServerLevel taiyitist$spawnLocationEvent(MinecraftServer minecraftServer, ResourceKey<Level> dimension, Connection netManager, ServerPlayer playerIn) {
+        CraftPlayer player = playerIn.getBukkitEntity();
+        PlayerSpawnLocationEvent event = new PlayerSpawnLocationEvent(player, player.getLocation());
+        cserver.getPluginManager().callEvent(event);
+        Location loc = event.getSpawnLocation();
+        ServerLevel world = ((CraftWorld) loc.getWorld()).getHandle();
+        playerIn.setServerLevel(world);
+        playerIn.snapTo(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+        return world;
+    }
+
+    @Redirect(method = "placeNewPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;viewDistance:I"))
+    private int taiyitist$spigotViewDistance(PlayerList playerList, Connection netManager, ServerPlayer playerIn) {
+        return playerIn.level().bridge$spigotConfig().viewDistance;
+    }
+
+    @Redirect(method = "placeNewPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;simulationDistance:I"))
+    private int taiyitist$spigotSimDistance(PlayerList instance, Connection netManager, ServerPlayer playerIn) {
+        return playerIn.level().bridge$spigotConfig().simulationDistance;
     }
 
     /*
@@ -215,15 +240,14 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         return serverPlayer.level() == serverLevel2 && !serverLevel2.players().contains(serverPlayer);
     }
 
+    @ModifyVariable(method = "placeNewPlayer", ordinal = 1, at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/level/ServerLevel;addNewPlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
+    private ServerLevel taiyitist$handleWorldChanges(ServerLevel value, Connection connection, ServerPlayer player) {
+        return player.level();// CraftBukkit - Update in case join event changed it
+    }
+
     @WrapWithCondition(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/bossevents/CustomBossEvents;onPlayerConnect(Lnet/minecraft/server/level/ServerPlayer;)V"))
     private boolean taiyitist$checkOnPlayerConnect(CustomBossEvents instance, ServerPlayer serverPlayer, @Local(ordinal = 1) ServerLevel serverLevel2) {
         return serverPlayer.level() == serverLevel2 && !serverLevel2.players().contains(serverPlayer);
-    }
-
-    @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;sendActivePlayerEffects(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void taiyitist$resetPlayer(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci, @Local(ordinal = 1) ServerLevel serverLevel2) {
-        serverLevel2 = serverPlayer.level(); // CraftBukkit - Update in case join event changed it
-        // CraftBukkit end
     }
 
     @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;initInventoryMenu()V", shift = At.Shift.AFTER))
