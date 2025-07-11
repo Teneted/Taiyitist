@@ -3,10 +3,15 @@ package com.taiyitistmc.mixin.server.network;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
+import net.minecraft.DefaultUncaughtExceptionHandler;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketUtils;
+import net.minecraft.network.protocol.cookie.ServerboundCookieResponsePacket;
+import net.minecraft.network.protocol.login.ServerLoginPacketListener;
 import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,12 +22,17 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.Waitable;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public abstract class MixinServerLoginPacketListenerImpl implements InjectionServerLoginPacketListenerImpl, CraftPlayer.TransferCookieConnection {
@@ -34,6 +44,12 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
     @Shadow @Final private boolean transferred;
 
     @Shadow @Final private MinecraftServer server;
+    @Shadow @Nullable private String requestedUsername;
+    @Shadow @Final private static AtomicInteger UNIQUE_THREAD_ID;
+    @Shadow @Final private static Logger LOGGER;
+
+    @Shadow abstract void startClientVerification(GameProfile gameProfile);
+
     private ServerPlayer player; // CraftBukkit
 
     @Override
@@ -107,10 +123,52 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
         listener.taiyitist$setPlayer(this.player);
     }
 
+    @Inject(method = "handleCookieResponse", at = @At("HEAD"))
+    private void taiyitist$ensureCookieCheck(ServerboundCookieResponsePacket serverboundCookieResponsePacket, CallbackInfo ci) {
+        PacketUtils.ensureRunningOnSameThread(serverboundCookieResponsePacket, ((ServerLoginPacketListenerImpl) (Object) this), this.server);
+    }
+
     @Inject(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;", shift = At.Shift.AFTER))
     private void taiyitist$canLogin(GameProfile gameProfile, CallbackInfo ci, @Local PlayerList playerList) {
         if (this.player == null) {
             this.player = playerList.canPlayerLogin(((ServerLoginPacketListenerImpl) (Object) this), gameProfile);
         }
+    }
+
+    @Inject(method = "handleLoginAcknowledgement", at = @At("HEAD"))
+    private void taiyitist$ensureCheck(ServerboundLoginAcknowledgedPacket serverboundLoginAcknowledgedPacket, CallbackInfo ci) {
+        PacketUtils.ensureRunningOnSameThread(serverboundLoginAcknowledgedPacket, ((ServerLoginPacketListenerImpl) (Object) this), this.server); // CraftBukkit
+    }
+
+    @Redirect(method = "handleHello",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;startClientVerification(Lcom/mojang/authlib/GameProfile;)V",
+                    ordinal = 1))
+    private void taiyitist$handleHello(ServerLoginPacketListenerImpl instance, GameProfile gameProfile) {
+        // CraftBukkit start
+        class Handler extends Thread {
+
+            public Handler() {
+                super("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet());
+            }
+
+            @Override
+            public void run() {
+                try {
+                    GameProfile gameprofile = UUIDUtil.createOfflineProfile(requestedUsername);
+
+                    callPlayerPreLoginEvents(gameprofile);
+                    LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
+                    startClientVerification(gameprofile);
+                } catch (Exception ex) {
+                    disconnect("Failed to verify username!");
+                    server.bridge$server().getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + requestedUsername, ex);
+                }
+            }
+        }
+        Handler thread = new Handler();
+        thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
+        thread.start();
+        // CraftBukkit end
     }
 }
