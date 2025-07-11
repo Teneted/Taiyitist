@@ -15,6 +15,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +51,12 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
         taiyitist$this(server, connection, cookie);
         this.player = player;
         this.player.taiyitist$setTransferCookieConnection(this);
-        this.cserver = server.bridge$server();
+        this.cserver = (CraftServer) Bukkit.getServer();
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void taiyitist$init(MinecraftServer server, Connection connection, CommonListenerCookie cookie, CallbackInfo ci) {
+        this.cserver = ((CraftServer) Bukkit.getServer());
     }
 
     @Inject(method = "handleKeepAlive", at = @At("HEAD"))
@@ -96,5 +103,21 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     @Override
     public final boolean isDisconnected() {
         return !this.player.bridge$joining() && !this.connection.isConnected();
+    }
+
+    @Override
+    public ServerPlayer bridge$player() {
+        return player;
+    }
+
+    @Override
+    public void taiyitist$setPlayer(ServerPlayer player) {
+        this.player = player;
+        this.player.taiyitist$setTransferCookieConnection(this);
+    }
+
+    @Override
+    public void disconnect(String s) {
+        this.disconnect(Component.literal(s));
     }
 }
