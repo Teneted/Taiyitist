@@ -15,7 +15,6 @@
   "mixins": [
     "advancements.MixinAdvancementHolder",
     "advancements.MixinAdvancementTree",
-    "commands.MixinCommandNode",
     "commands.MixinCommands",
     "commands.MixinCommandSource",
     "commands.MixinCommandSource1",
