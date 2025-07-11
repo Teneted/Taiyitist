@@ -113,13 +113,14 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         minecraftServer.bridge$reader().addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(minecraftServer.bridge$server()));
     }
 
+    /*
     @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;stats:Ljava/util/Map;"))
     private void taiyitist$cancelStats(PlayerList instance, Map<UUID, ServerStatsCounter> value) {
     }
 
     @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/server/players/PlayerList;advancements:Ljava/util/Map;"))
     private void taiyitist$cancelAdvancements(PlayerList instance, Map<UUID, ServerStatsCounter> value) {
-    }
+    }*/
 
     @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE",
             target = "Ljava/util/Optional;flatMap(Ljava/util/function/Function;)Ljava/util/Optional;"))

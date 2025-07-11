@@ -46,17 +46,6 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
         return (this.player == null) ? null : this.player.getBukkitEntity();
     }
 
-    @Inject(method = "<init>",
-            at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;chunkSender:Lnet/minecraft/server/network/PlayerChunkSender;", shift = At.Shift.BEFORE))
-    private void taiyitist$preHandlePlayer(MinecraftServer minecraftServer, Connection connection,
-                                           ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie,
-                                           CallbackInfo ci) {
-        this.player = serverPlayer;
-        this.player.taiyitist$setTransferCookieConnection(this);
-        this.cserver = minecraftServer.bridge$server();
-    }
-
     @Inject(method = "<init>", at = @At("RETURN"))
     private void taiyitist$init(MinecraftServer server, Connection connection,
                                 ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie,
@@ -69,8 +58,8 @@ public abstract class MixinServerGamePacketListenerImpl extends MixinServerCommo
         lastPitch = Float.MAX_VALUE;
         lastYaw = Float.MAX_VALUE;
         justTeleported = false;
-        this.cserver = ((CraftServer) Bukkit.getServer());
         this.chatMessageChain = new FutureChain(server.bridge$chatExecutor());
+        taiyitist$setPlayer(serverPlayer);
     }
 
 }

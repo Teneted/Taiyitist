@@ -35,7 +35,6 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
     @Shadow @Final private boolean transferred;
 
     @Shadow @Final private MinecraftServer server;
-    @Shadow private volatile ServerLoginPacketListenerImpl.State state;
     private ServerPlayer player; // CraftBukkit
 
     @Override

@@ -3,7 +3,10 @@ package com.taiyitistmc.mixin.server.network;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import com.mojang.authlib.GameProfile;
+import com.taiyitistmc.asm.annotation.CreateConstructor;
+import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
+import net.minecraft.network.Connection;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
@@ -13,11 +16,15 @@ import net.minecraft.server.ServerLinks;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import org.bukkit.craftbukkit.CraftServerLinks;
 import org.bukkit.event.player.PlayerLinksSendEvent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,6 +37,19 @@ import java.net.SocketAddress;
 public abstract class MixinServerConfigurationPacketListenerImpl extends MixinServerCommonPacketListenerImpl implements ServerConfigurationPacketListener, TickablePacketListener, FabricServerConfigurationNetworkHandler {
 
     @Shadow private ClientInformation clientInformation;
+
+    @Mutable
+    @Shadow @Final private GameProfile gameProfile;
+
+    @ShadowConstructor.Super
+    public abstract void taiyitist$super(MinecraftServer server, Connection connection, CommonListenerCookie cookie, ServerPlayer player);
+
+    @CreateConstructor
+    public void taiyitist$constructor(MinecraftServer server, Connection connection, CommonListenerCookie cookie, ServerPlayer player) {
+        taiyitist$super(server, connection, cookie, player);
+        this.gameProfile = cookie.gameProfile();
+        this.clientInformation = cookie.clientInformation();
+    }
 
     @Inject(method = "startConfiguration", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/ServerLinks;isEmpty()Z"))
     private void taiyitist$serverLinkEvent(CallbackInfo ci, @Local ServerLinks serverLinks) {

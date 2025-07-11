@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.server.network;
 
+import com.taiyitistmc.asm.annotation.CreateConstructor;
 import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.injection.server.network.InjectionServerCommonPacketListenerImpl;
 import net.minecraft.network.Connection;
@@ -41,15 +42,14 @@ public abstract class MixinServerCommonPacketListenerImpl implements ServerCommo
     private static final ResourceLocation CUSTOM_UNREGISTER = ResourceLocation.withDefaultNamespace("unregister");
 
     @ShadowConstructor
-    public void taiyitist$constructor(MinecraftServer minecraftServer, Connection connection, CommonListenerCookie commonListenerCookie) {
-    }
+    public abstract void taiyitist$this(MinecraftServer server, Connection connection, CommonListenerCookie cookie);
 
-    @ShadowConstructor
-    public void taiyitist$constructor(MinecraftServer minecraftServer, Connection connection, CommonListenerCookie commonListenerCookie, ServerPlayer player) { // CraftBukkit
-        // CraftBukkit start - add fields and methods
+    @CreateConstructor
+    public void taiyitist$constructor(MinecraftServer server, Connection connection, CommonListenerCookie cookie, ServerPlayer player) {
+        taiyitist$this(server, connection, cookie);
         this.player = player;
         this.player.taiyitist$setTransferCookieConnection(this);
-        this.cserver = minecraftServer.bridge$server();
+        this.cserver = server.bridge$server();
     }
 
     @Inject(method = "handleKeepAlive", at = @At("HEAD"))

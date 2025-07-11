@@ -56,4 +56,24 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
         return true;
         // CraftBukkit end
     }
+
+    @Override
+    public int bridge$oldLevel() {
+        return oldLevel;
+    }
+
+    @Override
+    public boolean bridge$fauxSleeping() {
+        return fauxSleeping;
+    }
+
+    @Override
+    public void taiyitist$setFauxSleeping(boolean fauxSleeping) {
+        this.fauxSleeping = fauxSleeping;
+    }
+
+    @Override
+    public void taiyitist$setOldLevel(int oldLevel) {
+        this.oldLevel = oldLevel;
+    }
 }
