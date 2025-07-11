@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.FutureChain;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ public abstract class MixinServerGamePacketListenerImpl extends ServerCommonPack
     @Mutable
     @Shadow @Final private FutureChain chatMessageChain;
 
+    @Shadow public ServerPlayer player;
     // CraftBukkit start - add fields and methods
     private int lastTick = BukkitFieldHooks.currentTick();
     private int allowedPlayerTicks = 1;

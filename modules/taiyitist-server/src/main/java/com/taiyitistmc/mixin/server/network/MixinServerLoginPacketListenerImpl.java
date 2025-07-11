@@ -7,8 +7,10 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -20,10 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.net.SocketAddress;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public abstract class MixinServerLoginPacketListenerImpl implements InjectionServerLoginPacketListenerImpl, CraftPlayer.TransferCookieConnection {
@@ -103,20 +102,15 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
     }
     // CraftBukkit end
 
-    @Redirect(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;"))
-    private Component taiyitist$resetLogin(PlayerList instance, SocketAddress socketAddress, GameProfile gameProfile) {
-        return null;
+    @Inject(method = "handleLoginAcknowledgement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
+    private void taiyitist$setPlayer(ServerboundLoginAcknowledgedPacket serverboundLoginAcknowledgedPacket, CallbackInfo ci, @Local ServerConfigurationPacketListenerImpl listener) {
+        listener.taiyitist$setPlayer(this.player);
     }
 
-    @Inject(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;"))
-    private void taiyitist$setLoginPlayer(GameProfile gameProfile, CallbackInfo ci, @Local PlayerList playerList) {
-        this.player = playerList.canPlayerLogin(((ServerLoginPacketListenerImpl) (Object) this), gameProfile); // CraftBukkit
-        if (this.player != null) {
-            if (this.player.getBukkitEntity().isAwaitingCookies()) {
-                //this.state = LoginListener.EnumProtocolState.WAITING_FOR_COOKIES;
-            } else {
-                //this.postCookies(gameprofile);
-            }
+    @Inject(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;", shift = At.Shift.AFTER))
+    private void taiyitist$canLogin(GameProfile gameProfile, CallbackInfo ci, @Local PlayerList playerList) {
+        if (this.player == null) {
+            this.player = playerList.canPlayerLogin(((ServerLoginPacketListenerImpl) (Object) this), gameProfile);
         }
     }
 }
