@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.commands;
 
+import com.taiyitistmc.fabric.TaiyitistDummyCommandSender;
 import com.taiyitistmc.injection.commands.InjectionCommandSourceStack;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.tree.CommandNode;
@@ -19,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Objects;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(CommandSourceStack.class)
@@ -56,7 +59,10 @@ public abstract class MixinCommandSourceStack implements InjectionCommandSourceS
     }
 
     public CommandSender getBukkitSender() {
-        return this.source.taiyitist$getBukkitSender((CommandSourceStack) (Object) this);
+        var thus = (CommandSourceStack) (Object) this;
+        var sender = this.source.taiyitist$getBukkitSender(thus);
+        // It means that this is a custom CommandSource
+        return Objects.requireNonNullElseGet(sender, () -> new TaiyitistDummyCommandSender(thus));
     }
 
     @Override
