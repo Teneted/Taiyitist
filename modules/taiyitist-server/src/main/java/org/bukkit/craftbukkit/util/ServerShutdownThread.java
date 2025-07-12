@@ -15,11 +15,7 @@ public class ServerShutdownThread extends Thread {
          AsyncCatcher.enabled = false;
          this.server.close();
       } finally {
-         try {
-            this.server.bridge$reader().getTerminal().restore();
-         } catch (Exception var7) {
-         }
-
+         org.apache.logging.log4j.LogManager.shutdown(); // Taiyitist
       }
 
    }

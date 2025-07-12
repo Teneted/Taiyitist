@@ -552,11 +552,9 @@ public final class CraftServer implements Server {
       }
 
       Plugin[] plugins = this.pluginManager.getPlugins();
-      Plugin[] var3 = plugins;
-      int var4 = plugins.length;
 
-      for(int var5 = 0; var5 < var4; ++var5) {
-         Plugin plugin = var3[var5];
+      for(int var5 = 0; var5 < plugins.length; ++var5) {
+         Plugin plugin = plugins[var5];
          if (!plugin.isEnabled() && plugin.getDescription().getLoad() == type) {
             this.enablePlugin(plugin);
          }
@@ -600,9 +598,7 @@ public final class CraftServer implements Server {
 
    public void syncCommands() {
       // Clear existing commands
-      Commands dispatcher = console.resources.managers().commands =
-              new Commands(Commands.CommandSelection.ALL,
-                      CommandBuildContext.simple(console.registryAccess(), FeatureFlagSet.of()));   // Taiyitist - Mark clear clear
+      Commands dispatcher = console.resources.managers().commands;   // Taiyitist - Do not clear
       Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
 
       while(true) {
@@ -667,7 +663,12 @@ public final class CraftServer implements Server {
    }
 
    public String getName() {
-      return "CraftBukkit";
+      return serverName;
+   }
+
+   @Override
+   public String toString() {
+      return "CraftServer{" + "serverName=" + this.serverName + ",serverVersion=" + this.serverVersion + ",minecraftVersion=" + this.console.getServerVersion() + '}';
    }
 
    public String getVersion() {
@@ -1141,11 +1142,6 @@ public final class CraftServer implements Server {
       }
    }
 
-   public String toString() {
-      String var10000 = this.serverVersion;
-      return "CraftServer{serverName=CraftBukkit,serverVersion=" + var10000 + ",minecraftVersion=" + this.console.getServerVersion() + "}";
-   }
-
    public World createWorld(String name, World.Environment environment) {
       return WorldCreator.name(name).environment(environment).createWorld();
    }
@@ -1391,10 +1387,6 @@ public final class CraftServer implements Server {
 
    public Logger getLogger() {
       return this.logger;
-   }
-
-   public ConsoleReader getReader() {
-      return this.console.bridge$reader();
    }
 
    public PluginCommand getPluginCommand(String name) {

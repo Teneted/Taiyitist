@@ -113,7 +113,6 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         TaiyitistMod.LOGGER.info(I18n.as("registry.begin"));
         BukkitRegistry.registerAll((DedicatedServer) minecraftServer);
         minecraftServer.taiyitist$setConsole(ColouredConsoleSender.getInstance());
-        minecraftServer.bridge$reader().addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(minecraftServer.bridge$server()));
     }
 
     @Redirect(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"))

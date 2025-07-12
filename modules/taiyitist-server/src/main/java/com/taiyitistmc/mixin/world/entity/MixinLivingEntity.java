@@ -29,6 +29,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -106,6 +107,16 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Shadow public abstract float getHealth();
 
     @Shadow public abstract void setHealth(float f);
+
+    @Shadow public abstract boolean wasExperienceConsumed();
+
+    @Shadow protected abstract boolean isAlwaysExperienceDropper();
+
+    @Shadow protected int lastHurtByPlayerMemoryTime;
+
+    @Shadow public abstract boolean shouldDropExperience();
+
+    @Shadow public abstract int getExperienceReward(ServerLevel serverLevel, @Nullable Entity entity);
 
     // CraftBukkit start
     public int expToDrop;
@@ -506,6 +517,16 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
             this.onEffectsRemoved(toRemove);
             return !toRemove.isEmpty();
             // CraftBukkit end
+        }
+    }
+
+    @Override
+    public int getExpReward(ServerLevel handle, @Nullable Entity entity) {
+        if (!this.wasExperienceConsumed() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerMemoryTime > 0 && this.shouldDropExperience() && handle.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
+            int exp = this.getExperienceReward(handle, entity);
+            return exp;
+        } else {
+            return 0;
         }
     }
 
