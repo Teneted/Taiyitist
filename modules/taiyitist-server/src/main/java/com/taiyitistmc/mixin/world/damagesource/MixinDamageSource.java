@@ -16,44 +16,30 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(DamageSource.class)
 public class MixinDamageSource implements InjectionDamageSource {
 
+    @Shadow @Final @Nullable private Entity directEntity;
+    @Shadow @Final @Nullable private Entity causingEntity;
+    @Shadow @Final private Holder<DamageType> type;
+    @Shadow @Final @Nullable private Vec3 damageSourcePosition;
     // CraftBukkit start
-    private boolean withSweep;
-    private boolean melting;
-    private boolean poison;
     @Nullable
     private org.bukkit.block.Block directBlock; // The block that caused the damage. damageSourcePosition is not used for all block damages
-    private Entity customCausingEntity = null; // This field is a helper for when causing entity damage is not set by vanilla
-    @Shadow
-    @Final
-    private Entity causingEntity;
-    @Shadow
-    @Final
-    private Entity directEntity;
-    @Shadow
-    @Final
-    private Holder<DamageType> type;
-    @Shadow
-    @Final
-    private Vec3 damageSourcePosition;
     @Nullable
     private org.bukkit.block.BlockState directBlockState; // The block state of the block relevant to this damage source
+    private boolean sweep = false;
+    private boolean melting = false;
+    private boolean poison = false;
     private Entity customEntityDamager = null; // This field is a helper for when direct entity damage is not set by vanilla
     private Entity customCausingEntityDamager = null; // This field is a helper for when causing entity damage is not set by vanilla
 
     @Override
-    public boolean isSweep() {
-        return withSweep;
-    }
-
-    @Override
     public DamageSource sweep() {
-        this.withSweep = true;
+        this.sweep = true;
         return ((DamageSource) (Object) this);
     }
 
     @Override
-    public boolean isMelting() {
-        return melting;
+    public boolean isSweep() {
+        return this.sweep;
     }
 
     @Override
@@ -63,8 +49,8 @@ public class MixinDamageSource implements InjectionDamageSource {
     }
 
     @Override
-    public boolean isPoison() {
-        return poison;
+    public boolean isMelting() {
+        return this.melting;
     }
 
     @Override
@@ -73,75 +59,9 @@ public class MixinDamageSource implements InjectionDamageSource {
         return ((DamageSource) (Object) this);
     }
 
-    // CraftBukkit end
-
     @Override
-    public Entity getCausingEntity() {
-        return (this.customCausingEntity != null) ? this.customCausingEntity : this.causingEntity;
-    }
-
-    @Override
-    public DamageSource customCausingEntity(Entity entity) {
-        // This method is not intended for change the causing entity if is already set
-        // also is only necessary if the entity passed is not the direct entity or different from the current causingEntity
-        if (this.customCausingEntity != null || this.directEntity == entity || this.causingEntity == entity) {
-            return ((DamageSource) (Object) this);
-        }
-        DamageSource damageSource = this.cloneInstance();
-        this.customCausingEntity = entity;
-        return damageSource;
-    }
-
-    @Override
-    public org.bukkit.block.Block getDirectBlock() {
-        return this.directBlock;
-    }
-
-    @Override
-    public DamageSource directBlock(net.minecraft.world.level.Level world, net.minecraft.core.BlockPos blockPosition) {
-        if (blockPosition == null || world == null) {
-            return ((DamageSource) (Object) this);
-        }
-        return directBlock(org.bukkit.craftbukkit.block.CraftBlock.at(world, blockPosition));
-    }
-
-    @Override
-    public DamageSource directBlock(org.bukkit.block.Block block) {
-        if (block == null) {
-            return ((DamageSource) (Object) this);
-        }
-        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
-        DamageSource damageSource = this.cloneInstance();
-        this.directBlock = block;
-        return damageSource;
-    }
-
-    @Override
-    public DamageSource cloneInstance() {
-        DamageSource damageSource = new DamageSource(this.type, this.directEntity, this.causingEntity, this.damageSourcePosition);
-        damageSource.taiyitist$setDirectBlock(this.getDirectBlock());
-        damageSource.taiyitist$setDirectBlockState(this.getDirectBlockState());
-        damageSource.taiyitist$setCustomCausingEntity(this.customEntityDamager);
-        this.withSweep = this.isSweep();
-        this.poison = this.isPoison();
-        this.melting = this.isMelting();
-        return damageSource;
-    }
-
-    @Override
-    public DamageSource directBlockState(org.bukkit.block.BlockState blockState) {
-        if (blockState == null) {
-            return ((DamageSource) (Object) this);
-        }
-        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
-        DamageSource damageSource = this.cloneInstance();
-        this.directBlockState = blockState;
-        return damageSource;
-    }
-
-    @Override
-    public BlockState getDirectBlockState() {
-        return this.directBlockState;
+    public boolean isPoison() {
+        return this.poison;
     }
 
     @Override
@@ -162,7 +82,7 @@ public class MixinDamageSource implements InjectionDamageSource {
             return ((DamageSource) (Object) this);
         }
         DamageSource damageSource = this.cloneInstance();
-        this.customEntityDamager = entity;
+        damageSource.taiyitist$setCustomEntityDamager(entity);
         return damageSource;
     }
 
@@ -174,31 +94,95 @@ public class MixinDamageSource implements InjectionDamageSource {
             return ((DamageSource) (Object) this);
         }
         DamageSource damageSource = this.cloneInstance();
-        this.customCausingEntityDamager = entity;
+        damageSource.taiyitist$setCustomCausingEntityDamager(entity);
         return damageSource;
     }
 
     @Override
-    public DamageSource taiyitist$setCustomCausingEntity(Entity entity) {
-        this.customEntityDamager = entity;
-        return (DamageSource) (Object) this;
+    public org.bukkit.block.Block getDirectBlock() {
+        return this.directBlock;
     }
 
     @Override
-    public DamageSource taiyitist$setCustomCausingEntityDamager(Entity entity) {
+    public DamageSource directBlock(net.minecraft.world.level.Level world, net.minecraft.core.BlockPos blockPosition) {
+        if (blockPosition == null || world == null) {
+            return ((DamageSource) (Object) this);
+        }
+        return directBlock(org.bukkit.craftbukkit.block.CraftBlock.at(world, blockPosition));
+    }
+
+    public DamageSource directBlock(org.bukkit.block.Block block) {
+        if (block == null) {
+            return ((DamageSource) (Object) this);
+        }
+        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
+        DamageSource damageSource = this.cloneInstance();
+        damageSource.taiyitist$setDirectBlock(block);
+        return damageSource;
+    }
+
+    public org.bukkit.block.BlockState getDirectBlockState() {
+        return this.directBlockState;
+    }
+
+    public DamageSource directBlockState(org.bukkit.block.BlockState blockState) {
+        if (blockState == null) {
+            return ((DamageSource) (Object) this);
+        }
+        // Cloning the instance lets us return unique instances of DamageSource without affecting constants defined in DamageSources
+        DamageSource damageSource = this.cloneInstance();
+        damageSource.taiyitist$setDirectBlockState(blockState);
+        return damageSource;
+    }
+
+    public DamageSource cloneInstance() {
+        DamageSource damageSource = new DamageSource(this.type, this.directEntity, this.causingEntity, this.damageSourcePosition);
+        damageSource.taiyitist$setDirectBlock(this.getDirectBlock());
+        damageSource.taiyitist$setDirectBlockState(this.getDirectBlockState());
+        damageSource.taiyitist$setSweep(this.isSweep());
+        damageSource.taiyitist$setPoison(this.isPoison());
+        damageSource.taiyitist$setMelting(this.isMelting());
+        return damageSource;
+    }
+    // CraftBukkit end
+
+    @Override
+    public void taiyitist$setCustomCausingEntityDamager(Entity entity) {
         this.customCausingEntityDamager = entity;
-        return (DamageSource) (Object) this;
     }
 
     @Override
-    public DamageSource taiyitist$setDirectBlock(Block block) {
+    public void taiyitist$setDirectBlock(Block block) {
         this.directBlock = block;
-        return (DamageSource) (Object) this;
     }
 
     @Override
-    public DamageSource taiyitist$setDirectBlockState(BlockState block) {
+    public void taiyitist$setDirectBlockState(BlockState block) {
         this.directBlockState = block;
-        return (DamageSource) (Object) this;
+    }
+
+    @Override
+    public Entity getCausingEntity() {
+        return this.causingEntity;
+    }
+
+    @Override
+    public void taiyitist$setCustomEntityDamager(Entity entity) {
+        this.customEntityDamager = entity;
+    }
+
+    @Override
+    public void taiyitist$setSweep(boolean sweep) {
+        this.sweep = sweep;
+    }
+
+    @Override
+    public void taiyitist$setPoison(boolean poison) {
+        this.poison = poison;
+    }
+
+    @Override
+    public void taiyitist$setMelting(boolean melting) {
+        this.melting = melting;
     }
 }

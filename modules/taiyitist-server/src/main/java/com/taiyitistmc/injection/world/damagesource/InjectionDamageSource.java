@@ -42,15 +42,11 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource taiyitist$setCustomCausingEntity(Entity entity) {
-        throw new IllegalStateException("Not implemented");
-    }
-
     default DamageSource customCausingEntityDamager(Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource taiyitist$setCustomCausingEntityDamager(Entity entity) {
+    default void taiyitist$setCustomCausingEntityDamager(Entity entity) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -62,7 +58,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource taiyitist$setDirectBlock(Block block) {
+    default void taiyitist$setDirectBlock(Block block) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -74,7 +70,7 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource taiyitist$setDirectBlockState(org.bukkit.block.BlockState block) {
+    default void taiyitist$setDirectBlockState(org.bukkit.block.BlockState block) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -86,11 +82,23 @@ public interface InjectionDamageSource {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource customCausingEntity(Entity entity) {
+    default DamageSource directBlock(net.minecraft.world.level.Level world, net.minecraft.core.BlockPos blockPosition) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default DamageSource directBlock(net.minecraft.world.level.Level world, net.minecraft.core.BlockPos blockPosition) {
+    default void taiyitist$setCustomEntityDamager(Entity entity) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setSweep(boolean sweep) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setPoison(boolean poison) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default void taiyitist$setMelting(boolean melting) {
         throw new IllegalStateException("Not implemented");
     }
 }
