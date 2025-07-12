@@ -263,7 +263,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
       }
 
       public void sendMessage(BaseComponent component) {
-         this.sendMessage(component);
+         this.sendMessage(new BaseComponent[]{component});
       }
 
       public void sendMessage(BaseComponent... components) {
