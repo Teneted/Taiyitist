@@ -38,4 +38,8 @@ public interface InjectionAbstractContainerMenu {
     default void broadcastCarriedItem() {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void startOpen() {
+
+    }
 }
