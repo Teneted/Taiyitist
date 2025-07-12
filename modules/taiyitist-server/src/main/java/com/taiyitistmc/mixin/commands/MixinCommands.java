@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.ExecutionCommandSource;
@@ -28,7 +30,9 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Commands.class)
 public abstract class MixinCommands implements InjectionCommands {
@@ -53,6 +57,11 @@ public abstract class MixinCommands implements InjectionCommands {
     public void taiyitist$constructor() {
         this.dispatcher = new BukkitDispatcher((Commands) (Object) this);
         this.dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void taiyitist$init(Commands.CommandSelection commandSelection, CommandBuildContext commandBuildContext, CallbackInfo ci) {
+        this.dispatcher = new BukkitDispatcher((Commands) (Object) this);
     }
 
     @Override

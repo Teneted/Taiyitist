@@ -52,6 +52,7 @@ import javax.imageio.ImageIO;
 import jline.console.ConsoleReader;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -91,6 +92,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.ai.village.VillageSiege;
 import net.minecraft.world.entity.npc.CatSpawner;
 import net.minecraft.world.entity.npc.WanderingTraderSpawner;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.CraftingMenu;
@@ -597,8 +599,10 @@ public final class CraftServer implements Server {
    }
 
    public void syncCommands() {
-      // Clear existing commands // Taiyitist - do not clear
-      Commands dispatcher = console.resources.managers().commands;
+      // Clear existing commands
+      Commands dispatcher = console.resources.managers().commands =
+              new Commands(Commands.CommandSelection.ALL,
+                      CommandBuildContext.simple(console.registryAccess(), FeatureFlagSet.of()));   // Taiyitist - Mark clear clear
       Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
 
       while(true) {
