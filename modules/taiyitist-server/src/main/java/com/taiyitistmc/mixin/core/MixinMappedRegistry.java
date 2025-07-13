@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction;
+package com.taiyitistmc.mixin.core;
 
 import java.util.HashMap;
 import java.util.Map;

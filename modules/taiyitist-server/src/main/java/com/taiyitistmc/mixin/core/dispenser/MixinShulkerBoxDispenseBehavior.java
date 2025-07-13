@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction.dispenser;
+package com.taiyitistmc.mixin.core.dispenser;
 
 import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import net.minecraft.core.BlockPos;

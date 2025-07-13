@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction;
+package com.taiyitistmc.mixin.core;
 
 import com.taiyitistmc.asm.annotation.TransformAccess;
 import net.minecraft.core.Rotations;

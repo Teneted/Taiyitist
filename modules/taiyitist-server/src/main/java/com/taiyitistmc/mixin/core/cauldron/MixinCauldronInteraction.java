@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction.cauldron;
+package com.taiyitistmc.mixin.core.cauldron;
 
 import com.taiyitistmc.bukkit.BukkitCauldronHooks;
 import net.minecraft.core.cauldron.CauldronInteraction;

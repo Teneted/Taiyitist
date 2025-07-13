@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction.component;
+package com.taiyitistmc.mixin.core.component;
 
 import com.taiyitistmc.injection.network.chat.InjectionDataComponentPatch;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;

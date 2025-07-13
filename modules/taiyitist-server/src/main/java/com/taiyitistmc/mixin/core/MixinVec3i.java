@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction;
+package com.taiyitistmc.mixin.core;
 
 import net.minecraft.core.Vec3i;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.interaction.dispenser;
+package com.taiyitistmc.mixin.core.dispenser;
 
 import com.taiyitistmc.asm.annotation.CreateConstructor;
 import com.taiyitistmc.asm.annotation.ShadowConstructor;
