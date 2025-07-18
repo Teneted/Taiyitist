@@ -6,9 +6,9 @@ name: Build
 on : [push, pull_request]
 
 env:
-  MINECRAFT_VERSION: 1.21.7
-  VERSION: 1.21.7
-  RELEASE_NAME: taiyitist-1.21.7
+  MINECRAFT_VERSION: 1.21.8
+  VERSION: 1.21.8
+  RELEASE_NAME: taiyitist-1.21.8
 
 jobs:
   build:
@@ -48,6 +48,6 @@ jobs:
           allowUpdates: true
           makeLatest: true
           removeArtifacts: true
-          tag: "1.21.7-release"
+          tag: "1.21.8-release"
           artifacts: ./build/libs/*.jar
           token: ${{ secrets.GITHUB_TOKEN }}
