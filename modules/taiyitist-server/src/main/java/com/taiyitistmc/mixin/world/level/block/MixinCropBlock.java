@@ -1,6 +1,7 @@
 package com.taiyitistmc.mixin.world.level.block;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CropBlock.class)
 public abstract class MixinCropBlock {
@@ -22,13 +24,19 @@ public abstract class MixinCropBlock {
     @Shadow public abstract BlockState getStateForAge(int i);
 
     @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean taiyitist$handleBlockGrowEvent(ServerLevel instance, BlockPos blockPos, BlockState blockState, int i) {
-        return CraftEventFactory.handleBlockGrowEvent(instance, blockPos, this.getStateForAge(i + 1), 2); // CraftBukkit;
+    private boolean taiyitist$handleBlockGrowEvent(ServerLevel instance, BlockPos blockPos, BlockState blockState, int i, @Cancellable CallbackInfo ci) {
+        if (!CraftEventFactory.handleBlockGrowEvent(instance, blockPos, this.getStateForAge(i + 1), 2)) {
+            ci.cancel();
+        }
+        return true;
     }
 
     @Redirect(method = "growCrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean taiyitist$handleBlockGrowEvent0(Level instance, BlockPos blockPos, BlockState blockState, int i) {
-        return CraftEventFactory.handleBlockGrowEvent(instance, blockPos, this.getStateForAge(i), 2); // CraftBukkit;
+    private boolean taiyitist$handleBlockGrowEvent0(Level instance, BlockPos blockPos, BlockState blockState, int i, @Cancellable CallbackInfo ci) {
+        if (!CraftEventFactory.handleBlockGrowEvent(instance, blockPos, this.getStateForAge(i), 2)) {
+            ci.cancel();
+        }
+        return true;
     }
 
     @ModifyExpressionValue(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
