@@ -9,11 +9,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TripWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,39 +29,45 @@ public abstract class MixinTripWireBlock extends Block {
     @Shadow
     protected abstract void updateSource(Level level, BlockPos pos, BlockState state);
 
+    @Shadow @Final public static BooleanProperty ATTACHED;
+
     /**
      * @author wdog5
-     * @reason
+     * @reason bukkit
      */
     @Overwrite
-    private void checkPressed(Level worldIn, BlockPos pos) {
-        BlockState blockstate = worldIn.getBlockState(pos);
-        boolean flag = blockstate.getValue(POWERED);
-        boolean flag1 = false;
-        List<? extends Entity> list = worldIn.getEntities(null, blockstate.getShape(worldIn, pos).bounds().move(pos));
+    private void checkPressed(Level level, BlockPos blockPos) {
+        BlockState blockState = level.getBlockState(blockPos);
+        boolean bl = (Boolean)blockState.getValue(POWERED);
+        boolean bl2 = false;
+        List<? extends Entity> list = level.getEntities(null, blockState.getShape(level, blockPos).bounds().move(blockPos));
         if (!list.isEmpty()) {
+
             for (Entity entity : list) {
                 if (!entity.isIgnoringBlockTriggers()) {
-                    flag1 = true;
+                    bl2 = true;
                     break;
                 }
             }
         }
 
-        if (flag != flag1 && flag1 && blockstate.getValue(TripWireBlock.ATTACHED)) {
-            org.bukkit.block.Block block = CraftBlock.at(worldIn, pos);
+        // CraftBukkit start - Call interact even when triggering connected tripwire
+        if (bl != bl2 && bl2 && (Boolean)blockState.getValue(ATTACHED)) {
+            org.bukkit.World bworld = level.getWorld();
+            org.bukkit.plugin.PluginManager manager = level.getCraftServer().getPluginManager();
+            org.bukkit.block.Block block = bworld.getBlockAt(blockPos.getX(), blockPos.getY(), blockPos.getZ());
             boolean allowed = false;
 
             // If all of the events are cancelled block the tripwire trigger, else allow
             for (Object object : list) {
                 if (object != null) {
-                    Cancellable cancellable;
+                    org.bukkit.event.Cancellable cancellable;
 
                     if (object instanceof Player) {
-                        cancellable = CraftEventFactory.callPlayerInteractEvent((Player) object, Action.PHYSICAL, pos, null, null, null);
+                        cancellable = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent((Player) object, org.bukkit.event.block.Action.PHYSICAL, blockPos, null, null, null);
                     } else if (object instanceof Entity) {
                         cancellable = new EntityInteractEvent(((Entity) object).getBukkitEntity(), block);
-                        Bukkit.getPluginManager().callEvent((EntityInteractEvent) cancellable);
+                        manager.callEvent((EntityInteractEvent) cancellable);
                     } else {
                         continue;
                     }
@@ -82,15 +83,16 @@ public abstract class MixinTripWireBlock extends Block {
                 return;
             }
         }
+        // CraftBukkit end
 
-        if (flag1 != flag) {
-            blockstate = blockstate.setValue(POWERED, flag1);
-            worldIn.setBlock(pos, blockstate, 3);
-            this.updateSource(worldIn, pos, blockstate);
+        if (bl2 != bl) {
+            blockState = blockState.setValue(POWERED, bl2);
+            level.setBlock(blockPos, blockState, 3);
+            this.updateSource(level, blockPos, blockState);
         }
 
-        if (flag1) {
-            worldIn.scheduleTick(new BlockPos(pos), (Block) this, 10);
+        if (bl2) {
+            level.scheduleTick(new BlockPos(blockPos), this, 10);
         }
 
     }
