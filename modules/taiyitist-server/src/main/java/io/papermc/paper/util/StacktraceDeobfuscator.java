@@ -1,6 +1,6 @@
 package io.papermc.paper.util;
 
-import com.taiyitistmc.config.BannerConfigUtil;
+import com.taiyitistmc.config.TaiyitistConfigUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public enum StacktraceDeobfuscator {
         if (!MappingEnvironment.reobf()) {
             return;
         }
-        if (!BannerConfigUtil.stackdeobf()) { // handle null as true
+        if (!TaiyitistConfigUtil.stackdeobf()) { // handle null as true
             return;
         }
 
@@ -50,7 +50,7 @@ public enum StacktraceDeobfuscator {
         if (!MappingEnvironment.reobf()) {
             return traceElements;
         }
-        if (!BannerConfigUtil.stackdeobf()) { // handle null as true
+        if (!TaiyitistConfigUtil.stackdeobf()) { // handle null as true
             return traceElements;
         }
 

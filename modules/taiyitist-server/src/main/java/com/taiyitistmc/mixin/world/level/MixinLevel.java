@@ -5,7 +5,7 @@ import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.asm.annotation.TransformAccess;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
-import com.taiyitistmc.config.BannerWorldConfig;
+import com.taiyitistmc.config.TaiyitistWorldConfig;
 import com.taiyitistmc.fabric.BukkitRegistry;
 import com.taiyitistmc.fabric.WrappedWorlds;
 import com.taiyitistmc.injection.world.level.InjectionLevel;
@@ -104,7 +104,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     protected org.bukkit.World.Environment environment;
     protected org.bukkit.generator.BiomeProvider biomeProvider;
     private CraftWorld world;
-    private BannerWorldConfig bannerConfig;
+    private TaiyitistWorldConfig bannerConfig;
     private final AtomicBoolean captured = new AtomicBoolean(false);
     private final AtomicReference<BlockState> taiyitist$state = new AtomicReference<>();
 
@@ -156,7 +156,7 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     private void taiyitist$init(WritableLevelData info, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed, int maxNeighborUpdates, CallbackInfo ci) {
         if ((Object) this instanceof ServerLevel) {
             this.taiyitist$setSpigotConfig(new SpigotWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
-            this.taiyitist$setBannerConfig(new BannerWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
+            this.taiyitist$setBannerConfig(new TaiyitistWorldConfig(BukkitMethodHooks.getServer().storageSource.getDimensionPath(dimension).getFileName().toFile().getName()));
         }
         for (SpawnCategory spawnCategory : SpawnCategory.values()) {
             if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
@@ -582,13 +582,13 @@ public abstract class MixinLevel implements LevelAccessor, AutoCloseable, Inject
     }
 
     @Override
-    public BannerWorldConfig bridge$bannerConfig() {
+    public TaiyitistWorldConfig bridge$bannerConfig() {
         return bannerConfig;
     }
 
     @Override
-    public void taiyitist$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
-        this.bannerConfig = bannerWorldConfig;
+    public void taiyitist$setBannerConfig(TaiyitistWorldConfig taiyitistWorldConfig) {
+        this.bannerConfig = taiyitistWorldConfig;
     }
 
     @Override

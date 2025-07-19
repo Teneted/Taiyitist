@@ -14,11 +14,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class BannerConfig {
+public class TaiyitistConfig {
 
     private static File CONFIG_FILE;
 
-    private static final String HEADER = "This is the main configuration file for Banner.\n"
+    private static final String HEADER = "This is the main configuration file for Taiyitist.\n"
             + "As you can see, there's tons to configure. Some options may impact gameplay, so use\n"
             + "with caution, and make sure you know what each option does before configuring.\n";
     /*========================================================================*/
@@ -37,7 +37,7 @@ public class BannerConfig {
         {
         } catch ( InvalidConfigurationException ex )
         {
-            Bukkit.getLogger().log( Level.SEVERE, "Could not load banner.yml, please correct your syntax errors", ex );
+            Bukkit.getLogger().log( Level.SEVERE, "Could not load taiyitist.yml, please correct your syntax errors", ex );
             throw Throwables.propagate( ex );
         }
 
@@ -46,7 +46,7 @@ public class BannerConfig {
 
         version = getInt( "config-version", 12 );
         set( "config-version", 12 );
-        readConfig( BannerConfig.class, null );
+        readConfig( TaiyitistConfig.class, null );
     }
 
     static void readConfig(Class<?> clazz, Object instance)
@@ -143,12 +143,12 @@ public class BannerConfig {
     public static List<String> banned_breakable_entities;
     public static boolean banned_tnt;
 
-    private static void banner() {
-        check_update = getBoolean("banner.check_update", false);
-        check_libraries = getBoolean("banner.check_libraries", true);
-        lang = getString("banner.lang", "xx_XX");
-        showLogo = getBoolean("banner.show_logo", true);
-        stackdeobf = getBoolean("banner.stackdeobf", true);
+    private static void taiyitist() {
+        check_update = getBoolean("taiyitist.check_update", false);
+        check_libraries = getBoolean("taiyitist.check_libraries", true);
+        lang = getString("taiyitist.lang", "xx_XX");
+        showLogo = getBoolean("taiyitist.show_logo", true);
+        stackdeobf = getBoolean("taiyitist.stackdeobf", true);
         maximumRepairCost = getInt("anvilfix.maximumrepaircost", 40);
         enchantment_fix = getBoolean("anvilfix.enchantment_fix", false);
         max_enchantment_level = getInt("anvilfix.max_enchantment_level", 32767);

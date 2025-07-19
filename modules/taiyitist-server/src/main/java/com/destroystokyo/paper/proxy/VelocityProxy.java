@@ -1,7 +1,7 @@
 package com.destroystokyo.paper.proxy;
 
 import com.google.common.net.InetAddresses;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import java.net.InetAddress;
@@ -32,7 +32,7 @@ public class VelocityProxy {
 
         try {
             final Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(BannerConfig.velocitySecret.getBytes(java.nio.charset.StandardCharsets.UTF_8), "HmacSHA256"));
+            mac.init(new SecretKeySpec(TaiyitistConfig.velocitySecret.getBytes(java.nio.charset.StandardCharsets.UTF_8), "HmacSHA256"));
             final byte[] mySignature = mac.doFinal(data);
             if (!MessageDigest.isEqual(signature, mySignature)) {
                 return false;

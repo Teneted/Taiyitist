@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.inventory;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.world.inventory.InjectionAnvilMenu;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ public abstract class MixinAnvilMenu extends ItemCombinerMenu implements Injecti
     @Shadow
     @Final
     public DataSlot cost;
-    public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, BannerConfig.maximumRepairCost));
+    public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, TaiyitistConfig.maximumRepairCost));
     private CraftAnvilView bukkitEntity;
     // CraftBukkit end
 
