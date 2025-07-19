@@ -1,6 +1,6 @@
 package com.taiyitistmc;
 
-import com.taiyitistmc.config.BannerConfigUtil;
+import com.taiyitistmc.config.TaiyitistConfigUtil;
 import com.taiyitistmc.util.EulaUtil;
 import com.taiyitistmc.util.I18n;
 import com.mohistmc.i18n.i18n;
@@ -16,11 +16,11 @@ public class TaiyitistMCStart {
     public static final float javaVersion = Float.parseFloat(System.getProperty("java.class.version"));
 
     public static void run() throws Exception {
-        BannerConfigUtil.copyBannerConfig();
-        BannerConfigUtil.lang();
-        BannerConfigUtil.i18n();
-        BannerConfigUtil.initAllNeededConfig();
-        if (BannerConfigUtil.showLogo()) {
+        TaiyitistConfigUtil.copyTaiyitistConfig();
+        TaiyitistConfigUtil.lang();
+        TaiyitistConfigUtil.i18n();
+        TaiyitistConfigUtil.initAllNeededConfig();
+        if (TaiyitistConfigUtil.showLogo()) {
             LOGGER.info(" _____       ___   _  __    __  _   _____   _   _____   _____  ");
             LOGGER.info("|_   _|     /   | | | \\ \\  / / | | |_   _| | | /  ___/ |_   _| ");
             LOGGER.info("  | |      / /| | | |  \\ \\/ /  | |   | |   | | | |___    | |   ");

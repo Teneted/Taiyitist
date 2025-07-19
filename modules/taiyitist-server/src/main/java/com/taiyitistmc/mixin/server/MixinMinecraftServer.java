@@ -5,20 +5,18 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.taiyitistmc.asm.annotation.TransformAccess;
 import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
-import com.taiyitistmc.config.BannerConfig;
-import com.taiyitistmc.config.BannerConfigUtil;
+import com.taiyitistmc.config.TaiyitistConfig;
+import com.taiyitistmc.config.TaiyitistConfigUtil;
 import com.taiyitistmc.injection.server.InjectionMinecraftServer;
 import com.mojang.datafixers.DataFixer;
 import io.izzel.arclight.mixin.Decorate;
 import io.izzel.arclight.mixin.DecorationOps;
 import io.izzel.arclight.mixin.Local;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -191,7 +189,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
 
     @ModifyConstant(method = "spin", constant = @Constant(intValue = 8))
     private static int taiyitist$configurePriority(int constant) {
-        return BannerConfigUtil.serverThread();
+        return TaiyitistConfigUtil.serverThread();
     }
 
     @Shadow public abstract boolean isSpawningMonsters();
@@ -299,7 +297,7 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @Inject(method = "loadLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;prepareLevels(Lnet/minecraft/server/level/progress/ChunkProgressListener;)V",
             shift = At.Shift.AFTER))
     private void taiyitist$loadLevel(CallbackInfo ci) {
-        if (!BannerConfig.skipOtherWorldPreparing) {
+        if (!TaiyitistConfig.skipOtherWorldPreparing) {
             for (ServerLevel worldserver : ((MinecraftServer) (Object) this).getAllLevels()) {
                 if (worldserver != overworld()) {
                     if (taiyitist$isNether(worldserver) && Bukkit.getAllowNether()) {

@@ -7,15 +7,15 @@ import java.io.IOException;
 import java.util.Locale;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class BannerConfigUtil {
+public class TaiyitistConfigUtil {
 
-    public static final File bannerYml = new File("banner-config", "banner.yml");
-    public static final YamlConfiguration yml = YamlConfiguration.loadConfiguration(bannerYml);
+    public static final File taiyitistYml = new File("taiyitist-config", "taiyitist.yml");
+    public static final YamlConfiguration yml = YamlConfiguration.loadConfiguration(taiyitistYml);
 
-    public static void copyBannerConfig() {
+    public static void copyTaiyitistConfig() {
         try {
-            if (!bannerYml.exists()) {
-                bannerYml.createNewFile();
+            if (!taiyitistYml.exists()) {
+                taiyitistYml.createNewFile();
             }
         } catch (Exception e) {
             System.out.println("File init exception!");
@@ -23,7 +23,7 @@ public class BannerConfigUtil {
     }
 
     public static boolean CHECK_LIBRARIES() {
-        String key = "banner.check_libraries";
+        String key = "taiyitist.check_libraries";
         if (yml.get(key) == null) {
             yml.set(key, true);
             save();
@@ -32,7 +32,7 @@ public class BannerConfigUtil {
     }
 
     public static boolean CHECK_UPDATE() {
-        String key = "banner.check_update";
+        String key = "taiyitist.check_update";
         if (yml.get(key) == null) {
             yml.set(key, true);
             save();
@@ -46,19 +46,19 @@ public class BannerConfigUtil {
 
     public static void save() {
         try {
-            yml.save(bannerYml);
+            yml.save(taiyitistYml);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void i18n() {
-        String mohist_lang = yml.getString("banner.lang", Locale.getDefault().toString());
+        String mohist_lang = yml.getString("taiyitist.lang", Locale.getDefault().toString());
         TaiyitistMCStart.I18N = new i18n(TaiyitistMCStart.class.getClassLoader(), mohist_lang);
     }
 
     public static String lang() {
-        String lang = "banner.lang";
+        String lang = "taiyitist.lang";
         if (yml.get(lang) == null) {
             yml.set(lang, Locale.getDefault().toString());
             save();
@@ -67,7 +67,7 @@ public class BannerConfigUtil {
     }
 
     public static boolean showLogo() {
-        String key = "banner.show_logo";
+        String key = "taiyitist.show_logo";
         if (yml.get(key) == null) {
             yml.set(key, true);
             save();
@@ -76,7 +76,7 @@ public class BannerConfigUtil {
     }
 
     public static boolean stackdeobf() {
-        String key = "banner.stackdeobf";
+        String key = "taiyitist.stackdeobf";
         if (yml.get(key) == null) {
             yml.set(key, true);
             save();
