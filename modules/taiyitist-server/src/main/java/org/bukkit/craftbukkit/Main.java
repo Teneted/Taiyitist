@@ -133,11 +133,11 @@ public class Main extends OptionParser {
                 .defaultsTo(new File("spigot.yml"))
                 .describedAs("Yml file");
 
-        // Banner Start
-        acceptsAll(asList("B", "banner-settings"), "File for banner settings")
+        // Taiyitist Start
+        acceptsAll(asList("B", "taiyitist-settings"), "File for taiyitist settings")
                 .withRequiredArg()
                 .ofType(File.class)
-                .defaultsTo(new File("banner-config","banner.yml"))
+                .defaultsTo(new File("taiyitist-config","taiyitist.yml"))
                 .describedAs("Yml file");
 
         allowsUnrecognizedOptions();
