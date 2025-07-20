@@ -19,7 +19,6 @@
     "advancement.MixinAdvancementHolder",
     "advancement.MixinAdvancementTree",
     "commands.MixinCommandDispatcher",
-    "commands.MixinCommandNode",
     "commands.MixinCommands",
     "commands.MixinCommandSource",
     "commands.MixinCommandSource1",
