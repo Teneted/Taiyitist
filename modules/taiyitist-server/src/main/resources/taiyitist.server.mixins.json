@@ -17,7 +17,6 @@
     "advancement.MixinAdvancement",
     "advancement.MixinAdvancementList",
     "commands.MixinCommandDispatcher",
-    "commands.MixinCommandNode",
     "commands.MixinCommands",
     "commands.MixinCommandSource",
     "commands.MixinCommandSource1",

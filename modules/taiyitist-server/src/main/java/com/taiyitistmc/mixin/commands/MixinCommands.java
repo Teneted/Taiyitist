@@ -2,7 +2,7 @@ package com.taiyitistmc.mixin.commands;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import com.taiyitistmc.injection.commands.InjectionCommandNode;
+import com.taiyitistmc.fabric.CommandNodeHooks;
 import com.taiyitistmc.injection.commands.InjectionCommands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
@@ -24,6 +24,8 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Commands.class)
 public abstract class MixinCommands implements InjectionCommands {
@@ -115,10 +117,14 @@ public abstract class MixinCommands implements InjectionCommands {
         // Remove labels that were removed during the event
         for (String orig : bukkit) {
             if (!event.getCommands().contains(orig)) {
-                ((InjectionCommandNode) rootCommandNode).taiyitist$removeCommand(orig);
+                CommandNodeHooks.removeCommand(rootCommandNode, orig);
             }
         }
         player.connection.send(new ClientboundCommandsPacket(rootCommandNode));
     }
 
+    @Redirect(method = "fillUsableCommands", at = @At(value = "INVOKE", remap = false, target = "Lcom/mojang/brigadier/tree/CommandNode;canUse(Ljava/lang/Object;)Z"))
+    private <S> boolean taiyitist$canUse(CommandNode<S> commandNode, S source) {
+        return CommandNodeHooks.canUse(commandNode, source);
+    }
 }
