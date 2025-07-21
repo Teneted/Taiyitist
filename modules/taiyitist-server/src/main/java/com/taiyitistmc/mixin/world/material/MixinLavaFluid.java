@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -88,14 +87,10 @@ public abstract class MixinLavaFluid {
     }
 
 
+    /*
     @Redirect(method = "spreadTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/LevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean taiyitist$handleBlockFormEvent(LevelAccessor instance, BlockPos blockPos, BlockState blockState, int i, @Cancellable CallbackInfo ci) {
+    private boolean taiyitist$handleBlockFormEvent(LevelAccessor instance, BlockPos blockPos, BlockState blockState, int i) {
         if (!DistValidate.isValid(instance)) return instance.setBlock(blockPos, blockState, i);
-        if (!CraftEventFactory.handleBlockFormEvent(instance.getMinecraftWorld(), blockPos, blockState, i)) {
-            ci.cancel();
-            return false;
-        }else {
-            return true;
-        }
-    }
+        return CraftEventFactory.handleBlockFormEvent(instance.getMinecraftWorld(), blockPos, blockState, i);
+    }*/
 }
