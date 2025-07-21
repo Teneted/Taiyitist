@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -59,6 +59,18 @@
+@@ -59,6 +59,21 @@
  import net.minecraft.world.level.storage.Convertable;
  import org.slf4j.Logger;
  
@@ -10,16 +10,19 @@
 +import org.apache.logging.log4j.LogManager;
 +import org.apache.logging.log4j.io.IoBuilder;
 +import org.bukkit.command.CommandSender;
-+import org.bukkit.craftbukkit.util.TerminalCompletionHandler;
 +import org.bukkit.craftbukkit.util.TerminalConsoleWriterThread;
 +import org.bukkit.event.server.ServerCommandEvent;
 +import org.bukkit.event.server.RemoteServerCommandEvent;
++import org.jline.reader.EndOfFileException;
++import org.jline.reader.LineReader;
++import org.jline.reader.LineReaderBuilder;
++import org.jline.reader.UserInterruptException;
 +// CraftBukkit end
 +
  public class DedicatedServer extends MinecraftServer implements IMinecraftServer {
  
      static final Logger LOGGER = LogUtils.getLogger();
-@@ -67,7 +79,7 @@
+@@ -67,7 +82,7 @@
      private final List<ServerCommand> consoleInput = Collections.synchronizedList(Lists.newArrayList());
      @Nullable
      private RemoteStatusListener queryThreadGs4;
@@ -28,7 +31,7 @@
      @Nullable
      private RemoteControlListener rconThread;
      public DedicatedServerSettings settings;
-@@ -81,10 +93,12 @@
+@@ -81,33 +96,93 @@
      private DebugSampleSubscriptionTracker debugSampleSubscriptionTracker;
      public ServerLinks serverLinks;
  
@@ -44,8 +47,15 @@
          this.serverTextFilter = ServerTextFilter.createFromConfig(dedicatedserversettings.getProperties());
          this.serverLinks = createServerLinks(dedicatedserversettings);
      }
-@@ -93,13 +107,44 @@
+ 
+     @Override
      public boolean initServer() throws IOException {
++        LineReader reader = LineReaderBuilder.builder()
++                .terminal(terminal)
++                .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
++                .completer(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter())
++                .build();
++
          Thread thread = new Thread("Server console handler") {
              public void run() {
 -                BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
@@ -53,7 +63,6 @@
 +                if (!org.bukkit.craftbukkit.Main.useConsole) {
 +                    return;
 +                }
-+                jline.console.ConsoleReader bufferedreader = reader;
 +
 +                // MC-33041, SPIGOT-5538: if System.in is not valid due to javaw, then return
 +                try {
@@ -70,29 +79,31 @@
 -                        DedicatedServer.this.handleConsoleInput(s, DedicatedServer.this.createCommandSourceStack());
 +                    // CraftBukkit start - JLine disabling compatibility
 +                    while (!DedicatedServer.this.isStopped() && DedicatedServer.this.isRunning()) {
-+                        if (org.bukkit.craftbukkit.Main.useJline) {
-+                            s = bufferedreader.readLine(">", null);
-+                        } else {
-+                            s = bufferedreader.readLine();
-+                        }
++                        try {
++                            if (org.bukkit.craftbukkit.Main.useJline) {
++                                s = reader.readLine(">", null);
++                            } else {
++                                s = reader.readLine();
++                            }
 +
-+                        // SPIGOT-5220: Throttle if EOF (ctrl^d) or stdin is /dev/null
-+                        if (s == null) {
++                            if (s.trim().length() > 0) { // Trim to filter lines which are just spaces
++                                DedicatedServer.this.handleConsoleInput(s, DedicatedServer.this.createCommandSourceStack());
++                            }
++                        } catch (EndOfFileException | UserInterruptException eof) {
++                            // SPIGOT-5220: Throttle if EOF (ctrl^d) or stdin is /dev/null
 +                            try {
 +                                Thread.sleep(50L);
 +                            } catch (InterruptedException ex) {
 +                                Thread.currentThread().interrupt();
 +                            }
-+                            continue;
 +                        }
-+                        if (s.trim().length() > 0) { // Trim to filter lines which are just spaces
-+                            DedicatedServer.this.handleConsoleInput(s, DedicatedServer.this.createCommandSourceStack());
-+                        }
-+                        // CraftBukkit end
                      }
-                 } catch (IOException ioexception) {
+-                } catch (IOException ioexception) {
++                } catch (Throwable ioexception) {
++                    // CraftBukkit end
                      DedicatedServer.LOGGER.error("Exception handling console input", ioexception);
-@@ -108,6 +153,29 @@
+                 }
+ 
              }
          };
  
@@ -111,8 +122,7 @@
 +            }
 +        }
 +
-+        TerminalConsoleWriterThread writerThread = new TerminalConsoleWriterThread(System.out, this.reader);
-+        this.reader.setCompletionHandler(new TerminalCompletionHandler(writerThread, this.reader.getCompletionHandler()));
++        TerminalConsoleWriterThread writerThread = new TerminalConsoleWriterThread(System.out, reader);
 +        writerThread.start();
 +
 +        System.setOut(IoBuilder.forLogger(logger).setLevel(Level.INFO).buildPrintStream());
@@ -122,7 +132,7 @@
          thread.setDaemon(true);
          thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(DedicatedServer.LOGGER));
          thread.start();
-@@ -132,7 +200,7 @@
+@@ -132,7 +207,7 @@
          this.setMotd(dedicatedserverproperties.motd);
          super.setPlayerIdleTimeout((Integer) dedicatedserverproperties.playerIdleTimeout.get());
          this.setEnforceWhitelist(dedicatedserverproperties.enforceWhitelist);
@@ -131,7 +141,7 @@
          DedicatedServer.LOGGER.info("Default game type: {}", dedicatedserverproperties.gamemode);
          InetAddress inetaddress = null;
  
-@@ -156,6 +224,12 @@
+@@ -156,6 +231,12 @@
              return false;
          }
  
@@ -144,7 +154,7 @@
          if (!this.usesAuthentication()) {
              DedicatedServer.LOGGER.warn("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
              DedicatedServer.LOGGER.warn("The server will make no attempt to authenticate usernames. Beware.");
-@@ -170,7 +244,7 @@
+@@ -170,7 +251,7 @@
          if (!NameReferencingFileConverter.serverReadyAfterUserconversion(this)) {
              return false;
          } else {
@@ -153,7 +163,7 @@
              this.debugSampleSubscriptionTracker = new DebugSampleSubscriptionTracker(this.getPlayerList());
              this.tickTimeLogger = new RemoteSampleLogger(TpsDebugDimensions.values().length, this.debugSampleSubscriptionTracker, RemoteDebugSampleType.TICK_TIME);
              long i = SystemUtils.getNanos();
-@@ -178,13 +252,13 @@
+@@ -178,13 +259,13 @@
              TileEntitySkull.setup(this.services, this);
              UserCache.setUsesAuthentication(this.usesAuthentication());
              DedicatedServer.LOGGER.info("Preparing level \"{}\"", this.getLevelIdName());
@@ -169,7 +179,7 @@
              }
  
              if (dedicatedserverproperties.enableQuery) {
-@@ -278,6 +352,7 @@
+@@ -278,6 +359,7 @@
              this.queryThreadGs4.stop();
          }
  
@@ -177,7 +187,7 @@
      }
  
      @Override
-@@ -299,7 +374,15 @@
+@@ -299,7 +381,15 @@
          while (!this.consoleInput.isEmpty()) {
              ServerCommand servercommand = (ServerCommand) this.consoleInput.remove(0);
  
@@ -194,7 +204,7 @@
          }
  
      }
-@@ -524,16 +607,52 @@
+@@ -524,16 +614,52 @@
  
      @Override
      public String getPluginNames() {
@@ -251,7 +261,7 @@
      }
  
      public void storeUsingWhiteList(boolean flag) {
-@@ -643,4 +762,15 @@
+@@ -643,4 +769,15 @@
              }
          }
      }

@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -177,13 +177,39 @@
+@@ -177,13 +177,40 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
@@ -9,7 +9,6 @@
 +import com.mojang.serialization.Lifecycle;
 +import java.io.File;
 +import java.util.Random;
-+import jline.console.ConsoleReader;
 +import joptsimple.OptionSet;
 +import net.minecraft.nbt.NbtException;
 +import net.minecraft.nbt.ReportedNbtException;
@@ -28,6 +27,8 @@
 +import org.bukkit.craftbukkit.Main;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.event.server.ServerLoadEvent;
++import org.jline.terminal.Terminal;
++import org.jline.terminal.TerminalBuilder;
 +// CraftBukkit end
 +
  public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements ServerInfo, ChunkIOErrorReporter, ICommandListener {
@@ -41,7 +42,7 @@
      private static final int OVERLOADED_TICKS_THRESHOLD = 20;
      private static final long OVERLOADED_WARNING_INTERVAL_NANOS = 10L * TimeRange.NANOSECONDS_PER_SECOND;
      private static final int OVERLOADED_TICKS_WARNING_INTERVAL = 100;
-@@ -274,6 +300,19 @@
+@@ -274,6 +301,19 @@
      private final SuppressedExceptionCollector suppressedExceptions;
      private final DiscontinuousFrame tickFrame;
  
@@ -50,7 +51,7 @@
 +    public org.bukkit.craftbukkit.CraftServer server;
 +    public OptionSet options;
 +    public org.bukkit.command.ConsoleCommandSender console;
-+    public ConsoleReader reader;
++    public Terminal terminal;
 +    public static int currentTick = (int) (System.currentTimeMillis() / 50);
 +    public java.util.Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>();
 +    public int autosavePeriod;
@@ -61,7 +62,7 @@
      public static <S extends MinecraftServer> S spin(Function<Thread, S> function) {
          AtomicReference<S> atomicreference = new AtomicReference();
          Thread thread = new Thread(() -> {
-@@ -294,7 +333,7 @@
+@@ -294,7 +334,7 @@
          return s0;
      }
  
@@ -70,7 +71,7 @@
          super("Server");
          this.metricsRecorder = InactiveMetricsRecorder.INSTANCE;
          this.onMetricsRecordingStopped = (methodprofilerresults) -> {
-@@ -318,7 +357,7 @@
+@@ -318,7 +358,7 @@
          this.suppressedExceptions = new SuppressedExceptionCollector();
          this.registries = worldstem.registries();
          this.worldData = worldstem.worldData();
@@ -79,7 +80,7 @@
              throw new IllegalStateException("Missing Overworld dimension data");
          } else {
              this.proxy = proxy;
-@@ -346,6 +385,33 @@
+@@ -346,6 +386,30 @@
              this.fuelValues = FuelValues.vanillaBurnTimes(this.registries.compositeAccess(), this.worldData.enabledFeatures());
              this.tickFrame = TracyClient.createDiscontinuousFrame("Server Tick");
          }
@@ -88,22 +89,19 @@
 +        this.worldLoader = worldLoader;
 +        this.vanillaCommandDispatcher = worldstem.dataPackResources().commands; // CraftBukkit
 +        // Try to see if we're actually running in a terminal, disable jline if not
-+        if (System.console() == null && System.getProperty("jline.terminal") == null) {
-+            System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
++        if (System.console() == null && System.getProperty(TerminalBuilder.PROP_PROVIDER) == null) {
++            System.setProperty(TerminalBuilder.PROP_PROVIDER, Terminal.TYPE_DUMB);
 +            Main.useJline = false;
 +        }
 +
 +        try {
-+            reader = new ConsoleReader(System.in, System.out);
-+            reader.setExpandEvents(false); // Avoid parsing exceptions for uncommonly used event designators
++            terminal = TerminalBuilder.builder().dumb(false).build();
 +        } catch (Throwable e) {
 +            try {
 +                // Try again with jline disabled for Windows users without C++ 2008 Redistributable
-+                System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
-+                System.setProperty("user.language", "en");
++                System.setProperty(TerminalBuilder.PROP_PROVIDER, Terminal.TYPE_DUMB);
 +                Main.useJline = false;
-+                reader = new ConsoleReader(System.in, System.out);
-+                reader.setExpandEvents(false);
++                terminal = TerminalBuilder.builder().build();
 +            } catch (IOException ex) {
 +                LOGGER.warn((String) null, ex);
 +            }
@@ -113,7 +111,7 @@
      }
  
      private void readScoreboard(WorldPersistentData worldpersistentdata) {
-@@ -354,7 +420,7 @@
+@@ -354,7 +418,7 @@
  
      protected abstract boolean initServer() throws IOException;
  
@@ -122,7 +120,7 @@
          if (!JvmProfiler.INSTANCE.isRunning()) {
              ;
          }
-@@ -362,12 +428,8 @@
+@@ -362,12 +426,8 @@
          boolean flag = false;
          ProfiledDuration profiledduration = JvmProfiler.INSTANCE.onWorldLoadedStarted();
  
@@ -136,7 +134,7 @@
          if (profiledduration != null) {
              profiledduration.finish(true);
          }
-@@ -384,23 +446,217 @@
+@@ -384,23 +444,217 @@
  
      protected void forceDifficulty() {}
  
@@ -368,7 +366,7 @@
  
          if (!iworlddataserver.isInitialized()) {
              try {
-@@ -424,28 +680,8 @@
+@@ -424,28 +678,8 @@
              iworlddataserver.setInitialized(true);
          }
  
@@ -398,7 +396,7 @@
  
      private static void setInitialSpawn(WorldServer worldserver, IWorldDataServer iworlddataserver, boolean flag, boolean flag1) {
          if (flag1) {
-@@ -453,6 +689,21 @@
+@@ -453,6 +687,21 @@
          } else {
              ChunkProviderServer chunkproviderserver = worldserver.getChunkSource();
              ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(chunkproviderserver.randomState().sampler().findSpawnPosition());
@@ -420,7 +418,7 @@
              int i = chunkproviderserver.getGenerator().getSpawnHeight(worldserver);
  
              if (i < worldserver.getMinY()) {
-@@ -511,8 +762,11 @@
+@@ -511,8 +760,11 @@
          iworlddataserver.setGameType(EnumGamemode.SPECTATOR);
      }
  
@@ -434,7 +432,7 @@
  
          MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.dimension().location());
          BlockPosition blockposition = worldserver.getSharedSpawnPos();
-@@ -522,18 +776,21 @@
+@@ -522,18 +774,21 @@
  
          this.nextTickTimeNanos = SystemUtils.getNanos();
          worldserver.setDefaultSpawnPos(blockposition, worldserver.getSharedSpawnAngle());
@@ -462,7 +460,7 @@
              TicketStorage ticketstorage = (TicketStorage) worldserver1.getDataStorage().get(TicketStorage.TYPE);
  
              if (ticketstorage != null) {
-@@ -541,10 +798,17 @@
+@@ -541,10 +796,17 @@
              }
          }
  
@@ -483,7 +481,7 @@
      }
  
      public EnumGamemode getDefaultGameType() {
-@@ -573,12 +837,16 @@
+@@ -573,12 +835,16 @@
              flag3 = true;
          }
  
@@ -500,7 +498,7 @@
          if (flag1) {
              for (WorldServer worldserver2 : this.getAllLevels()) {
                  MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage ({}): All chunks are saved", worldserver2.getChunkSource().chunkMap.getStorageName());
-@@ -609,18 +877,40 @@
+@@ -609,18 +875,40 @@
          this.stopServer();
      }
  
@@ -541,7 +539,7 @@
          }
  
          MinecraftServer.LOGGER.info("Saving worlds");
-@@ -700,7 +990,7 @@
+@@ -700,7 +988,7 @@
              }
  
              this.nextTickTimeNanos = SystemUtils.getNanos();
@@ -550,7 +548,7 @@
              this.status = this.buildServerStatus();
  
              while (this.running) {
-@@ -717,6 +1007,7 @@
+@@ -717,6 +1005,7 @@
                      if (j > MinecraftServer.OVERLOADED_THRESHOLD_NANOS + 20L * i && this.nextTickTimeNanos - this.lastOverloadWarningNanos >= MinecraftServer.OVERLOADED_WARNING_INTERVAL_NANOS + 100L * i) {
                          long k = j / i;
  
@@ -558,7 +556,7 @@
                          MinecraftServer.LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", j / TimeRange.NANOSECONDS_PER_MILLISECOND, k);
                          this.nextTickTimeNanos += k * i;
                          this.lastOverloadWarningNanos = this.nextTickTimeNanos;
-@@ -730,6 +1021,7 @@
+@@ -730,6 +1019,7 @@
                      this.debugCommandProfiler = new MinecraftServer.TimeProfiler(SystemUtils.getNanos(), this.tickCount);
                  }
  
@@ -566,20 +564,20 @@
                  this.nextTickTimeNanos += i;
  
                  try {
-@@ -803,6 +1095,12 @@
+@@ -803,6 +1093,12 @@
                      this.services.profileCache().clearExecutor();
                  }
  
 +                // CraftBukkit start - Restore terminal to original settings
 +                try {
-+                    reader.getTerminal().restore();
++                    terminal.close();
 +                } catch (Exception ignored) {
 +                }
 +                // CraftBukkit end
                  this.onServerExit();
              }
  
-@@ -862,7 +1160,14 @@
+@@ -862,7 +1158,14 @@
      }
  
      private boolean haveTime() {
@@ -595,7 +593,7 @@
      }
  
      public static boolean throwIfFatalException() {
-@@ -876,7 +1181,7 @@
+@@ -876,7 +1179,7 @@
      }
  
      public static void setFatalException(RuntimeException runtimeexception) {
@@ -604,7 +602,7 @@
      }
  
      @Override
-@@ -946,7 +1251,7 @@
+@@ -946,7 +1249,7 @@
          }
      }
  
@@ -613,7 +611,7 @@
          Profiler.get().incrementCounter("runTask");
          super.doRunTask(ticktask);
      }
-@@ -1010,6 +1315,7 @@
+@@ -1010,6 +1313,7 @@
                      this.autoSave();
                  }
  
@@ -621,7 +619,7 @@
                  this.tickConnection();
                  return;
              }
-@@ -1024,7 +1330,7 @@
+@@ -1024,7 +1328,7 @@
          }
  
          --this.ticksUntilAutosave;
@@ -630,7 +628,7 @@
              this.autoSave();
          }
  
-@@ -1043,7 +1349,7 @@
+@@ -1043,7 +1347,7 @@
      }
  
      private void autoSave() {
@@ -639,7 +637,7 @@
          MinecraftServer.LOGGER.debug("Autosave started");
          GameProfilerFiller gameprofilerfiller = Profiler.get();
  
-@@ -1123,21 +1429,38 @@
+@@ -1123,21 +1427,38 @@
          this.getPlayerList().getPlayers().forEach((entityplayer) -> {
              entityplayer.connection.suspendFlushing();
          });
@@ -678,7 +676,7 @@
  
              gameprofilerfiller.push("tick");
  
-@@ -1227,6 +1550,22 @@
+@@ -1227,6 +1548,22 @@
          return (WorldServer) this.levels.get(resourcekey);
      }
  
@@ -701,7 +699,7 @@
      public Set<ResourceKey<World>> levelKeys() {
          return this.levels.keySet();
      }
-@@ -1256,7 +1595,7 @@
+@@ -1256,7 +1593,7 @@
  
      @DontObfuscate
      public String getServerModName() {
@@ -710,7 +708,7 @@
      }
  
      public SystemReport fillSystemReport(SystemReport systemreport) {
-@@ -1590,11 +1929,11 @@
+@@ -1590,11 +1927,11 @@
  
      public CompletableFuture<Void> reloadResources(Collection<String> collection) {
          CompletableFuture<Void> completablefuture = CompletableFuture.supplyAsync(() -> {
@@ -724,7 +722,7 @@
          }, this).thenCompose((immutablelist) -> {
              IReloadableResourceManager ireloadableresourcemanager = new ResourceManager(EnumResourcePackType.SERVER_DATA, immutablelist);
              List<IRegistry.a<?>> list = TagDataPack.loadTagsForExistingRegistries(ireloadableresourcemanager, this.registries.compositeAccess());
-@@ -1610,6 +1949,7 @@
+@@ -1610,6 +1947,7 @@
          }).thenAcceptAsync((minecraftserver_reloadableresources) -> {
              this.resources.close();
              this.resources = minecraftserver_reloadableresources;
@@ -732,7 +730,7 @@
              this.packRepository.setSelected(collection);
              WorldDataConfiguration worlddataconfiguration = new WorldDataConfiguration(getSelectedPacks(this.packRepository, true), this.worldData.enabledFeatures());
  
-@@ -1939,6 +2279,22 @@
+@@ -1939,6 +2277,22 @@
          }
      }
  
@@ -755,7 +753,7 @@
      private GameProfilerFiller createProfiler() {
          if (this.willStartRecordingMetrics) {
              this.metricsRecorder = ActiveMetricsRecorder.createStarted(new ServerMetricsSamplersProvider(SystemUtils.timeSource, this.isDedicatedServer()), SystemUtils.timeSource, SystemUtils.ioPool(), new MetricsPersister("server"), this.onMetricsRecordingStopped, (path) -> {
-@@ -2066,6 +2422,11 @@
+@@ -2066,6 +2420,11 @@
  
      }
  
@@ -767,7 +765,7 @@
      public ChatDecorator getChatDecorator() {
          return ChatDecorator.PLAIN;
      }
-@@ -2076,8 +2437,11 @@
+@@ -2076,8 +2435,11 @@
  
      public void subscribeToDebugSample(EntityPlayer entityplayer, RemoteDebugSampleType remotedebugsampletype) {}
  
