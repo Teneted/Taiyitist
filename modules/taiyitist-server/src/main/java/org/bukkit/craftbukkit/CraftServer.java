@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -598,7 +599,7 @@ public final class CraftServer implements Server {
 
    public void syncCommands() {
       // Clear existing commands
-      Commands dispatcher = console.resources.managers().commands;   // Taiyitist - Do not clear
+      Commands dispatcher = console.resources.managers().commands = new Commands(Commands.CommandSelection.ALL, CommandBuildContext.simple(console.registryAccess(), FeatureFlagSet.of()));
       Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
 
       while(true) {

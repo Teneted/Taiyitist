@@ -171,7 +171,6 @@ def getSubprojectVersion(project) {
 dependencies {
     include(project("taiyitist-server"))
     include(project("taiyitist-bootstrap"))
-    include("com.mojang:minecraft:${project.minecraft_version}")
 }
 
 tasks.withType(JavaCompile).configureEach {
