@@ -22,15 +22,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 
 import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
-import com.taiyitistmc.bukkit.remapping.PluginTransformer;
-import com.taiyitistmc.bukkit.remapping.Remapper;
 import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapConfig;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
 import io.izzel.tools.product.Product2;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidPluginException;
@@ -149,6 +148,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                 return result;
             }
         } catch (ClassNotFoundException ex) {
+
         }
 
         if (checkLibraries && libraryLoader != null) {
@@ -185,7 +185,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
             }
         }
 
-        throw new ClassNotFoundException(name);
+        throw new ClassNotFoundException(String.format("Plugin %s cannot load class %s", description.getName(), name));
     }
 
     // Taiyitist start - nms support
@@ -210,7 +210,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     byteSource = () -> {
                         try (InputStream is = connection.getInputStream()) {
                             byte[] classBytes = ByteStreams.toByteArray(is);
-                            classBytes = Remapper.SWITCH_TABLE_FIXER.apply(classBytes);
+                            classBytes = TaiyitistRemapper.SWITCH_TABLE_FIXER.apply(classBytes);
                             classBytes = Bukkit.getUnsafe().processClass(description, path, classBytes);
                             return classBytes;
                         }
@@ -219,7 +219,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     throw new ClassNotFoundException(name, e);
                 }
 
-                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection);
+                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection, TaiyitistRemapConfig.PLUGIN);
 
                 int dot = name.lastIndexOf('.');
                 if (dot != -1) {
@@ -246,7 +246,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                 result = super.findClass(name);
             }
 
-             loader.setClass(name, result);
+            loader.setClass(name, result);
             classes.put(name, result);
         }
 
@@ -287,9 +287,14 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
     @Override
     public ClassLoaderRemapper getRemapper() {
         if (remapper == null) {
-            remapper = Remapper.createClassLoaderRemapper(this);
+            remapper = TaiyitistRemapper.createClassLoaderRemapper(this);
         }
         return remapper;
+    }
+
+    @Override
+    public TaiyitistRemapConfig getRemapConfig() {
+        return TaiyitistRemapConfig.PLUGIN;
     }
     // Taiyitist end
 }

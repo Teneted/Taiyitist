@@ -1,6 +1,6 @@
 {
   "installer": {
-    "minecraft": "1.21.7",
+    "minecraft": "1.21.8",
     "fabricLoader": "0.16.14",
     "fabricLoaderHash": "05778d47f536bf2c63ed2abc1a56f5a1c129e34a"
   },
@@ -58,7 +58,7 @@
     "org.jline:jline-reader:3.12.1": "4382ab1382c7b6f379377ed5f665dc2f6e1218bc",
     "org.fusesource.jansi:jansi:1.18": "d9205bbcd4b5f9cd1effe752d18f73bd942d783f",
     "org.apache.maven:maven-artifact:3.8.5": "4433f50c07debefaed0553bd0068f4f48d449313",
-    "net.fabricmc:intermediary:1.21.7": "2c2c3d140ecbf9ad2c724bdaf6d4a300f4b3cf5a",
-    "net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.7": "cc4edcec406d1d80acba028b50cf51ad021ba0b4"
+    "net.fabricmc:intermediary:1.21.8": "1af40a9e5c6224676ad164d74f7db9e6d0f82991",
+    "net.fabricmc.fabric-api:fabric-api:0.129.0+1.21.8": "9be74f9c3120ffb9f38df8f4164392d69e6ba84e"
   }
 }

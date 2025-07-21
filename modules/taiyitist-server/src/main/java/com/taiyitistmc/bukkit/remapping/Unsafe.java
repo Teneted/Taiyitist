@@ -1,5 +1,8 @@
 package com.taiyitistmc.bukkit.remapping;
 
+
+import org.objectweb.asm.ClassReader;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -21,7 +24,7 @@ public class Unsafe {
             Field theUnsafe = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
             theUnsafe.setAccessible(true);
             unsafe = (sun.misc.Unsafe) theUnsafe.get(null);
-            MethodHandles.lookup().ensureInitialized(MethodHandles.Lookup.class);
+            MethodHandles.lookup();
             Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
             Object base = unsafe.staticFieldBase(field);
             long offset = unsafe.staticFieldOffset(field);
@@ -45,7 +48,7 @@ public class Unsafe {
 
     public static <T> T getStatic(Class<?> cl, String name) {
         try {
-            MethodHandles.lookup().ensureInitialized(cl);
+            Unsafe.ensureClassInitialized(cl);
             Field field = cl.getDeclaredField(name);
             Object materialByNameBase = Unsafe.staticFieldBase(field);
             long materialByNameOffset = Unsafe.staticFieldOffset(field);
@@ -239,8 +242,30 @@ public class Unsafe {
         return unsafe.staticFieldBase(field);
     }
 
-    public static boolean shouldBeInitialized(Class<?> aClass) {
-        return unsafe.shouldBeInitialized(aClass);
+    private static final MethodHandle H_ENSURE_CLASS_INITIALIZED;
+
+    static {
+        MethodHandle handle;
+        try {
+            handle = lookup().findVirtual(MethodHandles.Lookup.class, "ensureInitialized", MethodType.methodType(Class.class, Class.class))
+                    .bindTo(lookup()).asType(MethodType.methodType(void.class, Class.class));
+        } catch (Throwable t) {
+            try {
+                handle = lookup().findVirtual(sun.misc.Unsafe.class, "ensureClassInitialized", MethodType.methodType(void.class, Class.class))
+                        .bindTo(unsafe);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
+        H_ENSURE_CLASS_INITIALIZED = handle;
+    }
+
+    public static void ensureClassInitialized(Class<?> aClass) {
+        try {
+            H_ENSURE_CLASS_INITIALIZED.invokeExact(aClass);
+        } catch (Throwable e) {
+            throwException(e);
+        }
     }
 
     public static int arrayBaseOffset(Class<?> aClass) {
@@ -283,10 +308,29 @@ public class Unsafe {
                                 Class.class, String.class, byte[].class, ProtectionDomain.class, boolean.class, int.class, Object.class)),
                         4, Arrays.asList(int.class, int.class));
             } catch (Throwable t2) {
-                handle = null;
+                try {
+                    handle = lookup().findVirtual(sun.misc.Unsafe.class, "defineAnonymousClass", MethodType.methodType(Class.class, Class.class, byte[].class, Object[].class))
+                            .bindTo(unsafe);
+                } catch (Throwable t3) {
+                    throw new RuntimeException(t);
+                }
             }
         }
         H_DEF_CLASS = handle;
+    }
+
+    public static Class<?> defineAnonymousClass(Class<?> aClass, byte[] bytes) {
+        return defineAnonymousClass(aClass, bytes, null);
+    }
+
+    public static Class<?> defineAnonymousClass(Class<?> aClass, byte[] bytes, Object[] objects) {
+        try {
+            return (Class<?>) H_DEF_CLASS.invokeExact(aClass.getClassLoader(), aClass, new ClassReader(bytes).getClassName(),
+                    bytes, 0, bytes.length, aClass.getProtectionDomain(), false, 11, (Object) objects);
+        } catch (Throwable t) {
+            throwException(t);
+            return null;
+        }
     }
 
     public static Object allocateInstance(Class<?> aClass) throws InstantiationException {
@@ -448,12 +492,11 @@ public class Unsafe {
         try {
             Class.forName("java.lang.SecurityManager");
             securityManagerPresent = true;
-        } catch (Throwable ignored) {
-        }
+        } catch (Throwable ignored) {}
         if (securityManagerPresent) {
             INSTANCE = new SecurityManagerCallerClass();
         } else {
-            INSTANCE = new StackWalkerCallerClassimplements();
+            INSTANCE = new StackWalkerCallerClass();
         }
     }
 
@@ -470,7 +513,7 @@ public class Unsafe {
         }
     }
 
-    private static class StackWalkerCallerClassimplements implements CallerClass {
+    private static class StackWalkerCallerClass implements CallerClass {
 
         private final StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 

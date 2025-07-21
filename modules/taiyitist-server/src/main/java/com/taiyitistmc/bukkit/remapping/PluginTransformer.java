@@ -2,16 +2,9 @@ package com.taiyitistmc.bukkit.remapping;
 
 import org.objectweb.asm.tree.ClassNode;
 
-/**
- * PluginTransformer
- *
- * @author Mainly by IzzelAliz
- * @originalClassName PluginTransformer
- */
-@FunctionalInterface
 public interface PluginTransformer {
 
-    void handleClass(ClassNode node, ClassLoaderRemapper remapper);
+    void handleClass(ClassNode node, ClassLoaderRemapper remapper, TaiyitistRemapConfig config);
 
     default int priority() {
         return 0;
