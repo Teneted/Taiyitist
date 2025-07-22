@@ -1,6 +1,8 @@
 package com.taiyitistmc.mixin.server.level;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.bukkit.DoubleChestInventory;
 import com.taiyitistmc.injection.server.level.InjectionServerPlayer;
@@ -75,11 +77,9 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.event.CraftPortalEvent;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.BlockStateListPopulator;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerLocaleChangeEvent;
@@ -142,9 +142,6 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
     private float pluginRainPositionPrevious;
     private transient PlayerSpawnChangeEvent.Cause taiyitist$spawnChangeCause;
     private final AtomicReference<HorseInventoryMenu> taiyitist$horseMenu = new AtomicReference<>();
-    private final AtomicReference<String> taiyitist$deathString = new AtomicReference<>("null");
-    private final AtomicReference<String> taiyitist$deathMsg = new AtomicReference<>("null");
-    private final AtomicReference<PlayerDeathEvent> taiyitist$deathEvent = new AtomicReference<>();
     private final AtomicReference<PlayerTeleportEvent.TeleportCause> taiyitist$changeDimensionCause = new AtomicReference<>(PlayerTeleportEvent.TeleportCause.UNKNOWN);
     // CraftBukkit end
     private transient BlockStateListPopulator taiyitist$populator;
@@ -827,87 +824,6 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
         }
     }
 
-    @Inject(method = "die", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z",
-            ordinal = 0),
-            cancellable = true)
-    private void taiyitist$deathEvent(DamageSource damageSource, CallbackInfo ci) {
-        // CraftBukkit start - fire PlayerDeathEvent
-        if (this.isRemoved()) {
-            ci.cancel();
-        }
-        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<>(this.getInventory().getContainerSize());
-        boolean keepInventory = this.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) || this.isSpectator();
-
-        if (!keepInventory) {
-            for (ItemStack item : this.getInventory().getContents()) {
-                if (!item.isEmpty() && !EnchantmentHelper.has(item, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
-                    loot.add(CraftItemStack.asCraftMirror(item));
-                }
-            }
-        }
-        // SPIGOT-5071: manually add player loot tables (SPIGOT-5195 - ignores keepInventory rule)
-        this.dropFromLootTable(damageSource, this.lastHurtByPlayerTime > 0);
-        for (org.bukkit.inventory.ItemStack item : this.bridge$drops()) {
-            loot.add(item);
-        }
-        this.bridge$drops().clear(); // SPIGOT-5188: make sure to clear
-
-        Component defaultMessage = this.getCombatTracker().getDeathMessage();
-        String deathmessage = defaultMessage.getString();
-        taiyitist$deathMsg.set(deathmessage);
-        keepLevel = keepInventory; // SPIGOT-2222: pre-set keepLevel
-        org.bukkit.event.entity.PlayerDeathEvent event = CraftEventFactory.callPlayerDeathEvent(((ServerPlayer) (Object) this), damageSource, loot, deathmessage, keepInventory);
-        taiyitist$deathEvent.set(event);
-
-        // SPIGOT-943 - only call if they have an inventory open
-        if (this.containerMenu != this.inventoryMenu) {
-            this.closeContainer();
-        }
-
-        String deathMessage = event.getDeathMessage();
-        taiyitist$deathString.set(deathMessage);
-    }
-
-    @Inject(method = "die", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/damagesource/CombatTracker;getDeathMessage()Lnet/minecraft/network/chat/Component;"),
-            cancellable = true)
-    private void taiyitist$checkDead(DamageSource damageSource, CallbackInfo ci) {
-        boolean taiyitist$flag = taiyitist$deathString.get() != null && !taiyitist$deathString.get().isEmpty();
-        if (!taiyitist$flag) { // TODO: allow plugins to override?
-            ci.cancel();
-        }
-    }
-
-    @Redirect(method = "die", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/damagesource/CombatTracker;getDeathMessage()Lnet/minecraft/network/chat/Component;"))
-    private Component taiyitist$restDeathMsg(CombatTracker instance) {
-        Component taiyitist$component;
-        if (taiyitist$deathString.get().equals(taiyitist$deathMsg.get())) {
-            taiyitist$component = instance.getDeathMessage();
-        } else {
-            taiyitist$component = CraftChatMessage.fromStringOrNull(taiyitist$deathString.get());
-        }
-        return taiyitist$component;
-    }
-
-    @Inject(method = "die", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"))
-    private void taiyitist$checkEventDrop(DamageSource damageSource, CallbackInfo ci) {
-        // SPIGOT-5478 must be called manually now
-        this.dropExperience(damageSource.getEntity());
-        // we clean the player's inventory after the EntityDeathEvent is called so plugins can get the exact state of the inventory.
-        if (!taiyitist$deathEvent.get().getKeepInventory()) {
-            this.getInventory().clearContent();
-        }
-    }
-
-    @Redirect(method = "die",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerPlayer;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V"))
-    private void taiyitist$cancelDrop(ServerPlayer instance, ServerLevel serverLevel, DamageSource damageSource) {
-    }
-
     @Redirect(method = "die", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/scores/Scoreboard;forAllObjectives(Lnet/minecraft/world/scores/criteria/ObjectiveCriteria;Lnet/minecraft/world/scores/ScoreHolder;Ljava/util/function/Consumer;)V"))
     private void taiyitist$useBukkitScore(Scoreboard instance, ObjectiveCriteria objectiveCriteria, ScoreHolder scoreHolder, Consumer<ScoreAccess> consumer) {
@@ -915,6 +831,57 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
         // CraftBukkit end
         // CraftBukkit - Get our scores instead
         this.level().getCraftServer().getScoreboardManager().forAllObjectives(ObjectiveCriteria.DEATH_COUNT, scoreHolder, ScoreAccess::increment);
+    }
+
+    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V"), cancellable = true)
+    private void taiyitist$fireDeathEvent(DamageSource damageSource, CallbackInfo ci, @Local Component defaultMessage, @Local boolean flag, @Share("taiyitist$ichatbasecomponent") LocalRef<Component> taiyitist$ichatbasecomponent) {
+        // CraftBukkit start - fire PlayerDeathEvent
+        if (this.isRemoved()) {
+            ci.cancel();
+            return;
+        }
+        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<>(this.getInventory().getContainerSize());
+        boolean keepInventory = this.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) || this.isSpectator();
+        if (!keepInventory) {
+            for (ItemStack item : this.getInventory().getContents()) {
+                if (!item.isEmpty() && !EnchantmentHelper.has(item, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
+                    loot.add(CraftItemStack.asCraftMirror(item).markForInventoryDrop());
+                }
+            }
+        }
+
+        // SPIGOT-5071: manually add player loot tables (SPIGOT-5195 - ignores keepInventory rule)
+        this.dropFromLootTable(damageSource, this.lastHurtByPlayerTime > 0);
+        this.dropCustomDeathLoot(this.serverLevel(), damageSource, flag);
+
+        loot.addAll(this.bridge$drops());
+        this.bridge$drops().clear(); // SPIGOT-5188: make sure to clear
+
+        String deathmessage = defaultMessage.getString();
+        keepLevel = keepInventory; // SPIGOT-2222: pre-set keepLevel
+        org.bukkit.event.entity.PlayerDeathEvent event = CraftEventFactory.callPlayerDeathEvent(((ServerPlayer) (Object) this), damageSource, loot, deathmessage, keepInventory);
+
+        // SPIGOT-943 - only call if they have an inventory open
+        if (this.containerMenu != this.inventoryMenu) {
+            this.closeContainer();
+        }
+
+        String deathMessage = event.getDeathMessage();
+
+        if (deathMessage != null && deathMessage.length() > 0 && flag) { // TODO: allow plugins to override?
+            Component ichatbasecomponent;
+            if (deathMessage.equals(deathmessage)) {
+                ichatbasecomponent = this.getCombatTracker().getDeathMessage();
+            } else {
+                ichatbasecomponent = org.bukkit.craftbukkit.util.CraftChatMessage.fromStringOrNull(deathMessage);
+            }
+            taiyitist$ichatbasecomponent.set(ichatbasecomponent);
+        }
+    }
+
+    @Redirect(method = "method_14223", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;getString(I)Ljava/lang/String;"))
+    private String taiyitist$resetComponent(Component instance, int i, @Share("taiyitist$ichatbasecomponent") LocalRef<Component> taiyitist$ichatbasecomponent) {
+        return taiyitist$ichatbasecomponent.get().getString(256);
     }
 
     @Override
