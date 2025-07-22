@@ -2,6 +2,7 @@ accessWidener v2 named
 # Banner
 
 # public clazz
+accessible class net/minecraft/server/network/ServerLoginPacketListenerImpl$State
 accessible class net/minecraft/network/protocol/game/ClientboundBossEventPacket$Operation
 accessible class net/minecraft/world/level/biome/Biome$ClimateSettings
 accessible class net/minecraft/world/entity/monster/Guardian$GuardianAttackGoal

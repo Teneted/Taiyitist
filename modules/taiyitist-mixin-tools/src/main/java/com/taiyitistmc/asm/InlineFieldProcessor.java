@@ -1,11 +1,12 @@
 package com.taiyitistmc.asm;
 
 import com.google.common.collect.MultimapBuilder;
-import com.taiyitistmc.TaiyitistMCStart;
 import com.taiyitistmc.asm.annotation.InlineField;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
@@ -66,7 +67,7 @@ public class InlineFieldProcessor implements MixinProcessor {
                 iterator.set(new VarInsnNode(Type.getType(fieldNode.desc).getOpcode(opcode), indice));
             }
         }
-        TaiyitistMCStart.LOGGER.debug("Inlined field " + classNode.name + " " + fieldNode.name + " " + fieldNode.desc);
+        LogManager.getLogger("TaiyitistMC").debug("Inlined field " + classNode.name + " " + fieldNode.name + " " + fieldNode.desc);
     }
 }
 

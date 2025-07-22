@@ -13,8 +13,8 @@
     "sources": "https://github.com/TaiyitistMC/taiyitist"
   },
   "depends": {
-    "fabricloader": ">=0.16.9",
-    "java": ">=21"
+    "fabricloader": ">=${loader_version}",
+    "java": ">=${java_version}"
   },
   "description": "The Bootstrap of Taiyitist Server."
 }

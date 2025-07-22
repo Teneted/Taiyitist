@@ -20,6 +20,9 @@
   "entrypoints": {
     "server": [
       "com.taiyitistmc.TaiyitistMod"
+    ],
+    "mm:early_risers": [
+      "com.taiyitistmc.fabric.TaiyitistEarlyRiser::run"
     ]
   },
   "mixins": [
@@ -27,9 +30,10 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.16.10",
-    "java": ">=21",
-    "minecraft": "1.21.8"
+    "fabricloader": ">=${loader_version}",
+    "java": ">=${java_version}",
+    "minecraft": "${minecraft_version}",
+    "mm": "${fabric_asm_version}"
   },
   "accessWidener": "taiyitist-access-wideners.accesswidener",
   "custom": {

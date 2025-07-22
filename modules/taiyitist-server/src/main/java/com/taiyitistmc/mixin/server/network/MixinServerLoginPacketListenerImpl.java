@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.server.network;
 
+import com.chocohead.mm.api.ClassTinkerers;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
@@ -7,10 +8,12 @@ import net.minecraft.DefaultUncaughtExceptionHandler;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.network.protocol.cookie.ServerboundCookieResponsePacket;
+import net.minecraft.network.protocol.login.ClientboundLoginCompressionPacket;
 import net.minecraft.network.protocol.login.ServerLoginPacketListener;
 import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
 import net.minecraft.server.MinecraftServer;
@@ -49,6 +52,11 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
     @Shadow @Final private static Logger LOGGER;
 
     @Shadow abstract void startClientVerification(GameProfile gameProfile);
+
+    @Shadow private volatile ServerLoginPacketListenerImpl.State state;
+    @Shadow @Nullable private GameProfile authenticatedProfile;
+
+    @Shadow protected abstract void finishLoginAndWaitForClient(GameProfile gameProfile);
 
     private ServerPlayer player; // CraftBukkit
 
@@ -170,5 +178,35 @@ public abstract class MixinServerLoginPacketListenerImpl implements InjectionSer
         thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
         thread.start();
         // CraftBukkit end
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;isPlayerAlreadyInWorld(Lcom/mojang/authlib/GameProfile;)Z"))
+    private void taiyitist$postCookiesWaiting(CallbackInfo ci) {
+        // CraftBukkit start
+        if (this.state == ClassTinkerers.getEnum(ServerLoginPacketListenerImpl.State.class, "WAITING_FOR_COOKIES") && !this.player.getBukkitEntity().isAwaitingCookies()) {
+            this.postCookies(this.authenticatedProfile);
+        }
+        // CraftBukkit end
+    }
+
+    private void postCookies(GameProfile gameprofile) {
+        PlayerList playerList = this.server.getPlayerList();
+        if (this.player != null) {
+            // this.disconnect(ichatbasecomponent);
+            // CraftBukkit end
+        } else {
+            if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
+                this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
+                    this.connection.setupCompression(this.server.getCompressionThreshold(), true);
+                }));
+            }
+
+            boolean bl = this.player == null;
+            if (bl) {
+                this.state = ServerLoginPacketListenerImpl.State.WAITING_FOR_DUPE_DISCONNECT;
+            } else {
+                this.finishLoginAndWaitForClient(gameprofile);
+            }
+        }
     }
 }

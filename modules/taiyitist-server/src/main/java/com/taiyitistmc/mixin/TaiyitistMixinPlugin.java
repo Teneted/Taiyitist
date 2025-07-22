@@ -4,8 +4,10 @@ import com.taiyitistmc.TaiyitistMCStart;
 import com.taiyitistmc.asm.CreateConstructorProcessor;
 import com.taiyitistmc.asm.InlineFieldProcessor;
 import com.taiyitistmc.asm.InlineMethodProcessor;
+import com.taiyitistmc.asm.InvokeSpecialProcessor;
 import com.taiyitistmc.asm.MixinProcessor;
 import com.taiyitistmc.asm.RenameIntoProcessor;
+import com.taiyitistmc.asm.ShouldApplyProcessor;
 import com.taiyitistmc.asm.TransformAccessProcessor;
 import io.izzel.arclight.mixin.MixinTools;
 import java.util.List;
@@ -27,7 +29,8 @@ public class TaiyitistMixinPlugin implements IMixinConfigPlugin, IEnvironmentTok
             new TransformAccessProcessor(),
             new CreateConstructorProcessor(),
             new InlineMethodProcessor(),
-            new InlineFieldProcessor()
+            new InlineFieldProcessor(),
+            new InvokeSpecialProcessor()
     );
 
     @Override
@@ -70,7 +73,7 @@ public class TaiyitistMixinPlugin implements IMixinConfigPlugin, IEnvironmentTok
         if (mixinClassName.equals("com.taiyitistmc.mixin.server.commands.MixinWorldBorderCommand")) {
             return !FabricLoader.getInstance().isModLoaded("multiworldborders");
         }
-        return true;
+        return ShouldApplyProcessor.shouldApply(mixinClassName);
     }
 
     @Override

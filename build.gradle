@@ -111,17 +111,21 @@ allprojects {
         ])
     }
 
-    processResources {
-        inputs.property "version", project.version
+    tasks.withType(ProcessResources).configureEach {
+        var replaceProperties = [
+                version            : version,
+                loader_version     : loader_version,
+                minecraft_version  : minecraft_version,
+                java_version       : java_version,
+                fabric_asm_version : fabric_asm_version
+        ]
+        inputs.properties replaceProperties
 
-        filesMatching("fabric.mod.json") {
-            expand "version": project.version
-        }
-
-        filesMatching("plugin.yml") {
-            expand "version": project.version
+        filesMatching(['fabric.mod.json']) {
+            expand replaceProperties
         }
     }
+
 
     java {
         toolchain {

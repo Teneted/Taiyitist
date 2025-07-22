@@ -28,4 +28,10 @@ dependencies {
 	implementation "net.kyori:examination-api:1.3.0"
 	implementation "net.kyori:examination-string:1.3.0"
 	include(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${property("mixin_squared_version")}"))
+	include(rootProject.project("taiyitist-mixin-tools"))
+	modImplementation(include("com.github.Chocohead:Fabric-ASM:v${rootProject.property("fabric_asm_version")}"))
 }
+
+moduleDependencies(project, [
+		"taiyitist-mixin-tools"
+])

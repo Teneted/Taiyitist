@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "taiyitist-mixin-tools",
+  "version": "${version}",
+
+  "name": "Taiyitist Mixin Tools",
+  "description": "Mixin Tools for Taiyitist!",
+  "authors": [
+    "TaiyitistMC Dev Team"
+  ],
+  "contact": {
+    "homepage": "https://github.com/TaiyitistMC/TaiyitistMC",
+    "sources": "https://github.com/TaiyitistMC/TaiyitistMC"
+  },
+
+  "license": "LGPL-v3.0",
+  "icon": "assets/taiyitist/logo.png",
+
+  "environment": "server",
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "java": ">=${java_version}"
+  }
+}
