@@ -877,6 +877,7 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
             }
             taiyitist$ichatbasecomponent.set(ichatbasecomponent);
         }
+
     }
 
     @Redirect(method = "method_14223", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;getString(I)Ljava/lang/String;"))
