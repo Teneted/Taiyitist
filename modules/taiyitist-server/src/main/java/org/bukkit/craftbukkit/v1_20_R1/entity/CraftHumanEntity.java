@@ -3,7 +3,6 @@ package org.bukkit.craftbukkit.v1_20_R1.entity;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
-import com.taiyitistmc.bukkit.pluginfix.LuckPerms;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,16 +78,6 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         mode = server.getDefaultGameMode();
         this.inventory = new CraftInventoryPlayer(entity.getInventory());
         enderChest = new CraftInventory(entity.getEnderChestInventory());
-        // Banner start - TODO
-        if (LuckPerms.perCache.containsKey(getUniqueId())) {
-            perm = LuckPerms.perCache.get(getUniqueId());
-        }
-        if (LuckPerms.perCache.get(getUniqueId()) != perm) {
-            if (!PermissibleBase.class.equals(perm.getClass())) {
-                LuckPerms.perCache.put(getUniqueId(), perm);
-            }
-        }
-        // Banner end
     }
 
     @Override

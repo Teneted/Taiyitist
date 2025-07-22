@@ -2,7 +2,6 @@ package com.taiyitistmc.mixin.server.players;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.taiyitistmc.TaiyitistMod;
-import com.taiyitistmc.bukkit.pluginfix.LuckPerms;
 import com.taiyitistmc.fabric.BukkitRegistry;
 import com.taiyitistmc.injection.server.players.InjectionPlayerList;
 import com.taiyitistmc.util.I18n;
@@ -366,7 +365,6 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
 
         PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(player.getBukkitEntity(), player.bridge$kickLeaveMessage() != null ? player.bridge$kickLeaveMessage() : "\u00A7e" + player.getScoreboardName() + " left the game");
         cserver.getPluginManager().callEvent(playerQuitEvent);
-        LuckPerms.perCache.remove(player.getBukkitEntity().getUniqueId());
         player.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
         // player.doTick(); // SPIGOT-924 // Banner
         // CraftBukkit end
@@ -467,11 +465,6 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
             return Component.literal(event.getKickMessage());
         }
-        // Banner start - TODO
-        if (!LuckPerms.perCache.containsKey(player.getUniqueId())) {
-            LuckPerms.perCache.put(player.getUniqueId(), ((CraftPlayer)player).perm);
-        }
-        // Banner end
         return null;
     }
 
