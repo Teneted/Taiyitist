@@ -30,6 +30,7 @@ import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
 import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
 import com.taiyitistmc.bukkit.remapping.TaiyitistRemapConfig;
 import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
+import com.taiyitistmc.bukkit.remapping.patcher.fix.PluginPropertiesManager;
 import io.izzel.tools.product.Product2;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidPluginException;
@@ -212,6 +213,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                             byte[] classBytes = ByteStreams.toByteArray(is);
                             classBytes = TaiyitistRemapper.SWITCH_TABLE_FIXER.apply(classBytes);
                             classBytes = Bukkit.getUnsafe().processClass(description, path, classBytes);
+                            PluginPropertiesManager.injectPluginProperties(description.getMain());
                             return classBytes;
                         }
                     };
