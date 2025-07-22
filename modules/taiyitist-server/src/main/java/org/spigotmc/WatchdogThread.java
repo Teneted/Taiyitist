@@ -1,7 +1,7 @@
 package org.spigotmc;
 
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
@@ -99,7 +99,7 @@ public class WatchdogThread extends Thread
                     WatchdogThread.dumpThread( thread, log );
                 }
                 log.log( Level.SEVERE, "------------------------------" );
-                if (BannerConfig.Watchdogtimetodo == "restart"){
+                if (TaiyitistConfig.Watchdogtimetodo == "restart"){
                     if ( this.restart && !BukkitMethodHooks.getServer().hasStopped() )
                     {
                         RestartCommand.restart();

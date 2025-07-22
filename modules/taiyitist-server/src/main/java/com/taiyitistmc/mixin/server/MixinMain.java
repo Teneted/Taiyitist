@@ -56,10 +56,10 @@ public abstract class MixinMain {
         // Spigot End
 
         // Spigot Start
-        optionParser.acceptsAll(Arrays.asList("B", "banner-settings"), "File for banner settings")
+        optionParser.acceptsAll(Arrays.asList("B", "taiyitist-settings"), "File for taiyitist settings")
                 .withRequiredArg()
                 .ofType(File.class)
-                .defaultsTo(new File("banner-config","banner.yml"))
+                .defaultsTo(new File("taiyitist-config","taiyitist.yml"))
                 .describedAs("Yml file");
         // Spigot End
     }

@@ -4,16 +4,16 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class BannerWorldConfig {
+public class TaiyitistWorldConfig {
 
     private final String worldName;
     private final YamlConfiguration config;
     private boolean verbose;
 
-    public BannerWorldConfig(String worldName)
+    public TaiyitistWorldConfig(String worldName)
     {
         this.worldName = worldName;
-        this.config = BannerConfig.config;
+        this.config = TaiyitistConfig.config;
         init();
     }
 
@@ -22,7 +22,7 @@ public class BannerWorldConfig {
         this.verbose = getBoolean( "verbose", false );
 
         log( "-------- World Settings For [" + worldName + "] --------" );
-        BannerConfig.readConfig( BannerWorldConfig.class, this );
+        TaiyitistConfig.readConfig( TaiyitistWorldConfig.class, this );
     }
 
     private void log(String s)

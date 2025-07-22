@@ -10,7 +10,7 @@ import com.google.common.collect.MapMaker;
 import com.taiyitistmc.TaiyitistMCStart;
 import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.util.I18n;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.StringReader;
@@ -441,29 +441,8 @@ public final class CraftServer implements Server {
         } else {
             pluginFolder.mkdir();
         }
-        loadBannerPlugin();
     }
 
-    public void loadBannerPlugin() {
-        this.pluginManager.registerInterface(JavaPluginLoader.class);
-
-        File pluginFolder = new File(FabricLoader.getInstance().getGameDir().toFile(), ".banner/plugin_file");
-
-        if (pluginFolder.exists()) {
-            Plugin[] plugins = this.pluginManager.loadPlugins(pluginFolder);
-            for (Plugin plugin : plugins) {
-                try {
-                    String message = String.format("Loading %s", plugin.getDescription().getFullName());
-                    plugin.getLogger().info(message);
-                    plugin.onLoad();
-                } catch (Throwable ex) {
-                    Logger.getLogger(CraftServer.class.getName()).log(Level.SEVERE, ex.getMessage() + " initializing " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
-                }
-            }
-        } else {
-            pluginFolder.mkdir();
-        }
-    }
 
     public void enablePlugins(PluginLoadOrder type) {
         if (type == PluginLoadOrder.STARTUP) {
@@ -790,7 +769,7 @@ public final class CraftServer implements Server {
     @Override
     public long getConnectionThrottle() {
         // Spigot Start - Automatically set connection throttle for bungee configurations
-        if (BannerConfig.velocityEnabled || org.spigotmc.SpigotConfig.bungee) {
+        if (TaiyitistConfig.velocityEnabled || org.spigotmc.SpigotConfig.bungee) {
             return -1;
         } else {
             return this.configuration.getInt("settings.connection-throttle");

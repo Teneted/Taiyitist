@@ -15,7 +15,7 @@ import com.taiyitistmc.bukkit.entity.MohistModsSkeleton;
 import com.taiyitistmc.bukkit.entity.MohistModsTameableEntity;
 import com.taiyitistmc.bukkit.entity.MohistModsThrowableEntity;
 import com.taiyitistmc.bukkit.entity.MohistModsThrowableProjectile;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -354,7 +354,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         } else {
             return new MohistModsEntity(server, entity);
         }
-        if (BannerConfig.debug) {
+        if (TaiyitistConfig.debug) {
             TaiyitistMCStart.LOGGER.error("CraftEntity Debug: {}", entity.toString());
         }
         return new CraftLivingEntity(server, (LivingEntity) entity); // Banner TODO

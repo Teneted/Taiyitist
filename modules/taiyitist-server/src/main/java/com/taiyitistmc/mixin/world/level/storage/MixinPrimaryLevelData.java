@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.level.storage;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.world.level.storage.InjectionPrimaryLevelData;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -84,7 +84,7 @@ public abstract class MixinPrimaryLevelData implements InjectionPrimaryLevelData
         if (this.raining == isRaining) {
             return;
         }
-        if (BannerConfig.NoRaining && isRaining){
+        if (TaiyitistConfig.NoRaining && isRaining){
             ci.cancel();
         }
         World world = Bukkit.getWorld(this.getLevelName());

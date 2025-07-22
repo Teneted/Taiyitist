@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.level.storage;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.world.level.storage.InjectionDerivedLevelData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -28,7 +28,7 @@ public class MixinDerivedLevelData implements InjectionDerivedLevelData {
         if (typeKey == null || typeKey == LevelStem.OVERWORLD) {
             return this.wrapped.getLevelName();
         } else {
-            if (BannerConfig.isSymlinkWorld) {
+            if (TaiyitistConfig.isSymlinkWorld) {
                 String worldName = this.wrapped.getLevelName() + "_";
                 String suffix;
                 if (typeKey == LevelStem.NETHER) {

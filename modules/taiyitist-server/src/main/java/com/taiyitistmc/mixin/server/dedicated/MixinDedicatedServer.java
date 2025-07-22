@@ -2,7 +2,7 @@ package com.taiyitistmc.mixin.server.dedicated;
 
 import com.taiyitistmc.TaiyitistMod;
 import com.taiyitistmc.Metrics;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.util.I18n;
 import com.mojang.datafixers.DataFixer;
 import java.net.Proxy;
@@ -48,9 +48,9 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         TaiyitistMod.LOGGER.info(I18n.as("bukkit.plugin.loading.info"));
         // CraftBukkit start
         org.spigotmc.SpigotConfig.init((java.io.File) this.bridge$options().valueOf("spigot-settings"));
-        BannerConfig.init((java.io.File) this.bridge$options().valueOf("banner-settings"));
-        if (BannerConfig.motdEnable) {
-            this.setMotd(BannerConfig.motd());
+        TaiyitistConfig.init((java.io.File) this.bridge$options().valueOf("banner-settings"));
+        if (TaiyitistConfig.motdEnable) {
+            this.setMotd(TaiyitistConfig.motd());
         }
         org.spigotmc.SpigotConfig.registerCommands();
         this.bridge$server().loadPlugins();

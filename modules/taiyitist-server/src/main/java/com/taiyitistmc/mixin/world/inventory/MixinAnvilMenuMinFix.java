@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.inventory;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.world.inventory.InjectionAnvilMenu;
 import net.minecraft.world.inventory.AnvilMenu;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class MixinAnvilMenuMinFix implements InjectionAnvilMenu {
 
     @Unique
-    public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, BannerConfig.maximumRepairCost));
+    public int maximumRepairCost = Math.min(Short.MAX_VALUE, Math.max(41, TaiyitistConfig.maximumRepairCost));
 
     @ModifyConstant(method = "createResult", constant = @Constant(intValue = 40))
     private int taiyitist$maxRepairCost(int constant) {

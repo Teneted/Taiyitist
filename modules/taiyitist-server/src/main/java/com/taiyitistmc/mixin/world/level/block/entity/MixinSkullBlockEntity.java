@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.level.block.entity;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.mojang.authlib.GameProfile;
 import java.util.function.Consumer;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
@@ -14,14 +14,14 @@ public class MixinSkullBlockEntity {
 
    @Inject(method = "updateOwnerProfile", at = @At("HEAD"), cancellable = true)
    private void taiyitist$updateOwnerProfile(CallbackInfo ci) {
-      if (BannerConfig.disable_skullblock_skin) {
+      if (TaiyitistConfig.disable_skullblock_skin) {
          ci.cancel();
       }
    }
 
    @Inject(method = "updateGameprofile", at = @At("HEAD"), cancellable = true)
    private static void taiyitist$updateGameprofile(GameProfile profile, Consumer<GameProfile> profileConsumer, CallbackInfo ci) {
-      if (BannerConfig.disable_skullblock_skin) {
+      if (TaiyitistConfig.disable_skullblock_skin) {
          ci.cancel();
       }
    }

@@ -1,6 +1,6 @@
 package com.taiyitistmc.mixin.world.level.lighting;
 
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import net.minecraft.world.level.lighting.SkyLightSectionStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ public class MixinSkyLightSectionStorage {
      */
     @Inject(method = "getLightValue(JZ)I", cancellable = true, at = @At(value = "HEAD"))
     protected void getLightValue(long packedPos, boolean updateAll, CallbackInfoReturnable<Integer> cir) {
-        if (BannerConfig.SkyLight15) {
+        if (TaiyitistConfig.SkyLight15) {
             cir.setReturnValue(15);
             cir.cancel();
         }

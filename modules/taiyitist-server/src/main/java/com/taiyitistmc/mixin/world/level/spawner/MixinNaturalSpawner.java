@@ -1,7 +1,7 @@
 package com.taiyitistmc.mixin.world.level.spawner;
 
 import com.taiyitistmc.TaiyitistMod;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.fabric.BukkitRegistry;
 import com.taiyitistmc.injection.world.level.spawner.InjectionSpawnState;
 import com.mohistmc.dynamicenum.MohistDynamEnum;
@@ -86,7 +86,7 @@ public abstract class MixinNaturalSpawner {
      */
     @Overwrite
     public static void spawnForChunk(ServerLevel worldserver, LevelChunk chunk, NaturalSpawner.SpawnState spawnercreature_d, boolean flag, boolean flag1, boolean flag2) {
-        if (!BannerConfig.spawnForChunk) return;
+        if (!TaiyitistConfig.spawnForChunk) return;
         worldserver.getProfiler().push("spawner");
         MobCategory[] var6 = SPAWNING_CATEGORIES;
         int var7 = var6.length;
@@ -135,7 +135,7 @@ public abstract class MixinNaturalSpawner {
      */
     @Overwrite
     public static void spawnCategoryForPosition(MobCategory category, ServerLevel level, ChunkAccess chunk, BlockPos pos, NaturalSpawner.SpawnPredicate filter, NaturalSpawner.AfterSpawnCallback callback) {
-        if (!BannerConfig.spawnForNatural) return;
+        if (!TaiyitistConfig.spawnForNatural) return;
         StructureManager structuremanager = level.structureManager();
         ChunkGenerator chunkgenerator = level.getChunkSource().getGenerator();
         int i = pos.getY();

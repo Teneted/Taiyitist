@@ -1,7 +1,7 @@
 package com.taiyitistmc.mixin.server.network;
 
 import com.destroystokyo.paper.proxy.VelocityProxy;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
@@ -177,7 +177,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
                 this.connection.send(new ClientboundHelloPacket("", this.server.getKeyPair().getPublic().getEncoded(), this.challenge));
             } else {
                 // Paper start - Velocity support
-                if (BannerConfig.velocityEnabled) {
+                if (TaiyitistConfig.velocityEnabled) {
                     this.velocityLoginMessageId = ThreadLocalRandom.current().nextInt();
                     FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
                     buf.writeByte(VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION);
@@ -282,7 +282,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
 
     @Unique
     void taiyitist$preLogin() throws Exception {
-        if (velocityLoginMessageId == -1 && BannerConfig.velocityEnabled) {
+        if (velocityLoginMessageId == -1 && TaiyitistConfig.velocityEnabled) {
             disconnect("This server requires you to connect with Velocity.");
             return;
         }
@@ -329,7 +329,7 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     @Overwrite
     public void handleCustomQueryPacket(ServerboundCustomQueryPacket packet) {
         // Paper start - Velocity support
-        if (BannerConfig.velocityEnabled && packet.getTransactionId() == this.velocityLoginMessageId) {
+        if (TaiyitistConfig.velocityEnabled && packet.getTransactionId() == this.velocityLoginMessageId) {
             net.minecraft.network.FriendlyByteBuf buf = packet.getData();
             if (buf == null) {
                 this.disconnect("This server requires you to connect with Velocity.");

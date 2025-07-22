@@ -2,7 +2,7 @@ package org.spigotmc;
 
 import com.google.common.base.Throwables;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -200,7 +200,7 @@ public class SpigotConfig
         outdatedServerMessage = transform( getString( "messages.outdated-server", outdatedServerMessage ) );
     }
 
-    public static int timeoutTime = (int) BannerConfig.WatchDogTimeOut;
+    public static int timeoutTime = (int) TaiyitistConfig.WatchDogTimeOut;
     public static boolean restartOnCrash = true;
     public static String restartScript = "./start.sh";
     public static String restartMessage;

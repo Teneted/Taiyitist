@@ -6,7 +6,7 @@ import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.bukkit.DistValidate;
 import com.taiyitistmc.bukkit.LevelPersistentData;
-import com.taiyitistmc.config.BannerConfig;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.fabric.BannerDerivedWorldInfo;
 import com.taiyitistmc.fabric.WorldSymlink;
 import com.taiyitistmc.injection.server.level.InjectionServerLevel;
@@ -190,7 +190,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
         } else if (serverLevelData instanceof DerivedLevelData) {
             this.K = BannerDerivedWorldInfo.wrap(((DerivedLevelData) serverLevelData));
             ((DerivedLevelData) serverLevelData).setDimType(this.getTypeKey());
-            if (BannerConfig.isSymlinkWorld) {
+            if (TaiyitistConfig.isSymlinkWorld) {
                 WorldSymlink.create((DerivedLevelData) serverLevelData, levelStorageAccess.getDimensionPath(this.dimension()).toFile());
             }
         }
@@ -380,11 +380,11 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     @Inject(method = "addEntity", cancellable = true, at = @At(value = "HEAD"))
     private void taiyitist$canAddEntity(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
         CreatureSpawnEvent.SpawnReason reason = taiyitist$reason.get() == null ? CreatureSpawnEvent.SpawnReason.DEFAULT : taiyitist$reason.get();
-        if (!BannerConfig.spawnForChunk && reason.equals(SpawnReason.CHUNK_GEN)) {
+        if (!TaiyitistConfig.spawnForChunk && reason.equals(SpawnReason.CHUNK_GEN)) {
             cir.setReturnValue(false);
         }
 
-        if (!BannerConfig.spawnForNatural && reason.equals(SpawnReason.NATURAL)) {
+        if (!TaiyitistConfig.spawnForNatural && reason.equals(SpawnReason.NATURAL)) {
             cir.setReturnValue(false);
         }
     }
@@ -564,7 +564,7 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
 
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
     private void taiyitist$checkSpawnEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (BannerConfig.nospawnEntity.contains(entity.getBukkitEntity().getType().name())) {
+        if (TaiyitistConfig.nospawnEntity.contains(entity.getBukkitEntity().getType().name())) {
             cir.setReturnValue(false);
         }
     }

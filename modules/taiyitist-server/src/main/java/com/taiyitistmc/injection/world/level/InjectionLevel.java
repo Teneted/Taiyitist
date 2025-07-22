@@ -1,6 +1,6 @@
 package com.taiyitistmc.injection.world.level;
 
-import com.taiyitistmc.config.BannerWorldConfig;
+import com.taiyitistmc.config.TaiyitistWorldConfig;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
@@ -134,11 +134,11 @@ public interface InjectionLevel {
     default void taiyitist$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
     }
 
-    default BannerWorldConfig bridge$bannerConfig() {
+    default TaiyitistWorldConfig bridge$bannerConfig() {
         return null;
     }
 
-    default void taiyitist$setBannerConfig(BannerWorldConfig bannerWorldConfig) {
+    default void taiyitist$setBannerConfig(TaiyitistWorldConfig taiyitistWorldConfig) {
     }
 
     default void taiyitist$callEvent(boolean call) {
