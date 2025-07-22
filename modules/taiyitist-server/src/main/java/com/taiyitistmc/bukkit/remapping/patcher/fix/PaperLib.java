@@ -1,9 +1,6 @@
 package com.taiyitistmc.bukkit.remapping.patcher.fix;
 
-import com.taiyitistmc.bukkit.pluginfix.PluginFixManager;
 import com.taiyitistmc.bukkit.remapping.patcher.PluginPatcher;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
@@ -18,7 +15,7 @@ public class PaperLib {
         for (MethodNode methodNode : node.methods) {
             if (methodNode.name.equals("isPaper") && methodNode.desc.equals("()Z")) {
                 InsnList toInject = new InsnList();
-                toInject.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(PluginFixManager.class), "isPaper", "()Z"));
+                toInject.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(PaperLib.class), "isPaper", "()Z"));
                 toInject.add(new InsnNode(Opcodes.IRETURN));
                 methodNode.instructions = toInject;
             }
