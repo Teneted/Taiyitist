@@ -1,28 +1,16 @@
 package com.taiyitistmc.bukkit.remapping;
 
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
+import com.taiyitistmc.TaiyitistMCStart;
+import com.taiyitistmc.bukkit.remapping.generated.TaiyitistReflectionHandler;
+import com.taiyitistmc.config.TaiyitistConfigUtil;
 import io.izzel.tools.product.Product;
 import io.izzel.tools.product.Product2;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.CodeSigner;
-import java.security.CodeSource;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
 import net.md_5.specialsource.RemappingClassAdapter;
@@ -35,21 +23,39 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.ClassRemapper;
+import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.spongepowered.asm.service.MixinService;
 
-/**
- * ClassLoaderAdapter
- *
- * @author Mainly by IzzelAliz
- * @originalClassName ClassLoaderAdapter
- */
+import java.io.File;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.security.CodeSigner;
+import java.security.CodeSource;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.jar.JarFile;
+
 public class ClassLoaderRemapper extends LenientJarRemapper {
 
-    private static final Logger LOGGER = LogManager.getLogger("Mohist");
+    private static final Logger LOGGER = LogManager.getLogger("Taiyitist");
     private static final String PREFIX = "net/minecraft/";
-    private static final String REPLACED_NAME = Type.getInternalName(ReflectionHandler.class);
+    private static final String REPLACED_NAME = Type.getInternalName(TaiyitistReflectionHandler.class);
 
     private final JarMapping toBukkitMapping;
     private final JarRemapper toBukkitRemapper;
@@ -59,19 +65,11 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
     private final GeneratedHandlerAdapter generatedHandlerAdapter;
     private final Map<String, Boolean> secureJarInfo = new ConcurrentHashMap<>();
 
-    public String getGeneratedHandler() {
-        return generatedHandler;
-    }
-
-    public Class<?> getGeneratedHandlerClass() {
-        return generatedHandlerClass;
-    }
-
     public ClassLoaderRemapper(JarMapping jarMapping, JarMapping toBukkitMapping, ClassLoader classLoader) {
         super(jarMapping);
         this.toBukkitMapping = toBukkitMapping;
         this.classLoader = classLoader;
-        this.jarMapping.setInheritanceMap(Remapper.INSTANCE.inheritanceMap);
+        this.jarMapping.setInheritanceMap(TaiyitistRemapper.INSTANCE.inheritanceMap);
         this.jarMapping.setFallbackInheritanceProvider(GlobalClassRepo.inheritanceProvider());
         this.toBukkitMapping.setFallbackInheritanceProvider(GlobalClassRepo.inheritanceProvider());
         this.toBukkitRemapper = new LenientJarRemapper(this.toBukkitMapping);
@@ -79,6 +77,10 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         this.generatedHandler = Type.getInternalName(generatedHandlerClass);
         this.generatedHandlerAdapter = new GeneratedHandlerAdapter(REPLACED_NAME, generatedHandler);
         GlobalClassRepo.INSTANCE.addRepo(new ClassLoaderRepo(this.classLoader));
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     public JarMapping toBukkitMapping() {
@@ -91,6 +93,14 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
 
     public JarRemapper toBukkitRemapper() {
         return toBukkitRemapper;
+    }
+
+    public String getGeneratedHandler() {
+        return generatedHandler;
+    }
+
+    public Class<?> getGeneratedHandlerClass() {
+        return generatedHandlerClass;
     }
 
     // BiMap: srg -> bukkit
@@ -172,6 +182,7 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         if (!internalName.startsWith(PREFIX)) {
             throw new NoClassDefFoundError(internalName);
         }
+        LOGGER.warn("Loading CLIENT side class: {}", internalName);
         ClassWriter writer = new ClassWriter(0);
         writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_DEPRECATED, internalName, null, "java/lang/Object", new String[]{});
         writer.visitEnd();
@@ -257,11 +268,11 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         if (mapped == null && (access == -1 || (!Modifier.isPrivate(access) && !Modifier.isStatic(access)))) {
             Collection<String> parents;
 
-            if (Remapper.INSTANCE.inheritanceMap.hasParents(owner)) {
-                parents = Remapper.INSTANCE.inheritanceMap.getParents(owner);
+            if (TaiyitistRemapper.INSTANCE.inheritanceMap.hasParents(owner)) {
+                parents = TaiyitistRemapper.INSTANCE.inheritanceMap.getParents(owner);
             } else {
                 parents = GlobalClassRepo.inheritanceProvider().getParents(owner);
-                Remapper.INSTANCE.inheritanceMap.setParents(owner, parents);
+                TaiyitistRemapper.INSTANCE.inheritanceMap.setParents(owner, parents);
             }
 
             if (parents != null) {
@@ -278,20 +289,60 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         return Maps.immutableEntry(owner, mapped);
     }
 
-    public Product2<byte[], CodeSource> remapClass(String className, Callable<byte[]> byteSource, URLConnection connection) throws ClassNotFoundException {
-        try {
-            byte[] bytes = remapClassFile(byteSource.call(), GlobalClassRepo.INSTANCE);
-            URL url;
-            CodeSigner[] signers;
-            if (connection instanceof JarURLConnection) {
-                url = ((JarURLConnection) connection).getJarFileURL();
-                signers = ((JarURLConnection) connection).getJarEntry().getCodeSigners();
-            } else {
-                url = connection.getURL();
-                signers = null;
-            }
-            return Product.of(bytes, new CodeSource(url, signers));
+    private boolean isSecureJar(JarFile jarFile) {
+        return this.secureJarInfo.computeIfAbsent(jarFile.getName(), key ->
+                jarFile.stream().anyMatch(it -> {
+                    if (it.isDirectory()) return false;
+                    String name = it.getName().toUpperCase(Locale.ROOT);
+                    return name.startsWith("META-INF") && (name.endsWith(".DSA") ||
+                            name.endsWith(".RSA") ||
+                            name.endsWith(".EC") ||
+                            name.endsWith(".SF"));
+                }));
+    }
 
+    public Product2<byte[], CodeSource> remapClass(String className, Callable<byte[]> byteSource, URLConnection connection, TaiyitistRemapConfig config) throws ClassNotFoundException {
+        try {
+            TaiyitistClassCache.CacheSegment segment = TaiyitistClassCache.instance().makeSegment(connection);
+            Optional<byte[]> optional = segment.findByName(className, config);
+            if (optional.isPresent()) {
+                byte[] bytes = optional.get();
+                ClassWriter cw = new ClassWriter(0);
+                new ClassReader(bytes).accept(new ClassRemapper(cw, generatedHandlerAdapter), 0);
+                URL url;
+                CodeSigner[] signers;
+                if (connection instanceof JarURLConnection) {
+                    url = ((JarURLConnection) connection).getJarFileURL();
+                    if (isSecureJar(((JarURLConnection) connection).getJarFile())) {
+                        ByteStreams.exhaust(connection.getInputStream()); // must read before asking signers
+                        signers = ((JarURLConnection) connection).getJarEntry().getCodeSigners();
+                    } else {
+                        signers = null;
+                    }
+                } else {
+                    url = connection.getURL();
+                    signers = null;
+                }
+                return Product.of(cw.toByteArray(), new CodeSource(url, signers));
+            } else {
+                byte[] bytes = remapClassFile(byteSource.call(), new ClassRepoWrapper(GlobalClassRepo.INSTANCE, config));
+                if (TaiyitistConfigUtil.isCachePluginClass()) {
+                    ClassWriter cw = new ClassWriter(0);
+                    new ClassReader(bytes).accept(new ClassRemapper(cw, new GeneratedHandlerAdapter(generatedHandler, REPLACED_NAME)), 0);
+                    byte[] store = cw.toByteArray();
+                    segment.addToCache(className, store, config);
+                }
+                URL url;
+                CodeSigner[] signers;
+                if (connection instanceof JarURLConnection) {
+                    url = ((JarURLConnection) connection).getJarFileURL();
+                    signers = ((JarURLConnection) connection).getJarEntry().getCodeSigners();
+                } else {
+                    url = connection.getURL();
+                    signers = null;
+                }
+                return Product.of(bytes, new CodeSource(url, signers));
+            }
         } catch (Exception e) {
             throw new ClassNotFoundException(className, e);
         }
@@ -311,28 +362,36 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         ClassNode node = new ClassNode();
         RemappingClassAdapter mapper = new RemappingClassAdapter(node, this, repo);
         reader.accept(mapper, 0);
+        TaiyitistRemapConfig config;
+        if (repo instanceof ClassRepoWrapper wrapper) {
+            config = wrapper.config();
+        } else {
+            TaiyitistMCStart.LOGGER.warn("No class remap config is provided for class {}, using PLUGIN", node.name.replace('/','.'));
+            config = TaiyitistRemapConfig.PLUGIN;
+        }
 
-        for (PluginTransformer transformer : Remapper.INSTANCE.getTransformerList()) {
-            transformer.handleClass(node, this);
+        for (PluginTransformer transformer : TaiyitistRemapper.INSTANCE.getTransformerList()) {
+            transformer.handleClass(node, this, config);
         }
 
         ClassWriter wr = new PluginClassWriter(ClassWriter.COMPUTE_MAXS);
         node.accept(wr);
 
-        return wr.toByteArray();
+        return dump(wr.toByteArray());
     }
 
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
     private Class<?> generateReflectionHandler() {
         try {
-            ClassNode node = MixinService.getService().getBytecodeProvider().getClassNode(Type.getInternalName(ReflectionHandler.class));
+            ClassNode node = MixinService.getService().getBytecodeProvider().getClassNode(Type.getInternalName(TaiyitistReflectionHandler.class));
             Preconditions.checkNotNull(node, "node");
             ClassWriter writer = new ClassWriter(0);
-            String name = Type.getInternalName(ReflectionHandler.class) + "_" + COUNTER.getAndIncrement();
+            String name = Type.getInternalName(TaiyitistReflectionHandler.class) + "_" + COUNTER.getAndIncrement();
             ClassVisitor visitor = new ClassRemapper(writer, new NameRemapper(name));
             node.accept(visitor);
             byte[] bytes = writer.toByteArray();
+            dump(bytes);
             Class<?> cl = Unsafe.defineClass(name.replace('/', '.'), bytes, 0, bytes.length, getClass().getClassLoader(), getClass().getProtectionDomain());
             MethodHandles.lookup().ensureInitialized(cl);
 
@@ -344,9 +403,9 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         }
     }
 
-    private static class NameRemapper extends org.objectweb.asm.commons.Remapper {
+    private static class NameRemapper extends Remapper {
 
-        private static final String ORIGIN = Type.getInternalName(ReflectionHandler.class);
+        private static final String ORIGIN = Type.getInternalName(TaiyitistReflectionHandler.class);
 
         private final String internal;
 
@@ -387,13 +446,14 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         private String getSuper(final String typeName) {
             ClassNode node = GlobalClassRepo.INSTANCE.findClass(typeName);
             if (node == null) {
+                LOGGER.warn("Failed to find class {}", typeName);
                 return "java/lang/Object";
             }
-            return Remapper.getNmsMapper().map(node.superName);
+            return TaiyitistRemapper.getNmsMapper().map(node.superName);
         }
     }
 
-    private static class GeneratedHandlerAdapter extends org.objectweb.asm.commons.Remapper {
+    private static class GeneratedHandlerAdapter extends Remapper {
 
         private final String from, to;
 
@@ -437,5 +497,24 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
             result = 31 * result + Arrays.hashCode(pTypes);
             return result;
         }
+    }
+
+    private static byte[] dump(byte[] bytes) {
+        try {
+            if (TaiyitistRemapper.DUMP != null) {
+                String className = new ClassReader(bytes).getClassName() + ".class";
+                int index = className.lastIndexOf('/');
+                if (index != -1) {
+                    File file = new File(TaiyitistRemapper.DUMP, className.substring(0, index));
+                    file.mkdirs();
+                    Files.write(file.toPath().resolve(className.substring(index + 1)), bytes);
+                } else {
+                    Files.write(TaiyitistRemapper.DUMP.toPath().resolve(className), bytes);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to dump class " + new ClassReader(bytes).getClassName(), e);
+        }
+        return bytes;
     }
 }

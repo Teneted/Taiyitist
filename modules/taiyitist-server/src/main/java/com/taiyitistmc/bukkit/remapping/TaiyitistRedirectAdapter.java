@@ -1,27 +1,14 @@
 package com.taiyitistmc.bukkit.remapping;
 
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.taiyitistmc.TaiyitistMCStart;
+import com.taiyitistmc.bukkit.remapping.generated.TaiyitistReflectionHandler;
 import io.izzel.tools.func.Func4;
 import io.izzel.tools.product.Product;
 import io.izzel.tools.product.Product2;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.nio.ByteBuffer;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import java.security.SecureClassLoader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -41,17 +28,27 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.spongepowered.asm.util.Bytecode;
 
-/**
- * ArclightRedirectAdapter
- *
- * @author Mainly by IzzelAliz
- * @originalClassName ArclightRedirectAdapter
- */
-public class RedirectAdapter implements PluginTransformer {
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.ByteBuffer;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.security.SecureClassLoader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
-    public static final RedirectAdapter INSTANCE = new RedirectAdapter();
+public class TaiyitistRedirectAdapter implements PluginTransformer {
+
+    public static final TaiyitistRedirectAdapter INSTANCE = new TaiyitistRedirectAdapter();
     private static final Marker MARKER = MarkerManager.getMarker("REDIRECT");
-    private static final String REPLACED_NAME = Type.getInternalName(ReflectionHandler.class);
+    private static final String REPLACED_NAME = Type.getInternalName(TaiyitistReflectionHandler.class);
     private static final Multimap<String, Product2<String, MethodInsnNode>> METHOD_MODIFY = HashMultimap.create();
     private static final Multimap<String, Product2<String, MethodInsnNode>> METHOD_REDIRECT = HashMultimap.create();
     private static final Map<String, Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]>> METHOD_TO_HANDLER = new ConcurrentHashMap<>();
@@ -167,8 +164,11 @@ public class RedirectAdapter implements PluginTransformer {
     }
 
     @Override
-    public void handleClass(ClassNode node, ClassLoaderRemapper remapper) {
-        redirect(node, remapper);
+    public void handleClass(ClassNode node, ClassLoaderRemapper remapper, TaiyitistRemapConfig config) {
+        // Don't transform for remap=false
+        if (config.remap()) {
+            redirect(node, remapper);
+        }
     }
 
     private static void redirect(ClassNode classNode, ClassLoaderRemapper remapper) {
@@ -176,9 +176,9 @@ public class RedirectAdapter implements PluginTransformer {
             for (AbstractInsnNode insnNode : methodNode.instructions) {
                 if (insnNode instanceof MethodInsnNode from) {
                     if (from.getOpcode() == Opcodes.INVOKESPECIAL
-                        && Objects.equals(from.owner, classNode.superName)
-                        && Objects.equals(from.name, methodNode.name)
-                        && Objects.equals(from.desc, methodNode.desc)) {
+                            && Objects.equals(from.owner, classNode.superName)
+                            && Objects.equals(from.name, methodNode.name)
+                            && Objects.equals(from.desc, methodNode.desc)) {
                         continue;
                     }
                     process(from, methodNode.instructions, remapper, classNode);
@@ -340,18 +340,18 @@ public class RedirectAdapter implements PluginTransformer {
         } else {
             handlerArgs = args;
         }
-        Method handler = methodOf(ReflectionHandler.class, "redirect" + capitalize(handlerName), handlerArgs);
+        Method handler = methodOf(TaiyitistReflectionHandler.class, "redirect" + capitalize(handlerName), handlerArgs);
         while (handler == null) {
             handlerArgs[0] = handlerArgs[0].getSuperclass();
-            handler = methodOf(ReflectionHandler.class, "redirect" + capitalize(handlerName), handlerArgs);
+            handler = methodOf(TaiyitistReflectionHandler.class, "redirect" + capitalize(handlerName), handlerArgs);
         }
         METHOD_REDIRECT.put(name + Type.getMethodDescriptor(original), Product.of(Type.getInternalName(owner), methodNodeOf(handler)));
         String key = methodToString(original);
         if (modifyArgs) {
-            Method modifyHandler = methodOf(ReflectionHandler.class, "handle" + capitalize(handlerName), handlerArgs);
+            Method modifyHandler = methodOf(TaiyitistReflectionHandler.class, "handle" + capitalize(handlerName), handlerArgs);
             if (modifyHandler == null) {
                 handlerArgs[0] = original.getReturnType();
-                modifyHandler = methodOf(ReflectionHandler.class, "handle" + capitalize(handlerName), handlerArgs);
+                modifyHandler = methodOf(TaiyitistReflectionHandler.class, "handle" + capitalize(handlerName), handlerArgs);
             }
             if (modifyHandler == null) {
                 throw new RuntimeException("No handler for " + original);
@@ -416,7 +416,7 @@ public class RedirectAdapter implements PluginTransformer {
         };
     }
 
-    public static AbstractInsnNode loadInt(int i) {
+    static AbstractInsnNode loadInt(int i) {
         if (i >= -1 && i < 6) {
             return new InsnNode(Opcodes.ICONST_0 + i);
         } else if (i >= -128 && i < 128) {
@@ -428,55 +428,79 @@ public class RedirectAdapter implements PluginTransformer {
         }
     }
 
-    private record ModifyHandler(String handlerName, Class<?>[] handlerArgs) implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
+    private static class ModifyHandler implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
+
+        private final String handlerName;
+        private final Class<?>[] handlerArgs;
+
+        public ModifyHandler(String handlerName, Class<?>[] handlerArgs) {
+            this.handlerName = handlerName;
+            this.handlerArgs = handlerArgs;
+        }
 
         @Override
-            public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
-                try {
-                    Method handleMethod = remapper.getGeneratedHandlerClass().getMethod(handlerName, handlerArgs);
-                    if (method.getParameterCount() > 0) {
-                        if (handleMethod.getReturnType().isArray() && !Modifier.isStatic(method.getModifiers())) {
-                            Object[] invoke = (Object[]) handleMethod.invoke(null, ArrayUtil.prepend(param, src));
-                            return new Object[]{method, invoke[0], Arrays.copyOfRange(invoke, 1, invoke.length)};
-                        } else {
-                            return new Object[]{method, src, handleMethod.invoke(null, param)};
-                        }
+        public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
+            try {
+                Method handleMethod = remapper.getGeneratedHandlerClass().getMethod(handlerName, handlerArgs);
+                if (method.getParameterCount() > 0) {
+                    if (handleMethod.getReturnType().isArray() && !Modifier.isStatic(method.getModifiers())) {
+                        Object[] invoke = (Object[]) handleMethod.invoke(null, ArrayUtil.prepend(param, src));
+                        return new Object[]{method, invoke[0], Arrays.copyOfRange(invoke, 1, invoke.length)};
                     } else {
-                        return new Object[]{handleMethod, null, new Object[]{method.invoke(src, param)}};
+                        return new Object[]{method, src, handleMethod.invoke(null, param)};
                     }
-                } catch (Exception e) {
-                    Unsafe.throwException(e);
+                } else {
+                    return new Object[]{handleMethod, null, new Object[]{method.invoke(src, param)}};
                 }
+            } catch (Exception e) {
+                Unsafe.throwException(e);
+            }
+            return null;
+        }
+    }
+
+    private static class RedirectHandler implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
+
+        private final String handlerName;
+        private final Class<?>[] handlerArgs;
+
+        public RedirectHandler(String handlerName, Class<?>[] handlerArgs) {
+            this.handlerName = handlerName;
+            this.handlerArgs = handlerArgs;
+        }
+
+        @Override
+        public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
+            try {
+                Method redirectMethod = remapper.getGeneratedHandlerClass().getMethod(handlerName, handlerArgs);
+                return new Object[]{redirectMethod, null, Modifier.isStatic(method.getModifiers()) ? param : ArrayUtil.prepend(param, src)};
+            } catch (Exception e) {
+                Unsafe.throwException(e);
                 return null;
             }
         }
+    }
 
-    private record RedirectHandler(String handlerName, Class<?>[] handlerArgs) implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
+    private static class BridgeHandler implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
 
-        @Override
-            public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
-                try {
-                    Method redirectMethod = remapper.getGeneratedHandlerClass().getMethod(handlerName, handlerArgs);
-                    return new Object[]{redirectMethod, null, Modifier.isStatic(method.getModifiers()) ? param : ArrayUtil.prepend(param, src)};
-                } catch (Exception e) {
-                    Unsafe.throwException(e);
-                    return null;
-                }
-            }
+        private final Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> bridge;
+        private final Method targetMethod;
+
+        private BridgeHandler(Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> bridge, Method targetMethod) {
+            this.bridge = bridge;
+            this.targetMethod = targetMethod;
         }
 
-    private record BridgeHandler(Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> bridge, Method targetMethod) implements Func4<ClassLoaderRemapper, Method, Object, Object[], Object[]> {
-
         @Override
-            public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
-                boolean bridgeStatic = Modifier.isStatic(targetMethod.getModifiers());
-                if (bridgeStatic) {
-                    Object[] ret = bridge.apply(remapper, this.targetMethod, null, param);
-                    return new Object[]{method, src, ret[2]};
-                } else {
-                    Object[] ret = bridge.apply(remapper, this.targetMethod, param[0], Arrays.copyOfRange(param, 1, param.length));
-                    return new Object[]{method, src, ArrayUtil.prepend((Object[]) ret[2], ret[1])};
-                }
+        public Object[] apply4(ClassLoaderRemapper remapper, Method method, Object src, Object[] param) {
+            boolean bridgeStatic = Modifier.isStatic(targetMethod.getModifiers());
+            if (bridgeStatic) {
+                Object[] ret = bridge.apply(remapper, this.targetMethod, null, param);
+                return new Object[]{method, src, ret[2]};
+            } else {
+                Object[] ret = bridge.apply(remapper, this.targetMethod, param[0], Arrays.copyOfRange(param, 1, param.length));
+                return new Object[]{method, src, ArrayUtil.prepend((Object[]) ret[2], ret[1])};
             }
         }
+    }
 }

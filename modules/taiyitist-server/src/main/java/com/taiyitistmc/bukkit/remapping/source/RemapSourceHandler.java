@@ -1,6 +1,13 @@
-package com.taiyitistmc.bukkit.remapping;
+package com.taiyitistmc.bukkit.remapping.source;
 
 import com.google.common.io.ByteStreams;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
+import com.taiyitistmc.bukkit.remapping.GlobalClassRepo;
+import com.taiyitistmc.bukkit.remapping.Unsafe;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.impl.transformer.FabricTransformer;
+import org.objectweb.asm.ClassReader;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,18 +18,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Hashtable;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.transformer.FabricTransformer;
-import org.objectweb.asm.ClassReader;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-
-/**
- * RemapSourceHandler
- *
- * @author Mainly by IzzelAliz
- * @originalClassName RemapSourceHandler
- */
 
 public class RemapSourceHandler extends URLStreamHandler {
 
@@ -44,16 +39,14 @@ public class RemapSourceHandler extends URLStreamHandler {
             byte[] bytes = ByteStreams.toByteArray(url.openStream());
             String className = new ClassReader(bytes).getClassName();
             if (className.startsWith("net/minecraft/") || className.equals("com/mojang/brigadier/tree/CommandNode")) {
-                bytes = fabricRemapClass(bytes);
+                String handledName = className.replace('/', '.');
+                try {
+                    bytes = FabricTransformer.transform(false, EnvType.SERVER, handledName, bytes);
+                } catch (Throwable e) {
+                    throw new IOException(e);
+                }
             }
-            this.array = Remapper.getResourceMapper().remapClassFile(bytes, GlobalClassRepo.INSTANCE);
-        }
-
-        public byte[] fabricRemapClass(byte[] cl) {
-            var name = new ClassReader(cl).getClassName();
-            var bytes = FabricTransformer.transform(false, EnvType.SERVER, name.replace('/', '.'), cl);
-            bytes = ((IMixinTransformer) MixinEnvironment.getCurrentEnvironment().getActiveTransformer()).transformClassBytes(name, name, bytes);
-            return bytes;
+            this.array = TaiyitistRemapper.getResourceMapper().remapClassFile(bytes, GlobalClassRepo.INSTANCE);
         }
 
         @Override

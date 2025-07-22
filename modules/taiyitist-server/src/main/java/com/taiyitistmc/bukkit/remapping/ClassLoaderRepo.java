@@ -1,22 +1,19 @@
 package com.taiyitistmc.bukkit.remapping;
 
+
+import com.taiyitistmc.bukkit.remapping.patcher.PluginPatcher;
+import net.md_5.specialsource.repo.ClassRepo;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
-import net.md_5.specialsource.repo.ClassRepo;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
 
-/**
- * ClassLoaderRepo
- *
- * @author Mainly by IzzelAliz
- * @originalClassName ClassLoaderRepo
- */
-public class ClassLoaderRepo implements ClassRepo {
+public class ClassLoaderRepo implements ClassRepo, PluginPatcher.ClassRepo {
 
     private final ClassLoader classLoader;
 
@@ -29,11 +26,12 @@ public class ClassLoaderRepo implements ClassRepo {
         return findClass(internalName, ClassReader.SKIP_CODE);
     }
 
+    @Override
     public ClassNode findClass(String internalName, int parsingOptions) {
         try {
             URL url = classLoader instanceof URLClassLoader
-                ? ((URLClassLoader) classLoader).findResource(internalName + ".class") // search local
-                : (URL) H_FIND_RESOURCE.invokeExact(classLoader, internalName + ".class");
+                    ? ((URLClassLoader) classLoader).findResource(internalName + ".class") // search local
+                    : (URL) H_FIND_RESOURCE.invokeExact(classLoader, internalName + ".class");
             if (url == null) return null;
             URLConnection connection = url.openConnection();
             try (InputStream inputStream = connection.getInputStream()) {

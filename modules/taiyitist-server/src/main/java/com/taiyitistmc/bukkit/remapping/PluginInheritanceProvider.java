@@ -1,22 +1,17 @@
 package com.taiyitistmc.bukkit.remapping;
 
 import com.google.common.collect.ImmutableSet;
+import net.md_5.specialsource.provider.InheritanceProvider;
+import net.md_5.specialsource.repo.ClassRepo;
+import org.objectweb.asm.tree.ClassNode;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import net.md_5.specialsource.provider.InheritanceProvider;
-import net.md_5.specialsource.repo.ClassRepo;
-import org.objectweb.asm.tree.ClassNode;
 
-/**
- * PluginInheritanceProvider
- *
- * @author Mainly by IzzelAliz
- * @originalClassName PluginInheritanceProvider
- */
 public class PluginInheritanceProvider implements InheritanceProvider {
 
     private static final Map<String, Collection<String>> SHARED_INHERITANCE_MAP = new ConcurrentHashMap<>();
@@ -59,7 +54,7 @@ public class PluginInheritanceProvider implements InheritanceProvider {
         return parents;
     }
 
-    public static class Remapping extends PluginInheritanceProvider {
+    static class Remapping extends PluginInheritanceProvider {
 
         private final PluginInheritanceProvider provider;
 
@@ -70,12 +65,12 @@ public class PluginInheritanceProvider implements InheritanceProvider {
 
         @Override
         public Collection<String> getAll(String className) {
-            return provider.getAll(className).stream().map(Remapper.getNmsMapper()::map).collect(Collectors.toSet());
+            return provider.getAll(className).stream().map(TaiyitistRemapper.getNmsMapper()::map).collect(Collectors.toSet());
         }
 
         @Override
         public Collection<String> getParents(String className) {
-            return provider.getParents(className).stream().map(Remapper.getNmsMapper()::map).collect(Collectors.toSet());
+            return provider.getParents(className).stream().map(TaiyitistRemapper.getNmsMapper()::map).collect(Collectors.toSet());
         }
     }
 }
