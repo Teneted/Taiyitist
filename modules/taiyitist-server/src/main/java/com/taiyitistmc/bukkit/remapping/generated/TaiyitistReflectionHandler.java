@@ -1,4 +1,14 @@
-package com.taiyitistmc.bukkit.remapping;
+package com.taiyitistmc.bukkit.remapping.generated;
+
+import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
+import com.taiyitistmc.bukkit.remapping.ClassRepoWrapper;
+import com.taiyitistmc.bukkit.remapping.Enumerations;
+import com.taiyitistmc.bukkit.remapping.GlobalClassRepo;
+import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRedirectAdapter;
+import com.taiyitistmc.bukkit.remapping.Unsafe;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,18 +30,9 @@ import java.security.ProtectionDomain;
 import java.security.SecureClassLoader;
 import java.util.Enumeration;
 import java.util.StringJoiner;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Type;
 
-/**
- * ReflectionHandler
- *
- * @author Mainly by IzzelAliz
- * @originalClassName ArclightReflectionHandler
- */
 @SuppressWarnings("unused")
-public class ReflectionHandler extends ClassLoader {
-
+public class TaiyitistReflectionHandler extends ClassLoader {
 
     private static final String PREFIX = "net.minecraft.";
 
@@ -159,7 +160,7 @@ public class ReflectionHandler extends ClassLoader {
     // srg -> bukkit
     public static String handlePackageGetName(String name) {
         if (name.startsWith(PREFIX)) {
-            return PREFIX + "server." + "v1_21_R1";
+            return PREFIX + "server." + "v1_21_R5";
         } else {
             return name;
         }
@@ -525,7 +526,7 @@ public class ReflectionHandler extends ClassLoader {
     }
 
     public static Object[] handleMethodInvoke(Method method, Object src, Object[] param) throws Throwable {
-        Object[] ret = RedirectAdapter.runHandle(remapper, method, src, param);
+        Object[] ret = TaiyitistRedirectAdapter.runHandle(remapper, method, src, param);
         if (ret != null) {
             return ret;
         } else {
@@ -534,7 +535,7 @@ public class ReflectionHandler extends ClassLoader {
     }
 
     public static Object redirectMethodInvoke(Method method, Object src, Object[] param) throws Throwable {
-        Object ret = RedirectAdapter.runRedirect(remapper, method, src, param);
+        Object ret = TaiyitistRedirectAdapter.runRedirect(remapper, method, src, param);
         if (ret != remapper) {
             return ret;
         } else {
@@ -652,9 +653,12 @@ public class ReflectionHandler extends ClassLoader {
             }
         }
         if (rcl != null) {
-            return rcl.getRemapper().remapClassFile(bytes, GlobalClassRepo.INSTANCE, true);
+            // Don't transform for remap=false.
+            // We don't have ReflectionHandler in their ClassLoader.
+            var repo = new ClassRepoWrapper(GlobalClassRepo.INSTANCE, rcl.getRemapConfig());
+            return rcl.getRemapper().remapClassFile(bytes, repo, true);
         } else {
-            RedirectAdapter.scanMethod(bytes);
+            TaiyitistRedirectAdapter.scanMethod(bytes);
             return bytes;
         }
     }

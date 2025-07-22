@@ -130,6 +130,15 @@ public class TaiyitistConfigUtil {
         motdFirstLine();
         motdSecondLine();
         stackdeobf();
+        isCachePluginClass();
     }
 
+    public static boolean isCachePluginClass() {
+        String key = "optimization.isCachePluginClass";
+        if (yml.get(key) == null) {
+            yml.set(key, true);
+            save();
+        }
+        return yml.getBoolean(key, true);
+    }
 }

@@ -2,9 +2,6 @@ package com.taiyitistmc.bukkit.remapping;
 
 import com.google.common.collect.Maps;
 import com.taiyitistmc.TaiyitistMCStart;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import net.md_5.specialsource.provider.InheritanceProvider;
 import net.md_5.specialsource.repo.ClassRepo;
 import org.objectweb.asm.Opcodes;
@@ -15,20 +12,20 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-/**
- * InterfaceInvokerGen
- *
- * @author Mainly by IzzelAliz
- * @originalClassName ArclightInterfaceInvokerGen
- */
-public class InterfaceInvokerGen implements PluginTransformer {
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-    public static final InterfaceInvokerGen INSTANCE = new InterfaceInvokerGen();
+public class TaiyitistInterfaceInvokerGen implements PluginTransformer {
+
+    public static final TaiyitistInterfaceInvokerGen INSTANCE = new TaiyitistInterfaceInvokerGen();
     private static final String PREFIX = "net/minecraft/";
 
     @Override
-    public void handleClass(ClassNode node, ClassLoaderRemapper remapper) {
-        generate(node, remapper, GlobalClassRepo.inheritanceProvider());
+    public void handleClass(ClassNode node, ClassLoaderRemapper remapper, TaiyitistRemapConfig config) {
+        if (config.remap()) {
+            generate(node, remapper, GlobalClassRepo.inheritanceProvider());
+        }
     }
 
     private static void generate(ClassNode classNode, ClassLoaderRemapper remapper, InheritanceProvider inheritanceProvider) {
@@ -88,7 +85,7 @@ public class InterfaceInvokerGen implements PluginTransformer {
         ClassNode classNode = classRepo.findClass(internalName);
         if (classNode == null) return;
         interfaceMethods(classNode.superName, set, classRepo);
-        if (classNode.interfaces != null && !classNode.interfaces.isEmpty()) {
+        if (classNode.interfaces != null && classNode.interfaces.size() > 0) {
             for (String intf : classNode.interfaces) {
                 interfaceMethods(intf, set, classRepo);
             }

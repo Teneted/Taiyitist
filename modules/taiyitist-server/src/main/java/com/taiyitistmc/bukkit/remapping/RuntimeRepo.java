@@ -1,23 +1,24 @@
 package com.taiyitistmc.bukkit.remapping;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.taiyitistmc.bukkit.remapping.patcher.PluginPatcher;
 import net.md_5.specialsource.repo.ClassRepo;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 
-/**
- * RuntimeRepo
- *
- * @author Mainly by IzzelAliz
- * @originalClassName RuntimeRepo
- */
-public class RuntimeRepo implements ClassRepo {
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class RuntimeRepo implements ClassRepo, PluginPatcher.ClassRepo {
 
     private final Map<String, ClassNode> map = new ConcurrentHashMap<>();
 
     @Override
     public ClassNode findClass(String internalName) {
+        return map.get(internalName);
+    }
+
+    @Override
+    public ClassNode findClass(String internalName, int parsingOptions) {
         return map.get(internalName);
     }
 

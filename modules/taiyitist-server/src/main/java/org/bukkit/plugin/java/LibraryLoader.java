@@ -2,7 +2,7 @@ package org.bukkit.plugin.java;
 
 import com.taiyitistmc.TaiyitistMCStart;
 import com.taiyitistmc.bukkit.PluginsLibrarySource;
-import com.taiyitistmc.bukkit.remapping.RemappingURLClassLoader;
+import com.taiyitistmc.bukkit.remapping.generated.RemappingURLClassLoader;
 import com.taiyitistmc.util.I18n;
 import com.mohistmc.mjson.Json;
 import com.mohistmc.tools.ConnectionUtil;

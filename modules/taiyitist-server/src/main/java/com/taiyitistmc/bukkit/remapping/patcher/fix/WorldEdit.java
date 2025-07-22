@@ -1,6 +1,6 @@
-package com.taiyitistmc.bukkit.pluginfix;
+package com.taiyitistmc.bukkit.remapping.patcher.fix;
 
-import java.util.Locale;
+import com.taiyitistmc.bukkit.remapping.patcher.PluginPatcher;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -14,13 +14,11 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-/**
- * @author Mgazul by MohistMC
- * @date 2023/8/11 4:24:52
- */
+import java.util.Locale;
+
 public class WorldEdit {
 
-    public static void handleBukkitAdapter(ClassNode node) {
+    public static void handleBukkitAdapter(ClassNode node, PluginPatcher.ClassRepo repo) {
         MethodNode standardize = new MethodNode(Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC, "patcher$standardize", Type.getMethodDescriptor(Type.getType(String.class), Type.getType(String.class)), null, null);
         try {
             GeneratorAdapter adapter = new GeneratorAdapter(standardize, standardize.access, standardize.name, standardize.desc);
@@ -44,12 +42,12 @@ public class WorldEdit {
         node.methods.add(standardize);
         for (MethodNode method : node.methods) {
             if (method.name.equals("adapt")) {
-                handleAdapt(node, standardize, method);
+                handleAdapt(node, standardize, method, repo);
             }
         }
     }
 
-    public static void handlePickName(ClassNode node) {
+    public static void handlePickName(ClassNode node, PluginPatcher.ClassRepo repo) {
         for (MethodNode method : node.methods) {
             if (method.name.equals("pickName")) {
                 method.instructions.clear();
@@ -59,7 +57,7 @@ public class WorldEdit {
         }
     }
 
-    private static void handleAdapt(ClassNode node, MethodNode standardize, MethodNode method) {
+    private static void handleAdapt(ClassNode node, MethodNode standardize, MethodNode method, PluginPatcher.ClassRepo repo) {
         switch (method.desc) {
             case "(Lcom/sk89q/worldedit/world/item/ItemType;)Lorg/bukkit/Material;", "(Lcom/sk89q/worldedit/world/block/BlockType;)Lorg/bukkit/Material;", "(Lcom/sk89q/worldedit/world/biome/BiomeType;)Lorg/bukkit/block/Biome;", "(Lcom/sk89q/worldedit/world/entity/EntityType;)Lorg/bukkit/entity/EntityType;" -> {
                 for (AbstractInsnNode instruction : method.instructions) {
@@ -82,7 +80,7 @@ public class WorldEdit {
         }
     }
 
-    public static void handleWatchdog(ClassNode node) {
+    public static void handleWatchdog(ClassNode node, PluginPatcher.ClassRepo repo) {
         if (node.interfaces.size() == 1 && node.interfaces.get(0).equals("com/sk89q/worldedit/extension/platform/Watchdog") && node.name.contains("SpigotWatchdog")) {
             for (MethodNode method : node.methods) {
                 if (method.name.equals("<init>")) {

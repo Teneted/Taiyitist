@@ -3,11 +3,6 @@ package org.bukkit.plugin.java;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import com.google.common.io.ByteStreams;
-import com.taiyitistmc.bukkit.pluginfix.PluginFixManager;
-import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
-import com.taiyitistmc.bukkit.remapping.Remapper;
-import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
-import io.izzel.tools.product.Product2;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.security.CodeSigner;
 import java.security.CodeSource;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +25,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+
+import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
+import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapConfig;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
+import com.taiyitistmc.bukkit.remapping.patcher.fix.PluginPropertiesManager;
+import io.izzel.tools.product.Product2;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -56,16 +59,6 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
 
     static {
         ClassLoader.registerAsParallelCapable();
-    }
-
-    private ClassLoaderRemapper remapper;
-
-    @Override
-    public ClassLoaderRemapper getRemapper() {
-        if (remapper == null) {
-            remapper = Remapper.createClassLoaderRemapper(this);
-        }
-        return remapper;
     }
 
     PluginClassLoader(@NotNull final JavaPluginLoader loader, @Nullable final ClassLoader parent, @NotNull final PluginDescriptionFile description, @NotNull final File dataFolder, @NotNull final File file, @Nullable ClassLoader libraryLoader) throws IOException, InvalidPluginException, MalformedURLException {
@@ -115,6 +108,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
         }
     }
 
+    // Taiyitist start - nms support
     @Override
     public URL getResource(String name) {
         Objects.requireNonNull(name);
@@ -127,6 +121,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
         return url;
     }
 
+
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
         Objects.requireNonNull(name);
@@ -138,6 +133,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
         tmp[0] = findResources(name);
         return Iterators.asEnumeration(Iterators.concat(Iterators.forEnumeration(tmp[0]), Iterators.forEnumeration(tmp[1])));
     }
+    // Taiyitist end
 
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -153,6 +149,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                 return result;
             }
         } catch (ClassNotFoundException ex) {
+
         }
 
         if (checkLibraries && libraryLoader != null) {
@@ -189,9 +186,10 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
             }
         }
 
-        throw new ClassNotFoundException(name);
+        throw new ClassNotFoundException(String.format("Plugin %s cannot load class %s", description.getName(), name));
     }
 
+    // Taiyitist start - nms support
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         if (name.startsWith("org.bukkit.") || name.startsWith("net.minecraft.")) {
@@ -213,9 +211,9 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     byteSource = () -> {
                         try (InputStream is = connection.getInputStream()) {
                             byte[] classBytes = ByteStreams.toByteArray(is);
-                            classBytes = Remapper.SWITCH_TABLE_FIXER.apply(classBytes);
-                            classBytes = PluginFixManager.injectPluginFix(description.getMain(), name, classBytes); // Mohist - Inject plugin fix
+                            classBytes = TaiyitistRemapper.SWITCH_TABLE_FIXER.apply(classBytes);
                             classBytes = Bukkit.getUnsafe().processClass(description, path, classBytes);
+                            PluginPropertiesManager.injectPluginProperties(description.getMain());
                             return classBytes;
                         }
                     };
@@ -223,7 +221,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
                     throw new ClassNotFoundException(name, e);
                 }
 
-                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection);
+                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection, TaiyitistRemapConfig.PLUGIN);
 
                 int dot = name.lastIndexOf('.');
                 if (dot != -1) {
@@ -256,6 +254,7 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
 
         return result;
     }
+    // Taiyitist end
 
     @Override
     public void close() throws IOException {
@@ -283,4 +282,21 @@ final class PluginClassLoader extends URLClassLoader implements RemappingClassLo
 
         javaPlugin.init(loader, loader.server, description, dataFolder, file, this);
     }
+
+    // Taiyitist start - nms support
+    private ClassLoaderRemapper remapper;
+
+    @Override
+    public ClassLoaderRemapper getRemapper() {
+        if (remapper == null) {
+            remapper = TaiyitistRemapper.createClassLoaderRemapper(this);
+        }
+        return remapper;
+    }
+
+    @Override
+    public TaiyitistRemapConfig getRemapConfig() {
+        return TaiyitistRemapConfig.PLUGIN;
+    }
+    // Taiyitist end
 }

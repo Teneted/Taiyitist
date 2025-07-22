@@ -1,6 +1,11 @@
-package com.taiyitistmc.bukkit.remapping;
+package com.taiyitistmc.bukkit.remapping.generated;
 
 import com.google.common.io.ByteStreams;
+import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
+import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapping;
+import com.taiyitistmc.bukkit.remapping.RemappingClassLoader;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapConfig;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
 import io.izzel.tools.product.Product2;
 
 import java.io.IOException;
@@ -20,24 +25,27 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
         ClassLoader.registerAsParallelCapable();
     }
 
+    // Sample using remap config
+    public TaiyitistRemapConfig config = new TaiyitistRemapConfig(ClassLoaderRemapping.canRemap(this));
+
     public RemappingURLClassLoader(URL[] urls, ClassLoader parent) {
-        super(urls, RemappingClassLoader.asTransforming(parent));
+        super(urls, ClassLoaderRemapping.tryRedirect(parent));
     }
 
     public RemappingURLClassLoader(URL[] urls) {
-        super(urls, RemappingClassLoader.asTransforming(null));
+        super(urls, ClassLoaderRemapping.tryRedirect(null));
     }
 
     public RemappingURLClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(urls, RemappingClassLoader.asTransforming(parent), factory);
+        super(urls, ClassLoaderRemapping.tryRedirect(parent), factory);
     }
 
     public RemappingURLClassLoader(String name, URL[] urls, ClassLoader parent) {
-        super(name, urls, RemappingClassLoader.asTransforming(parent));
+        super(name, urls, ClassLoaderRemapping.tryRedirect(parent));
     }
 
     public RemappingURLClassLoader(String name, URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(name, urls, RemappingClassLoader.asTransforming(parent), factory);
+        super(name, urls, ClassLoaderRemapping.tryRedirect(parent), factory);
     }
 
     @Override
@@ -60,7 +68,7 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
                 byteSource = () -> {
                     try (InputStream is = connection.getInputStream()) {
                         byte[] classBytes = ByteStreams.toByteArray(is);
-                        classBytes = Remapper.SWITCH_TABLE_FIXER.apply(classBytes);
+                        classBytes = TaiyitistRemapper.SWITCH_TABLE_FIXER.apply(classBytes);
                         return classBytes;
                     }
                 };
@@ -68,7 +76,7 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
                 throw new ClassNotFoundException(name, e);
             }
 
-            Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection);
+            Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection, config);
 
             int i = name.lastIndexOf('.');
             if (i != -1) {
@@ -94,8 +102,13 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
     @Override
     public ClassLoaderRemapper getRemapper() {
         if (remapper == null) {
-            remapper = Remapper.createClassLoaderRemapper(this);
+            remapper = TaiyitistRemapper.createClassLoaderRemapper(this);
         }
         return remapper;
+    }
+
+    @Override
+    public TaiyitistRemapConfig getRemapConfig() {
+        return config;
     }
 }

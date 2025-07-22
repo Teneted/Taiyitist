@@ -1,6 +1,13 @@
-package com.taiyitistmc.bukkit.remapping;
+package com.taiyitistmc.bukkit.remapping.source;
 
 import com.google.common.io.ByteStreams;
+import com.taiyitistmc.bukkit.remapping.GlobalClassRepo;
+import com.taiyitistmc.bukkit.remapping.TaiyitistRemapper;
+import com.taiyitistmc.bukkit.remapping.Unsafe;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.impl.transformer.FabricTransformer;
+import org.objectweb.asm.ClassReader;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,16 +18,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Hashtable;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.transformer.FabricTransformer;
-import org.objectweb.asm.ClassReader;
-
-/**
- * RemapSourceHandler
- *
- * @author Mainly by IzzelAliz
- * @originalClassName RemapSourceHandler
- */
 
 public class RemapSourceHandler extends URLStreamHandler {
 
@@ -49,7 +46,7 @@ public class RemapSourceHandler extends URLStreamHandler {
                     throw new IOException(e);
                 }
             }
-            this.array = Remapper.getResourceMapper().remapClassFile(bytes, GlobalClassRepo.INSTANCE);
+            this.array = TaiyitistRemapper.getResourceMapper().remapClassFile(bytes, GlobalClassRepo.INSTANCE);
         }
 
         @Override

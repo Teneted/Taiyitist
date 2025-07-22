@@ -2,6 +2,16 @@ package com.taiyitistmc.bukkit.remapping;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.taiyitistmc.bukkit.remapping.patcher.PluginPatcher;
+import com.taiyitistmc.bukkit.remapping.patcher.TaiyitistPluginPatcher;
+import com.taiyitistmc.bukkit.remapping.source.RemapSourceHandler;
+import net.md_5.specialsource.InheritanceMap;
+import net.md_5.specialsource.JarMapping;
+import net.md_5.specialsource.JarRemapper;
+import net.md_5.specialsource.provider.ClassLoaderProvider;
+import net.md_5.specialsource.provider.JointProvider;
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -10,13 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.md_5.specialsource.InheritanceMap;
-import net.md_5.specialsource.JarMapping;
-import net.md_5.specialsource.JarRemapper;
-import net.md_5.specialsource.provider.ClassLoaderProvider;
-import net.md_5.specialsource.provider.JointProvider;
-import org.apache.commons.io.FileUtils;
-
 /**
  * ArclightRemapper
  *
@@ -24,16 +27,16 @@ import org.apache.commons.io.FileUtils;
  * @originalClassName ArclightRemapper
  */
 @SuppressWarnings("unchecked")
-public class Remapper {
+public class TaiyitistRemapper {
 
-    public static final Remapper INSTANCE;
+    public static final TaiyitistRemapper INSTANCE;
     public static final File DUMP;
     public static final Function<byte[], byte[]> SWITCH_TABLE_FIXER;
 
     static {
         try {
-            INSTANCE = new Remapper();
-            String property = System.getProperty("banner.remapper.dump");
+            INSTANCE = new TaiyitistRemapper();
+            String property = System.getProperty("taiyitist.remapper.dump");
             if (property != null) {
                 DUMP = new File(property);
                 if (!DUMP.exists()) {
@@ -58,22 +61,22 @@ public class Remapper {
     private final List<PluginTransformer> transformerList = new ArrayList<>();
     private final JarRemapper toBukkitRemapper;
     private final JarRemapper toNmsRemapper;
+    private final List<PluginPatcher> patchers;
 
-    public Remapper() throws Exception {
+    public TaiyitistRemapper() throws Exception {
         this.toNmsMapping = new JarMapping();
-        this.toNmsMapping.packages.put("org/bukkit/craftbukkit/v1_21_R1/", "org/bukkit/craftbukkit/");
         this.toBukkitMapping = new JarMapping();
         this.inheritanceMap = new InheritanceMap();
         this.toNmsMapping.loadMappings(
-                new BufferedReader(new InputStreamReader(Remapper.class.getClassLoader().getResourceAsStream("mappings/spigot2srg.srg"))),
+                new BufferedReader(new InputStreamReader(TaiyitistRemapper.class.getClassLoader().getResourceAsStream("mappings/spigot2srg.srg"))),
                 null, null, false
         );
         this.toBukkitMapping.loadMappings(
-                new BufferedReader(new InputStreamReader(Remapper.class.getClassLoader().getResourceAsStream("mappings/spigot2srg.srg"))),
+                new BufferedReader(new InputStreamReader(TaiyitistRemapper.class.getClassLoader().getResourceAsStream("mappings/spigot2srg.srg"))),
                 null, null, true
         );
         BiMap<String, String> inverseClassMap = HashBiMap.create(toNmsMapping.classes).inverse();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Remapper.class.getClassLoader().getResourceAsStream("mappings/inheritanceMap.txt")))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(TaiyitistRemapper.class.getClassLoader().getResourceAsStream("mappings/inheritanceMap.txt")))) {
             inheritanceMap.load(reader, inverseClassMap);
         }
         JointProvider inheritanceProvider = new JointProvider();
@@ -81,9 +84,10 @@ public class Remapper {
         inheritanceProvider.add(new ClassLoaderProvider(ClassLoader.getSystemClassLoader()));
         this.toNmsMapping.setFallbackInheritanceProvider(inheritanceProvider);
         this.toBukkitMapping.setFallbackInheritanceProvider(inheritanceProvider);
-        this.transformerList.add(InterfaceInvokerGen.INSTANCE);
-        this.transformerList.add(RedirectAdapter.INSTANCE);
+        this.transformerList.add(TaiyitistInterfaceInvokerGen.INSTANCE);
+        this.transformerList.add(TaiyitistRedirectAdapter.INSTANCE);
         this.transformerList.add(ClassLoaderAdapter.INSTANCE);
+        this.patchers = TaiyitistPluginPatcher.load(this.transformerList);
         toBukkitMapping.setFallbackInheritanceProvider(GlobalClassRepo.inheritanceProvider());
         this.toBukkitRemapper = new LenientJarRemapper(toBukkitMapping);
         this.toNmsRemapper = new LenientJarRemapper(toNmsMapping);
@@ -104,6 +108,10 @@ public class Remapper {
 
     public List<PluginTransformer> getTransformerList() {
         return transformerList;
+    }
+
+    public List<PluginPatcher> getPatchers() {
+        return patchers;
     }
 
     private static long pkgOffset, clOffset, mdOffset, fdOffset, mapOffset;
