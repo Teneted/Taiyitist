@@ -16,6 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BehaviorUtils.class)
 public class MixinBehaviorUtils {
 
+    @Inject(method = "throwItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;F)V", at = @At("HEAD"), cancellable = true)
+    private static void taiyitist$checkStack(LivingEntity livingEntity, ItemStack itemStack, Vec3 vec3, Vec3 vec32, float f, CallbackInfo ci) {
+        if (itemStack.isEmpty()) ci.cancel(); return; // CraftBukkit - SPIGOT-4940: no empty loot
+    }
+
     @Inject(method = "throwItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;F)V", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private static void taiyitist$entityDropItem(LivingEntity entity, ItemStack stack, Vec3 vec3, Vec3 vec32, float yOffset, CallbackInfo ci, @Local ItemEntity itemEntity) {

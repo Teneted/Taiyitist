@@ -161,6 +161,7 @@
       "net/minecraft/class_1915": ["com/taiyitistmc/injection/world/item/trading/InjectionMerchant"],
       "net/minecraft/class_1914": ["com/taiyitistmc/injection/world/item/trading/InjectionMerchantOffer"],
       "net/minecraft/class_1799": ["com/taiyitistmc/injection/world/item/InjectionItemStack"],
+      "net/minecraft/class_10127": ["com/taiyitistmc/injection/world/item/component/InjectionCosumableListener"],
       "net/minecraft/class_2885": ["com/taiyitistmc/injection/network/protocol/game/InjectionServerboundUseItemOnPacket"],
       "net/minecraft/class_2637": ["com/taiyitistmc/injection/network/protocol/game/InjectionClientboundSectionBlocksUpdatePacket"],
       "net/minecraft/class_2886": ["com/taiyitistmc/injection/network/protocol/game/InjectionServerboundUseItemPacket"]
