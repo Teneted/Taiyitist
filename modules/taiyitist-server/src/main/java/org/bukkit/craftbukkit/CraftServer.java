@@ -966,62 +966,17 @@ public final class CraftServer implements Server {
       ++this.reloadCount;
       this.configuration = YamlConfiguration.loadConfiguration(this.getConfigFile());
       this.commandsConfiguration = YamlConfiguration.loadConfiguration(this.getCommandsConfigFile());
-      this.console.settings = new DedicatedServerSettings((Path) this.console.bridge$options());
-      DedicatedServerProperties config = this.console.settings.getProperties();
-      this.console.setPvpAllowed(config.pvp);
-      this.console.setFlightAllowed(config.allowFlight);
-      this.console.setMotd(config.motd);
-      this.overrideSpawnLimits();
-      this.warningState = WarningState.value(this.configuration.getString("settings.deprecated-verbose"));
-      BukkitFieldHooks.setPluginTimeout((long)this.configuration.getInt("chunk-gc.period-in-ticks"));
-      this.minimumAPI = ApiVersion.getOrCreateVersion(this.configuration.getString("settings.minimum-api"));
-      this.printSaveWarning = false;
-      this.console.taiyitist$setAutosavePeriod(this.configuration.getInt("ticks-per.autosave"));
-      this.loadIcon();
-      this.loadCompatibilities();
-      Commodore var10000 = CraftMagicNumbers.INSTANCE.getCommodore();
-      Set var10001 = this.activeCompatibilities;
-      Objects.requireNonNull(var10001);
-      var10000.updateReroute(var10001::contains);
 
-      IOException ex;
       try {
          this.playerList.getIpBans().load();
       } catch (IOException var12) {
-         ex = var12;
-         this.logger.log(Level.WARNING, "Failed to load banned-ips.json, " + ex.getMessage());
+         this.logger.log(Level.WARNING, "Failed to load banned-ips.json, " + var12.getMessage());
       }
 
       try {
          this.playerList.getBans().load();
       } catch (IOException var11) {
-         ex = var11;
-         this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
-      }
-
-      SpigotConfig.init((File)this.console.bridge$options().valueOf("spigot-settings"));
-      Iterator var13 = this.console.getAllLevels().iterator();
-
-      while(var13.hasNext()) {
-         ServerLevel world = (ServerLevel)var13.next();
-         world.bridge$serverLevelDataCB().setDifficulty(config.difficulty);
-         world.setSpawnSettings(config.spawnMonsters);
-         SpawnCategory[] var4 = SpawnCategory.values();
-         int var5 = var4.length;
-
-         for(int var6 = 0; var6 < var5; ++var6) {
-            SpawnCategory spawnCategory = var4[var6];
-            if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
-               long ticksPerCategorySpawn = (long)this.getTicksPerSpawns(spawnCategory);
-               if (ticksPerCategorySpawn < 0L) {
-                  world.bridge$ticksPerSpawnCategory().put(spawnCategory, CraftSpawnCategory.getDefaultTicksPerSpawn(spawnCategory));
-               } else {
-                  world.bridge$ticksPerSpawnCategory().put(spawnCategory, ticksPerCategorySpawn);
-               }
-            }
-         }
-
-         world.bridge$spigotConfig().init();
+         this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + var11.getMessage());
       }
 
       this.pluginManager.clearPlugins();
@@ -1031,7 +986,7 @@ public final class CraftServer implements Server {
       this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
       this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
 
-      for(int pollCount = 0; pollCount < 50 && this.getScheduler().getActiveWorkers().size() > 0; ++pollCount) {
+      for (int pollCount = 0; pollCount < 50 && this.getScheduler().getActiveWorkers().size() > 0; ++pollCount) {
          try {
             Thread.sleep(50L);
          } catch (InterruptedException var10) {
@@ -1039,10 +994,8 @@ public final class CraftServer implements Server {
       }
 
       List<BukkitWorker> overdueWorkers = this.getScheduler().getActiveWorkers();
-      Iterator var16 = overdueWorkers.iterator();
 
-      while(var16.hasNext()) {
-         BukkitWorker worker = (BukkitWorker)var16.next();
+      for (BukkitWorker worker : overdueWorkers) {
          Plugin plugin = worker.getOwner();
          this.getLogger().log(Level.SEVERE, String.format("Nag author(s): '%s' of '%s' about the following: %s", plugin.getDescription().getAuthors(), plugin.getDescription().getFullName(), "This plugin is not properly shutting down its async tasks when it is being reloaded.  This may cause conflicts with the newly loaded version of the plugin"));
       }
@@ -1050,7 +1003,7 @@ public final class CraftServer implements Server {
       this.loadPlugins();
       this.enablePlugins(PluginLoadOrder.STARTUP);
       this.enablePlugins(PluginLoadOrder.POSTWORLD);
-      this.getPluginManager().callEvent(new ServerLoadEvent(LoadType.RELOAD));
+      this.getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.RELOAD));
    }
 
    public void reloadData() {
