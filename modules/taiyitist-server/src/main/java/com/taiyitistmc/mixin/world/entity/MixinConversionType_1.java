@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinConversionType_1 implements InjectionConversionType {
 
     @Inject(method = "convert", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;remove(Lnet/minecraft/world/entity/Entity$RemovalReason;)V"))
-    private void taiyitist$removeCause(Mob mob, Mob mob2, ConversionParams conversionParams, CallbackInfo ci, @Local Entity entity2) {
+    private void taiyitist$removeCause(Mob mob, Mob mob2, ConversionParams conversionParams, CallbackInfo ci, @Local(ordinal = 1) Entity entity2) {
         entity2.pushRemoveCause(EntityRemoveEvent.Cause.TRANSFORMATION);
     }
 
