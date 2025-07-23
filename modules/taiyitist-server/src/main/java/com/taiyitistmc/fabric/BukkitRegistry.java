@@ -4,7 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.taiyitistmc.TaiyitistMod;
-import com.taiyitistmc.api.ServerAPI;
 import com.taiyitistmc.bukkit.MaterialHelper;
 import com.taiyitistmc.util.I18n;
 import com.mohistmc.dynamicenum.MohistDynamEnum;
@@ -15,15 +14,12 @@ import java.util.Locale;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.stats.StatType;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -38,7 +34,6 @@ import net.minecraft.world.level.block.entity.HangingSignBlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.TrappedChestBlockEntity;
 import net.minecraft.world.level.dimension.LevelStem;
-import org.bukkit.Art;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -52,11 +47,8 @@ import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.craftbukkit.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.craftbukkit.util.CraftSpawnCategory;
 import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.Villager;
 import org.bukkit.potion.PotionType;
 
@@ -87,24 +79,9 @@ public class BukkitRegistry {
     public static void registerAll(DedicatedServer console) {
         loadItems();
         loadBlocks();
-        loadPotions();
-        loadEnchantments();
-        loadEntities();
-        //loadVillagerProfessions();
-        loadBiomes(console);
-        loadPoses();
-        addPose();
-        loadArts(console);
-        loadStats();
-        loadSpawnCategory();
-        loadEndDragonPhase();
-        loadCookingBookCategory();
-        loadFluids();
-        loadParticles();
     }
 
     public static void loadItems() {
-        /*
         var registry = BuiltInRegistries.ITEM;
         var newTypes = new ArrayList<Material>();
         for (Item item : registry) {
@@ -122,11 +99,10 @@ public class BukkitRegistry {
                 TaiyitistMod.LOGGER.debug("Save-ITEM: " + material.name() + " - " + material.key);
             }
         }
-        TaiyitistMod.LOGGER.info(I18n.as("registry.item"), newTypes.size());*/
+        TaiyitistMod.LOGGER.info(I18n.as("registry.item"), newTypes.size());
     }
 
     public static void loadBlocks() {
-        /*
         var registry = BuiltInRegistries.BLOCK;
         var newTypes = new ArrayList<Material>();
 
@@ -166,7 +142,7 @@ public class BukkitRegistry {
                 }
             }
         }
-        TaiyitistMod.LOGGER.info(I18n.as("registry.block"), newTypes.size());*/
+        TaiyitistMod.LOGGER.info(I18n.as("registry.block"), newTypes.size());
     }
 
     private static void loadFluids() {

@@ -88,7 +88,7 @@ public final class CraftBlockStates {
       FACTORIES.put(blockType, factory);
    }
 
-   private static <T extends BlockEntity, B extends CraftBlockEntityState<T>> void register(Material blockType, Class<B> blockStateType, BiFunction<World, T, B> blockStateConstructor, BiFunction<BlockPos, BlockState, T> tileEntityConstructor) {
+   public static <T extends BlockEntity, B extends CraftBlockEntityState<T>> void register(Material blockType, Class<B> blockStateType, BiFunction<World, T, B> blockStateConstructor, BiFunction<BlockPos, BlockState, T> tileEntityConstructor) {// Taiyitist - access public
       register(Collections.singletonList(blockType), blockStateType, blockStateConstructor, tileEntityConstructor);
    }
 

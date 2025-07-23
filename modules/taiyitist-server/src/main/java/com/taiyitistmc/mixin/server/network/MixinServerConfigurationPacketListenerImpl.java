@@ -1,19 +1,14 @@
 package com.taiyitistmc.mixin.server.network;
 
-import com.llamalad7.mixinextras.sugar.Local;
-
 import com.mojang.authlib.GameProfile;
 import com.taiyitistmc.asm.annotation.CreateConstructor;
 import com.taiyitistmc.asm.annotation.ShadowConstructor;
-import io.izzel.arclight.mixin.Decorate;
-import io.izzel.arclight.mixin.DecorationOps;
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
 import net.minecraft.network.Connection;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerLinks;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,18 +16,12 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServerLinks;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerLinksSendEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.net.SocketAddress;
 

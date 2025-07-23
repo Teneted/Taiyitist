@@ -39,7 +39,7 @@ public class DumpCommand extends BukkitCommand {
         super(name);
         this.description = "Universal Dump, which will print the information you need locally!";
         this.usageMessage = "/dump <file> [potions|enchants|cbcmds|entitytypes|biomes|pattern|worldtype|bukkit_material|vanilla_material|profession|advancements]";
-        this.setPermission("banner.command.dump");
+        this.setPermission("taiyitist.command.dump");
     }
 
     @Override

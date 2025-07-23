@@ -83,10 +83,10 @@ import org.bukkit.potion.PotionType;
 public final class CraftMagicNumbers implements UnsafeValues {
    public static final CraftMagicNumbers INSTANCE = new CraftMagicNumbers();
    private final Commodore commodore = new Commodore();
-   private static final Map<Block, Material> BLOCK_MATERIAL = new HashMap();
-   private static final Map<Item, Material> ITEM_MATERIAL = new HashMap();
-   private static final Map<Material, Item> MATERIAL_ITEM = new HashMap();
-   private static final Map<Material, Block> MATERIAL_BLOCK = new HashMap();
+   public static final Map<Block, Material> BLOCK_MATERIAL = new HashMap();// Taiyitist - access public
+   public static final Map<Item, Material> ITEM_MATERIAL = new HashMap();// Taiyitist - access public
+   public static final Map<Material, Item> MATERIAL_ITEM = new HashMap();// Taiyitist - access public
+   public static final Map<Material, Block> MATERIAL_BLOCK = new HashMap();// Taiyitist - access public
    private Biome customBiome;
 
    private CraftMagicNumbers() {

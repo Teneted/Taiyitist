@@ -4799,14 +4799,24 @@ public enum Material implements Keyed, Translatable, RegistryAware {
 
     private final int id;
     private final Constructor<? extends MaterialData> ctor;
-    private static final Map<String, Material> BY_NAME = Maps.newHashMap();
+    public static final Map<String, Material> BY_NAME = Maps.newHashMap();// Taiyitist - access public
     private final int maxStack;
     private final short durability;
     public final Class<?> data;
     private final boolean legacy;
-    private final NamespacedKey key;
+    public NamespacedKey key;// Taiyitist - access public
     private final Supplier<ItemType> itemType;
     private final Supplier<BlockType> blockType;
+    public boolean isFabricBlock = false;
+    public boolean isFabricItem = false;
+
+    // Taiyitist start - constructor used to set if the Material is a block or not
+    private Material(final int id, final int stack, boolean isFabricBlock, boolean isFabricItem) {
+        this(id, stack);
+        this.isFabricBlock = isFabricBlock;
+        this.isFabricItem = isFabricItem;
+    }
+    // Taiyitist end
 
     private Material(final int id) {
         this(id, 64);
@@ -5023,6 +5033,9 @@ public enum Material implements Keyed, Translatable, RegistryAware {
      * @return true if this material is a block
      */
     public boolean isBlock() {
+        if (isFabricBlock) {
+            return true;
+        }
         return asBlockType() != null;
     }
 
@@ -5421,6 +5434,9 @@ public enum Material implements Keyed, Translatable, RegistryAware {
      * @return true if this material is an item
      */
     public boolean isItem() {
+        if (isFabricItem && !isFabricBlock) {
+            return true;
+        }
         return asItemType() != null;
     }
 
