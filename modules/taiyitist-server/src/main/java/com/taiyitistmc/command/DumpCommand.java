@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -17,7 +18,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Fluid;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
@@ -32,13 +35,13 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 public class DumpCommand extends BukkitCommand {
-    private final List<String> tab_cmd = Arrays.asList("potions", "enchants", "cbcmds", "entitytypes", "biomes", "pattern", "worldtype", "bukkit_material", "vanilla_material", "profession", "advancements");
+    private final List<String> tab_cmd = Arrays.asList("potions", "enchants", "cbcmds", "entitytypes", "biomes", "pattern", "worldtype", "bukkit_material", "vanilla_material", "profession", "advancements", "fluids");
     private final List<String> tab_mode = List.of("file");
 
     public DumpCommand(String name) {
         super(name);
         this.description = "Universal Dump, which will print the information you need locally!";
-        this.usageMessage = "/dump <file> [potions|enchants|cbcmds|entitytypes|biomes|pattern|worldtype|bukkit_material|vanilla_material|profession|advancements]";
+        this.usageMessage = "/dump <file> [potions|enchants|cbcmds|entitytypes|biomes|pattern|worldtype|bukkit_material|vanilla_material|profession|advancements|fluids]";
         this.setPermission("taiyitist.command.dump");
     }
 
@@ -89,6 +92,7 @@ public class DumpCommand extends BukkitCommand {
                 case "vanilla_material" -> dumpVanillaMaterial(sender, mode);
                 case "profession" -> dumpVillageProfession(sender, mode);
                 case "advancements" -> dumpAdvancements(sender, mode);
+                case "fluids" -> dumpFluids(sender, mode);
                 default -> {
                     return false;
                 }
@@ -118,6 +122,14 @@ public class DumpCommand extends BukkitCommand {
             sb.append(ench).append("\n");
         }
         dump(sender, "enchants", sb, mode);
+    }
+
+    private void dumpFluids(CommandSender sender, String mode) {
+        StringBuilder sb = new StringBuilder();
+        for (Fluid fluid : Registry.FLUID) {
+            sb.append(fluid.toString()).append("\n");
+        }
+        dump(sender, "fluids", sb, mode);
     }
 
     private void dumpEntityTypes(CommandSender sender, String mode) {

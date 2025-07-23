@@ -79,6 +79,8 @@ public class BukkitRegistry {
     public static void registerAll(DedicatedServer console) {
         loadItems();
         loadBlocks();
+        loadFluids();
+        loadCookingBookCategory();
     }
 
     public static void loadItems() {
@@ -147,26 +149,29 @@ public class BukkitRegistry {
 
     private static void loadFluids() {
         var registry = BuiltInRegistries.FLUID;
+        var newTypes = new ArrayList<ResourceLocation>();
         for (var fluidType : BuiltInRegistries.FLUID) {
             ResourceLocation resourceLocation = registry.getKey(fluidType);
-            String name = normalizeName(resourceLocation.getPath());
             if (isMods(resourceLocation)) {
-                org.bukkit.Fluid fluid = EnumHelper.addEnum(org.bukkit.Fluid.class, name);
-                TaiyitistMod.LOGGER.debug("Registered Fluid as Fluid(Bukkit) {}", fluid.name());
+                newTypes.add(resourceLocation);
             }
         }
+        TaiyitistMod.LOGGER.info(I18n.as("registry.fluid"), newTypes.size());
     }
 
     private static void loadCookingBookCategory() {
+        var newTypes = new ArrayList<org.bukkit.inventory.recipe.CookingBookCategory>();
         for (CookingBookCategory category : CookingBookCategory.values()) {
             try {
                 CraftRecipe.getCategory(category);
             } catch (Exception e) {
                 var name = category.name();
                 var bukkit = EnumHelper.addEnum(org.bukkit.inventory.recipe.CookingBookCategory.class, name);
+                newTypes.add(bukkit);
                 TaiyitistMod.LOGGER.debug("Registered {} as cooking category {}", name, bukkit);
             }
         }
+        TaiyitistMod.LOGGER.info(I18n.as("registry.cooking_category"), newTypes.size());
     }
 
     private static void loadEndDragonPhase() {

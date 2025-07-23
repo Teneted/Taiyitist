@@ -32,7 +32,7 @@ public final class NamespacedKey {
     public static final String BUKKIT = "bukkit";
     //
     private final String namespace;
-    private final String key;
+    private String key;// Taiyitist - not final
 
     private static boolean isValidNamespaceChar(char c) {
         return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-';
@@ -127,6 +127,12 @@ public final class NamespacedKey {
     public String getKey() {
         return key;
     }
+
+    // Taiyitist start - add to handle mod keys
+    public void setKey(String key) {
+        this.key = key;
+    }
+    // Taiyitist end
 
     @Override
     public int hashCode() {
