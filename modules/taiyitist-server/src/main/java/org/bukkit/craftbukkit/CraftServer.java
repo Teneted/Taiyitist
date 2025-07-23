@@ -600,41 +600,31 @@ public final class CraftServer implements Server {
    public void syncCommands() {
       // Clear existing commands
       Commands dispatcher = console.resources.managers().commands = new Commands(Commands.CommandSelection.ALL, CommandBuildContext.simple(console.registryAccess(), FeatureFlagSet.of()));
-      Iterator var2 = this.commandMap.getKnownCommands().entrySet().iterator();
+      // Register all commands, vanilla ones will be using the old dispatcher references
+      for (Map.Entry<String, Command> entry : commandMap.getKnownCommands().entrySet()) {
+         String label = entry.getKey();
+         Command command = entry.getValue();
 
-      while(true) {
-         while(var2.hasNext()) {
-            Map.Entry<String, Command> entry = (Map.Entry)var2.next();
-            String label = (String)entry.getKey();
-            Command command = (Command)entry.getValue();
-            if (command instanceof VanillaCommandWrapper) {
-               LiteralCommandNode<CommandSourceStack> node = (LiteralCommandNode)((VanillaCommandWrapper)command).vanillaCommand;
-               if (!node.getLiteral().equals(label)) {
-                  LiteralCommandNode<CommandSourceStack> clone = new LiteralCommandNode(label, node.getCommand(), node.getRequirement(), node.getRedirect(), node.getRedirectModifier(), node.isFork());
-                  Iterator var8 = node.getChildren().iterator();
+         if (command instanceof VanillaCommandWrapper) {
+            LiteralCommandNode<CommandSourceStack> node = (LiteralCommandNode<CommandSourceStack>) ((VanillaCommandWrapper) command).vanillaCommand;
+            if (!node.getLiteral().equals(label)) {
+               LiteralCommandNode<CommandSourceStack> clone = new LiteralCommandNode<>(label, node.getCommand(), node.getRequirement(), node.getRedirect(), node.getRedirectModifier(), node.isFork());
 
-                  while(var8.hasNext()) {
-                     CommandNode<CommandSourceStack> child = (CommandNode)var8.next();
-                     clone.addChild(child);
-                  }
-
-                  node = clone;
+               for (CommandNode<CommandSourceStack> child : node.getChildren()) {
+                  clone.addChild(child);
                }
-
-               dispatcher.getDispatcher().getRoot().addChild(node);
-            } else {
-               (new BukkitCommandWrapper(this, (Command)entry.getValue())).register(dispatcher.getDispatcher(), label);
+               node = clone;
             }
+
+            dispatcher.getDispatcher().getRoot().addChild(node);
+         } else {
+            new BukkitCommandWrapper(this, entry.getValue()).register(dispatcher.getDispatcher(), label);
          }
+      }
 
-         var2 = this.getHandle().players.iterator();
-
-         while(var2.hasNext()) {
-            ServerPlayer player = (ServerPlayer)var2.next();
-            dispatcher.sendCommands(player);
-         }
-
-         return;
+      // Refresh commands
+      for (ServerPlayer player : getHandle().players) {
+         dispatcher.sendCommands(player);
       }
    }
 
