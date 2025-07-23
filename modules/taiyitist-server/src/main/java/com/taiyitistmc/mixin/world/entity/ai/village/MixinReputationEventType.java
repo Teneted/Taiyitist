@@ -10,23 +10,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ReputationEventType.class)
-public abstract class MixinReputationEventType {
+public interface MixinReputationEventType extends ReputationEventTypeAddon {
 
     @Shadow
-    public static ReputationEventType register(String string) {
+    static ReputationEventType register(String string) {
         return null;
     }
 
-    @Unique
-    private static java.util.Map<String, ReputationEventType> BY_ID = com.google.common.collect.Maps.newHashMap(); // CraftBukkit - map with all values
-    // CraftBukkit start - additional events added in the API
-    ReputationEventType GOSSIP = register("bukkit_gossip");
-    ReputationEventType DECAY = register("bukkit_decay");
-    ReputationEventType UNSPECIFIED = register("bukkit_unspecified");
-    // CraftBukkit end
-
     @Mixin(targets = "net.minecraft.world.entity.ai.village.ReputationEventType$1")
-    private static class MixinReputationEventType_1 {
+    class MixinReputationEventType_1 {
 
         @Shadow @Final
         String val$name;
