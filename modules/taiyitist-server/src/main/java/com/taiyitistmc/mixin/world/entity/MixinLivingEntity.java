@@ -14,10 +14,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -28,6 +32,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -37,6 +44,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.craftbukkit.attribute.CraftAttributeMap;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRemoveEvent;
@@ -101,9 +109,6 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Shadow protected abstract void onEffectAdded(MobEffectInstance mobEffectInstance, @Nullable Entity entity);
 
     @Shadow protected abstract void onEffectUpdated(MobEffectInstance mobEffectInstance, boolean bl, @Nullable Entity entity);
-
-    @Shadow @Nullable public abstract MobEffectInstance removeEffectNoUpdate(Holder<MobEffect> holder);
-
     @Shadow public abstract float getHealth();
 
     @Shadow public abstract void setHealth(float f);
@@ -117,6 +122,58 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Shadow public abstract boolean shouldDropExperience();
 
     @Shadow public abstract int getExperienceReward(ServerLevel serverLevel, @Nullable Entity entity);
+
+    @Shadow protected boolean dead;
+
+    @Shadow public abstract boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource);
+
+    @Shadow public abstract boolean isDeadOrDying();
+
+    @Shadow public abstract boolean hasEffect(Holder<MobEffect> holder);
+
+    @Shadow public abstract boolean isSleeping();
+
+    @Shadow public abstract void stopSleeping();
+
+    @Shadow protected int noActionTime;
+
+    @Shadow public abstract float applyItemBlocking(ServerLevel serverLevel, DamageSource damageSource, float f);
+
+    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot equipmentSlot);
+
+    @Shadow public abstract void hurtHelmet(DamageSource damageSource, float f);
+
+    @Shadow protected float lastHurt;
+
+    @Shadow protected abstract void actuallyHurt(ServerLevel serverLevel, DamageSource damageSource, float f);
+
+    @Shadow public int hurtDuration;
+    @Shadow public int hurtTime;
+
+    @Shadow protected abstract void resolveMobResponsibleForDamage(DamageSource damageSource);
+
+    @Shadow @Nullable protected abstract net.minecraft.world.entity.player.Player resolvePlayerResponsibleForDamage(DamageSource damageSource);
+
+    @Shadow public abstract ItemStack getUseItem();
+
+    @Shadow public abstract void knockback(double d, double e, double f);
+
+    @Shadow public abstract void indicateDamage(double d, double e);
+
+    @Shadow protected abstract boolean checkTotemDeathProtection(DamageSource damageSource);
+
+    @Shadow protected abstract void playSecondaryHurtSound(DamageSource damageSource);
+
+    @Shadow public abstract void makeSound(@Nullable SoundEvent soundEvent);
+
+    @Shadow public abstract void die(DamageSource damageSource);
+
+    @Shadow protected abstract void playHurtSound(DamageSource damageSource);
+
+    @Shadow @Nullable private DamageSource lastDamageSource;
+    @Shadow private long lastDamageStamp;
+
+    @Shadow public abstract Collection<MobEffectInstance> getActiveEffects();
 
     // CraftBukkit start
     public int expToDrop;
@@ -388,6 +445,36 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
         pushEffectCause(EntityPotionEffectEvent.Cause.UNKNOWN);
     }
 
+    @Inject(method = "getHealth", at = @At("HEAD"), cancellable = true)
+    private void taiyitist$UseUnscaledHealth(CallbackInfoReturnable<Float> cir) {
+        // CraftBukkit start - Use unscaled health
+        if (((LivingEntity) (Object) this) instanceof ServerPlayer) {
+            cir.setReturnValue((float) ((ServerPlayer) (Object) this).getBukkitEntity().getHealth());
+        }
+        // CraftBukkit end
+    }
+
+    @Inject(method = "setHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;)V"), cancellable = true)
+    private void taiyitist$handleScaledHealth(float f, CallbackInfo ci) {
+        // CraftBukkit start - Handle scaled health
+        if (((LivingEntity) (Object) this) instanceof ServerPlayer) {
+            org.bukkit.craftbukkit.entity.CraftPlayer player = ((ServerPlayer) (Object) this).getBukkitEntity();
+            // Squeeze
+            if (f < 0.0F) {
+                player.setRealHealth(0.0D);
+            } else if (f > player.getMaxHealth()) {
+                player.setRealHealth(player.getMaxHealth());
+            } else {
+                player.setRealHealth(f);
+            }
+
+            player.updateScaledHealth(false);
+            ci.cancel();
+            return;
+        }
+        // CraftBukkit end
+    }
+
     @Override
     public boolean removeEffect(Holder<MobEffect> holder, EntityPotionEffectEvent.Cause cause) {
         MobEffectInstance mobEffectInstance = this.removeEffectNoUpdate(holder, cause);
@@ -405,9 +492,42 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
         return this.addEffect(mobeffect, (Entity) null, cause);
     }
 
+    private AtomicReference<EntityRegainHealthEvent.RegainReason> taiyitist$regainReason = new AtomicReference<>(EntityRegainHealthEvent.RegainReason.CUSTOM);
+
+    @Redirect(method = "heal", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setHealth(F)V"))
+    private void taiyitist$healEvent(LivingEntity instance, float f) {
+        EntityRegainHealthEvent event = new EntityRegainHealthEvent(this.getBukkitEntity(), f, this.taiyitist$regainReason.get() != null ? this.taiyitist$regainReason.get() : EntityRegainHealthEvent.RegainReason.CUSTOM);
+        // Suppress during worldgen
+        if (this.bridge$valid()) {
+            this.level().getCraftServer().getPluginManager().callEvent(event);
+        }
+
+        if (!event.isCancelled()) {
+            this.setHealth((float) (this.getHealth() + event.getAmount()));
+        }
+        // CraftBukkit end
+    }
+
     @Override
     public void heal(float f, EntityRegainHealthEvent.RegainReason regainReason) {
-        // TODO fixme
+        float g = this.getHealth();
+        if (g > 0.0F) {
+            EntityRegainHealthEvent event = new EntityRegainHealthEvent(this.getBukkitEntity(), f, this.taiyitist$regainReason.get() != null ? this.taiyitist$regainReason.get() : regainReason);
+            // Suppress during worldgen
+            if (this.bridge$valid()) {
+                this.level().getCraftServer().getPluginManager().callEvent(event);
+            }
+
+            if (!event.isCancelled()) {
+                this.setHealth((float) (this.getHealth() + event.getAmount()));
+            }
+            // CraftBukkit end
+        }
+    }
+
+    @Override
+    public void pushHealReason(EntityRegainHealthEvent.RegainReason reason) {
+        this.taiyitist$regainReason.getAndSet(reason);
     }
 
     /**
