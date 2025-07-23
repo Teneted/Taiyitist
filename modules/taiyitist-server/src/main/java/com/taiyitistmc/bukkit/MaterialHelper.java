@@ -20,7 +20,7 @@ public class MaterialHelper {
             Material.BY_NAME.put(materialName, material);
             material.key = CraftNamespacedKey.fromMinecraft(resourceLocation);
             return material;
-        } else { // Forge Items
+        } else { // Fabric Items
             Material material = EnumHelper.addEnum(Material.class, materialName, List.of(Integer.TYPE, Integer.TYPE, Boolean.TYPE, Boolean.TYPE), List.of(id, stack, isBlock, isItem));
             Material.BY_NAME.put(materialName, material);
             material.key = CraftNamespacedKey.fromMinecraft(resourceLocation);

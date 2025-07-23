@@ -13,7 +13,6 @@ import java.util.Map;
 
 import com.taiyitistmc.command.DumpCommand;
 import com.taiyitistmc.command.GetPluginListCommand;
-import com.taiyitistmc.command.ModListCommand;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -41,7 +40,6 @@ public class SimpleCommandMap implements CommandMap {
         register("bukkit", new ReloadCommand("reload"));
         register("bukkit", new PluginsCommand("plugins"));
         register("bukkit", new TimingsCommand("timings"));
-        register("taiyitist", new ModListCommand("mods"));
         register("taiyitist", new DumpCommand("dump"));
         register("taiyitist", new GetPluginListCommand("pluginlist"));
     }

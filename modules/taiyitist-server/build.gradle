@@ -30,6 +30,7 @@ dependencies {
 	include(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${property("mixin_squared_version")}"))
 	include(rootProject.project("taiyitist-mixin-tools"))
 	modImplementation(include("com.github.Chocohead:Fabric-ASM:v${rootProject.property("fabric_asm_version")}"))
+	include("maven.modrinth:mods-command:Bu1RM4Ll")
 }
 
 moduleDependencies(project, [
