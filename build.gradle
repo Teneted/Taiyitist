@@ -137,6 +137,18 @@ allprojects {
         }
     }
 
+    jar {
+        manifest {
+            attributes(
+                    'Specification-Title'   : 'Taiyitist',
+                    'Specification-Vendor'  : 'TaiyitistMC',
+                    'Specification-Version' : gradleutils.gitInfo.abbreviatedId,
+                    'Implementation-Title'  : 'Taiyitist',
+                    'Implementation-Version': version,
+                    'Implementation-Vendor' : 'TaiyitistMC'
+            )
+        }
+    }
 
     java {
         toolchain {

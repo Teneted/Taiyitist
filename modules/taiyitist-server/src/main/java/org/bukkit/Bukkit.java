@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import com.taiyitistmc.TaiyitistMCStart;
 import com.taiyitistmc.TaiyitistMod;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.advancement.Advancement;
@@ -99,7 +100,7 @@ public final class Bukkit {
         }
 
         Bukkit.server = server;
-        server.getLogger().info("This server is running " + getName() + " version " + TaiyitistMod.getVersion() + " (Implementing API version " + getBukkitVersion() + ")");
+        server.getLogger().info("This server is running " + getName() + " version " + TaiyitistMCStart.class.getPackage().getSpecificationVersion() + " (Implementing API version " + getBukkitVersion() + ")");
     }
 
     /**
