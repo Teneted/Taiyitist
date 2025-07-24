@@ -26,7 +26,8 @@
     ]
   },
   "mixins": [
-    "taiyitist.server.mixins.json"
+    "taiyitist.server.mixins.json",
+    "taiyitist.compat.mixins.json"
   ],
 
   "depends": {

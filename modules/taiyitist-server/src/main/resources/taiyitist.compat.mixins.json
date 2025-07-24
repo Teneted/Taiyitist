@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.taiyitistmc.mixin.compat",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "stackdeobf.MixinAbstractMappingProvider",
+    "stackdeobf.MixinCachedMappings",
+    "stackdeobf.MixinHttpUtil",
+    "stackdeobf.MixinIntermediaryMappingProvider",
+    "stackdeobf.MixinStackDeobfConfig",
+    "stackdeobf.MixinMojangMappingProvider"
+  ]
+}

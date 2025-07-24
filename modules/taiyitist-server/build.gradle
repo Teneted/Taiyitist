@@ -32,7 +32,12 @@ dependencies {
 	include(rootProject.project("taiyitist-translate"))
 	modImplementation(include("com.github.Chocohead:Fabric-ASM:v${rootProject.property("fabric_asm_version")}"))
 	include("maven.modrinth:mods-command:Bu1RM4Ll")
+	include(implementation("maven.modrinth:stackdeobf:pyiVLk9R"))
+	include("maven.modrinth:mixintrace:LGYOH4RN")
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.0-rc.4")))
+	compileOnly(fileTree("lib/StackDeobfuscatorCommon-1.4.3+08e71cc.jar"))
+	// mappings remapper
+	compileOnly("net.fabricmc:mapping-io:0.3.0")
 }
 
 moduleDependencies(project, [
