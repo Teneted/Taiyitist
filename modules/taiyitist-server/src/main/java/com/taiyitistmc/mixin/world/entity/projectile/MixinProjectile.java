@@ -39,6 +39,7 @@ public abstract class MixinProjectile extends Entity implements InjectionProject
     private void taiyitist$cancelBlockHit(BlockHitResult result, CallbackInfo ci) {
         if (hitCancelled) {
             ci.cancel();
+            return;
         }
     }
 
@@ -61,4 +62,5 @@ public abstract class MixinProjectile extends Entity implements InjectionProject
         }
         return ProjectileDeflection.NONE;
     }
+    // CraftBukkit end
 }

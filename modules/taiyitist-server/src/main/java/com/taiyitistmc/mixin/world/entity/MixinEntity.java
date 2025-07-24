@@ -1487,4 +1487,9 @@ public abstract class MixinEntity implements InjectionEntity {
     public void taiyitist$setPluginRemoved(boolean pluginRemoved) {
         this.pluginRemoved = pluginRemoved;
     }
+
+    @Override
+    public void inactiveTick() {
+
+    }
 }

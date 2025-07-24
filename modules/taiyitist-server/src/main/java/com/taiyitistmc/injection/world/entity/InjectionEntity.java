@@ -240,4 +240,8 @@ public interface InjectionEntity extends InjectionEntityAccess {
     default void taiyitist$setCommandSource(CommandSource commandSource) {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void inactiveTick() {
+        throw new IllegalStateException("Not implemented");
+    }
 }

@@ -18,6 +18,8 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -248,6 +250,23 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     @Inject(method = "tickPassenger", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;rideTick()V"))
     private void taiyitist$tickPortalPassenger(Entity ridingEntity, Entity passengerEntity, CallbackInfo ci) {
         passengerEntity.postTick();
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/entity/EntityTickList;forEach(Ljava/util/function/Consumer;)V"))
+    private void taiyitist$entityActivationConfigure(BooleanSupplier booleanSupplier, CallbackInfo ci) {
+        org.spigotmc.ActivationRange.activateEntities(this); // Spigot
+    }
+
+    @Inject(method = "tickNonPassenger", at = @At("HEAD"), cancellable = true)
+    private void taiyitist$checkIfActive(Entity entity, CallbackInfo ci) {
+        // Spigot start
+        if (!org.spigotmc.ActivationRange.checkIfActive(entity)) {
+            entity.tickCount++;
+            entity.inactiveTick();
+            ci.cancel();
+            return;
+        }
+        // Spigot end
     }
 
     @Override
