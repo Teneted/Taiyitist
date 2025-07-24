@@ -50,6 +50,22 @@ public abstract class Event {
         return name;
     }
 
+    // Paper start
+    /**
+     * Calls the event and tests if cancelled.
+     *
+     * @return false if event was cancelled, if cancellable. otherwise true.
+     */
+    public boolean callEvent() {
+        org.bukkit.Bukkit.getPluginManager().callEvent(this);
+        if (this instanceof Cancellable) {
+            return !((Cancellable) this).isCancelled();
+        } else {
+            return true;
+        }
+    }
+    // Paper end
+
     @NotNull
     public abstract HandlerList getHandlers();
 

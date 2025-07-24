@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.taiyitistmc.paper.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "core.entity.player.MixinPlayer",
+    "core.server.MixinMinecraftServer"
+  ]
+}

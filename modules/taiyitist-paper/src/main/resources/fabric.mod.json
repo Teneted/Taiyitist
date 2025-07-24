@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "taiyitist-paper",
+  "name": "Taiyitist Paper",
+  "version": "${version}",
+  "environment": "server",
+  "license": "LGPL-v3.0",
+  "authors": [
+    "TaiyitistMC Dev Team"
+  ],
+  "contact": {
+    "homepage": "https://github.com/TaiyitistMC/taiyitist",
+    "sources": "https://github.com/TaiyitistMC/taiyitist"
+  },
+  "mixins": [
+    "taiyitist.paper.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "java": ">=${java_version}"
+  },
+  "description": "The Paper implementations of Taiyitist Server."
+}
