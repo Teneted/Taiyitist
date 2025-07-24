@@ -5,6 +5,7 @@ import com.taiyitistmc.bukkit.remapping.TaiyitistRemapConfig;
 import com.taiyitistmc.bukkit.remapping.ClassLoaderRemapper;
 import com.taiyitistmc.bukkit.remapping.GlobalClassRepo;
 import com.taiyitistmc.bukkit.remapping.PluginTransformer;
+import com.taiyitistmc.bukkit.remapping.patcher.fix.IntegratedPatcher;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -52,6 +53,7 @@ public class TaiyitistPluginPatcher implements PluginTransformer {
                 }
             }
         }
+        list.add(new IntegratedPatcher());
         list.sort(Comparator.comparing(PluginPatcher::priority));
         transformerList.add(new TaiyitistPluginPatcher(list));
         return list;
