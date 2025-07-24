@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradleutils' version '[2.2,2.3)'
 }
 
-version = project.minecraft_version + "-" + gradleutils.gitInfo.abbreviatedId
+version = Boolean.valueOf(develop_mode) == false ? project.minecraft_version + "-" + gradleutils.gitInfo.abbreviatedId : project.minecraft_version + "-develop"
 group = project.maven_group
 
 base {
