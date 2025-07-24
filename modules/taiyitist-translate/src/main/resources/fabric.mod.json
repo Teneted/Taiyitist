@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "taiyitist-bootstrap",
-  "name": "Taiyitist Bootstrap",
+  "id": "taiyitist-translate",
+  "name": "Taiyitist Translate",
   "version": "${version}",
   "environment": "server",
   "license": "LGPL-v3.0",
@@ -12,9 +12,12 @@
     "homepage": "https://github.com/TaiyitistMC/taiyitist",
     "sources": "https://github.com/TaiyitistMC/taiyitist"
   },
+  "mixins": [
+    "taiyitist.translate.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "java": ">=${java_version}"
   },
-  "description": "The Bootstrap of Taiyitist Server."
+  "description": "The Translator of Taiyitist Server."
 }

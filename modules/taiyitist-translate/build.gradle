@@ -1,0 +1,14 @@
+archivesBaseName = project.archives_base_name + "-translate"
+version = getSubprojectVersion(project)
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
+}
+
+moduleDependencies(project, [
+        "taiyitist-server"
+])
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
