@@ -97,7 +97,7 @@ public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> impl
             conduit.destroyTarget = new EntityReference(newTarget);
          }
 
-         ConduitBlockEntity.updateAndAttackTarget((ServerLevel) conduit.getLevel(), this.getPosition(), this.data, conduit, conduit.effectBlocks.size() >= 42/*, false*/);// Taiyitist - TODO fixme
+         BukkitMethodHooks.updateAndAttackTarget((ServerLevel) conduit.getLevel(), this.getPosition(), this.data, conduit, conduit.effectBlocks.size() >= 42, false);
          return true;
       }
    }

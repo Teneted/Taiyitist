@@ -40,6 +40,7 @@ public class BukkitMethodHooks {
     private static final MethodHandle fall;
     private static final MethodHandle applyBonemeal;
     private static final MethodHandle reload;
+    private static final MethodHandle updateAndAttackTarget;
 
     static {
         try {
@@ -65,6 +66,8 @@ public class BukkitMethodHooks {
             applyBonemeal = MethodHandles.lookup().unreflect(applyBonemealMethod);
             var reloadMethod = ReloadCommand.class.getDeclaredMethod("reload", MinecraftServer.class);
             reload = MethodHandles.lookup().unreflect(reloadMethod);
+            var updateAndAttackTargetMethod = ConduitBlockEntity.class.getDeclaredMethod("updateAndAttackTarget", ServerLevel.class, BlockPos.class, BlockState.class, ConduitBlockEntity.class, boolean.class, boolean.class);
+            updateAndAttackTarget = MethodHandles.lookup().unreflect(updateAndAttackTargetMethod);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -153,6 +156,14 @@ public class BukkitMethodHooks {
     public static MinecraftServer reload(MinecraftServer minecraftserver) {
         try {
             return (MinecraftServer) reload.invokeWithArguments(minecraftserver);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void updateAndAttackTarget(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, ConduitBlockEntity conduitBlockEntity, boolean bl, boolean damageTarget) {
+        try {
+            updateAndAttackTarget.invokeWithArguments(serverLevel, blockPos, blockState ,conduitBlockEntity, bl, damageTarget);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
