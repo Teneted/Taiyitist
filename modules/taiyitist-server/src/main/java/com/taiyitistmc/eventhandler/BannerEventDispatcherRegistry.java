@@ -11,7 +11,7 @@ import com.taiyitistmc.util.I18n;
 public class BannerEventDispatcherRegistry {
 
     public static void registerEventDispatchers() {
-        TaiyitistMod.LOGGER.info(I18n.as("banner.event_handler.register"));
+        TaiyitistMod.LOGGER.info(I18n.as("taiyitist.event_handler.register"));
         LevelEventDispatcher.dispatchLevel();
         PlayerEventDispatcher.dispatcherPlayer();
         EntityEventDispatcher.dispatchEntityEvent();

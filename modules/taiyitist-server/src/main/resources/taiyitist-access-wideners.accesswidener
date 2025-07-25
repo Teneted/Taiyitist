@@ -1,5 +1,9 @@
 accessWidener v2 named
 # Taiyitist
+# 1.21.8
+accessible method net/minecraft/world/entity/LivingEntity getDamageAfterMagicAbsorb (Lnet/minecraft/world/damagesource/DamageSource;F)F
+accessible method net/minecraft/world/entity/LivingEntity getDamageAfterArmorAbsorb (Lnet/minecraft/world/damagesource/DamageSource;F)F
+accessible method net/minecraft/world/entity/LivingEntity blockUsingItem (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
 
 # public clazz
 accessible class net/minecraft/server/network/ServerLoginPacketListenerImpl$State

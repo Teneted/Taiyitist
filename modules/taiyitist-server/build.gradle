@@ -14,6 +14,10 @@ loom {
 	accessWidenerPath = file('src/main/resources/taiyitist-access-wideners.accesswidener')
 }
 
+repositories {
+	maven { url "https://maven.architectury.dev/" }
+}
+
 dependencies {
 	implementation "net.kyori:adventure-api:4.17.0"
 	implementation "net.kyori:adventure-key:4.17.0"
@@ -40,6 +44,7 @@ dependencies {
 	compileOnly(fileTree("lib/StackDeobfuscatorCommon-1.4.3+08e71cc.jar"))
 	// mappings remapper
 	compileOnly("net.fabricmc:mapping-io:0.3.0")
+	modImplementation(include("dev.architectury:architectury-fabric:${architectury_version}"))
 }
 
 moduleDependencies(project, [

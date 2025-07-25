@@ -124,56 +124,7 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
     @Shadow public abstract int getExperienceReward(ServerLevel serverLevel, @Nullable Entity entity);
 
     @Shadow protected boolean dead;
-
-    @Shadow public abstract boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource);
-
-    @Shadow public abstract boolean isDeadOrDying();
-
-    @Shadow public abstract boolean hasEffect(Holder<MobEffect> holder);
-
     @Shadow public abstract boolean isSleeping();
-
-    @Shadow public abstract void stopSleeping();
-
-    @Shadow protected int noActionTime;
-
-    @Shadow public abstract float applyItemBlocking(ServerLevel serverLevel, DamageSource damageSource, float f);
-
-    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot equipmentSlot);
-
-    @Shadow public abstract void hurtHelmet(DamageSource damageSource, float f);
-
-    @Shadow protected float lastHurt;
-
-    @Shadow protected abstract void actuallyHurt(ServerLevel serverLevel, DamageSource damageSource, float f);
-
-    @Shadow public int hurtDuration;
-    @Shadow public int hurtTime;
-
-    @Shadow protected abstract void resolveMobResponsibleForDamage(DamageSource damageSource);
-
-    @Shadow @Nullable protected abstract net.minecraft.world.entity.player.Player resolvePlayerResponsibleForDamage(DamageSource damageSource);
-
-    @Shadow public abstract ItemStack getUseItem();
-
-    @Shadow public abstract void knockback(double d, double e, double f);
-
-    @Shadow public abstract void indicateDamage(double d, double e);
-
-    @Shadow protected abstract boolean checkTotemDeathProtection(DamageSource damageSource);
-
-    @Shadow protected abstract void playSecondaryHurtSound(DamageSource damageSource);
-
-    @Shadow public abstract void makeSound(@Nullable SoundEvent soundEvent);
-
-    @Shadow public abstract void die(DamageSource damageSource);
-
-    @Shadow protected abstract void playHurtSound(DamageSource damageSource);
-
-    @Shadow @Nullable private DamageSource lastDamageSource;
-    @Shadow private long lastDamageStamp;
-
-    @Shadow public abstract Collection<MobEffectInstance> getActiveEffects();
 
     // CraftBukkit start
     public int expToDrop;
