@@ -3,6 +3,8 @@ package com.taiyitistmc.mixin.world.entity.animal.goat;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,8 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Goat.class)
 public abstract class MixinGoat extends Animal {
 
-    private final AtomicReference<PlayerBucketFillEvent> taiyitist$event = new AtomicReference<>();
-
     protected MixinGoat(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
@@ -38,7 +38,7 @@ public abstract class MixinGoat extends Animal {
             cancellable = true)
     private void taiyitist$bucketFillEvent(Player player, InteractionHand hand,
                                            CallbackInfoReturnable<InteractionResult> cir,
-                                           @Local ItemStack itemStack) {
+                                           @Local ItemStack itemStack, @Share("taiyitist$event") LocalRef<PlayerBucketFillEvent> taiyitist$event) {
         // CraftBukkit start - Got milk?
         PlayerBucketFillEvent event = CraftEventFactory.callPlayerBucketFillEvent((ServerLevel) player.level(),
                 player, this.blockPosition(), this.blockPosition(), null,
@@ -52,7 +52,7 @@ public abstract class MixinGoat extends Animal {
 
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack taiyitist$fillResult(ItemStack emptyStack, Player player, ItemStack filledStack) {
+    private ItemStack taiyitist$fillResult(ItemStack emptyStack, Player player, ItemStack filledStack, @Share("taiyitist$event") LocalRef<PlayerBucketFillEvent> taiyitist$event) {
         return ItemUtils.createFilledResult(emptyStack, player, CraftItemStack.asNMSCopy(taiyitist$event.get().getItemStack()));
     }
 }

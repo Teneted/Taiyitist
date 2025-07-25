@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.world.entity.animal;
+package com.taiyitistmc.mixin.world.entity.animal.allay;
 
 import com.taiyitistmc.injection.world.entity.InjectionAllay;
 import net.minecraft.network.syncher.EntityDataAccessor;
