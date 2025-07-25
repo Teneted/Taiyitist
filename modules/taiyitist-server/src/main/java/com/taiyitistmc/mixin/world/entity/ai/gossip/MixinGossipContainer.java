@@ -13,7 +13,7 @@ public class MixinGossipContainer {
     public Villager villager;
 
     @CreateConstructor
-    public void taiyitist$constructor() {
+    public void taiyitist$constructor(Villager villager) {
         this.villager = villager;
     }
 
