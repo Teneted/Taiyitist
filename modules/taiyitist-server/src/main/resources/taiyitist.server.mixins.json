@@ -64,6 +64,7 @@
     "server.commands.MixinWorldBorderCommand",
     "server.dedicated.MixinDedicatedServer",
     "server.gui.MixinMinecraftServerGui",
+    "server.level.MixinChunkHolder",
     "server.level.MixinChunkMap",
     "server.level.MixinChunkMap_TrackedEntity",
     "server.level.MixinDistanceManager",
