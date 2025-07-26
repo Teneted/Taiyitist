@@ -23,6 +23,6 @@ public class PaperLib {
     }
 
     public static boolean isPaper() {
-        return false;
+        return true;
     }
 }

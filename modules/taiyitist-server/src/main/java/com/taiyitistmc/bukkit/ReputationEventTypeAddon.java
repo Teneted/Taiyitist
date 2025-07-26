@@ -1,4 +1,4 @@
-package com.taiyitistmc.mixin.world.entity.ai.village;
+package com.taiyitistmc.bukkit;
 
 import com.google.common.collect.Maps;
 import net.minecraft.world.entity.ai.village.ReputationEventType;

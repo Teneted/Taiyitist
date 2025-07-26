@@ -274,6 +274,7 @@
     "world.item.MixinEnderEyeItem",
     "world.item.MixinFireChargeItem",
     "world.item.MixinHangingEntityItem",
+    "world.item.MixinItemStack",
     "world.item.MixinMapItem",
     "world.item.MixinMinecartItem",
     "world.item.MixinMobBucketItem",
