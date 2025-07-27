@@ -48,7 +48,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         TaiyitistMod.LOGGER.info(I18n.as("bukkit.plugin.loading.info"));
         // CraftBukkit start
         org.spigotmc.SpigotConfig.init((java.io.File) this.bridge$options().valueOf("spigot-settings"));
-        TaiyitistConfig.init((java.io.File) this.bridge$options().valueOf("banner-settings"));
+        TaiyitistConfig.init((java.io.File) this.bridge$options().valueOf("taiyitist-settings"));
         if (TaiyitistConfig.motdEnable) {
             this.setMotd(TaiyitistConfig.motd());
         }
