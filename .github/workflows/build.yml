@@ -47,6 +47,7 @@ jobs:
         with:
           allowUpdates: true
           makeLatest: true
+          removeArtifacts: true
           tag: "1.20.1-release"
           artifacts: ./build/libs/*.jar
           token: ${{ secrets.GITHUB_TOKEN }}
