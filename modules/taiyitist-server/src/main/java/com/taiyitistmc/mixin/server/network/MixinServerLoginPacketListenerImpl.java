@@ -1,6 +1,10 @@
 package com.taiyitistmc.mixin.server.network;
 
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.taiyitistmc.bukkit.PlayerInfoChannelPayload;
+import com.taiyitistmc.bukkit.QueryAnswerPayload;
+import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
 import com.mojang.authlib.GameProfile;
 
@@ -12,6 +16,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.login.ServerLoginPacketListener;
+import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,6 +63,9 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     @Shadow
     abstract void startClientVerification(GameProfile gameProfile);
 
+    @Shadow @Nullable private GameProfile authenticatedProfile;
+    private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
+
     @Inject(method = "handleLoginAcknowledgement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
     private void banenr$setPlayer(ServerboundLoginAcknowledgedPacket p_298815_, CallbackInfo ci, @Local ServerConfigurationPacketListenerImpl listener) {
         listener.taiyitist$setPlayer(this.player);
@@ -80,7 +88,18 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;startClientVerification(Lcom/mojang/authlib/GameProfile;)V",
                     ordinal = 1))
-    private void taiyitist$handleHello(ServerLoginPacketListenerImpl instance, GameProfile gameProfile) {
+    private void taiyitist$handleHello(ServerLoginPacketListenerImpl instance, GameProfile gameProfile, @Cancellable CallbackInfo ci) {
+        // Paper start - Add Velocity IP Forwarding Support
+        if (TaiyitistConfig.velocityEnabled) {
+            this.velocityLoginMessageId = java.util.concurrent.ThreadLocalRandom.current().nextInt();
+            net.minecraft.network.FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+            buf.writeByte(com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION);
+            net.minecraft.network.protocol.login.ClientboundCustomQueryPacket packet1 = new net.minecraft.network.protocol.login.ClientboundCustomQueryPacket(this.velocityLoginMessageId, new PlayerInfoChannelPayload(com.destroystokyo.paper.proxy.VelocityProxy.PLAYER_INFO_CHANNEL, buf));
+            this.connection.send(packet1);
+            ci.cancel();
+            return;
+        }
+        // Paper end - Add Velocity IP Forwarding Support
         // CraftBukkit start
         class Handler extends Thread {
 
@@ -112,6 +131,12 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     // CraftBukkit start
     @Override
     public void callPlayerPreLoginEvents(GameProfile gameprofile) throws Exception {
+        // Paper start - Add Velocity IP Forwarding Support
+        if (this.velocityLoginMessageId == -1 && TaiyitistConfig.velocityEnabled) {
+            disconnect("This server requires you to connect with Velocity.");
+            return;
+        }
+        // Paper end - Add Velocity IP Forwarding Support
         String playerName = gameprofile.getName();
         java.net.InetAddress address = ((java.net.InetSocketAddress) connection.getRemoteAddress()).getAddress();
         java.util.UUID uniqueId = gameprofile.getId();
@@ -145,4 +170,68 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     }
     // CraftBukkit end
 
+    @Inject(method = "handleCustomQueryPacket", at = @At("HEAD"), cancellable = true)
+    private void taiyitist$supportVelocity(ServerboundCustomQueryAnswerPacket packet, CallbackInfo ci) {
+        // Paper start - Add Velocity IP Forwarding Support
+        if (TaiyitistConfig.velocityEnabled && packet.transactionId() == this.velocityLoginMessageId) {
+            QueryAnswerPayload payload = (QueryAnswerPayload)packet.payload();
+            if (payload == null) {
+                this.disconnect("This server requires you to connect with Velocity.");
+                ci.cancel();
+                return;
+            }
+
+            net.minecraft.network.FriendlyByteBuf buf = payload.buffer;
+
+            if (!com.destroystokyo.paper.proxy.VelocityProxy.checkIntegrity(buf)) {
+                this.disconnect("Unable to verify player details");
+                ci.cancel();
+                return;
+            }
+
+            int version = buf.readVarInt();
+            if (version > com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION) {
+                throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted upto " + com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION);
+            }
+
+            java.net.SocketAddress listening = this.connection.getRemoteAddress();
+            int port = 0;
+            if (listening instanceof java.net.InetSocketAddress) {
+                port = ((java.net.InetSocketAddress) listening).getPort();
+            }
+            this.connection.address = new java.net.InetSocketAddress(com.destroystokyo.paper.proxy.VelocityProxy.readAddress(buf), port);
+
+            this.authenticatedProfile = com.destroystokyo.paper.proxy.VelocityProxy.createProfile(buf);
+
+            //TODO Update handling for lazy sessions, might not even have to do anything?
+
+            // Proceed with login
+            class Handler extends Thread {
+
+                public Handler() {
+                    super("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet());
+                }
+
+                @Override
+                public void run() {
+                    try {
+                        GameProfile gameprofile = UUIDUtil.createOfflineProfile(requestedUsername);
+
+                        callPlayerPreLoginEvents(gameprofile);
+                        LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
+                        startClientVerification(gameprofile);
+                    } catch (Exception ex) {
+                        disconnect("Failed to verify username!");
+                        server.bridge$server().getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + requestedUsername, ex);
+                    }
+                }
+            }
+            Handler thread = new Handler();
+            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
+            thread.start();
+            ci.cancel();
+            return;
+            // Paper end - Add Velocity IP Forwarding Support
+        }
+    }
 }

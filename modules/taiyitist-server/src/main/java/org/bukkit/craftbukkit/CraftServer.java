@@ -23,6 +23,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.Lifecycle;
+import com.taiyitistmc.config.TaiyitistConfig;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -813,7 +814,7 @@ public final class CraftServer implements Server {
     @Override
     public long getConnectionThrottle() {
         // Spigot Start - Automatically set connection throttle for bungee configurations
-        if (org.spigotmc.SpigotConfig.bungee) {
+        if (org.spigotmc.SpigotConfig.bungee || TaiyitistConfig.velocityEnabled) { // Paper - Add Velocity IP Forwarding Support
             return -1;
         } else {
             return this.configuration.getInt("settings.connection-throttle");
