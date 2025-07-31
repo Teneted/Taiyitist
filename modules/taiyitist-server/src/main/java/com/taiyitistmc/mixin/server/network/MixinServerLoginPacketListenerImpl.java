@@ -174,63 +174,64 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     private void taiyitist$supportVelocity(ServerboundCustomQueryAnswerPacket packet, CallbackInfo ci) {
         // Paper start - Add Velocity IP Forwarding Support
         if (TaiyitistConfig.velocityEnabled && packet.transactionId() == this.velocityLoginMessageId) {
-            QueryAnswerPayload payload = (QueryAnswerPayload)packet.payload();
-            if (payload == null) {
-                this.disconnect("This server requires you to connect with Velocity.");
-                ci.cancel();
-                return;
-            }
-
-            net.minecraft.network.FriendlyByteBuf buf = payload.buffer;
-
-            if (!com.destroystokyo.paper.proxy.VelocityProxy.checkIntegrity(buf)) {
-                this.disconnect("Unable to verify player details");
-                ci.cancel();
-                return;
-            }
-
-            int version = buf.readVarInt();
-            if (version > com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION) {
-                throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted upto " + com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION);
-            }
-
-            java.net.SocketAddress listening = this.connection.getRemoteAddress();
-            int port = 0;
-            if (listening instanceof java.net.InetSocketAddress) {
-                port = ((java.net.InetSocketAddress) listening).getPort();
-            }
-            this.connection.address = new java.net.InetSocketAddress(com.destroystokyo.paper.proxy.VelocityProxy.readAddress(buf), port);
-
-            this.authenticatedProfile = com.destroystokyo.paper.proxy.VelocityProxy.createProfile(buf);
-
-            //TODO Update handling for lazy sessions, might not even have to do anything?
-
-            // Proceed with login
-            class Handler extends Thread {
-
-                public Handler() {
-                    super("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet());
+            if (packet.payload() instanceof QueryAnswerPayload payload) {
+                if (payload == null) {
+                    this.disconnect("This server requires you to connect with Velocity.");
+                    ci.cancel();
+                    return;
                 }
 
-                @Override
-                public void run() {
-                    try {
-                        GameProfile gameprofile = UUIDUtil.createOfflineProfile(requestedUsername);
+                net.minecraft.network.FriendlyByteBuf buf = payload.buffer;
 
-                        callPlayerPreLoginEvents(gameprofile);
-                        LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
-                        startClientVerification(gameprofile);
-                    } catch (Exception ex) {
-                        disconnect("Failed to verify username!");
-                        server.bridge$server().getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + requestedUsername, ex);
+                if (!com.destroystokyo.paper.proxy.VelocityProxy.checkIntegrity(buf)) {
+                    this.disconnect("Unable to verify player details");
+                    ci.cancel();
+                    return;
+                }
+
+                int version = buf.readVarInt();
+                if (version > com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION) {
+                    throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted upto " + com.destroystokyo.paper.proxy.VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION);
+                }
+
+                java.net.SocketAddress listening = this.connection.getRemoteAddress();
+                int port = 0;
+                if (listening instanceof java.net.InetSocketAddress) {
+                    port = ((java.net.InetSocketAddress) listening).getPort();
+                }
+                this.connection.address = new java.net.InetSocketAddress(com.destroystokyo.paper.proxy.VelocityProxy.readAddress(buf), port);
+
+                this.authenticatedProfile = com.destroystokyo.paper.proxy.VelocityProxy.createProfile(buf);
+
+                //TODO Update handling for lazy sessions, might not even have to do anything?
+
+                // Proceed with login
+                class Handler extends Thread {
+
+                    public Handler() {
+                        super("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet());
+                    }
+
+                    @Override
+                    public void run() {
+                        try {
+                            GameProfile gameprofile = UUIDUtil.createOfflineProfile(requestedUsername);
+
+                            callPlayerPreLoginEvents(gameprofile);
+                            LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
+                            startClientVerification(gameprofile);
+                        } catch (Exception ex) {
+                            disconnect("Failed to verify username!");
+                            server.bridge$server().getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + requestedUsername, ex);
+                        }
                     }
                 }
+                Handler thread = new Handler();
+                thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
+                thread.start();
+                ci.cancel();
+                return;
             }
-            Handler thread = new Handler();
-            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
-            thread.start();
-            ci.cancel();
-            return;
             // Paper end - Add Velocity IP Forwarding Support
         }
     }

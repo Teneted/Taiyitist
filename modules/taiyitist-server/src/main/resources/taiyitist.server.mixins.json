@@ -54,6 +54,7 @@
     "network.protocol.game.MixinClientIntentionPacket",
     "network.protocol.game.MixinServerboundUseItemOnPacket",
     "network.protocol.game.MixinServerboundUseItemPacket",
+    "network.protocol.login.MixinServerboundCustomQueryAnswerPacket",
     "network.syncher.MixinSynchedEntityData",
     "server.MixinMain",
     "server.MixinMinecraftServer",
