@@ -1,5 +1,6 @@
 package com.taiyitistmc.mixin.world.level.chunk;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.taiyitistmc.bukkit.DistValidate;
 import com.taiyitistmc.injection.world.level.chunk.InjectionLevelChunk;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -148,9 +149,9 @@ public abstract class MixinLevelChunk extends ChunkAccess implements InjectionLe
         }
     }
 
-    @Redirect(method = "setBlockState", at = @At(value = "FIELD", ordinal = 1, target = "Lnet/minecraft/world/level/Level;isClientSide:Z"))
-    public boolean taiyitist$redirectIsRemote(Level world) {
-        return world.isClientSide && !this.taiyitist$doPlace.getAndSet(true);
+    @ModifyExpressionValue(method = "setBlockState", at = @At(value = "FIELD", ordinal = 1, target = "Lnet/minecraft/world/level/Level;isClientSide:Z"))
+    public boolean taiyitist$redirectIsRemote(boolean original) {
+        return original && !this.taiyitist$doPlace.getAndSet(true);
     }
 
     @Override
