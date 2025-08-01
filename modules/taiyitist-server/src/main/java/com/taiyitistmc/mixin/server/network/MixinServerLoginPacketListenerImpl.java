@@ -15,6 +15,8 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.PacketUtils;
+import net.minecraft.network.protocol.cookie.ServerboundCookieResponsePacket;
 import net.minecraft.network.protocol.login.ServerLoginPacketListener;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.network.protocol.login.ServerboundLoginAcknowledgedPacket;
@@ -23,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.util.thread.BlockableEventLoop;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.Waitable;
@@ -169,6 +172,17 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
         }
     }
     // CraftBukkit end
+
+    @Inject(method = "handleCookieResponse", at = @At("HEAD"), cancellable = true)
+    private void taiyitist$handleCookie(ServerboundCookieResponsePacket serverboundCookieResponsePacket, CallbackInfo ci) {
+        // CraftBukkit start
+        PacketUtils.ensureRunningOnSameThread(serverboundCookieResponsePacket, this, (BlockableEventLoop) this.server);
+        if (this.player.getBukkitEntity().handleCookieResponse(serverboundCookieResponsePacket)) {
+            ci.cancel();
+            return;
+        }
+        // CraftBukkit end
+    }
 
     @Inject(method = "handleCustomQueryPacket", at = @At("HEAD"), cancellable = true)
     private void taiyitist$supportVelocity(ServerboundCustomQueryAnswerPacket packet, CallbackInfo ci) {
