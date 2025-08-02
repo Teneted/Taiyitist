@@ -131,12 +131,14 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         rconConsoleSource.set(source);
     }
 
+
     /**
-     * @author Mgazul
-     * @reason
+     * @author wdog5
+     * @reason bukkit
      */
     @Overwrite
     public String runCommand(String command) {
+        if (command.isBlank()) return ""; // Paper - Do not process empty rcon commands
         RconConsoleSource rconConsoleSource1 = rconConsoleSource.get();
         rconConsoleSource1.prepareForCommand();
         this.executeBlocking(() -> {
