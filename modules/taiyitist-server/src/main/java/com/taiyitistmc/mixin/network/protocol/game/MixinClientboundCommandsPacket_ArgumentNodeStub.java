@@ -1,6 +1,7 @@
 package com.taiyitistmc.mixin.network.protocol.game;
 
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.taiyitistmc.config.TaiyitistConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +20,7 @@ public class MixinClientboundCommandsPacket_ArgumentNodeStub {
     @Inject(method = "serializeCap(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo$Template;)V",
             cancellable = true, at = @At("HEAD"))
     private static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> void taiyitist$wrapArgument(FriendlyByteBuf buf, ArgumentTypeInfo<A, T> type, ArgumentTypeInfo.Template<A> node, CallbackInfo ci) {
-        if (!SpigotConfig.bungee) {
+        if (!TaiyitistConfig.velocityEnabled && !SpigotConfig.bungee) {
             return;
         }
         var key = BuiltInRegistries.COMMAND_ARGUMENT_TYPE.getKey(type);
