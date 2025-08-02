@@ -25,6 +25,7 @@ public class MixinServerLoginPacketListenerImpl_1 {
         // CraftBukkit start - fire PlayerPreLoginEvent
         if (!field_14176.connection.isConnected()) {
             ci.cancel();
+            return;
         }
         try {
             field_14176.callPlayerPreLoginEvents(gameProfile);
