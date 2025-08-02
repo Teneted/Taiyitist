@@ -69,8 +69,13 @@ public abstract class MixinServerLoginPacketListenerImpl implements ServerLoginP
     @Shadow @Nullable private GameProfile authenticatedProfile;
     private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
 
+    @Inject(method = "handleLoginAcknowledgement", at = @At("HEAD"))
+    private void taiyitist$ensureThread(ServerboundLoginAcknowledgedPacket packet, CallbackInfo ci) {
+        PacketUtils.ensureRunningOnSameThread(packet, this, this.server); // CraftBukkit
+    }
+
     @Inject(method = "handleLoginAcknowledgement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
-    private void banenr$setPlayer(ServerboundLoginAcknowledgedPacket p_298815_, CallbackInfo ci, @Local ServerConfigurationPacketListenerImpl listener) {
+    private void taiyitist$setPlayer(ServerboundLoginAcknowledgedPacket p_298815_, CallbackInfo ci, @Local ServerConfigurationPacketListenerImpl listener) {
         listener.taiyitist$setPlayer(this.player);
     }
 
