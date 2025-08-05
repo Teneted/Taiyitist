@@ -187,7 +187,8 @@ public abstract class MixinItemEntity extends Entity implements TraceableEntity 
     @Inject(method = "playerTouch", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/item/ItemEntity;pickupDelay:I"), cancellable = true)
     private void taiyitist$firePlayerPickupItemEvent(Player entityhuman, CallbackInfo ci, @Local ItemStack itemstack, @Local int i) {
         // CraftBukkit start - fire PlayerPickupItemEvent
-        int canHold = entityhuman.getInventory().canHold(itemstack);
+        // 直接允许拾取，不检查库存空间
+        int canHold = itemstack.getCount();
         int remaining = i - canHold;
 
         if (this.pickupDelay <= 0 && canHold > 0) {

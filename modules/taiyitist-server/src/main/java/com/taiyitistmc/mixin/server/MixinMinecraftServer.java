@@ -699,4 +699,14 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     public void taiyitist$setAutosavePeriod(int autosavePeriod) {
         this.autosavePeriod = autosavePeriod;
     }
+
+
+
+    @Inject(at = @At("HEAD"), method = "getServerModName", remap=false, cancellable = true)
+    public void getServerModName_cardboard(CallbackInfoReturnable<String> ci) {
+        if (null != Bukkit.getServer())
+            ci.setReturnValue("xiaofan开发服务器核心1.21.8(fabric + bukkit)");
+    }
+
+
 }
