@@ -1,9 +1,6 @@
 package com.taiyitistmc.mixin.world.level.block.entity;
 
-import com.taiyitistmc.injection.world.level.block.entity.InjectionCatalystListener;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,6 +26,11 @@ public abstract class MixinSculkCatalystBlockEntity extends BlockEntity {
         super(blockEntityType, blockPos, blockState);
     }
 
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void taiyitist$init(BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
+        catalystListener.taiyitist$setLevel(level); // CraftBukkit
+    }
+
     @Inject(method = "serverTick", at = @At("HEAD"))
     private static void taiyitist$overrideSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
         CraftEventFactory.sourceBlockOverride = blockEntity.getBlockPos();
@@ -37,12 +39,6 @@ public abstract class MixinSculkCatalystBlockEntity extends BlockEntity {
     @Inject(method = "serverTick", at = @At("RETURN"))
     private static void taiyitist$resetSource(Level p_222780_, BlockPos p_222781_, BlockState p_222782_, SculkCatalystBlockEntity blockEntity, CallbackInfo ci) {
         CraftEventFactory.sourceBlockOverride = null;
-    }
-
-    @Override
-    public void setLevel(Level level) {
-        super.setLevel(level);
-        ((InjectionCatalystListener) this.catalystListener).taiyitist$setLevel(level);
     }
 
     @Inject(method = "loadAdditional", at = @At("HEAD"))

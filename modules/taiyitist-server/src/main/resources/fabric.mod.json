@@ -40,6 +40,7 @@
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/class_4770": ["com/taiyitistmc/injection/world/level/block/InjectionBaseFireBlock"],
+      "net/minecraft/class_7132$class_8510": ["com/taiyitistmc/injection/world/level/block/entity/InjectionCatalystListener"],
       "net/minecraft/class_10222": ["com/taiyitistmc/injection/util/InjectionTickThrottler"],
       "net/minecraft/class_10592": ["com/taiyitistmc/injection/world/level/InjectionTicketStorage"],
       "net/minecraft/class_1701": ["com/taiyitistmc/injection/world/entity/vehicle/InjectionMinecartTNT"],
