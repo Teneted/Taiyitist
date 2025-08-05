@@ -37,11 +37,34 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew cleaBuild build
-      - name: Upload API Lib
-        uses: actions/upload-artifact@v4
+
+      - name: Setting mod version
+        run: |
+          cat $GITHUB_WORKSPACE/gradle.properties | grep ^archives_base_name= >> $GITHUB_ENV
+          cat $GITHUB_WORKSPACE/gradle.properties | grep ^minecraft_version= >> $GITHUB_ENV
+          cat $GITHUB_WORKSPACE/gradle.properties | grep ^version= >> $GITHUB_ENV
+      - name: Create package name
+        run: echo "package_name=[$minecraft_version] ${{ github.run_number }}" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v2
         with:
-          name: Taiyitist launcher
-          path: ./build/libs/*.jar
+          name: ${{ env.package_name }}
+          path: |
+            **/build/libs/
+            !build/libs/
+            !**/*-dev.jar
+            !**/*-shadow.jar
+            !**/*-transformProduction*.jar
+            !**/testmod*/
+
+      - name: Release to Modrinth Maven
+        uses: gradle/gradle-build-action@v2
+        if: |
+          !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        with:
+          arguments: publish publishUnified --stacktrace --no-daemon
+
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
         with:
