@@ -215,6 +215,7 @@
     "world.entity.monster.piglin.MixinPiglinAi",
     "world.entity.monster.warden.MixinWarden",
     "world.entity.npc.MixinAbstractVillager",
+    "world.entity.player.MixinInventory",
     "world.entity.player.MixinPlayer",
     "world.entity.projectile.MixinAbstractArrow",
     "world.entity.projectile.MixinAbstractHurtingProjectile",
