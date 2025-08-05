@@ -15,10 +15,10 @@ public class Mirrors {
     };
 
     private static final String[] MOJANG_MIRROR = {
-            "https://piston-data.mojang.com"
-            /*,
+            "https://bmclapi2.bangbang93.com",
+            "https://piston-data.mojang.com",
             "https://piston-meta.mojang.com",
-            "https://mojmirror.hypertention.cn"*/
+            "https://mojmirror.hypertention.cn"
     };
 
     private static final String VERSION_MANIFEST = "%s/mc/game/version_manifest.json";
