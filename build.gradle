@@ -128,7 +128,8 @@ allprojects {
                 loader_version     : loader_version,
                 minecraft_version  : minecraft_version,
                 java_version       : java_version,
-                fabric_asm_version : fabric_asm_version
+                fabric_asm_version : fabric_asm_version,
+                class_8510         : '$class_8510'
         ]
         inputs.properties replaceProperties
 
