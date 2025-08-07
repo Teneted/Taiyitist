@@ -550,8 +550,6 @@
     "world.level.storage.loot.functions.MixinLootingEnchantFunction",
     "world.level.storage.loot.parameters.LootParametersMixin",
     "world.level.storage.loot.predicates.MixinExplosionCondition",
-    "world.level.storage.loot.predicates.MixinRandomChanceWithLootingCondition",
-    "world.material.MixinFlowingFluid",
-    "world.material.MixinLavaFluid"
+    "world.level.storage.loot.predicates.MixinRandomChanceWithLootingCondition"
   ]
 }
