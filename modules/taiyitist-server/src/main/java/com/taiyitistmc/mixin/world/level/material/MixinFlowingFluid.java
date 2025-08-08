@@ -48,9 +48,8 @@ public abstract class MixinFlowingFluid {
             BlockFromToEvent event = new BlockFromToEvent(source, CraftBlock.notchToBlockFace(direction));
             Bukkit.getPluginManager().callEvent(event);
             return !event.isCancelled();
-        } else {
-            return false;
         }
+        return true;
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
