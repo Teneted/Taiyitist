@@ -1,8 +1,8 @@
 {
   "installer": {
     "minecraft": "1.21.8",
-    "fabricLoader": "0.16.14",
-    "fabricLoaderHash": "05778d47f536bf2c63ed2abc1a56f5a1c129e34a"
+    "fabricLoader": "0.17.2",
+    "fabricLoaderHash": "0647622ac4163aad5ed5f79ccb532e31225562aa"
   },
   "libraries": {
     "org.yaml:snakeyaml:2.2": "3af797a25458550a16bf89acc8e4ab2b7f2bfce0",

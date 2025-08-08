@@ -8,6 +8,7 @@ import com.taiyitistmc.asm.annotation.ShadowConstructor;
 import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.bukkit.DistValidate;
+import com.taiyitistmc.bukkit.LevelPersistentData;
 import com.taiyitistmc.config.TaiyitistConfig;
 import com.taiyitistmc.fabric.BannerDerivedWorldInfo;
 import com.taiyitistmc.fabric.WorldSymlink;
@@ -26,7 +27,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
@@ -93,9 +93,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel extends Level implements WorldGenLevel, InjectionServerLevel {
 
-    @Shadow
-    @Final
-    public static BlockPos END_SPAWN_POINT;
     private final AtomicReference<CreatureSpawnEvent.SpawnReason> taiyitist$reason = new AtomicReference<>();
     private final AtomicReference<Boolean> taiyitist$timeSkipCancelled = new AtomicReference<>(false);
     @Shadow
@@ -126,10 +123,6 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
 
     @Shadow
     public abstract List<ServerPlayer> players();
-
-    @Shadow
-    public abstract boolean sendParticles(ServerPlayer player, boolean longDistance, double posX, double posY, double posZ, Packet<?> packet);
-
     @Shadow
     @NotNull
     public abstract MinecraftServer getServer();
@@ -150,13 +143,12 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     public abstract boolean addWithUUID(Entity entity);
 
     @Shadow
-    public abstract DimensionDataStorage getDataStorage();
-
-    @Shadow
     public abstract ServerChunkCache getChunkSource();
 
     @Shadow
     protected abstract boolean addEntity(Entity entity);
+
+    @Shadow public abstract DimensionDataStorage getDataStorage();
 
     @ShadowConstructor
     public void taiyitist$constructor(MinecraftServer minecraftServer, Executor executor, LevelStorageSource.LevelStorageAccess levelStorageAccess, ServerLevelData serverLevelData, ResourceKey<Level> resourceKey, LevelStem levelStem, ChunkProgressListener chunkProgressListener, boolean bl, long l, List<CustomSpawner> list, boolean bl2, @Nullable RandomSequences randomSequences) {
@@ -203,8 +195,8 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
         if (this.K != null) {
             this.K.setWorld((ServerLevel) (Object) this);
         }
-        //var data = this.getDataStorage().computeIfAbsent(LevelPersistentData.factory(), "bukkit_pdc");
-        //this.getWorld().readBukkitValues(data.getTag());
+        var data = this.getDataStorage().computeIfAbsent(LevelPersistentData.factory());
+        this.getWorld().readBukkitValues(data.getTag());
     }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
@@ -221,9 +213,8 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
 
     @Inject(method = "saveLevelData", at = @At("RETURN"))
     private void taiyitist$savePdc(CallbackInfo ci) {
-        /*
-        var data = this.getDataStorage().computeIfAbsent(LevelPersistentData.factory(), "bukkit_pdc");
-        data.save(this.getWorld());*/
+        var data = this.getDataStorage().computeIfAbsent(LevelPersistentData.factory());
+        data.save(this.getWorld());
     }
 
     @Inject(method = "gameEvent", cancellable = true, at = @At("HEAD"))

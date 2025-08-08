@@ -11,6 +11,9 @@
     "maxShiftBy": 2,
     "defaultRequire": 1
   },
+  "mixinextras": {
+    "minVersion": "0.8.7"
+  },
   "mixinPriority": 400,
   "mixins": [
     "advancements.MixinAdvancementHolder",
