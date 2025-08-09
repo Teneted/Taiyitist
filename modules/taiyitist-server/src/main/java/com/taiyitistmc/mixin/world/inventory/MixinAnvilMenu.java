@@ -58,27 +58,6 @@ public abstract class MixinAnvilMenu extends ItemCombinerMenu implements Injecti
         return (player.getAbilities().instabuild || player.experienceLevel >= this.cost.get()) && this.cost.get() > DEFAULT_DENIED_COST && hasStack; // CraftBukkit - allow cost 0 like a free item
     }
 
-    @Redirect(method = "onTake", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/inventory/ContainerLevelAccess;execute(Ljava/util/function/BiConsumer;)V"))
-    private void taiyitist$anvilEvent(ContainerLevelAccess instance, BiConsumer<Level, BlockPos> levelPosConsumer) {
-        this.access.execute((level, blockPos) -> {
-            BlockState blockState = level.getBlockState(blockPos);
-            if (!player.getAbilities().instabuild && blockState.is(BlockTags.ANVIL) && player.getRandom().nextFloat() < 0.12F) {
-                BlockState blockState2 = AnvilBlock.damage(blockState);
-                if (blockState2 == null) {
-                    level.removeBlock(blockPos, false);
-                    level.levelEvent(1029, blockPos, 0);
-                } else {
-                    level.setBlock(blockPos, blockState2, 2);
-                    level.levelEvent(1030, blockPos, 0);
-                }
-            } else {
-                level.levelEvent(1030, blockPos, 0);
-            }
-
-        });
-    }
-
     @Redirect(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/DataSlot;set(I)V", ordinal = 1))
     private void taiyitist$resetAnvilCost1(DataSlot instance, int i) {
         this.cost.set(DEFAULT_DENIED_COST);
