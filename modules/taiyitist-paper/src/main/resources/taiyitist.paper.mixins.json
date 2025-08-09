@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "core.entity.player.MixinPlayer",
-    "core.server.MixinMinecraftServer"
+    "core.server.MixinMinecraftServer",
+    "core.world.inventory.MixinAnvilMenu"
   ]
 }
