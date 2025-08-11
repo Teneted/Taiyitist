@@ -19,8 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -46,10 +45,14 @@ public class MixinRecipeMap implements InjectionRecipeMap {
         this.byKey = map;
     }
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void taiyitist$setRecipes(Multimap multimap, Map map, CallbackInfo ci) {
+    @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/item/crafting/RecipeMap;byKey:Ljava/util/Map;"))
+    private void taiyitist$resetByKey(RecipeMap instance, Map<ResourceKey<Recipe<?>>, RecipeHolder<?>> value) {
+        this.byKey = new LinkedHashMap<ResourceKey<Recipe<?>>, RecipeHolder<?>>();
+    }
+
+    @Redirect(method = "<clinit>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/item/crafting/RecipeMap;EMPTY:Lnet/minecraft/world/item/crafting/RecipeMap;"))
+    private static void taiyitist$resetEmpty(RecipeMap value) {
         EMPTY = new RecipeMap(ImmutableMultimap.of(), Maps.newLinkedHashMap());
-        byKey = new LinkedHashMap<ResourceKey<Recipe<?>>, RecipeHolder<?>>();
     }
 
     @ModifyReturnValue(method = "create", at = @At("RETURN"))

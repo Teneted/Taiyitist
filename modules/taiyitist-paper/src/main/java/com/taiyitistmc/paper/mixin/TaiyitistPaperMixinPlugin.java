@@ -33,7 +33,6 @@ public class TaiyitistPaperMixinPlugin implements IMixinConfigPlugin, IEnvironme
     );
     @Override
     public void onLoad(String mixinPackage) {
-        MixinTools.setup();
         MixinEnvironment.getCurrentEnvironment().registerTokenProvider(this);
     }
 
