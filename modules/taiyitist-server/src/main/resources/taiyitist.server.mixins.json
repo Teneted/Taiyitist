@@ -16,6 +16,7 @@
   },
   "mixinPriority": 400,
   "mixins": [
+    "MixinCrashReport",
     "advancements.MixinAdvancementHolder",
     "advancements.MixinAdvancementTree",
     "commands.MixinCommands",
