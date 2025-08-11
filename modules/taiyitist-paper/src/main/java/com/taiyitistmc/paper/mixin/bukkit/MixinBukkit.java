@@ -1,6 +1,6 @@
 package com.taiyitistmc.paper.mixin.bukkit;
 
-import com.com.taiyitistmc.paper.addon.ServerAddon;
+import com.taiyitistmc.paper.addon.ServerAddon;
 import com.taiyitistmc.asm.annotation.TransformAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

@@ -1,4 +1,4 @@
-package com.com.taiyitistmc.paper.addon;
+package com.taiyitistmc.paper.addon;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "bukkit.MixinBukkit",
+    "bukkit.MixinItemStack",
     "bukkit.MixinServer",
     "core.entity.player.MixinPlayer",
     "core.server.MixinMinecraftServer",
