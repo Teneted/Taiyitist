@@ -8,14 +8,13 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.authlib.GameProfile;
 import com.taiyitistmc.TaiyitistMod;
 import com.taiyitistmc.fabric.BukkitRegistry;
-import com.taiyitistmc.injection.server.network.InjectionServerLoginPacketListenerImpl;
 import com.taiyitistmc.injection.server.players.InjectionPlayerList;
 import com.taiyitistmc.util.I18n;
 
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RegistryLayer;
@@ -46,8 +46,8 @@ import net.minecraft.server.players.IpBanListEntry;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.players.UserBanList;
 import net.minecraft.server.players.UserBanListEntry;
-import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.level.storage.ValueInput;
@@ -350,5 +350,16 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
     @Override
     public CraftServer getCraftServer() {
         return this.cserver;
+    }
+
+    @Override
+    public void reloadRecipes() {
+        RecipeManager recipeManager = this.server.getRecipeManager();
+        ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket = new ClientboundUpdateRecipesPacket(recipeManager.getSynchronizedItemProperties(), recipeManager.getSynchronizedStonecutterRecipes());
+
+        for (ServerPlayer serverPlayer : this.players) {
+            serverPlayer.connection.send(clientboundUpdateRecipesPacket);
+            serverPlayer.getRecipeBook().sendInitialRecipeBook(serverPlayer);
+        }
     }
 }

@@ -26,4 +26,8 @@ public interface InjectionRecipeManager {
    default boolean removeRecipe(ResourceKey<Recipe<?>> minecraft) {
        throw new IllegalStateException("Not implemented");
    }
+
+   default void finalizeRecipeLoading() {
+       throw new IllegalStateException("Not implemented");
+   }
 }

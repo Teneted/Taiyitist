@@ -4,6 +4,9 @@ accessWidener v2 named
 accessible method net/minecraft/world/entity/LivingEntity getDamageAfterMagicAbsorb (Lnet/minecraft/world/damagesource/DamageSource;F)F
 accessible method net/minecraft/world/entity/LivingEntity getDamageAfterArmorAbsorb (Lnet/minecraft/world/damagesource/DamageSource;F)F
 accessible method net/minecraft/world/entity/LivingEntity blockUsingItem (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/item/crafting/RecipeMap <init> (Lcom/google/common/collect/Multimap;Ljava/util/Map;)V
+accessible field net/minecraft/world/item/crafting/RecipeManager recipes Lnet/minecraft/world/item/crafting/RecipeMap;
+accessible field net/minecraft/world/item/crafting/RecipeMap byType Lcom/google/common/collect/Multimap;
 
 # public clazz
 accessible class net/minecraft/server/network/ServerLoginPacketListenerImpl$State

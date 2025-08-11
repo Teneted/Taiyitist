@@ -10,11 +10,7 @@ public interface InjectionIngredient {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$setExact(boolean exact) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default boolean isVanilla() {
+    default void taiyitist$setItemStacks(List<ItemStack> itemStacks) {
         throw new IllegalStateException("Not implemented");
     }
 

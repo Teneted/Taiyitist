@@ -2,10 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.taiyitistmc.paper.mixin",
+  "plugin": "com.taiyitistmc.paper.mixin.TaiyitistPaperMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "bukkit.MixinBukkit",
+    "bukkit.MixinServer",
     "core.entity.player.MixinPlayer",
     "core.server.MixinMinecraftServer",
-    "core.world.inventory.MixinAnvilMenu"
+    "core.world.inventory.MixinAnvilMenu",
+    "craftbukkit.MixinCraftServer"
   ]
 }

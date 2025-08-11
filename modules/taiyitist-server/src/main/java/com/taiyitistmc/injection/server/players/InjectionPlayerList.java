@@ -61,4 +61,8 @@ public interface InjectionPlayerList {
     default ServerPlayer canPlayerLogin(ServerLoginPacketListenerImpl loginlistener, GameProfile gameProfile) {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void reloadRecipes() {
+        throw new IllegalStateException("Not implemented");
+    }
 }

@@ -157,6 +157,7 @@
       "net/minecraft/class_1860": ["com/taiyitistmc/injection/world/item/crafting/InjectionRecipe"],
       "net/minecraft/class_8786": ["com/taiyitistmc/injection/world/item/crafting/InjectionRecipeHolder"],
       "net/minecraft/class_1863": ["com/taiyitistmc/injection/world/item/crafting/InjectionRecipeManager"],
+      "net/minecraft/class_10289": ["com/taiyitistmc/injection/world/item/crafting/InjectionRecipeMap"],
       "net/minecraft/class_1856": ["com/taiyitistmc/injection/world/item/crafting/InjectionIngredient"],
       "net/minecraft/class_1867": ["com/taiyitistmc/injection/world/item/crafting/InjectionShapelessRecipe"],
       "net/minecraft/class_1869": ["com/taiyitistmc/injection/world/item/crafting/InjectionShapedRecipe"],
