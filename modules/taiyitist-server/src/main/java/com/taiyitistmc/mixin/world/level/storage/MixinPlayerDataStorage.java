@@ -10,14 +10,19 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.PlayerDataStorage;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -149,10 +154,29 @@ public abstract class MixinPlayerDataStorage implements InjectionPlayerDataStora
         return Optional.empty();
     }
 
+    @Override
+    public Optional<ValueInput> load(String name, String uuid, ProblemReporter discarding, RegistryAccess.Frozen frozen) {
+        Optional<CompoundTag> optional = this.load(name, uuid, ".dat");
+        if (optional.isEmpty()) {
+            this.backup(name, uuid, ".dat");
+        }
+
+        return optional.or(() -> {
+            return this.load(name, uuid, ".dat_old");
+        }).map((compoundTag) -> {
+            int i = NbtUtils.getDataVersion(compoundTag, -1);
+            compoundTag = DataFixTypes.PLAYER.updateToCurrentVersion(this.fixerUpper, compoundTag, i);
+            ValueInput valueInput = TagValueInput.create(discarding, frozen, compoundTag);
+            // entityhuman.load(valueinput); // CraftBukkit - handled above
+            return valueInput;
+        });
+    }
+
     // CraftBukkit start
     @Override
     public File getPlayerDir() {
         return this.playerDir;
     }
     // CraftBukkit end
+
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.ValueInput;
 
 public interface InjectionPlayerDataStorage {
 
@@ -29,7 +30,7 @@ public interface InjectionPlayerDataStorage {
         throw new IllegalStateException("Not implemented");
     }
 
-    default Optional<Object> load(String name, String string, ProblemReporter discarding, RegistryAccess.Frozen frozen) {
+    default Optional<ValueInput> load(String name, String string, ProblemReporter discarding, RegistryAccess.Frozen frozen) {
         throw new IllegalStateException("Not implemented");
     }
 }
