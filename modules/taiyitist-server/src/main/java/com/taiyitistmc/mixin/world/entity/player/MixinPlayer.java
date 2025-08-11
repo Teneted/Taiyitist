@@ -1,5 +1,7 @@
 package com.taiyitistmc.mixin.world.entity.player;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.taiyitistmc.injection.world.entity.player.InjectionPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +14,7 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,6 +49,20 @@ public abstract class MixinPlayer extends LivingEntity implements InjectionPlaye
     }
     // CraftBukkit end
 
+    @Inject(method = "turtleHelmetTick", at = @At("HEAD"))
+    private void taiyitist$pushTurtleHelmetTickReason(CallbackInfo ci) {
+        this.pushEffectCause(EntityPotionEffectEvent.Cause.TURTLE_HELMET);
+    }
+
+    @WrapWithCondition(method = "rideTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setShiftKeyDown(Z)V"))
+    private boolean taiyitist$checkPassenger(Player instance, boolean b) {
+        return !this.isPassenger(); // CraftBukkit start - SPIGOT-7316: no longer passenger, dismount and return
+    }
+
+    @Inject(method = "rideTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setShiftKeyDown(Z)V", shift = At.Shift.AFTER), cancellable = true)
+    private void taiyitist$cancelWhenNotPassenger(CallbackInfo ci) {
+        ci.cancel();
+    }
 
     private boolean respawnEntityOnShoulder(CompoundTag nbttagcompound) { // CraftBukkit void->boolean
         Entity entity = getEntityOnShoulder(nbttagcompound);
