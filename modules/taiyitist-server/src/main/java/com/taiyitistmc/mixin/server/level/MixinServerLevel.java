@@ -519,9 +519,4 @@ public abstract class MixinServerLevel extends Level implements WorldGenLevel, I
     public UUID bridge$uuid() {
         return uuid;
     }
-
-    @Override
-    public @Nullable BlockEntity getBlockEntity(BlockPos blockPos) {
-        return super.getBlockEntity(blockPos);
-    }
 }

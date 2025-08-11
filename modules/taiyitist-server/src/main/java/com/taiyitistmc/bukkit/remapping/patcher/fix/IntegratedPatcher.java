@@ -28,6 +28,7 @@ public class IntegratedPatcher implements PluginPatcher {
         SPECIFIC.put("net/Zrips/CMILib/Reflections", (classNode, classRepo) -> helloWorld(classNode,"bR", "field_7512"));
         SPECIFIC.put("io/lumine/mythic/core/volatilecode/v1_21_R5/VolatileEntityHandlerImpl", (classNode, classRepo) -> helloWorld(classNode,"c", "d")); // mythicmobs-5.8
         SPECIFIC.put("com/comphenix/protocol/ProtocolConfig", ProtocolLib::removeProtocolASM);
+        SPECIFIC.put("io/github/thebusybiscuit/slimefun4/libraries/dough/skins/nms/PlayerHeadAdapter21v6", (classNode, classRepo) -> helloWorld(classNode,"getBlockEntity", "method_8321"));
         GENERAL.add(PaperLib::removePaper);
     }
 
