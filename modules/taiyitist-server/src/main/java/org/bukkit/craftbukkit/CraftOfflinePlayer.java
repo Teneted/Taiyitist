@@ -171,7 +171,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
    }
 
    private ValueInput getData() {
-      return (ValueInput)this.storage.load(this.profile.getName(), this.profile.getId().toString(), ProblemReporter.DISCARDING, this.server.getServer().registryAccess()).orElse((Object)null);
+      return (ValueInput)this.storage.load(this.profile.getName(), this.profile.getId().toString(), ProblemReporter.DISCARDING, this.server.getServer().registryAccess()).orElse((ValueInput) null);
    }
 
    private ValueInput getBukkitData() {
