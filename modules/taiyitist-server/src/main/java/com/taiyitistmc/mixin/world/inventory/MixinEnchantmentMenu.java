@@ -178,6 +178,17 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu{
         }
     }
 
+    // Taiyitist start - throw out to fix mixin with morejs
+    @Unique
+    CraftItemStack item;
+    @Unique
+    org.bukkit.enchantments.EnchantmentOffer[] offers = new EnchantmentOffer[3];
+    @Unique
+    org.bukkit.enchantments.Enchantment enchantment;
+    @Unique
+    PrepareItemEnchantEvent event;
+    // Taiyitist end
+
     /**
      * @author wdog5
      * @reason bukkit
@@ -186,6 +197,7 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu{
     public void slotsChanged(Container container) {
         if (container == this.enchantSlots) {
             ItemStack itemStack = container.getItem(0);
+            item =  CraftItemStack.asCraftMirror(itemStack);
             if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
                 this.access.execute((level, blockPos) -> {
                     int i = 0;
@@ -220,14 +232,12 @@ public abstract class MixinEnchantmentMenu extends AbstractContainerMenu{
                     }
 
                     // CraftBukkit start
-                    CraftItemStack item = CraftItemStack.asCraftMirror(itemStack);
-                    org.bukkit.enchantments.EnchantmentOffer[] offers = new EnchantmentOffer[3];
                     for (j = 0; j < 3; ++j) {
-                        org.bukkit.enchantments.Enchantment enchantment = (this.enchantClue[j] >= 0) ? org.bukkit.enchantments.Enchantment.getByKey(CraftNamespacedKey.fromMinecraft(BuiltInRegistries.ENCHANTMENT.getKey(BuiltInRegistries.ENCHANTMENT.byId(this.enchantClue[j])))) : null;
+                        enchantment =  (this.enchantClue[j] >= 0) ? org.bukkit.enchantments.Enchantment.getByKey(CraftNamespacedKey.fromMinecraft(BuiltInRegistries.ENCHANTMENT.getKey(BuiltInRegistries.ENCHANTMENT.byId(this.enchantClue[j])))) : null;
                         offers[j] = (enchantment != null) ? new EnchantmentOffer(enchantment, this.levelClue[j], this.costs[j]) : null;
                     }
 
-                    PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, this.getBukkitView(), access.getLocation().getBlock(), item, offers, i);
+                    event = new PrepareItemEnchantEvent(player, this.getBukkitView(), access.getLocation().getBlock(), item, offers, i);
                     event.setCancelled(!itemStack.isEnchantable());
                     level.getCraftServer().getPluginManager().callEvent(event);
 
