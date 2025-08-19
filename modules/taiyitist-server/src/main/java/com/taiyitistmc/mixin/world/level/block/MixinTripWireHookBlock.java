@@ -21,6 +21,7 @@ public class MixinTripWireHookBlock {
         Bukkit.getPluginManager().callEvent(event);
         if (event.getNewCurrent() > 0) {
             ci.cancel();
+            return;
         }
     }
 }
