@@ -18,7 +18,7 @@ dependencies {
     implementation "net.kyori:ansi:1.0.3"
     implementation "net.kyori:examination-api:1.3.0"
     implementation "net.kyori:examination-string:1.3.0"
-    implementation(include("org.spongepowered:configurate-yaml:4.2.0-SNAPSHOT")) // Paper - config files
+    implementation(include("org.spongepowered:configurate-yaml:4.2.0)) // Paper - config files
 }
 processResources {
     duplicatesStrategy = DuplicatesStrategy.WARN
