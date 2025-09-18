@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.sugar.Cancellable;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.taiyitistmc.bukkit.BukkitSnapshotCaptures;
 import com.taiyitistmc.bukkit.ProcessableEffect;
 import com.taiyitistmc.injection.world.entity.InjectionLivingEntity;
@@ -912,8 +913,8 @@ public abstract class MixinLivingEntity extends Entity implements InjectionLivin
         return this.removeAllEffects();
     }
 
-    @Inject(method = "createWitherRose", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private void taiyitist$witherRoseDrop(LivingEntity livingEntity, CallbackInfo ci, boolean flag, ItemEntity
+    @Inject(method = "createWitherRose", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
+    private void taiyitist$witherRoseDrop(LivingEntity livingEntity, CallbackInfo ci, @Local ItemEntity
             itemEntity) {
         org.bukkit.event.entity.EntityDropItemEvent event = new org.bukkit.event.entity.EntityDropItemEvent(this.getBukkitEntity(), (org.bukkit.entity.Item) itemEntity.getBukkitEntity());
         CraftEventFactory.callEvent(event);

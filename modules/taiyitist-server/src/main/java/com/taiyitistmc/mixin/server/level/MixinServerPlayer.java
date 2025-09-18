@@ -14,6 +14,8 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.BlockUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -805,13 +807,15 @@ public abstract class MixinServerPlayer extends Player implements InjectionServe
             }
         }
 
-        // SPIGOT-5071: manually add player loot tables (SPIGOT-5195 - ignores keepInventory rule)
-        this.dropFromLootTable(damageSource, this.lastHurtByPlayerTime > 0);
-        for (org.bukkit.inventory.ItemStack item : this.bridge$drops()) {
-            loot.add(item);
+        if (!FabricLoader.getInstance().isModLoaded("yigd")) {
+            // SPIGOT-5071: manually add player loot tables (SPIGOT-5195 - ignores keepInventory rule)
+            this.dropFromLootTable(damageSource, this.lastHurtByPlayerTime > 0);
+            for (org.bukkit.inventory.ItemStack item : this.bridge$drops()) {
+                loot.add(item);
+            }
+            loot.addAll(this.bridge$drops());
+            this.bridge$drops().clear(); // SPIGOT-5188: make sure to clear
         }
-        loot.addAll(this.bridge$drops());
-        this.bridge$drops().clear(); // SPIGOT-5188: make sure to clear
 
         String deathmessage = defaultMessage.getString();
         keepLevel = keepInventory; // SPIGOT-2222: pre-set keepLevel
