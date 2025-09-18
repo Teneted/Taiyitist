@@ -3,6 +3,7 @@ package com.taiyitistmc.eventhandler.dispatcher;
 import java.util.ArrayList;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.PositionImpl;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.bukkit.Bukkit;
@@ -57,7 +58,9 @@ public class EntityEventDispatcher {
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            CraftEventFactory.callEntityDeathEvent(entity, entity.bridge$drops());
+            if (!FabricLoader.getInstance().isModLoaded("yigd")) {
+                CraftEventFactory.callEntityDeathEvent(entity, entity.bridge$drops());
+            }
         });
     }
 }
