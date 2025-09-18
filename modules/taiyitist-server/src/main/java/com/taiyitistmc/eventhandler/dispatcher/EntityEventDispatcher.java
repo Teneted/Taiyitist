@@ -7,6 +7,7 @@ import net.minecraft.core.PositionImpl;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -56,7 +57,7 @@ public class EntityEventDispatcher {
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            CraftEventFactory.callEntityDeathEvent(entity, new ArrayList<>()); // TODO add drops
+            CraftEventFactory.callEntityDeathEvent(entity, entity.bridge$drops());
         });
     }
 }
