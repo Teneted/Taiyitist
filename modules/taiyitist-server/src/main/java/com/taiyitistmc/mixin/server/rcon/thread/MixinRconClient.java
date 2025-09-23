@@ -14,24 +14,44 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.net.Socket;
+import java.util.logging.Logger;
 
 @Mixin(RconClient.class)
 public class MixinRconClient {
 
     @Mutable
     @Shadow @Final private ServerInterface serverInterface;
+
     private RconConsoleSource rconConsoleSource;
+
+    private Socket clientSocket;
     // CraftBukkit end
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void taiyitist$reset(ServerInterface serverInterface, String string, Socket socket, CallbackInfo ci) {
         this.serverInterface =  (DedicatedServer) serverInterface; // CraftBukkit
         this.rconConsoleSource = new net.minecraft.server.rcon.RconConsoleSource((MinecraftServer) this.serverInterface); // CraftBukkit
+        clientSocket = socket;
         this.rconConsoleSource.taiyitist$setSocketAddress(socket.getRemoteSocketAddress());
+        ((DedicatedServer) serverInterface).taiyitist$setRconConsoleSource(this.rconConsoleSource);
+    }
+
+    public RconConsoleSource generateRconConsoleSource() {
+        RconConsoleSource rconConsoleSource = new RconConsoleSource((MinecraftServer) this.serverInterface);
+        rconConsoleSource.taiyitist$setSocketAddress(clientSocket.getRemoteSocketAddress());
+        return rconConsoleSource;
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/rcon/thread/RconClient;sendCmdResponse(ILjava/lang/String;)V", ordinal = 0))
     private void taiyitist$checkHeart(CallbackInfo ci) {
-        ((DedicatedServer) serverInterface).taiyitist$setRconConsoleSource(this.rconConsoleSource);
+        //NEED MORE INVESTIGATION
+        System.out.println("invoking setRconConsoleSource");
+        if (rconConsoleSource != null) {
+            System.out.println("Rcon source isn't null!");
+            ((DedicatedServer) serverInterface).taiyitist$setRconConsoleSource(this.rconConsoleSource);
+        } else {
+            Logger.getLogger("Taiyitist_RconClient_Debug").warning("RconConsoleSource is null! Trying generate a new source...");
+            ((DedicatedServer) serverInterface).taiyitist$setRconConsoleSource(generateRconConsoleSource());
+        }
     }
 }
