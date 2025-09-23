@@ -117,7 +117,6 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Override
     public void taiyitist$setRconConsoleSource(RconConsoleSource source) {
-        System.out.println("Init Rcon Console Source");
         rconConsoleSource.set(source);
     }
 

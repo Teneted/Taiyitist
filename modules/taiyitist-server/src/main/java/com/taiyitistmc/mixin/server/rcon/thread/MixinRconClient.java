@@ -47,7 +47,6 @@ public class MixinRconClient {
         //NEED MORE INVESTIGATION
         System.out.println("invoking setRconConsoleSource");
         if (rconConsoleSource != null) {
-            System.out.println("Rcon source isn't null!");
             ((DedicatedServer) serverInterface).taiyitist$setRconConsoleSource(this.rconConsoleSource);
         } else {
             Logger.getLogger("Taiyitist_RconClient_Debug").warning("RconConsoleSource is null! Trying generate a new source...");
