@@ -22,7 +22,7 @@
 @@ -56,36 +68,68 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
 -            if (this.random.nextInt(8) == 0) {
 +            // CraftBukkit start
 +            boolean hatching = this.random.nextInt(8) == 0;

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/frog/Tadpole.java
 +++ b/net/minecraft/world/entity/animal/frog/Tadpole.java
-@@ -77,7 +77,7 @@
+@@ -76,7 +76,7 @@
  
      @Override
      public BehaviorController<Tadpole> getBrain() {
@@ -9,7 +9,7 @@
      }
  
      @Override
-@@ -225,12 +225,17 @@
+@@ -218,12 +218,17 @@
          World world = this.level();
  
          if (world instanceof WorldServer worldserver) {

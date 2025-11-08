@@ -19,5 +19,5 @@
 +    // CraftBukkit end
 +
      private PacketPlayOutMultiBlockChange(PacketDataSerializer packetdataserializer) {
-         this.sectionPos = SectionPosition.of(packetdataserializer.readLong());
+         this.sectionPos = (SectionPosition) SectionPosition.STREAM_CODEC.decode(packetdataserializer);
          int i = packetdataserializer.readVarInt();

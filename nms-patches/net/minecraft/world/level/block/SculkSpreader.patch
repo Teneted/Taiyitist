@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/SculkSpreader.java
 +++ b/net/minecraft/world/level/block/SculkSpreader.java
-@@ -36,6 +36,14 @@
+@@ -37,6 +37,14 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -15,7 +15,7 @@
  public class SculkSpreader {
  
      public static final int MAX_GROWTH_RATE_RADIUS = 24;
-@@ -51,6 +59,7 @@
+@@ -52,6 +60,7 @@
      private final int chargeDecayRate;
      private final int additionalDecayRate;
      private List<SculkSpreader.a> cursors = new ArrayList();
@@ -23,7 +23,7 @@
  
      public SculkSpreader(boolean flag, TagKey<Block> tagkey, int i, int j, int k, int l) {
          this.isWorldGeneration = flag;
-@@ -104,7 +113,7 @@
+@@ -105,7 +114,7 @@
  
      public void load(ValueInput valueinput) {
          this.cursors.clear();
@@ -32,7 +32,7 @@
      }
  
      public void save(ValueOutput valueoutput) {
-@@ -123,6 +132,19 @@
+@@ -137,6 +146,19 @@
  
      private void addCursor(SculkSpreader.a sculkspreader_a) {
          if (this.cursors.size() < 32) {
@@ -52,7 +52,7 @@
              this.cursors.add(sculkspreader_a);
          }
      }
-@@ -215,7 +237,7 @@
+@@ -229,7 +251,7 @@
              this.charge = i;
              this.decayDelay = j;
              this.updateDelay = k;

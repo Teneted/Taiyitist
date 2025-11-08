@@ -14,7 +14,7 @@
  public class EntityEnderPearl extends EntityProjectileThrowable {
  
      private long ticketTimer = 0L;
-@@ -135,12 +142,19 @@
+@@ -120,12 +127,19 @@
                          EntityPlayer entityplayer = (EntityPlayer) entity;
  
                          if (entityplayer.connection.isAcceptingMessages()) {
@@ -25,7 +25,7 @@
 +                                return;
 +                            }
 +                            // CraftBukkit end
-                             if (this.random.nextFloat() < 0.05F && worldserver.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                             if (this.random.nextFloat() < 0.05F && worldserver.isSpawningMonsters()) {
                                  EntityEndermite entityendermite = EntityTypes.ENDERMITE.create(worldserver, EntitySpawnReason.TRIGGERED);
  
                                  if (entityendermite != null) {
@@ -35,7 +35,7 @@
                                  }
                              }
  
-@@ -148,12 +162,12 @@
+@@ -133,12 +147,12 @@
                                  entity.setPortalCooldown();
                              }
  
@@ -50,7 +50,7 @@
                              }
  
                              this.playSound(worldserver, vec3d);
-@@ -168,11 +182,11 @@
+@@ -153,11 +167,11 @@
                          this.playSound(worldserver, vec3d);
                      }
  
@@ -64,16 +64,25 @@
                  return;
              }
          }
-@@ -205,7 +219,7 @@
-             entity = this.getOwner();
-             if (entity instanceof EntityPlayer entityplayer) {
-                 if (!entity.isAlive() && entityplayer.level().getGameRules().getBoolean(GameRules.RULE_ENDER_PEARLS_VANISH_ON_DEATH)) {
--                    this.discard();
-+                    this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
-                     break label30;
+@@ -183,7 +197,7 @@
+         World world = this.level();
+ 
+         if (world instanceof WorldServer worldserver) {
+-            int i;
++            int i, j; // CraftBukkit - decompile error
+             Entity entity;
+             label39:
+             {
+@@ -192,7 +206,7 @@
+                 entity = this.owner != null ? findOwnerIncludingDeadPlayer(worldserver, this.owner.getUUID()) : null;
+                 if (entity instanceof EntityPlayer entityplayer) {
+                     if (!entity.isAlive() && !entityplayer.wonGame && entityplayer.level().getGameRules().getBoolean(GameRules.RULE_ENDER_PEARLS_VANISH_ON_DEATH)) {
+-                        this.discard();
++                        this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
+                         break label39;
+                     }
                  }
-             }
-@@ -243,7 +257,7 @@
+@@ -233,7 +247,7 @@
  
      @Override
      public boolean canTeleport(World world, World world1) {

@@ -33,7 +33,7 @@
      }
  
 -    private static void applyEffects(World world, BlockPosition blockposition, int i, @Nullable Holder<MobEffectList> holder, @Nullable Holder<MobEffectList> holder1) {
--        if (!world.isClientSide && holder != null) {
+-        if (!world.isClientSide() && holder != null) {
 -            double d0 = (double) (i * 10 + 10);
 +    // CraftBukkit start - split into components
 +    private static int getAmplification(int i, @Nullable Holder<MobEffectList> holder, @Nullable Holder<MobEffectList> holder1) {
@@ -89,7 +89,7 @@
      }
  
 +    private static void applyEffects(World world, BlockPosition blockposition, int i, @Nullable Holder<MobEffectList> holder, @Nullable Holder<MobEffectList> holder1) {
-+        if (!world.isClientSide && holder != null) {
++        if (!world.isClientSide() && holder != null) {
 +            int j = getAmplification(i, holder, holder1);
 +
 +            int k = getLevel(i);

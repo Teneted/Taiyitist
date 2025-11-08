@@ -8,8 +8,8 @@
 +        T t0 = commandlistenerwrapper.getLevel().getGameRules().getRule(gamerules_gamerulekey); // CraftBukkit
  
          ((GameRules.GameRuleValue) t0).setFromArgument(commandcontext, "value");
-         commandlistenerwrapper.sendSuccess(() -> {
-@@ -42,7 +42,7 @@
+         commandlistenerwrapper.getServer().onGameRuleChanged(gamerules_gamerulekey.getId(), t0);
+@@ -43,7 +43,7 @@
      }
  
      static <T extends GameRules.GameRuleValue<T>> int queryRule(CommandListenerWrapper commandlistenerwrapper, GameRules.GameRuleKey<T> gamerules_gamerulekey) {

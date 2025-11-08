@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/IInventory.java
 +++ b/net/minecraft/world/IInventory.java
-@@ -11,6 +11,11 @@
+@@ -13,6 +13,11 @@
  import net.minecraft.world.level.World;
  import net.minecraft.world.level.block.entity.TileEntity;
  
@@ -12,7 +12,7 @@
  public interface IInventory extends Clearable, Iterable<ItemStack> {
  
      float DEFAULT_DISTANCE_BUFFER = 4.0F;
-@@ -27,9 +32,7 @@
+@@ -29,9 +34,7 @@
  
      void setItem(int i, ItemStack itemstack);
  
@@ -23,7 +23,7 @@
  
      default int getMaxStackSize(ItemStack itemstack) {
          return Math.min(this.getMaxStackSize(), itemstack.getMaxStackSize());
-@@ -94,6 +97,24 @@
+@@ -100,6 +103,24 @@
          return new IInventory.a(this);
      }
  

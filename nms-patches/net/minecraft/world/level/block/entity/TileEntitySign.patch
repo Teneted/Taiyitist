@@ -27,7 +27,7 @@
              this.setAllowedPlayerEditor((UUID) null);
              this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
          } else {
-             TileEntitySign.LOGGER.warn("Player {} just tried to change non-editable sign", entityhuman.getName().getString());
+             TileEntitySign.LOGGER.warn("Player {} just tried to change non-editable sign", entityhuman.getPlainTextName());
 +            ((EntityPlayer) entityhuman).connection.send(this.getUpdatePacket()); // CraftBukkit
          }
      }
@@ -148,7 +148,7 @@
 +
 +    private CommandListenerWrapper createCommandSourceStack(@Nullable EntityHuman entityhuman, WorldServer worldserver, BlockPosition blockposition) {
 +        // CraftBukkit end
-         String s = entityhuman == null ? "Sign" : entityhuman.getName().getString();
+         String s = entityhuman == null ? "Sign" : entityhuman.getPlainTextName();
          IChatBaseComponent ichatbasecomponent = (IChatBaseComponent) (entityhuman == null ? IChatBaseComponent.literal("Sign") : entityhuman.getDisplayName());
  
 -        return new CommandListenerWrapper(ICommandListener.NULL, Vec3D.atCenterOf(blockposition), Vec2F.ZERO, worldserver, 2, s, ichatbasecomponent, worldserver.getServer(), entityhuman);

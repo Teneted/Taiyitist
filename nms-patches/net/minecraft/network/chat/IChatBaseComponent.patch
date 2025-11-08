@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/chat/IChatBaseComponent.java
 +++ b/net/minecraft/network/chat/IChatBaseComponent.java
-@@ -23,7 +23,23 @@
+@@ -25,7 +25,23 @@
  import net.minecraft.util.FormattedString;
  import net.minecraft.world.level.ChunkCoordIntPair;
  

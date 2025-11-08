@@ -3,7 +3,7 @@
 @@ -47,6 +47,11 @@
      @Override
      protected void onProjectileHit(World world, IBlockData iblockdata, MovingObjectPositionBlock movingobjectpositionblock, IProjectile iprojectile) {
-         if (!world.isClientSide && iprojectile.isOnFire() && this.canBeLit(iblockdata)) {
+         if (!world.isClientSide() && iprojectile.isOnFire() && this.canBeLit(iblockdata)) {
 +            // CraftBukkit start
 +            if (org.bukkit.craftbukkit.event.CraftEventFactory.callBlockIgniteEvent(world, movingobjectpositionblock.getBlockPos(), iprojectile).isCancelled()) {
 +                return;

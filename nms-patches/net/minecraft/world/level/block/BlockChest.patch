@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockChest.java
 +++ b/net/minecraft/world/level/block/BlockChest.java
-@@ -83,28 +83,11 @@
+@@ -90,28 +90,11 @@
              return Optional.empty();
          }
      };
@@ -32,7 +32,7 @@
          }
  
          public Optional<ITileInventory> acceptSingle(TileEntityChest tileentitychest) {
-@@ -117,6 +100,38 @@
+@@ -124,6 +107,38 @@
          }
      };
  
@@ -71,7 +71,7 @@
      @Override
      public MapCodec<? extends BlockChest> codec() {
          return BlockChest.CODEC;
-@@ -268,7 +283,14 @@
+@@ -287,7 +302,14 @@
      @Nullable
      @Override
      protected ITileInventory getMenuProvider(IBlockData iblockdata, World world, BlockPosition blockposition) {

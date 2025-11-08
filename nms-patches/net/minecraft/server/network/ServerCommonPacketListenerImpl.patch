@@ -1,7 +1,7 @@
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 @@ -31,8 +31,44 @@
- import net.minecraft.util.thread.IAsyncTaskHandler;
+ import net.minecraft.util.profiling.Profiler;
  import org.slf4j.Logger;
  
 -public abstract class ServerCommonPacketListenerImpl implements ServerCommonPacketListener {
@@ -138,14 +138,14 @@
  
      @Override
      public void handleCustomClickAction(ServerboundCustomClickActionPacket serverboundcustomclickactionpacket) {
-         PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcustomclickactionpacket, this, (IAsyncTaskHandler) this.server);
+         PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcustomclickactionpacket, this, this.server.packetProcessor());
 -        this.server.handleCustomClickAction(serverboundcustomclickactionpacket.id(), serverboundcustomclickactionpacket.payload());
 +        this.server.handleCustomClickAction(serverboundcustomclickactionpacket.id(), serverboundcustomclickactionpacket.payload(), this.player); // CraftBukkit - add player
      }
  
      @Override
 @@ -112,11 +209,18 @@
-             ServerCommonPacketListenerImpl.LOGGER.info("Disconnecting {} due to resource pack {} rejection", this.playerProfile().getName(), serverboundresourcepackpacket.id());
+             ServerCommonPacketListenerImpl.LOGGER.info("Disconnecting {} due to resource pack {} rejection", this.playerProfile().name(), serverboundresourcepackpacket.id());
              this.disconnect((IChatBaseComponent) IChatBaseComponent.translatable("multiplayer.requiredTexturePrompt.disconnect"));
          }
 +        this.cserver.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(getCraftPlayer(), serverboundresourcepackpacket.id(), PlayerResourcePackStatusEvent.Status.values()[serverboundresourcepackpacket.action().ordinal()])); // CraftBukkit
@@ -155,7 +155,7 @@
      @Override
      public void handleCookieResponse(ServerboundCookieResponsePacket serverboundcookieresponsepacket) {
 +        // CraftBukkit start
-+        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcookieresponsepacket, this, (IAsyncTaskHandler) this.server);
++        PlayerConnectionUtils.ensureRunningOnSameThread(serverboundcookieresponsepacket, this, this.server.packetProcessor());
 +        if (this.player.getBukkitEntity().handleCookieResponse(serverboundcookieresponsepacket)) {
 +            return;
 +        }
@@ -181,7 +181,7 @@
 +            return;
 +        } else if (packet instanceof PacketPlayOutSpawnPosition) {
 +            PacketPlayOutSpawnPosition packet6 = (PacketPlayOutSpawnPosition) packet;
-+            this.player.compassTarget = CraftLocation.toBukkit(packet6.pos, this.getCraftPlayer().getWorld());
++            this.player.compassTarget = CraftLocation.toBukkit(packet6.respawnData().pos(), this.getCraftPlayer().getWorld());
 +        }
 +        // CraftBukkit end
          if (packet.isTerminal()) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
 +++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
-@@ -45,11 +45,16 @@
+@@ -46,6 +46,10 @@
  import net.minecraft.world.level.levelgen.presets.WorldPresets;
  import org.slf4j.Logger;
  
@@ -11,21 +11,17 @@
  public class DedicatedServerProperties extends PropertyManager<DedicatedServerProperties> {
  
      static final Logger LOGGER = LogUtils.getLogger();
-     private static final Pattern SHA1 = Pattern.compile("^[a-fA-F0-9]{40}$");
-     private static final Splitter COMMA_SPLITTER = Splitter.on(',').trimResults();
+@@ -54,6 +58,7 @@
+     public static final String MANAGEMENT_SERVER_TLS_ENABLED_KEY = "management-server-tls-enabled";
+     public static final String MANAGEMENT_SERVER_TLS_KEYSTORE_KEY = "management-server-tls-keystore";
+     public static final String MANAGEMENT_SERVER_TLS_KEYSTORE_PASSWORD_KEY = "management-server-tls-keystore-password";
 +    public final boolean debug = this.get("debug", false); // CraftBukkit
      public final boolean onlineMode = this.get("online-mode", true);
      public final boolean preventProxyConnections = this.get("prevent-proxy-connections", false);
      public final String serverIp = this.get("server-ip", "");
-@@ -102,13 +107,15 @@
-     public final PropertyManager<DedicatedServerProperties>.EditableProperty<Boolean> whiteList;
-     public final boolean enforceSecureProfile;
-     public final boolean logIPs;
--    public final int pauseWhenEmptySeconds;
-+    public int pauseWhenEmptySeconds;
-     private final DedicatedServerProperties.WorldDimensionData worldDimensionData;
+@@ -116,8 +121,10 @@
      public final WorldOptions worldOptions;
-     public boolean acceptsTransfers;
+     public PropertyManager<DedicatedServerProperties>.EditableProperty<Boolean> acceptsTransfers;
  
 -    public DedicatedServerProperties(Properties properties) {
 -        super(properties);
@@ -33,10 +29,10 @@
 +    public DedicatedServerProperties(Properties properties, OptionSet optionset) {
 +        super(properties, optionset);
 +        // CraftBukkit end
-         this.difficulty = (EnumDifficulty) this.get("difficulty", dispatchNumberOrString(EnumDifficulty::byId, EnumDifficulty::byName), EnumDifficulty::getKey, EnumDifficulty.EASY);
-         this.gamemode = (EnumGamemode) this.get("gamemode", dispatchNumberOrString(EnumGamemode::byId, EnumGamemode::byName), EnumGamemode::getName, EnumGamemode.SURVIVAL);
+         this.difficulty = this.<EnumDifficulty>getMutable("difficulty", dispatchNumberOrString(EnumDifficulty::byId, EnumDifficulty::byName), EnumDifficulty::getKey, EnumDifficulty.EASY);
+         this.gameMode = this.<EnumGamemode>getMutable("gamemode", dispatchNumberOrString(EnumGamemode::byId, EnumGamemode::byName), EnumGamemode::getName, EnumGamemode.SURVIVAL);
          this.levelName = this.get("level-name", "world");
-@@ -169,13 +176,15 @@
+@@ -183,13 +190,15 @@
          this.initialDataPackConfiguration = getDatapackConfig(this.get("initial-enabled-packs", String.join(",", WorldDataConfiguration.DEFAULT.dataPacks().getEnabled())), this.get("initial-disabled-packs", String.join(",", WorldDataConfiguration.DEFAULT.dataPacks().getDisabled())));
      }
  
@@ -56,7 +52,7 @@
      }
  
      @Nullable
-@@ -186,7 +195,7 @@
+@@ -200,7 +209,7 @@
  
                  return (IChatBaseComponent) ComponentSerialization.CODEC.parse(IRegistryCustom.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonelement).resultOrPartial((s1) -> {
                      DedicatedServerProperties.LOGGER.warn("Failed to parse resource pack prompt '{}': {}", s, s1);
@@ -65,7 +61,7 @@
              } catch (Exception exception) {
                  DedicatedServerProperties.LOGGER.warn("Failed to parse resource pack prompt '{}'", s, exception);
              }
-@@ -260,10 +269,10 @@
+@@ -274,10 +283,10 @@
              }).orElseThrow(() -> {
                  return new IllegalStateException("Invalid datapack contents: can't find default preset");
              });
@@ -78,7 +74,7 @@
              });
  
              Objects.requireNonNull(holderlookup);
-@@ -275,7 +284,7 @@
+@@ -289,7 +298,7 @@
  
              if (holder.is(WorldPresets.FLAT)) {
                  RegistryOps<JsonElement> registryops = holderlookup_a.<JsonElement>createSerializationContext(JsonOps.INSTANCE);

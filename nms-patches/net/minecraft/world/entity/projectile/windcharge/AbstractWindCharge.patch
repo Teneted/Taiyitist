@@ -23,7 +23,7 @@
 @@ -120,7 +124,7 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
          }
@@ -31,7 +31,7 @@
      }
 @@ -155,7 +159,7 @@
      public void tick() {
-         if (!this.level().isClientSide && this.getBlockY() > this.level().getMaxY() + 30) {
+         if (!this.level().isClientSide() && this.getBlockY() > this.level().getMaxY() + 30) {
              this.explode(this.position());
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.OUT_OF_WORLD); // CraftBukkit - add Bukkit remove cause

@@ -24,7 +24,7 @@
  
      public EntityItem(EntityTypes<? extends EntityItem> entitytypes, World world) {
          super(entitytypes, world);
-@@ -124,12 +134,15 @@
+@@ -113,12 +123,15 @@
      @Override
      public void tick() {
          if (this.getItem().isEmpty()) {
@@ -44,7 +44,7 @@
  
              this.xo = this.getX();
              this.yo = this.getY();
-@@ -179,9 +192,11 @@
+@@ -168,9 +181,11 @@
                  this.mergeWithNeighbours();
              }
  
@@ -55,11 +55,11 @@
 +            // CraftBukkit end */
  
              this.hasImpulse |= this.updateInWaterStateAndDoFluidPushing();
-             if (!this.level().isClientSide) {
-@@ -193,7 +208,13 @@
+             if (!this.level().isClientSide()) {
+@@ -182,7 +197,13 @@
              }
  
-             if (!this.level().isClientSide && this.age >= 6000) {
+             if (!this.level().isClientSide() && this.age >= 6000) {
 -                this.discard();
 +                // CraftBukkit start - fire ItemDespawnEvent
 +                if (CraftEventFactory.callItemDespawnEvent(this).isCancelled()) {
@@ -71,7 +71,7 @@
              }
  
          }
-@@ -273,11 +294,16 @@
+@@ -262,11 +283,16 @@
      }
  
      private static void merge(EntityItem entityitem, ItemStack itemstack, EntityItem entityitem1, ItemStack itemstack1) {
@@ -89,7 +89,7 @@
          }
  
      }
-@@ -306,12 +332,17 @@
+@@ -295,12 +321,17 @@
          } else if (!this.getItem().canBeHurtBy(damagesource)) {
              return false;
          } else {
@@ -108,7 +108,7 @@
              }
  
              return true;
-@@ -341,11 +372,11 @@
+@@ -330,11 +361,11 @@
          this.health = valueinput.getShortOr("Health", (short) 5);
          this.age = valueinput.getShortOr("Age", (short) 0);
          this.pickupDelay = valueinput.getShortOr("PickupDelay", (short) 0);
@@ -122,7 +122,7 @@
          }
  
      }
-@@ -357,10 +388,50 @@
+@@ -346,10 +377,50 @@
              Item item = itemstack.getItem();
              int i = itemstack.getCount();
  

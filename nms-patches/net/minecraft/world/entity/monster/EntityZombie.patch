@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntityZombie.java
 +++ b/net/minecraft/world/entity/monster/EntityZombie.java
-@@ -65,6 +65,15 @@
+@@ -64,6 +64,15 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -16,7 +16,7 @@
  public class EntityZombie extends EntityMonster {
  
      private static final MinecraftKey SPEED_MODIFIER_BABY_ID = MinecraftKey.withDefaultNamespace("baby");
-@@ -93,6 +102,7 @@
+@@ -92,6 +101,7 @@
      private boolean canBreakDoors;
      private int inWaterTime;
      public int conversionTime;
@@ -24,9 +24,9 @@
  
      public EntityZombie(EntityTypes<? extends EntityZombie> entitytypes, World world) {
          super(entitytypes, world);
-@@ -207,7 +217,10 @@
+@@ -206,7 +216,10 @@
      public void tick() {
-         if (!this.level().isClientSide && this.isAlive() && !this.isNoAi()) {
+         if (!this.level().isClientSide() && this.isAlive() && !this.isNoAi()) {
              if (this.isUnderWaterConverting()) {
 -                --this.conversionTime;
 +                // CraftBukkit start - Use wall time instead of ticks for conversion
@@ -36,7 +36,7 @@
                  if (this.conversionTime < 0) {
                      this.doUnderWaterConversion();
                  }
-@@ -224,6 +237,7 @@
+@@ -223,6 +236,7 @@
          }
  
          super.tick();
@@ -44,7 +44,7 @@
      }
  
      @Override
-@@ -258,6 +272,7 @@
+@@ -257,6 +271,7 @@
      }
  
      public void startUnderWaterConversion(int i) {
@@ -52,7 +52,7 @@
          this.conversionTime = i;
          this.getEntityData().set(EntityZombie.DATA_DROWNED_CONVERSION_ID, true);
      }
-@@ -271,26 +286,39 @@
+@@ -270,26 +285,39 @@
      }
  
      protected void convertToZombieType(EntityTypes<? extends EntityZombie> entitytypes) {
@@ -98,7 +98,7 @@
      }
  
      protected boolean isSunSensitive() {
-@@ -328,9 +356,9 @@
+@@ -327,9 +355,9 @@
                      if (EntityPositionTypes.isSpawnPositionOk(entitytypes, worldserver, blockposition) && EntityPositionTypes.checkSpawnRules(entitytypes, worldserver, EntitySpawnReason.REINFORCEMENT, blockposition, worldserver.random)) {
                          entityzombie.setPos((double) i1, (double) j1, (double) k1);
                          if (!worldserver.hasNearbyAlivePlayer((double) i1, (double) j1, (double) k1, 7.0D) && worldserver.isUnobstructed(entityzombie) && worldserver.noCollision((Entity) entityzombie) && (entityzombie.canSpawnInLiquids() || !worldserver.containsAnyLiquid(entityzombie.getBoundingBox()))) {
@@ -110,7 +110,7 @@
                              AttributeModifiable attributemodifiable = this.getAttribute(GenericAttributes.SPAWN_REINFORCEMENTS_CHANCE);
                              AttributeModifier attributemodifier = attributemodifiable.getModifier(EntityZombie.REINFORCEMENT_CALLER_CHARGE_ID);
                              double d0 = attributemodifier != null ? attributemodifier.amount() : 0.0D;
-@@ -356,7 +384,14 @@
+@@ -355,7 +383,14 @@
              float f = this.level().getCurrentDifficultyAt(this.blockPosition()).getEffectiveDifficulty();
  
              if (this.getMainHandItem().isEmpty() && this.isOnFire() && this.random.nextFloat() < f * 0.3F) {
@@ -126,7 +126,7 @@
              }
          }
  
-@@ -389,7 +424,7 @@
+@@ -388,7 +423,7 @@
  
      @Override
      public EntityTypes<? extends EntityZombie> getType() {
@@ -135,10 +135,10 @@
      }
  
      protected boolean canSpawnInLiquids() {
-@@ -505,7 +540,7 @@
+@@ -504,7 +539,7 @@
                              entitychicken1.finalizeSpawn(worldaccess, difficultydamagescaler, EntitySpawnReason.JOCKEY, (GroupDataEntity) null);
                              entitychicken1.setChickenJockey(true);
-                             this.startRiding(entitychicken1);
+                             this.startRiding(entitychicken1, false, false);
 -                            worldaccess.addFreshEntity(entitychicken1);
 +                            worldaccess.addFreshEntity(entitychicken1, CreatureSpawnEvent.SpawnReason.MOUNT); // CraftBukkit
                          }

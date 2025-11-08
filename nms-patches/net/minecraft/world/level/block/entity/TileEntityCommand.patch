@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityCommand.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityCommand.java
-@@ -28,6 +28,13 @@
+@@ -29,6 +29,13 @@
      private boolean auto = false;
      private boolean conditionMet = false;
      private final CommandBlockListenerAbstract commandBlock = new CommandBlockListenerAbstract() {

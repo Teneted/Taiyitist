@@ -20,7 +20,7 @@
  
      public EntityMinecartTNT(EntityTypes<? extends EntityMinecartTNT> entitytypes, World world) {
          super(entitytypes, world);
-@@ -123,10 +129,18 @@
+@@ -119,10 +125,18 @@
              if (worldserver.getGameRules().getBoolean(GameRules.RULE_TNT_EXPLODES)) {
                  double d1 = Math.min(Math.sqrt(d0), 5.0D);
  

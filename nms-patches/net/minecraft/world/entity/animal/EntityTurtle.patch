@@ -5,7 +5,7 @@
  
                  if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
 +                    this.forceDrops = true; // CraftBukkit
-                     this.spawnAtLocation(worldserver, Items.TURTLE_SCUTE, 1);
+                     this.dropFromGiftLootTable(worldserver, LootTables.TURTLE_GROW, this::spawnAtLocation);
 +                    this.forceDrops = false; // CraftBukkit
                  }
              }

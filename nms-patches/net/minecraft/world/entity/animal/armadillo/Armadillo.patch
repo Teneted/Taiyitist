@@ -11,7 +11,7 @@
  public class Armadillo extends EntityAnimal {
  
      public static final float BABY_SCALE = 0.6F;
-@@ -137,16 +141,18 @@
+@@ -131,16 +135,18 @@
          GameProfilerFiller gameprofilerfiller = Profiler.get();
  
          gameprofilerfiller.push("armadilloBrain");
@@ -31,7 +31,7 @@
  
              this.scuteTime = this.pickNextScuteDropTime();
          }
-@@ -292,8 +298,13 @@
+@@ -286,8 +292,13 @@
      }
  
      @Override
@@ -47,7 +47,7 @@
          if (!this.isNoAi() && !this.isDeadOrDying()) {
              if (damagesource.getEntity() instanceof EntityLiving) {
                  this.getBrain().setMemoryWithExpiry(MemoryModuleType.DANGER_DETECTED_RECENTLY, true, 80L);
-@@ -305,6 +316,7 @@
+@@ -299,6 +310,7 @@
              }
  
          }
@@ -55,13 +55,13 @@
      }
  
      @Override
-@@ -328,7 +340,9 @@
+@@ -322,7 +334,9 @@
              if (world instanceof WorldServer) {
                  WorldServer worldserver = (WorldServer) world;
  
 +                this.forceDrops = true; // CraftBukkit
-                 this.spawnAtLocation(worldserver, new ItemStack(Items.ARMADILLO_SCUTE));
+                 this.dropFromEntityInteractLootTable(worldserver, LootTables.ARMADILLO_BRUSH, entity, itemstack, this::spawnAtLocation);
 +                this.forceDrops = false; // CraftBukkit
-                 this.gameEvent(GameEvent.ENTITY_INTERACT);
                  this.playSound(SoundEffects.ARMADILLO_BRUSH);
+                 this.gameEvent(GameEvent.ENTITY_INTERACT);
              }

@@ -16,7 +16,7 @@
  public class EntitySlime extends EntityInsentient implements IMonster {
  
      private static final DataWatcherObject<Integer> ID_SIZE = DataWatcher.<Integer>defineId(EntitySlime.class, DataWatcherRegistry.INT);
-@@ -199,11 +208,18 @@
+@@ -194,11 +203,18 @@
  
      @Override
      public EntityTypes<? extends EntitySlime> getType() {
@@ -35,8 +35,8 @@
 +        // CraftBukkit end
          int i = this.getSize();
  
-         if (!this.level().isClientSide && i > 1 && this.isDeadOrDying()) {
-@@ -213,18 +229,45 @@
+         if (!this.level().isClientSide() && i > 1 && this.isDeadOrDying()) {
+@@ -208,18 +224,45 @@
              int k = 2 + this.random.nextInt(3);
              ScoreboardTeam scoreboardteam = this.getTeam();
  

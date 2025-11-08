@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
-@@ -94,6 +94,40 @@
+@@ -96,6 +96,40 @@
  import org.apache.commons.lang3.mutable.MutableBoolean;
  import org.slf4j.Logger;
  
@@ -41,7 +41,7 @@
  public final class ItemStack implements DataComponentHolder {
  
      private static final List<IChatBaseComponent> OP_NBT_WARNING = List.of(IChatBaseComponent.translatable("item.op_warning.line1").withStyle(EnumChatFormat.RED, EnumChatFormat.BOLD), IChatBaseComponent.translatable("item.op_warning.line2").withStyle(EnumChatFormat.RED), IChatBaseComponent.translatable("item.op_warning.line3").withStyle(EnumChatFormat.RED));
-@@ -133,7 +167,7 @@
+@@ -135,7 +169,7 @@
  
          return dataresult.isError() ? dataresult.map((unit) -> {
              return itemstack;
@@ -50,7 +50,7 @@
              int i = itemstack.getCount();
  
              return "Item stack with stack size of " + i + " was larger than maximum: " + itemstack.getMaxStackSize();
-@@ -151,12 +185,18 @@
+@@ -153,12 +187,18 @@
                      Holder<Item> holder = (Holder) Item.STREAM_CODEC.decode(registryfriendlybytebuf);
                      DataComponentPatch datacomponentpatch = (DataComponentPatch) streamcodec.decode(registryfriendlybytebuf);
  
@@ -71,7 +71,7 @@
                      registryfriendlybytebuf.writeVarInt(0);
                  } else {
                      registryfriendlybytebuf.writeVarInt(itemstack.getCount());
-@@ -334,15 +374,173 @@
+@@ -335,15 +375,173 @@
              return EnumInteractionResult.PASS;
          } else {
              Item item = this.getItem();
@@ -247,7 +247,7 @@
  
              return enuminteractionresult;
          }
-@@ -429,6 +627,21 @@
+@@ -430,6 +628,21 @@
  
      public void hurtAndBreak(int i, WorldServer worldserver, @Nullable EntityPlayer entityplayer, Consumer<Item> consumer) {
          int j = this.processDurabilityChange(i, worldserver, entityplayer);
@@ -269,7 +269,7 @@
  
          if (j != 0) {
              this.applyDamage(this.getDamageValue() + j, entityplayer, consumer);
-@@ -448,6 +661,11 @@
+@@ -449,6 +662,11 @@
          this.setDamageValue(i);
          if (this.isBroken()) {
              Item item = this.getItem();
@@ -281,7 +281,7 @@
  
              this.shrink(1);
              consumer.accept(item);
-@@ -726,6 +944,12 @@
+@@ -727,6 +945,12 @@
          return this.getItem().useOnRelease(this);
      }
  
@@ -294,7 +294,7 @@
      @Nullable
      public <T> T set(DataComponentType<T> datacomponenttype, @Nullable T t0) {
          return (T) this.components.set(datacomponenttype, t0);
-@@ -1031,6 +1255,13 @@
+@@ -1036,6 +1260,13 @@
          EnchantmentManager.forEachModifier(this, enumitemslot, biconsumer);
      }
  
@@ -308,7 +308,7 @@
      public IChatBaseComponent getDisplayName() {
          IChatMutableComponent ichatmutablecomponent = IChatBaseComponent.empty().append(this.getHoverName());
  
-@@ -1093,7 +1324,7 @@
+@@ -1098,7 +1329,7 @@
      }
  
      public void consume(int i, @Nullable EntityLiving entityliving) {

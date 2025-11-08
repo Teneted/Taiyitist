@@ -29,7 +29,7 @@
                  this.addTicket(long2objectmap_entry.getLongKey(), ticket);
              }
          }
-@@ -182,7 +186,7 @@
+@@ -202,7 +206,7 @@
      }
  
      private static boolean isTicketSameTypeAndLevel(Ticket ticket, Ticket ticket1) {
@@ -38,7 +38,7 @@
      }
  
      public int getTicketLevelAt(long i, boolean flag) {
-@@ -371,7 +375,7 @@
+@@ -404,7 +408,7 @@
          while (objectiterator.hasNext()) {
              Long2ObjectMap.Entry<List<Ticket>> long2objectmap_entry = (Entry) objectiterator.next();
  
@@ -47,7 +47,7 @@
                  if (ticket.getType() == tickettype) {
                      list.add(Pair.of(ticket, long2objectmap_entry.getLongKey()));
                  }
-@@ -407,7 +411,7 @@
+@@ -440,7 +444,7 @@
          while (objectiterator.hasNext()) {
              Long2ObjectMap.Entry<List<Ticket>> long2objectmap_entry = (Entry) objectiterator.next();
  

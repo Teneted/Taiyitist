@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/arguments/selector/ArgumentParserSelector.java
 +++ b/net/minecraft/commands/arguments/selector/ArgumentParserSelector.java
-@@ -215,8 +215,10 @@
+@@ -223,8 +223,10 @@
          };
      }
  
@@ -13,7 +13,7 @@
          this.suggestions = this::suggestSelector;
          if (!this.reader.canRead()) {
              throw ArgumentParserSelector.ERROR_MISSING_SELECTOR_TYPE.createWithContext(this.reader);
-@@ -505,6 +507,12 @@
+@@ -517,6 +519,12 @@
      }
  
      public EntitySelector parse() throws CommandSyntaxException {
@@ -26,7 +26,7 @@
          this.startPosition = this.reader.getCursor();
          this.suggestions = this::suggestNameOrSelector;
          if (this.reader.canRead() && this.reader.peek() == '@') {
-@@ -513,7 +521,7 @@
+@@ -525,7 +533,7 @@
              }
  
              this.reader.skip();

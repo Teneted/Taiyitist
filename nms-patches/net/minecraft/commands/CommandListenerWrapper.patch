@@ -45,7 +45,7 @@
  
          if (this.server.getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK)) {
              for (EntityPlayer entityplayer : this.server.getPlayerList().getPlayers()) {
--                if (entityplayer.commandSource() != this.source && this.server.getPlayerList().isOp(entityplayer.getGameProfile())) {
+-                if (entityplayer.commandSource() != this.source && this.server.getPlayerList().isOp(entityplayer.nameAndId())) {
 +                if (entityplayer.commandSource() != this.source && entityplayer.getBukkitEntity().hasPermission("minecraft.admin.command_feedback")) { // CraftBukkit
                      entityplayer.sendSystemMessage(ichatbasecomponent1);
                  }

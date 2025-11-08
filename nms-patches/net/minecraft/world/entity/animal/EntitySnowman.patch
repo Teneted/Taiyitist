@@ -44,7 +44,7 @@
 +                // CraftBukkit end
                  this.shear(worldserver, SoundCategory.PLAYERS, itemstack);
                  this.gameEvent(GameEvent.SHEAR, entityhuman);
-                 itemstack.hurtAndBreak(1, entityhuman, getSlotForHand(enumhand));
+                 itemstack.hurtAndBreak(1, entityhuman, enumhand.asEquipmentSlot());
 @@ -167,7 +180,9 @@
          worldserver.playSound((Entity) null, (Entity) this, SoundEffects.SNOW_GOLEM_SHEAR, soundcategory, 1.0F, 1.0F);
          this.setPumpkin(false);

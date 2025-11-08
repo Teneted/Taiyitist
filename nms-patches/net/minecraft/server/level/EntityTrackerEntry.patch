@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/EntityTrackerEntry.java
 +++ b/net/minecraft/server/level/EntityTrackerEntry.java
-@@ -52,6 +52,12 @@
+@@ -49,6 +49,12 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
@@ -13,29 +13,30 @@
  public class EntityTrackerEntry {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -77,8 +83,12 @@
+@@ -73,8 +79,12 @@
      private boolean wasOnGround;
      @Nullable
      private List<DataWatcher.c<?>> trackedDataValues;
 +    // CraftBukkit start
 +    private final Set<ServerPlayerConnection> trackedPlayers;
  
--    public EntityTrackerEntry(WorldServer worldserver, Entity entity, int i, boolean flag, Consumer<Packet<?>> consumer, BiConsumer<Packet<?>, List<UUID>> biconsumer) {
-+    public EntityTrackerEntry(WorldServer worldserver, Entity entity, int i, boolean flag, Consumer<Packet<?>> consumer, BiConsumer<Packet<?>, List<UUID>> biconsumer, Set<ServerPlayerConnection> trackedPlayers) {
+-    public EntityTrackerEntry(WorldServer worldserver, Entity entity, int i, boolean flag, EntityTrackerEntry.a entitytrackerentry_a) {
++    public EntityTrackerEntry(WorldServer worldserver, Entity entity, int i, boolean flag, EntityTrackerEntry.a entitytrackerentry_a, Set<ServerPlayerConnection> trackedPlayers) {
 +        this.trackedPlayers = trackedPlayers;
 +        // CraftBukkit end
          this.level = worldserver;
-         this.broadcast = consumer;
+         this.synchronizer = entitytrackerentry_a;
          this.entity = entity;
-@@ -100,22 +110,23 @@
+@@ -93,7 +103,7 @@
+         List<Entity> list = this.entity.getPassengers();
+ 
          if (!list.equals(this.lastPassengers)) {
-             List<UUID> list1 = this.mountedOrDismounted(list).map(Entity::getUUID).toList();
- 
--            this.broadcastWithIgnore.accept(new PacketPlayOutMount(this.entity), list1);
-+            this.broadcastWithIgnoreAndSend(new PacketPlayOutMount(this.entity), list1); // CraftBukkit
+-            this.synchronizer.sendToTrackingPlayersFiltered(new PacketPlayOutMount(this.entity), (entityplayer) -> {
++            this.synchronizer.sendToTrackingPlayersFilteredAndSelf(new PacketPlayOutMount(this.entity), (entityplayer) -> { // CraftBukkit
+                 return list.contains(entityplayer) == this.lastPassengers.contains(entityplayer);
+             });
              this.lastPassengers = list;
-         }
- 
+@@ -102,15 +112,16 @@
          Entity entity = this.entity;
  
          if (entity instanceof EntityItemFrame entityitemframe) {
@@ -55,7 +56,7 @@
                              worldmap.tickCarriedBy(entityplayer, itemstack);
                              Packet<?> packet = worldmap.getUpdatePacket(mapid, entityplayer);
  
-@@ -244,6 +255,27 @@
+@@ -239,6 +250,27 @@
  
          ++this.tickCount;
          if (this.entity.hurtMarked) {
@@ -81,9 +82,9 @@
 +            }
 +            // CraftBukkit end
              this.entity.hurtMarked = false;
-             this.broadcastAndSend(new PacketPlayOutEntityVelocity(this.entity));
+             this.synchronizer.sendToTrackingPlayersAndSelf(new PacketPlayOutEntityVelocity(this.entity));
          }
-@@ -296,7 +328,10 @@
+@@ -283,7 +315,10 @@
  
      public void sendPairingData(EntityPlayer entityplayer, Consumer<Packet<PacketListenerPlayOut>> consumer) {
          if (this.entity.isRemoved()) {
@@ -95,7 +96,7 @@
          }
  
          Packet<PacketListenerPlayOut> packet = this.entity.getAddEntityPacket(this);
-@@ -311,6 +346,12 @@
+@@ -298,6 +333,12 @@
          if (entity instanceof EntityLiving entityliving) {
              Collection<AttributeModifiable> collection = entityliving.getAttributes().getSyncableAttributes();
  
@@ -108,7 +109,7 @@
              if (!collection.isEmpty()) {
                  consumer.accept(new PacketPlayOutUpdateAttributes(this.entity.getId(), collection));
              }
-@@ -331,6 +372,7 @@
+@@ -318,6 +359,7 @@
              if (!list.isEmpty()) {
                  consumer.accept(new PacketPlayOutEntityEquipment(this.entity.getId(), list));
              }
@@ -116,7 +117,7 @@
          }
  
          if (!this.entity.getPassengers().isEmpty()) {
-@@ -383,6 +425,11 @@
+@@ -370,6 +412,11 @@
              Set<AttributeModifiable> set = ((EntityLiving) this.entity).getAttributes().getAttributesToSync();
  
              if (!set.isEmpty()) {
@@ -125,21 +126,14 @@
 +                    ((EntityPlayer) this.entity).getBukkitEntity().injectScaledMaxHealth(set, false);
 +                }
 +                // CraftBukkit end
-                 this.broadcastAndSend(new PacketPlayOutUpdateAttributes(this.entity.getId(), set));
+                 this.synchronizer.sendToTrackingPlayersAndSelf(new PacketPlayOutUpdateAttributes(this.entity.getId(), set));
              }
  
-@@ -398,4 +445,14 @@
-         }
+@@ -385,5 +432,7 @@
+         void sendToTrackingPlayersAndSelf(Packet<? super PacketListenerPlayOut> packet);
  
+         void sendToTrackingPlayersFiltered(Packet<? super PacketListenerPlayOut> packet, Predicate<EntityPlayer> predicate);
++
++        void sendToTrackingPlayersFilteredAndSelf(Packet<? super PacketListenerPlayOut> packet, Predicate<EntityPlayer> predicate); // CraftBukkit
      }
-+
-+    // CraftBukkit start
-+    private void broadcastWithIgnoreAndSend(Packet<?> packet, List<UUID> list) {
-+        this.broadcastWithIgnore.accept(packet, list);
-+        if (this.entity instanceof EntityPlayer) {
-+            ((EntityPlayer) this.entity).connection.send(packet);
-+        }
-+
-+    }
-+    // CraftBukkit end
  }

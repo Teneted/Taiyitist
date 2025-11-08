@@ -16,7 +16,7 @@
  
      public static void checkSpawn(World world, BlockPosition blockposition, TileEntitySkull tileentityskull) {
 +        if (world.captureBlockStates) return; // CraftBukkit
-         if (!world.isClientSide) {
+         if (!world.isClientSide()) {
              IBlockData iblockdata = tileentityskull.getBlockState();
              boolean flag = iblockdata.is(Blocks.WITHER_SKELETON_SKULL) || iblockdata.is(Blocks.WITHER_SKELETON_WALL_SKULL);
 @@ -67,18 +72,24 @@

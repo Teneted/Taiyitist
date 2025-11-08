@@ -2,7 +2,7 @@
 +++ b/net/minecraft/world/level/block/BlockFenceGate.java
 @@ -183,6 +183,17 @@
      protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, @Nullable Orientation orientation, boolean flag) {
-         if (!world.isClientSide) {
+         if (!world.isClientSide()) {
              boolean flag1 = world.hasNeighborSignal(blockposition);
 +            // CraftBukkit start
 +            boolean oldPowered = iblockdata.getValue(BlockFenceGate.POWERED);

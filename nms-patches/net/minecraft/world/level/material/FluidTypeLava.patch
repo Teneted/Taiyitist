@@ -29,7 +29,7 @@
                              worldserver.setBlockAndUpdate(blockposition2.above(), BlockFireAbstract.getState(worldserver, blockposition2));
                          }
                      }
-@@ -202,7 +217,11 @@
+@@ -203,7 +218,11 @@
  
              if (this.is(TagsFluid.LAVA) && fluid1.is(TagsFluid.WATER)) {
                  if (iblockdata.getBlock() instanceof BlockFluids) {

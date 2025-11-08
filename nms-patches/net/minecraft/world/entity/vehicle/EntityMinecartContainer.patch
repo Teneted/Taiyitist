@@ -79,7 +79,7 @@
 +    @Override
 +    public void remove(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
 +        // CraftBukkit end
-         if (!this.level().isClientSide && entity_removalreason.shouldDestroy()) {
+         if (!this.level().isClientSide() && entity_removalreason.shouldDestroy()) {
              InventoryUtils.dropContents(this.level(), (Entity) this, this);
          }
  

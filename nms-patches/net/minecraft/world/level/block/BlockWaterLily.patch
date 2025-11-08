@@ -12,8 +12,8 @@
  
      public static final MapCodec<BlockWaterLily> CODEC = simpleCodec(BlockWaterLily::new);
 @@ -33,6 +37,11 @@
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
-         super.entityInside(iblockdata, world, blockposition, entity, insideblockeffectapplier);
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier, boolean flag) {
+         super.entityInside(iblockdata, world, blockposition, entity, insideblockeffectapplier, flag);
          if (world instanceof WorldServer && entity instanceof AbstractBoat) {
 +            // CraftBukkit start
 +            if (!CraftEventFactory.callEntityChangeBlockEvent(entity, blockposition, Blocks.AIR.defaultBlockState())) {

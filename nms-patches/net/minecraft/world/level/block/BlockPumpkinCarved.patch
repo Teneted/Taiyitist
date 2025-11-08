@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockPumpkinCarved.java
 +++ b/net/minecraft/world/level/block/BlockPumpkinCarved.java
-@@ -24,6 +24,10 @@
+@@ -29,6 +29,10 @@
  import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
  import net.minecraft.world.level.block.state.properties.BlockStateEnum;
  
@@ -11,20 +11,42 @@
  public class BlockPumpkinCarved extends BlockFacingHorizontal {
  
      public static final MapCodec<BlockPumpkinCarved> CODEC = simpleCodec(BlockPumpkinCarved::new);
-@@ -86,9 +90,14 @@
+@@ -100,7 +104,11 @@
+             CopperGolem coppergolem = EntityTypes.COPPER_GOLEM.create(world, EntitySpawnReason.TRIGGERED);
+ 
+             if (coppergolem != null) {
+-                spawnGolemInWorld(world, shapedetector_shapedetectorcollection2, coppergolem, shapedetector_shapedetectorcollection2.getBlock(0, 0, 0).getPos());
++                // CraftBukkit start - SPIGOT-8085: handle cancellation
++                if (!spawnGolemInWorld(world, shapedetector_shapedetectorcollection2, coppergolem, shapedetector_shapedetectorcollection2.getBlock(0, 0, 0).getPos())) {
++                    return;
++                }
++                // CraftBukkit end
+                 this.replaceCopperBlockWithChest(world, shapedetector_shapedetectorcollection2);
+                 coppergolem.spawn(this.getWeatherStateFromPattern(shapedetector_shapedetectorcollection2));
+             }
+@@ -123,16 +131,22 @@
+         }
      }
  
-     private static void spawnGolemInWorld(World world, ShapeDetector.ShapeDetectorCollection shapedetector_shapedetectorcollection, Entity entity, BlockPosition blockposition) {
+-    private static void spawnGolemInWorld(World world, ShapeDetector.ShapeDetectorCollection shapedetector_shapedetectorcollection, Entity entity, BlockPosition blockposition) {
 -        clearPatternBlocks(world, shapedetector_shapedetectorcollection);
++    // CraftBukkit start
++    private static boolean spawnGolemInWorld(World world, ShapeDetector.ShapeDetectorCollection shapedetector_shapedetectorcollection, Entity entity, BlockPosition blockposition) {
 +        // clearPatternBlocks(world, shapedetector_shapedetectorcollection); // CraftBukkit - moved down
          entity.snapTo((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.05D, (double) blockposition.getZ() + 0.5D, 0.0F, 0.0F);
 -        world.addFreshEntity(entity);
-+        // CraftBukkit start
-+        if (!world.addFreshEntity(entity, (entity.getType() == EntityTypes.SNOW_GOLEM) ? SpawnReason.BUILD_SNOWMAN : SpawnReason.BUILD_IRONGOLEM)) {
-+            return;
++        if (!world.addFreshEntity(entity, (entity.getType() == EntityTypes.SNOW_GOLEM) ? SpawnReason.BUILD_SNOWMAN : ((entity.getType() == EntityTypes.IRON_GOLEM) ? SpawnReason.BUILD_IRONGOLEM : SpawnReason.BUILD_COPPERGOLEM))) {
++            return false;
 +        }
 +        clearPatternBlocks(world, shapedetector_shapedetectorcollection); // CraftBukkit - from above
 +        // CraftBukkit end
  
          for (EntityPlayer entityplayer : world.getEntitiesOfClass(EntityPlayer.class, entity.getBoundingBox().inflate(5.0D))) {
              CriterionTriggers.SUMMONED_ENTITY.trigger(entityplayer, entity);
+         }
+ 
+         updatePatternBlocks(world, shapedetector_shapedetectorcollection);
++        return true; // CraftBukkit
+     }
+ 
+     public static void clearPatternBlocks(World world, ShapeDetector.ShapeDetectorCollection shapedetector_shapedetectorcollection) {

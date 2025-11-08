@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/LayeredCauldronBlock.java
 +++ b/net/minecraft/world/level/block/LayeredCauldronBlock.java
-@@ -23,6 +23,12 @@
+@@ -24,6 +24,12 @@
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.phys.shapes.VoxelShapes;
  
@@ -13,7 +13,7 @@
  public class LayeredCauldronBlock extends AbstractCauldronBlock {
  
      public static final MapCodec<LayeredCauldronBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -86,39 +92,67 @@
+@@ -87,39 +93,67 @@
  
              insideblockeffectapplier.runBefore(InsideBlockEffectType.EXTINGUISH, (entity1) -> {
                  if (entity1.isOnFire() && entity1.mayInteract(worldserver, blockposition1)) {
@@ -90,7 +90,7 @@
          }
      }
  
-@@ -137,8 +171,11 @@
+@@ -138,8 +172,11 @@
          if (!this.isFull(iblockdata)) {
              IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(LayeredCauldronBlock.LEVEL, (Integer) iblockdata.getValue(LayeredCauldronBlock.LEVEL) + 1);
  

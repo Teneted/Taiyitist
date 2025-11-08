@@ -29,6 +29,6 @@
 +    public void onEquipItem(EnumItemSlot enumitemslot, ItemStack itemstack, ItemStack itemstack1, boolean silent) {
 +        super.onEquipItem(enumitemslot, itemstack, itemstack1, silent);
 +        // CraftBukkit end
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
              this.reassessWeaponGoal();
          }

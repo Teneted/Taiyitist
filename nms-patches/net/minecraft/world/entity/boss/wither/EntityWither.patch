@@ -95,7 +95,7 @@
 @@ -491,7 +534,7 @@
      @Override
      public void checkDespawn() {
-         if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+         if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL && !this.getType().isAllowedInPeaceful()) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          } else {

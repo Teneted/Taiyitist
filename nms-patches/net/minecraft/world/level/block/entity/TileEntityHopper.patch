@@ -23,7 +23,7 @@
  public class TileEntityHopper extends TileEntityLootable implements IHopper {
  
      public static final int MOVE_ITEM_SPEED = 8;
-@@ -40,6 +56,36 @@
+@@ -41,6 +57,36 @@
      private long tickedGameTime;
      private EnumDirection facing;
  
@@ -60,7 +60,7 @@
      public TileEntityHopper(BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.HOPPER, blockposition, iblockdata);
          this.items = NonNullList.<ItemStack>withSize(5, ItemStack.EMPTY);
-@@ -161,7 +207,29 @@
+@@ -162,7 +208,29 @@
  
                      if (!itemstack.isEmpty()) {
                          int j = itemstack.getCount();
@@ -91,7 +91,7 @@
  
                          if (itemstack1.isEmpty()) {
                              iinventory.setChanged();
-@@ -262,7 +330,34 @@
+@@ -263,7 +331,34 @@
  
          if (!itemstack.isEmpty() && canTakeItemFromContainer(ihopper, iinventory, itemstack, i, enumdirection)) {
              int j = itemstack.getCount();
@@ -127,7 +127,7 @@
  
              if (itemstack1.isEmpty()) {
                  iinventory.setChanged();
-@@ -280,13 +375,20 @@
+@@ -281,13 +376,20 @@
  
      public static boolean addItem(IInventory iinventory, EntityItem entityitem) {
          boolean flag = false;
@@ -149,7 +149,7 @@
          } else {
              entityitem.setItem(itemstack1);
          }
-@@ -402,14 +504,38 @@
+@@ -403,14 +505,38 @@
          return itemstack;
      }
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/hoglin/EntityHoglin.java
 +++ b/net/minecraft/world/entity/monster/hoglin/EntityHoglin.java
-@@ -67,7 +67,8 @@
+@@ -66,7 +66,8 @@
      public int timeInOverworld = 0;
      public boolean cannotBeHunted = false;
      protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EntityHoglin>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_PLAYERS, SensorType.NEAREST_ADULT, SensorType.HOGLIN_SPECIFIC_SENSOR);
@@ -10,7 +10,7 @@
  
      public EntityHoglin(EntityTypes<? extends EntityHoglin> entitytypes, World world) {
          super(entitytypes, world);
-@@ -138,7 +139,7 @@
+@@ -137,7 +138,7 @@
  
      @Override
      public BehaviorController<EntityHoglin> getBrain() {
@@ -19,7 +19,7 @@
      }
  
      @Override
-@@ -246,7 +247,7 @@
+@@ -245,7 +246,7 @@
      private void finishConversion() {
          this.convertTo(EntityTypes.ZOGLIN, ConversionParams.single(this, true, false), (entityzoglin) -> {
              entityzoglin.addEffect(new MobEffect(MobEffects.NAUSEA, 200, 0));
@@ -28,12 +28,12 @@
      }
  
      @Override
-@@ -324,7 +325,7 @@
+@@ -323,7 +324,7 @@
  
      @Override
      protected SoundEffect getAmbientSound() {
--        return this.level().isClientSide ? null : (SoundEffect) HoglinAI.getSoundForCurrentActivity(this).orElse((Object) null);
-+        return this.level().isClientSide ? null : (SoundEffect) HoglinAI.getSoundForCurrentActivity(this).orElse(null); // CraftBukkit - decompile error
+-        return this.level().isClientSide() ? null : (SoundEffect) HoglinAI.getSoundForCurrentActivity(this).orElse((Object) null);
++        return this.level().isClientSide() ? null : (SoundEffect) HoglinAI.getSoundForCurrentActivity(this).orElse(null); // CraftBukkit - decompile error
      }
  
      @Override

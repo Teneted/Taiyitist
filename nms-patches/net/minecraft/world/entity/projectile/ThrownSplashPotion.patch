@@ -53,7 +53,7 @@
                          for (MobEffect mobeffect : iterable) {
                              Holder<MobEffectList> holder = mobeffect.getEffect();
 +                            // CraftBukkit start - Abide by PVP settings - for players only!
-+                            if (!this.level().pvpMode && this.getOwner() instanceof EntityPlayer && entityliving instanceof EntityPlayer && entityliving != this.getOwner()) {
++                            if (!this.level().getWorld().getPVP() && this.getOwner() instanceof EntityPlayer && entityliving instanceof EntityPlayer && entityliving != this.getOwner()) {
 +                                MobEffectList mobeffectlist = (MobEffectList) holder.value();
 +                                if (mobeffectlist == MobEffects.SLOWNESS || mobeffectlist == MobEffects.MINING_FATIGUE || mobeffectlist == MobEffects.INSTANT_DAMAGE || mobeffectlist == MobEffects.BLINDNESS
 +                                        || mobeffectlist == MobEffects.HUNGER || mobeffectlist == MobEffects.WEAKNESS || mobeffectlist == MobEffects.POISON) {

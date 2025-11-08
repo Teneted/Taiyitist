@@ -29,7 +29,7 @@
 @@ -68,12 +74,17 @@
  
              if (potioncontents != null && potioncontents.is(Potions.WATER)) {
-                 if (!world.isClientSide) {
+                 if (!world.isClientSide()) {
 +                    // CraftBukkit start
 +                    if (!LayeredCauldronBlock.changeLevel(iblockdata, world, blockposition, Blocks.WATER_CAULDRON.defaultBlockState(), entityhuman, CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
 +                        return EnumInteractionResult.SUCCESS;
@@ -48,7 +48,7 @@
 @@ -93,12 +104,17 @@
          });
          map1.put(Items.GLASS_BOTTLE, (CauldronInteraction) (iblockdata, world, blockposition, entityhuman, enumhand, itemstack) -> {
-             if (!world.isClientSide) {
+             if (!world.isClientSide()) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition, entityhuman, CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
 +                    return EnumInteractionResult.SUCCESS;
@@ -67,7 +67,7 @@
 @@ -113,10 +129,15 @@
  
                  if (potioncontents != null && potioncontents.is(Potions.WATER)) {
-                     if (!world.isClientSide) {
+                     if (!world.isClientSide()) {
 +                        // CraftBukkit start
 +                        if (!LayeredCauldronBlock.changeLevel(iblockdata, world, blockposition, iblockdata.cycle(LayeredCauldronBlock.LEVEL), entityhuman, CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
 +                            return EnumInteractionResult.SUCCESS;
@@ -84,7 +84,7 @@
 @@ -194,12 +215,17 @@
              return EnumInteractionResult.TRY_WITH_EMPTY_HAND;
          } else {
-             if (!world.isClientSide) {
+             if (!world.isClientSide()) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.changeLevel(iblockdata, world, blockposition, Blocks.CAULDRON.defaultBlockState(), entityhuman, CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL)) {
 +                    return EnumInteractionResult.SUCCESS;
@@ -103,7 +103,7 @@
 @@ -210,12 +236,17 @@
  
      static EnumInteractionResult emptyBucket(World world, BlockPosition blockposition, EntityHuman entityhuman, EnumHand enumhand, ItemStack itemstack, IBlockData iblockdata, SoundEffect soundeffect) {
-         if (!world.isClientSide) {
+         if (!world.isClientSide()) {
 +            // CraftBukkit start
 +            if (!LayeredCauldronBlock.changeLevel(iblockdata, world, blockposition, iblockdata, entityhuman, CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
 +                return EnumInteractionResult.SUCCESS;
@@ -122,7 +122,7 @@
 @@ -242,11 +273,16 @@
              return EnumInteractionResult.TRY_WITH_EMPTY_HAND;
          } else {
-             if (!world.isClientSide) {
+             if (!world.isClientSide()) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition, entityhuman, CauldronLevelChangeEvent.ChangeReason.SHULKER_WASH)) {
 +                    return EnumInteractionResult.SUCCESS;
@@ -140,7 +140,7 @@
 @@ -260,12 +296,17 @@
              return EnumInteractionResult.TRY_WITH_EMPTY_HAND;
          } else {
-             if (!world.isClientSide) {
+             if (!world.isClientSide()) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition, entityhuman, CauldronLevelChangeEvent.ChangeReason.BANNER_WASH)) {
 +                    return EnumInteractionResult.SUCCESS;
@@ -159,7 +159,7 @@
 @@ -279,9 +320,14 @@
              return EnumInteractionResult.TRY_WITH_EMPTY_HAND;
          } else {
-             if (!world.isClientSide) {
+             if (!world.isClientSide()) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition, entityhuman, CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH)) {
 +                    return EnumInteractionResult.SUCCESS;

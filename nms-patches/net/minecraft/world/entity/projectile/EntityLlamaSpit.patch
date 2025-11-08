@@ -35,7 +35,7 @@
 @@ -83,7 +87,7 @@
      protected void onHitBlock(MovingObjectPositionBlock movingobjectpositionblock) {
          super.onHitBlock(movingobjectpositionblock);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
          }

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/piglin/EntityPiglinAbstract.java
 +++ b/net/minecraft/world/entity/monster/piglin/EntityPiglinAbstract.java
-@@ -103,7 +103,7 @@
+@@ -102,7 +102,7 @@
      protected void finishConversion(WorldServer worldserver) {
          this.convertTo(EntityTypes.ZOMBIFIED_PIGLIN, ConversionParams.single(this, true, true), (entitypigzombie) -> {
              entitypigzombie.addEffect(new MobEffect(MobEffects.NAUSEA, 200, 0));

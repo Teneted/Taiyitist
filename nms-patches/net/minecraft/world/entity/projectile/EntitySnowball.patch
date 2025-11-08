@@ -13,7 +13,7 @@
      public EntitySnowball(EntityTypes<? extends EntitySnowball> entitytypes, World world) {
 @@ -65,7 +69,7 @@
          super.onHit(movingobjectposition);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
              this.level().broadcastEntityEvent(this, (byte) 3);
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause

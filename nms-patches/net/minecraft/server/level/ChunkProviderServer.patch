@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ChunkProviderServer.java
 +++ b/net/minecraft/server/level/ChunkProviderServer.java
-@@ -100,6 +100,16 @@
+@@ -99,6 +99,16 @@
          this.clearCache();
      }
  
@@ -17,7 +17,7 @@
      @Override
      public LightEngineThreaded getLightEngine() {
          return this.lightEngine;
-@@ -143,7 +153,7 @@
+@@ -138,7 +148,7 @@
                  if (k == this.lastChunkPos[l] && chunkstatus == this.lastChunkStatus[l]) {
                      IChunkAccess ichunkaccess = this.lastChunk[l];
  
@@ -26,7 +26,7 @@
                          return ichunkaccess;
                      }
                  }
-@@ -156,7 +166,7 @@
+@@ -151,7 +161,7 @@
              Objects.requireNonNull(completablefuture);
              chunkproviderserver_a.managedBlock(completablefuture::isDone);
              ChunkResult<IChunkAccess> chunkresult = (ChunkResult) completablefuture.join();
@@ -35,7 +35,7 @@
  
              if (ichunkaccess1 == null && flag) {
                  throw (IllegalStateException) SystemUtils.pauseInIde(new IllegalStateException("Chunk not there when requested: " + chunkresult.getError()));
-@@ -236,7 +246,15 @@
+@@ -231,7 +241,15 @@
          int l = ChunkLevel.byStatus(chunkstatus);
          PlayerChunk playerchunk = this.getVisibleChunkIfPresent(k);
  
@@ -52,7 +52,7 @@
              this.addTicket(new Ticket(TicketType.UNKNOWN, l), chunkcoordintpair);
              if (this.chunkAbsent(playerchunk, l)) {
                  GameProfilerFiller gameprofilerfiller = Profiler.get();
-@@ -255,7 +273,7 @@
+@@ -250,7 +268,7 @@
      }
  
      private boolean chunkAbsent(@Nullable PlayerChunk playerchunk, int i) {
@@ -61,7 +61,7 @@
      }
  
      @Override
-@@ -314,12 +332,34 @@
+@@ -309,12 +327,34 @@
  
      @Override
      public void close() throws IOException {
@@ -97,41 +97,25 @@
      @Override
      public void tick(BooleanSupplier booleansupplier, boolean flag) {
          GameProfilerFiller gameprofilerfiller = Profiler.get();
-@@ -384,14 +424,14 @@
+@@ -378,14 +418,14 @@
+         SpawnerCreature.d spawnercreature_d = SpawnerCreature.createState(j, this.level.getAllEntities(), this::getFullChunk, new LocalMobCapCalculator(this.chunkMap));
  
          this.lastSpawnState = spawnercreature_d;
-         gameprofilerfiller.popPush("spawnAndTick");
 -        boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);
 +        boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) && !this.level.players().isEmpty(); // CraftBukkit
          int k = this.level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
          List<EnumCreatureType> list;
  
-         if (flag && (this.spawnEnemies || this.spawnFriendlies)) {
+         if (flag) {
 -            boolean flag1 = this.level.getLevelData().getGameTime() % 400L == 0L;
 +            boolean flag1 = this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) != 0L && this.level.getLevelData().getGameTime() % this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) == 0L; // CraftBukkit
  
--            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, this.spawnFriendlies, this.spawnEnemies, flag1);
-+            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, this.spawnFriendlies, this.spawnEnemies, flag1, this.level); // CraftBukkit
+-            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, true, this.spawnEnemies, flag1);
++            list = SpawnerCreature.getFilteredSpawningCategories(spawnercreature_d, true, this.spawnEnemies, flag1, this.level); // CraftBukkit
          } else {
              list = List.of();
          }
-@@ -557,8 +597,14 @@
- 
-     @Override
-     public void setSpawnSettings(boolean flag) {
-+        // CraftBukkit start
-+        this.setSpawnSettings(flag, this.spawnFriendlies);
-+    }
-+
-+    public void setSpawnSettings(boolean flag, boolean spawnFriendlies) {
-         this.spawnEnemies = flag;
--        this.spawnFriendlies = this.spawnFriendlies;
-+        this.spawnFriendlies = spawnFriendlies;
-+        // CraftBukkit end
-     }
- 
-     public String getChunkDebugData(ChunkCoordIntPair chunkcoordintpair) {
-@@ -634,13 +680,19 @@
+@@ -648,13 +688,19 @@
          }
  
          @Override

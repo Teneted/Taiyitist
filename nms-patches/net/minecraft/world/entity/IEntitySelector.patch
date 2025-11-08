@@ -8,4 +8,4 @@
 +            if (!entity1.canCollideWithBukkit(entity) || !entity.canCollideWithBukkit(entity1)) { // CraftBukkit - collidable API
                  return false;
              } else {
-                 if (entity.level().isClientSide) {
+                 if (entity.level().isClientSide()) {

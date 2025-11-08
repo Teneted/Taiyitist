@@ -57,7 +57,7 @@
                  }
  
                  if (this.canEatGrass()) {
-@@ -829,6 +836,7 @@
+@@ -835,6 +842,7 @@
          valueoutput.putInt("Temper", this.getTemper());
          valueoutput.putBoolean("Tame", this.isTamed());
          EntityReference.store(this.owner, valueoutput, "Owner");
@@ -65,7 +65,7 @@
      }
  
      @Override
-@@ -839,6 +847,9 @@
+@@ -845,6 +853,9 @@
          this.setTemper(valueinput.getIntOr("Temper", 0));
          this.setTamed(valueinput.getBooleanOr("Tame", false));
          this.owner = EntityReference.<EntityLiving>readWithOldOwnerConversion(valueinput, "Owner", this.level());
@@ -75,7 +75,7 @@
      }
  
      @Override
-@@ -932,6 +943,17 @@
+@@ -938,6 +949,17 @@
  
      @Override
      public void handleStartJump(int i) {

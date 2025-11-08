@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/IChunkAccess.java
 +++ b/net/minecraft/world/level/chunk/IChunkAccess.java
-@@ -85,6 +85,11 @@
+@@ -84,6 +84,11 @@
      protected final LevelHeightAccessor levelHeightAccessor;
      protected final ChunkSection[] sections;
  
@@ -9,22 +9,10 @@
 +    public org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer persistentDataContainer = new org.bukkit.craftbukkit.persistence.DirtyCraftPersistentDataContainer(DATA_TYPE_REGISTRY);
 +    // CraftBukkit end
 +
-     public IChunkAccess(ChunkCoordIntPair chunkcoordintpair, ChunkConverter chunkconverter, LevelHeightAccessor levelheightaccessor, IRegistry<BiomeBase> iregistry, long i, @Nullable ChunkSection[] achunksection, @Nullable BlendingData blendingdata) {
+     public IChunkAccess(ChunkCoordIntPair chunkcoordintpair, ChunkConverter chunkconverter, LevelHeightAccessor levelheightaccessor, PalettedContainerFactory palettedcontainerfactory, long i, @Nullable ChunkSection[] achunksection, @Nullable BlendingData blendingdata) {
          this.chunkPos = chunkcoordintpair;
          this.upgradeData = chunkconverter;
-@@ -103,7 +108,11 @@
-         }
- 
-         replaceMissingSections(iregistry, this.sections);
-+        // CraftBukkit start
-+        this.biomeRegistry = iregistry;
-     }
-+    public final IRegistry<BiomeBase> biomeRegistry;
-+    // CraftBukkit end
- 
-     private static void replaceMissingSections(IRegistry<BiomeBase> iregistry, ChunkSection[] achunksection) {
-         for (int i = 0; i < achunksection.length; ++i) {
-@@ -276,6 +285,7 @@
+@@ -275,6 +280,7 @@
      public boolean tryMarkSaved() {
          if (this.unsaved) {
              this.unsaved = false;
@@ -32,7 +20,7 @@
              return true;
          } else {
              return false;
-@@ -283,7 +293,7 @@
+@@ -282,7 +288,7 @@
      }
  
      public boolean isUnsaved() {
@@ -41,7 +29,7 @@
      }
  
      public abstract ChunkStatus getPersistedStatus();
-@@ -464,6 +474,27 @@
+@@ -463,6 +469,27 @@
          }
      }
  

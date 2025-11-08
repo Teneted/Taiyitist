@@ -1,0 +1,15 @@
+--- a/net/minecraft/world/entity/ai/memory/MemoryModuleType.java
++++ b/net/minecraft/world/entity/ai/memory/MemoryModuleType.java
+@@ -141,10 +141,12 @@
+     public static final MemoryModuleType<BlockPosition> BREEZE_JUMP_TARGET = register("breeze_jump_target", BlockPosition.CODEC);
+     public static final MemoryModuleType<Unit> BREEZE_LEAVING_WATER = register("breeze_leaving_water", Unit.CODEC);
+     private final Optional<Codec<ExpirableMemory<U>>> codec;
++    public final Optional<Codec<U>> rawCodec; // CraftBukkit
+ 
+     @VisibleForTesting
+     public MemoryModuleType(Optional<Codec<U>> optional) {
+         this.codec = optional.map(ExpirableMemory::codec);
++        this.rawCodec = optional; // CraftBukkit
+     }
+ 
+     public String toString() {

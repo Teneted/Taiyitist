@@ -12,7 +12,7 @@
  public class TileEntityShulkerBox extends TileEntityLootable implements IWorldInventory {
  
      public static final int COLUMNS = 9;
-@@ -51,6 +56,37 @@
+@@ -52,6 +57,37 @@
      @Nullable
      private final EnumColor color;
  
@@ -50,19 +50,19 @@
      public TileEntityShulkerBox(@Nullable EnumColor enumcolor, BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.SHULKER_BOX, blockposition, iblockdata);
          this.itemStacks = NonNullList.<ItemStack>withSize(27, ItemStack.EMPTY);
-@@ -182,6 +218,7 @@
+@@ -183,6 +219,7 @@
              }
  
              ++this.openCount;
 +            if (opened) return; // CraftBukkit - only animate if the ShulkerBox hasn't been forced open already by an API call.
              this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
              if (this.openCount == 1) {
-                 this.level.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_OPEN, this.worldPosition);
-@@ -195,6 +232,7 @@
-     public void stopOpen(EntityHuman entityhuman) {
-         if (!this.remove && !entityhuman.isSpectator()) {
+                 this.level.gameEvent(containeruser.getLivingEntity(), (Holder) GameEvent.CONTAINER_OPEN, this.worldPosition);
+@@ -196,6 +233,7 @@
+     public void stopOpen(ContainerUser containeruser) {
+         if (!this.remove && !containeruser.getLivingEntity().isSpectator()) {
              --this.openCount;
 +            if (opened) return; // CraftBukkit - only animate if the ShulkerBox hasn't been forced open already by an API call.
              this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
              if (this.openCount <= 0) {
-                 this.level.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_CLOSE, this.worldPosition);
+                 this.level.gameEvent(containeruser.getLivingEntity(), (Holder) GameEvent.CONTAINER_CLOSE, this.worldPosition);

@@ -26,7 +26,7 @@
      }
  
 @@ -34,6 +43,17 @@
-         return new CommandListenerWrapper(this, Vec3D.atLowerCornerOf(worldserver.getSharedSpawnPos()), Vec2F.ZERO, worldserver, 4, "Rcon", RemoteControlCommandListener.RCON_COMPONENT, this.server, (Entity) null);
+         return new CommandListenerWrapper(this, Vec3D.atLowerCornerOf(worldserver.getRespawnData().pos()), Vec2F.ZERO, worldserver, 4, "Rcon", RemoteControlCommandListener.RCON_COMPONENT, this.server, (Entity) null);
      }
  
 +    // CraftBukkit start - Send a String

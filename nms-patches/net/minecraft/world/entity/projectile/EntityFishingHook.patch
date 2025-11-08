@@ -39,7 +39,7 @@
          if (entityhuman == null) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
-         } else if (this.level().isClientSide || !this.shouldStopFishing(entityhuman)) {
+         } else if (this.level().isClientSide() || !this.shouldStopFishing(entityhuman)) {
              if (this.onGround()) {
                  ++this.life;
                  if (this.life >= 1200) {
@@ -48,16 +48,15 @@
                      return;
                  }
              } else {
-@@ -267,7 +286,7 @@
-         if (!entityhuman.isRemoved() && entityhuman.isAlive() && (flag || flag1) && this.distanceToSqr((Entity) entityhuman) <= 1024.0D) {
-             return false;
-         } else {
--            this.discard();
-+            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
-             return true;
+@@ -270,14 +289,14 @@
+             }
          }
+ 
+-        this.discard();
++        this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
+         return true;
      }
-@@ -275,7 +294,7 @@
+ 
      private void checkCollision() {
          MovingObjectPosition movingobjectposition = ProjectileHelper.getHitResultOnMoveVector(this, this::canHitEntity);
  
@@ -66,7 +65,7 @@
      }
  
      @Override
-@@ -308,11 +327,11 @@
+@@ -310,11 +329,11 @@
          int i = 1;
          BlockPosition blockposition1 = blockposition.above();
  
@@ -80,7 +79,7 @@
              --i;
          }
  
-@@ -322,6 +341,10 @@
+@@ -324,6 +343,10 @@
                  this.timeUntilLured = 0;
                  this.timeUntilHooked = 0;
                  this.getEntityData().set(EntityFishingHook.DATA_BITING, false);
@@ -91,7 +90,7 @@
              }
          } else if (this.timeUntilHooked > 0) {
              this.timeUntilHooked -= i;
-@@ -347,6 +370,13 @@
+@@ -349,6 +372,13 @@
                      worldserver.sendParticles(Particles.FISHING, d0, d1, d2, 0, (double) (-f4), 0.01D, (double) f3, 1.0D);
                  }
              } else {
@@ -105,7 +104,7 @@
                  this.playSound(SoundEffects.FISHING_BOBBER_SPLASH, 0.25F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
                  double d3 = this.getY() + 0.5D;
  
-@@ -381,12 +411,16 @@
+@@ -383,12 +413,16 @@
              }
  
              if (this.timeUntilLured <= 0) {
@@ -126,7 +125,7 @@
          }
  
      }
-@@ -453,6 +487,14 @@
+@@ -455,6 +489,14 @@
              int i = 0;
  
              if (this.hookedIn != null) {
@@ -141,7 +140,7 @@
                  this.pullEntity(this.hookedIn);
                  CriterionTriggers.FISHING_ROD_HOOKED.trigger((EntityPlayer) entityhuman, itemstack, this, Collections.emptyList());
                  this.level().broadcastEntityEvent(this, (byte) 31);
-@@ -466,6 +508,15 @@
+@@ -468,6 +510,15 @@
  
                  for (ItemStack itemstack1 : list) {
                      EntityItem entityitem = new EntityItem(this.level(), this.getX(), this.getY(), this.getZ(), itemstack1);
@@ -157,7 +156,7 @@
                      double d0 = entityhuman.getX() - this.getX();
                      double d1 = entityhuman.getY() - this.getY();
                      double d2 = entityhuman.getZ() - this.getZ();
-@@ -473,7 +524,11 @@
+@@ -475,7 +526,11 @@
  
                      entityitem.setDeltaMovement(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
                      this.level().addFreshEntity(entityitem);
@@ -170,7 +169,7 @@
                      if (itemstack1.is(TagsItem.FISHES)) {
                          entityhuman.awardStat(StatisticList.FISH_CAUGHT, 1);
                      }
-@@ -483,10 +538,27 @@
+@@ -485,10 +540,27 @@
              }
  
              if (this.onGround()) {
@@ -199,7 +198,7 @@
              return i;
          } else {
              return 0;
-@@ -527,8 +599,15 @@
+@@ -529,8 +601,15 @@
  
      @Override
      public void remove(Entity.RemovalReason entity_removalreason) {
@@ -216,7 +215,7 @@
      }
  
      @Override
-@@ -589,7 +668,7 @@
+@@ -591,7 +670,7 @@
              int i = packetplayoutspawnentity.getData();
  
              EntityFishingHook.LOGGER.error("Failed to recreate fishing hook on client. {} (id: {}) is not a valid owner.", this.level().getEntity(i), i);

@@ -12,4 +12,4 @@
 +                // CraftBukkit end
                  this.shear(worldserver, SoundCategory.PLAYERS, itemstack);
                  this.gameEvent(GameEvent.SHEAR, entityhuman);
-                 itemstack.hurtAndBreak(1, entityhuman, getSlotForHand(enumhand));
+                 itemstack.hurtAndBreak(1, entityhuman, enumhand.asEquipmentSlot());

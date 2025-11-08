@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/portal/TeleportTransition.java
 +++ b/net/minecraft/world/level/portal/TeleportTransition.java
-@@ -9,7 +9,19 @@
- import net.minecraft.world.entity.Relative;
+@@ -10,7 +10,19 @@
+ import net.minecraft.world.level.storage.WorldData;
  import net.minecraft.world.phys.Vec3D;
  
 -public record TeleportTransition(WorldServer newLevel, Vec3D position, Vec3D deltaMovement, float yRot, float xRot, boolean missingRespawnBlock, boolean asPassenger, Set<Relative> relatives, TeleportTransition.a postTeleportTransition) {
@@ -21,7 +21,7 @@
  
      public static final TeleportTransition.a DO_NOTHING = (entity) -> {
      };
-@@ -17,15 +29,33 @@
+@@ -18,11 +30,23 @@
      public static final TeleportTransition.a PLACE_PORTAL_TICKET = TeleportTransition::placePortalTicket;
  
      public TeleportTransition(WorldServer worldserver, Vec3D vec3d, Vec3D vec3d1, float f, float f1, TeleportTransition.a teleporttransition_a) {
@@ -43,17 +43,6 @@
 +
 +    public TeleportTransition(WorldServer worldserver, Vec3D vec3d, Vec3D vec3d1, float f, float f1, Set<Relative> set, TeleportTransition.a teleporttransition_a, PlayerTeleportEvent.TeleportCause cause) {
 +        this(worldserver, vec3d, vec3d1, f, f1, false, false, set, teleporttransition_a, cause);
-+        // CraftBukkit end
-     }
- 
-     public TeleportTransition(WorldServer worldserver, Entity entity, TeleportTransition.a teleporttransition_a) {
--        this(worldserver, findAdjustedSharedSpawnPos(worldserver, entity), Vec3D.ZERO, worldserver.getSharedSpawnAngle(), 0.0F, false, false, Set.of(), teleporttransition_a);
-+        // CraftBukkit start
-+        this(worldserver, entity, teleporttransition_a, PlayerTeleportEvent.TeleportCause.UNKNOWN);
-+    }
-+
-+    public TeleportTransition(WorldServer worldserver, Entity entity, TeleportTransition.a teleporttransition_a, PlayerTeleportEvent.TeleportCause cause) {
-+        this(worldserver, findAdjustedSharedSpawnPos(worldserver, entity), Vec3D.ZERO, worldserver.getSharedSpawnAngle(), 0.0F, false, false, Set.of(), teleporttransition_a, cause);
 +        // CraftBukkit end
      }
  

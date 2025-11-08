@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityBee.java
 +++ b/net/minecraft/world/entity/animal/EntityBee.java
-@@ -92,6 +92,12 @@
+@@ -94,6 +94,12 @@
  import net.minecraft.world.level.storage.ValueOutput;
  import net.minecraft.world.phys.Vec3D;
  
@@ -13,7 +13,7 @@
  public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityBird {
  
      public static final float FLAP_DEGREES_PER_TICK = 120.32113F;
-@@ -202,9 +208,24 @@
+@@ -204,9 +210,24 @@
  
      @Override
      protected void addAdditionalSaveData(ValueOutput valueoutput) {
@@ -40,7 +40,7 @@
          valueoutput.putBoolean("HasNectar", this.hasNectar());
          valueoutput.putBoolean("HasStung", this.hasStung());
          valueoutput.putInt("TicksSincePollination", this.ticksWithoutNectarSinceExitingHive);
-@@ -221,8 +242,8 @@
+@@ -223,8 +244,8 @@
          this.ticksWithoutNectarSinceExitingHive = valueinput.getIntOr("TicksSincePollination", 0);
          this.stayOutOfHiveCountdown = valueinput.getIntOr("CannotEnterHiveTicks", 0);
          this.numCropsGrownSincePollination = valueinput.getIntOr("CropsGrownSincePollination", 0);
@@ -51,7 +51,7 @@
          this.readPersistentAngerSaveData(this.level(), valueinput);
      }
  
-@@ -246,7 +267,7 @@
+@@ -248,7 +269,7 @@
                  }
  
                  if (i > 0) {
@@ -60,7 +60,7 @@
                  }
              }
  
-@@ -504,7 +525,7 @@
+@@ -500,7 +521,7 @@
  
      @Nullable
      TileEntityBeehive getBeehiveBlockEntity() {
@@ -69,7 +69,7 @@
      }
  
      boolean isHiveValid() {
-@@ -669,8 +690,14 @@
+@@ -665,8 +686,14 @@
          if (this.isInvulnerableTo(worldserver, damagesource)) {
              return false;
          } else {
@@ -85,7 +85,7 @@
          }
      }
  
-@@ -710,7 +737,7 @@
+@@ -714,7 +741,7 @@
          @Override
          protected void alertOther(EntityInsentient entityinsentient, EntityLiving entityliving) {
              if (entityinsentient instanceof EntityBee && this.mob.hasLineOfSight(entityliving)) {
@@ -94,7 +94,7 @@
              }
  
          }
-@@ -719,7 +746,7 @@
+@@ -723,7 +750,7 @@
      private static class c extends PathfinderGoalNearestAttackableTarget<EntityHuman> {
  
          c(EntityBee entitybee) {
@@ -103,7 +103,7 @@
              super(entitybee, EntityHuman.class, 10, true, false, entitybee::isAngryAt);
          }
  
-@@ -1278,7 +1305,7 @@
+@@ -1282,7 +1309,7 @@
                              }
                          }
  

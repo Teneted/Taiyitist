@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityAnimal.java
 +++ b/net/minecraft/world/entity/animal/EntityAnimal.java
-@@ -36,6 +36,13 @@
+@@ -33,6 +33,13 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -14,7 +14,7 @@
  public abstract class EntityAnimal extends EntityAgeable {
  
      protected static final int PARENT_AGE_AFTER_BREEDING = 6000;
-@@ -43,6 +50,7 @@
+@@ -40,6 +47,7 @@
      public int inLove = 0;
      @Nullable
      public EntityReference<EntityPlayer> loveCause;
@@ -22,7 +22,7 @@
  
      protected EntityAnimal(EntityTypes<? extends EntityAnimal> entitytypes, World world) {
          super(entitytypes, world);
-@@ -84,9 +92,15 @@
+@@ -81,9 +89,15 @@
      }
  
      @Override
@@ -40,7 +40,7 @@
      }
  
      @Override
-@@ -191,10 +205,17 @@
+@@ -172,10 +186,17 @@
      }
  
      public void setInLove(@Nullable EntityHuman entityhuman) {
@@ -53,22 +53,13 @@
 +        this.inLove = entityEnterLoveModeEvent.getTicksInLove();
 +        // CraftBukkit end
          if (entityhuman instanceof EntityPlayer entityplayer) {
-             this.loveCause = new EntityReference<EntityPlayer>(entityplayer);
+             this.loveCause = EntityReference.of(entityplayer);
          }
 +        this.breedItem = entityhuman.getInventory().getSelectedItem(); // CraftBukkit
  
          this.level().broadcastEntityEvent(this, (byte) 18);
      }
-@@ -213,7 +234,7 @@
-         World world = this.level();
- 
-         Objects.requireNonNull(world);
--        return (EntityPlayer) EntityReference.get(entityreference, world::getPlayerByUUID, EntityPlayer.class);
-+        return (EntityPlayer) EntityReference.get(entityreference, (uuid) -> (EntityPlayer) world.getPlayerByUUID(uuid), EntityPlayer.class); // CraftBukkit - decompile error
-     }
- 
-     public boolean isInLove() {
-@@ -234,12 +255,29 @@
+@@ -211,12 +232,29 @@
          if (entityageable != null) {
              entityageable.setBaby(true);
              entityageable.snapTo(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
@@ -100,7 +91,7 @@
          Optional.ofNullable(this.getLoveCause()).or(() -> {
              return Optional.ofNullable(entityanimal.getLoveCause());
          }).ifPresent((entityplayer) -> {
-@@ -252,7 +290,11 @@
+@@ -229,7 +267,11 @@
          entityanimal.resetLove();
          worldserver.broadcastEntityEvent(this, (byte) 18);
          if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {

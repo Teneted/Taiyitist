@@ -12,7 +12,7 @@
 @@ -53,6 +55,18 @@
              BlockPosition blockposition1 = blockposition.offset(world.random.nextInt(16) - world.random.nextInt(16), world.random.nextInt(8) - world.random.nextInt(8), world.random.nextInt(16) - world.random.nextInt(16));
  
-             if (world.getBlockState(blockposition1).isAir() && worldborder.isWithinBounds(blockposition1)) {
+             if (world.getBlockState(blockposition1).isAir() && worldborder.isWithinBounds(blockposition1) && !world.isOutsideBuildHeight(blockposition1)) {
 +                // CraftBukkit start
 +                org.bukkit.block.Block from = world.getWorld().getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ());
 +                org.bukkit.block.Block to = world.getWorld().getBlockAt(blockposition1.getX(), blockposition1.getY(), blockposition1.getZ());
@@ -25,6 +25,6 @@
 +
 +                blockposition1 = new BlockPosition(event.getToBlock().getX(), event.getToBlock().getY(), event.getToBlock().getZ());
 +                // CraftBukkit end
-                 if (world.isClientSide) {
+                 if (world.isClientSide()) {
                      for (int j = 0; j < 128; ++j) {
                          double d0 = world.random.nextDouble();

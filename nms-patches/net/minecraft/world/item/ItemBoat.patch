@@ -37,7 +37,7 @@
 @@ -64,7 +75,15 @@
                          return EnumInteractionResult.FAIL;
                      } else {
-                         if (!world.isClientSide) {
+                         if (!world.isClientSide()) {
 -                            world.addFreshEntity(abstractboat);
 +                            // CraftBukkit start
 +                            if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityPlaceEvent(world, movingobjectposition.getBlockPos(), movingobjectposition.getDirection(), entityhuman, abstractboat, enumhand).isCancelled()) {

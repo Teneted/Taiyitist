@@ -14,11 +14,10 @@
  public class EquipmentDispenseItemBehavior extends DispenseBehaviorItem {
  
      public static final EquipmentDispenseItemBehavior INSTANCE = new EquipmentDispenseItemBehavior();
-@@ -34,7 +41,34 @@
+@@ -34,6 +41,33 @@
              EnumItemSlot enumitemslot = entityliving.getEquipmentSlotForItem(itemstack);
              ItemStack itemstack1 = itemstack.split(1);
  
--            entityliving.setItemSlot(enumitemslot, itemstack1);
 +            // CraftBukkit start
 +            World world = sourceblock.level();
 +            org.bukkit.block.Block block = CraftBlock.at(world, sourceblock.pos());
@@ -44,9 +43,8 @@
 +                    return true;
 +                }
 +            }
-+
-+            entityliving.setItemSlot(enumitemslot, CraftItemStack.asNMSCopy(event.getItem()));
 +            // CraftBukkit end
++
+             entityliving.setItemSlot(enumitemslot, itemstack1);
              if (entityliving instanceof EntityInsentient) {
                  EntityInsentient entityinsentient = (EntityInsentient) entityliving;
- 

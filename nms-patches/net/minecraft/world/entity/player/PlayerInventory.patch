@@ -15,7 +15,7 @@
  public class PlayerInventory implements IInventory, INamableTileEntity {
  
      public static final int POP_TIME_DURATION = 5;
-@@ -42,6 +50,65 @@
+@@ -43,6 +51,65 @@
      private final EntityEquipment equipment;
      private int timesChanged;
  
@@ -81,7 +81,7 @@
      public PlayerInventory(EntityHuman entityhuman, EntityEquipment entityequipment) {
          this.items = NonNullList.<ItemStack>withSize(36, ItemStack.EMPTY);
          this.player = entityhuman;
-@@ -80,6 +147,28 @@
+@@ -81,6 +148,28 @@
          return !itemstack.isEmpty() && ItemStack.isSameItemSameComponents(itemstack, itemstack1) && itemstack.isStackable() && itemstack.getCount() < this.getMaxStackSize(itemstack);
      }
  

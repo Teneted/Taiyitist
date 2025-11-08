@@ -11,7 +11,7 @@
  public abstract class IProjectile extends Entity implements TraceableEntity {
  
      private static final boolean DEFAULT_LEFT_OWNER = false;
-@@ -47,6 +51,10 @@
+@@ -48,6 +52,10 @@
      @Nullable
      private Entity lastDeflectedBy;
  
@@ -22,15 +22,15 @@
      IProjectile(EntityTypes<? extends IProjectile> entitytypes, World world) {
          super(entitytypes, world);
      }
-@@ -57,6 +65,7 @@
+@@ -58,6 +66,7 @@
  
      public void setOwner(@Nullable Entity entity) {
-         this.setOwner(entity != null ? new EntityReference(entity) : null);
+         this.setOwner(EntityReference.of(entity));
 +        this.projectileSource = (entity != null && entity.getBukkitEntity() instanceof ProjectileSource) ? (ProjectileSource) entity.getBukkitEntity() : null; // CraftBukkit
      }
  
      @Nullable
-@@ -196,7 +205,7 @@
+@@ -203,7 +212,7 @@
  
      public static <T extends IProjectile> T spawnProjectile(T t0, WorldServer worldserver, ItemStack itemstack, Consumer<T> consumer) {
          consumer.accept(t0);
@@ -39,7 +39,7 @@
          t0.applyOnProjectileSpawned(worldserver, itemstack);
          return t0;
      }
-@@ -215,6 +224,17 @@
+@@ -222,6 +231,17 @@
  
      }
  
@@ -57,7 +57,7 @@
      protected ProjectileDeflection hitTargetOrDeflectSelf(MovingObjectPosition movingobjectposition) {
          if (movingobjectposition.getType() == MovingObjectPosition.EnumMovingObjectType.ENTITY) {
              MovingObjectPositionEntity movingobjectpositionentity = (MovingObjectPositionEntity) movingobjectposition;
-@@ -292,6 +312,11 @@
+@@ -299,6 +319,11 @@
      protected void onHitEntity(MovingObjectPositionEntity movingobjectpositionentity) {}
  
      protected void onHitBlock(MovingObjectPositionBlock movingobjectpositionblock) {

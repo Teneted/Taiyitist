@@ -22,5 +22,5 @@
 +                }
 +                // CraftBukkit end
                  world.removeBlock(blockposition1, false);
-                 if (!world.isClientSide) {
+                 if (!world.isClientSide()) {
                      for (int i = 0; i < 20; ++i) {

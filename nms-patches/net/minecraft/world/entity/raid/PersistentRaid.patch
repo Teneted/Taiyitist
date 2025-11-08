@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/raid/PersistentRaid.java
 +++ b/net/minecraft/world/entity/raid/PersistentRaid.java
-@@ -151,11 +151,23 @@
+@@ -153,11 +153,23 @@
  
                      Raid raid = this.getOrCreateRaid(worldserver, blockposition2);
  
@@ -25,3 +25,12 @@
                          raid.absorbRaidOmen(entityplayer);
                      }
  
+@@ -203,7 +215,7 @@
+ 
+     @VisibleForDebug
+     public List<BlockPosition> getRaidCentersInChunk(ChunkCoordIntPair chunkcoordintpair) {
+-        Stream stream = this.raidMap.values().stream().map(Raid::getCenter);
++        Stream<BlockPosition> stream = this.raidMap.values().stream().map(Raid::getCenter); // CraftBukkit - decompile error
+ 
+         Objects.requireNonNull(chunkcoordintpair);
+         return stream.filter(chunkcoordintpair::contains).toList();

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/material/FluidTypeFlowing.java
 +++ b/net/minecraft/world/level/material/FluidTypeFlowing.java
-@@ -30,6 +30,15 @@
+@@ -31,6 +31,15 @@
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.phys.shapes.VoxelShapes;
  
@@ -16,7 +16,7 @@
  public abstract class FluidTypeFlowing extends FluidType {
  
      public static final BlockStateBoolean FALLING = BlockProperties.FALLING;
-@@ -126,6 +135,15 @@
+@@ -127,6 +136,15 @@
                  FluidType fluidtype = fluid2.getType();
  
                  if (fluid1.canBeReplacedWith(worldserver, blockposition1, fluidtype, EnumDirection.DOWN) && canHoldSpecificFluid(worldserver, blockposition1, iblockdata1, fluidtype)) {
@@ -32,7 +32,7 @@
                      this.spreadTo(worldserver, blockposition1, iblockdata1, EnumDirection.DOWN, fluid2);
                      if (this.sourceNeighborCount(worldserver, blockposition) >= 3) {
                          this.spreadToSides(worldserver, blockposition, fluid, iblockdata);
-@@ -157,6 +175,15 @@
+@@ -158,6 +176,15 @@
                  Fluid fluid1 = (Fluid) map_entry.getValue();
                  BlockPosition blockposition1 = blockposition.relative(enumdirection);
  
@@ -48,7 +48,7 @@
                  this.spreadTo(worldserver, blockposition1, worldserver.getBlockState(blockposition1), enumdirection, fluid1);
              }
  
-@@ -428,10 +455,24 @@
+@@ -433,10 +460,24 @@
              if (fluid1.isEmpty()) {
                  fluid = fluid1;
                  iblockdata = Blocks.AIR.defaultBlockState();

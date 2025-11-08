@@ -11,7 +11,7 @@
  public class TileEntityBanner extends TileEntity implements INamableTileEntity {
  
      public static final int MAX_PATTERNS = 6;
-@@ -63,7 +67,7 @@
+@@ -64,7 +68,7 @@
      protected void loadAdditional(ValueInput valueinput) {
          super.loadAdditional(valueinput);
          this.name = parseCustomNameSafe(valueinput, "CustomName");
@@ -20,7 +20,7 @@
      }
  
      @Override
-@@ -94,7 +98,7 @@
+@@ -95,7 +99,7 @@
      @Override
      protected void applyImplicitComponents(DataComponentGetter datacomponentgetter) {
          super.applyImplicitComponents(datacomponentgetter);
@@ -29,7 +29,7 @@
          this.name = (IChatBaseComponent) datacomponentgetter.get(DataComponents.CUSTOM_NAME);
      }
  
-@@ -110,4 +114,13 @@
+@@ -111,4 +115,13 @@
          valueoutput.discard("patterns");
          valueoutput.discard("CustomName");
      }

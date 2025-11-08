@@ -42,7 +42,7 @@
 -                            ItemStack itemstack2 = ItemLiquidUtil.createFilledResult(itemstack, entityhuman, itemstack1);
 +                            ItemStack itemstack2 = ItemLiquidUtil.createFilledResult(itemstack, entityhuman, CraftItemStack.asNMSCopy(event.getItemStack())); // CraftBukkit
  
-                             if (!world.isClientSide) {
+                             if (!world.isClientSide()) {
                                  CriterionTriggers.FILLED_BUCKET.trigger((EntityPlayer) entityhuman, itemstack1);
 @@ -83,7 +104,7 @@
                      IBlockData iblockdata1 = world.getBlockState(blockposition);
@@ -72,12 +72,12 @@
              Block block;
              boolean flag;
              boolean flag1;
-@@ -146,8 +174,18 @@
- 
-             boolean flag2 = flag1;
+@@ -149,8 +177,18 @@
+             boolean flag3 = flag2;
+             boolean flag4 = iblockdata.isAir() || flag3 && (!flag1 || movingobjectpositionblock == null);
  
 +            // CraftBukkit start
-+            if (flag2 && entityliving instanceof EntityPlayer entityplayer) {
++            if (flag3 && entityliving instanceof EntityPlayer entityplayer) {
 +                PlayerBucketEmptyEvent event = CraftEventFactory.callPlayerBucketEmptyEvent((WorldServer) world, entityplayer, blockposition, clicked, enumdirection, itemstack, enumhand);
 +                if (event.isCancelled()) {
 +                    entityplayer.connection.send(new PacketPlayOutBlockChange(world, blockposition)); // SPIGOT-4238: needed when looking through entity
@@ -86,7 +86,7 @@
 +                }
 +            }
 +            // CraftBukkit end
-             if (!flag2) {
+             if (!flag4) {
 -                return movingobjectpositionblock != null && this.emptyContents(entityliving, world, movingobjectpositionblock.getBlockPos().relative(movingobjectpositionblock.getDirection()), (MovingObjectPositionBlock) null);
 +                return movingobjectpositionblock != null && this.emptyContents(entityliving, world, movingobjectpositionblock.getBlockPos().relative(movingobjectpositionblock.getDirection()), (MovingObjectPositionBlock) null, enumdirection, clicked, itemstack, enumhand); // CraftBukkit
              } else if (world.dimensionType().ultraWarm() && this.content.is(TagsFluid.WATER)) {

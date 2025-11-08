@@ -56,7 +56,7 @@
 @@ -75,7 +92,7 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
          }

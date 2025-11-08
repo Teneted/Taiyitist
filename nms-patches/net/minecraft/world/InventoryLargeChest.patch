@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/InventoryLargeChest.java
 +++ b/net/minecraft/world/InventoryLargeChest.java
-@@ -3,11 +3,62 @@
+@@ -4,11 +4,62 @@
  import net.minecraft.world.entity.player.EntityHuman;
  import net.minecraft.world.item.ItemStack;
  
@@ -63,7 +63,7 @@
      public InventoryLargeChest(IInventory iinventory, IInventory iinventory1) {
          this.container1 = iinventory;
          this.container2 = iinventory1;
-@@ -54,7 +105,7 @@
+@@ -55,7 +106,7 @@
  
      @Override
      public int getMaxStackSize() {

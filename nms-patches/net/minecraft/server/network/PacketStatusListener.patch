@@ -5,7 +5,6 @@
  import net.minecraft.network.protocol.status.ServerPing;
  
 +// CraftBukkit start
-+import com.mojang.authlib.GameProfile;
 +import java.net.InetSocketAddress;
 +import java.util.Collections;
 +import java.util.Iterator;
@@ -14,6 +13,7 @@
 +import net.minecraft.network.protocol.status.ServerPing;
 +import net.minecraft.server.MinecraftServer;
 +import net.minecraft.server.level.EntityPlayer;
++import net.minecraft.server.players.NameAndId;
 +import org.bukkit.craftbukkit.util.CraftChatMessage;
 +import org.bukkit.craftbukkit.util.CraftIconCache;
 +import org.bukkit.entity.Player;
@@ -98,12 +98,12 @@
 +            ServerListPingEvent event = new ServerListPingEvent();
 +            server.server.getPluginManager().callEvent(event);
 +
-+            java.util.List<GameProfile> profiles = new java.util.ArrayList<GameProfile>(players.length);
++            java.util.List<NameAndId> profiles = new java.util.ArrayList<>(players.length);
 +            for (Object player : players) {
 +                if (player != null) {
 +                    EntityPlayer entityPlayer = ((EntityPlayer) player);
 +                    if (entityPlayer.allowsListing()) {
-+                        profiles.add(entityPlayer.getGameProfile());
++                        profiles.add(entityPlayer.nameAndId());
 +                    } else {
 +                        profiles.add(MinecraftServer.ANONYMOUS_PLAYER_PROFILE);
 +                    }

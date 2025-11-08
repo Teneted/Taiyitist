@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/CommandDispatcher.java
 +++ b/net/minecraft/commands/CommandDispatcher.java
-@@ -145,6 +145,15 @@
+@@ -147,6 +147,15 @@
  import net.minecraft.world.level.GameRules;
  import org.slf4j.Logger;
  
@@ -16,7 +16,7 @@
  public class CommandDispatcher {
  
      public static final String COMMAND_PREFIX = "/";
-@@ -188,6 +197,7 @@
+@@ -190,6 +199,7 @@
      private final com.mojang.brigadier.CommandDispatcher<CommandListenerWrapper> dispatcher = new com.mojang.brigadier.CommandDispatcher();
  
      public CommandDispatcher(CommandDispatcher.ServerType commanddispatcher_servertype, CommandBuildContext commandbuildcontext) {
@@ -24,7 +24,7 @@
          CommandAdvancement.register(this.dispatcher);
          CommandAttribute.register(this.dispatcher, commandbuildcontext);
          CommandExecute.register(this.dispatcher, commandbuildcontext);
-@@ -292,6 +302,11 @@
+@@ -299,6 +309,11 @@
              CommandPublish.register(this.dispatcher);
          }
  
@@ -36,7 +36,7 @@
          this.dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
      }
  
-@@ -302,9 +317,52 @@
+@@ -309,9 +324,52 @@
          return new ParseResults(commandcontextbuilder1, parseresults.getReader(), parseresults.getExceptions());
      }
  
@@ -90,7 +90,7 @@
      }
  
      public static String trimOptionalPrefix(String s) {
-@@ -312,12 +370,16 @@
+@@ -319,12 +377,16 @@
      }
  
      public void performCommand(ParseResults<CommandListenerWrapper> parseresults, String s) {
@@ -108,7 +108,7 @@
  
          try {
              if (contextchain != null) {
-@@ -351,7 +413,7 @@
+@@ -358,7 +420,7 @@
      }
  
      @Nullable
@@ -117,7 +117,7 @@
          try {
              validateParseResults(parseresults);
              return (ContextChain) ContextChain.tryFlatten(parseresults.getContext().build(s)).orElseThrow(() -> {
-@@ -362,7 +424,7 @@
+@@ -369,7 +431,7 @@
              if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
                  int i = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
                  IChatMutableComponent ichatmutablecomponent = IChatBaseComponent.empty().withStyle(EnumChatFormat.GRAY).withStyle((chatmodifier) -> {
@@ -126,7 +126,7 @@
                  });
  
                  if (i > 10) {
-@@ -412,7 +474,7 @@
+@@ -419,7 +481,7 @@
  
                  executioncontext1.close();
              } finally {
@@ -135,7 +135,7 @@
              }
          } else {
              consumer.accept(executioncontext);
-@@ -421,11 +483,36 @@
+@@ -428,11 +490,36 @@
      }
  
      public void sendCommands(EntityPlayer entityplayer) {

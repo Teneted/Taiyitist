@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
-@@ -186,6 +186,12 @@
+@@ -189,6 +189,12 @@
          return this.status == Raid.Status.LOSS;
      }
  
@@ -13,7 +13,7 @@
      public float getTotalHealth() {
          return this.totalHealth;
      }
-@@ -276,6 +282,7 @@
+@@ -279,6 +285,7 @@
  
                  this.active = worldserver.hasChunkAt(this.center);
                  if (worldserver.getDifficulty() == EnumDifficulty.PEACEFUL) {
@@ -21,7 +21,7 @@
                      this.stop();
                      return;
                  }
-@@ -295,13 +302,16 @@
+@@ -298,13 +305,16 @@
                  if (!worldserver.isVillage(this.center)) {
                      if (this.groupsSpawned > 0) {
                          this.status = Raid.Status.LOSS;
@@ -38,7 +38,7 @@
                      this.stop();
                      return;
                  }
-@@ -370,6 +380,7 @@
+@@ -381,6 +391,7 @@
                      }
  
                      if (j > 5) {
@@ -46,7 +46,7 @@
                          this.stop();
                          break;
                      }
-@@ -381,6 +392,7 @@
+@@ -392,6 +403,7 @@
                      } else {
                          this.status = Raid.Status.VICTORY;
  
@@ -54,7 +54,7 @@
                          for (UUID uuid : this.heroesOfTheVillage) {
                              Entity entity = worldserver.getEntity(uuid);
  
-@@ -394,10 +406,12 @@
+@@ -405,10 +417,12 @@
  
                                          entityplayer.awardStat(StatisticList.RAID_WIN);
                                          CriterionTriggers.RAID_WIN.trigger(entityplayer);
@@ -67,7 +67,7 @@
                      }
                  }
  
-@@ -405,6 +419,7 @@
+@@ -416,6 +430,7 @@
              } else if (this.isOver()) {
                  ++this.celebrationTicks;
                  if (this.celebrationTicks >= 600) {
@@ -75,7 +75,7 @@
                      this.stop();
                      return;
                  }
-@@ -526,6 +541,10 @@
+@@ -537,6 +552,10 @@
          DifficultyDamageScaler difficultydamagescaler = worldserver.getCurrentDifficultyAt(blockposition);
          boolean flag1 = this.shouldSpawnBonusGroup();
  
@@ -86,7 +86,7 @@
          for (Raid.Wave raid_wave : Raid.Wave.VALUES) {
              int j = this.getDefaultNumSpawns(raid_wave, i, flag1) + this.getPotentialBonusSpawns(raid_wave, this.random, i, difficultydamagescaler, flag1);
              int k = 0;
-@@ -541,9 +560,11 @@
+@@ -552,9 +571,11 @@
                      entityraider.setPatrolLeader(true);
                      this.setLeader(i, entityraider);
                      flag = true;
@@ -98,15 +98,15 @@
                  if (raid_wave.entityType == EntityTypes.RAVAGER) {
                      EntityRaider entityraider1 = null;
  
-@@ -562,6 +583,7 @@
+@@ -573,6 +594,7 @@
                          this.joinRaid(worldserver, i, entityraider1, blockposition, false);
                          entityraider1.snapTo(blockposition, 0.0F, 0.0F);
-                         entityraider1.startRiding(entityraider);
+                         entityraider1.startRiding(entityraider, false, false);
 +                        raiders.add(entityraider); // CraftBukkit
                      }
                  }
              }
-@@ -571,6 +593,7 @@
+@@ -582,6 +604,7 @@
          ++this.groupsSpawned;
          this.updateBossbar();
          this.setDirty(worldserver);
@@ -114,7 +114,7 @@
      }
  
      public void joinRaid(WorldServer worldserver, int i, EntityRaider entityraider, @Nullable BlockPosition blockposition, boolean flag) {
-@@ -586,7 +609,7 @@
+@@ -597,7 +620,7 @@
                  entityraider.finalizeSpawn(worldserver, worldserver.getCurrentDifficultyAt(blockposition), EntitySpawnReason.EVENT, (GroupDataEntity) null);
                  entityraider.applyRaidBuffs(worldserver, i, false);
                  entityraider.setOnGround(true);
@@ -123,7 +123,7 @@
              }
          }
  
-@@ -809,6 +832,12 @@
+@@ -820,6 +843,12 @@
          this.heroesOfTheVillage.add(entity.getUUID());
      }
  

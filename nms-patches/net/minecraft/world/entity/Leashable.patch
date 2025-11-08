@@ -78,7 +78,7 @@
 @@ -159,7 +176,8 @@
  
          if (leashable_a != null && leashable_a.leashHolder != null) {
-             if (!e0.isAlive() || !leashable_a.leashHolder.isAlive()) {
+             if (!e0.canInteractWithLevel() || !leashable_a.leashHolder.canInteractWithLevel()) {
 -                if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
 +                worldserver.getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(e0.getBukkitEntity(), (!e0.isAlive()) ? UnleashReason.PLAYER_UNLEASH : UnleashReason.HOLDER_GONE)); // CraftBukkit
 +                if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS) && !e0.pluginRemoved) { // CraftBukkit - SPIGOT-7487: Don't drop leash, when the holder was removed by a plugin

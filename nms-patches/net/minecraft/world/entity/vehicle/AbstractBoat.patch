@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/vehicle/AbstractBoat.java
 +++ b/net/minecraft/world/entity/vehicle/AbstractBoat.java
-@@ -51,6 +51,15 @@
+@@ -49,6 +49,15 @@
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.phys.shapes.VoxelShapes;
  
@@ -16,7 +16,7 @@
  public abstract class AbstractBoat extends VehicleEntity implements Leashable {
  
      private static final DataWatcherObject<Boolean> DATA_ID_PADDLE_LEFT = DataWatcher.<Boolean>defineId(AbstractBoat.class, DataWatcherRegistry.BOOLEAN);
-@@ -84,6 +93,14 @@
+@@ -82,6 +91,14 @@
      private Leashable.a leashData;
      private final Supplier<Item> dropItem;
  
@@ -31,7 +31,7 @@
      public AbstractBoat(EntityTypes<? extends AbstractBoat> entitytypes, World world, Supplier<Item> supplier) {
          super(entitytypes, world);
          this.dropItem = supplier;
-@@ -179,9 +196,29 @@
+@@ -177,9 +194,29 @@
      public void push(Entity entity) {
          if (entity instanceof AbstractBoat) {
              if (entity.getBoundingBox().minY < this.getBoundingBox().maxY) {
@@ -61,7 +61,7 @@
              super.push(entity);
          }
  
-@@ -209,6 +246,7 @@
+@@ -207,6 +244,7 @@
          return this.getDirection().getClockWise();
      }
  
@@ -69,7 +69,7 @@
      @Override
      public void tick() {
          this.oldStatus = this.status;
-@@ -249,6 +287,21 @@
+@@ -247,6 +285,21 @@
              this.setDeltaMovement(Vec3D.ZERO);
          }
  
@@ -91,7 +91,7 @@
          this.applyEffectsFromBlocks();
          this.applyEffectsFromBlocks();
          this.tickBubbleColumn();
-@@ -731,11 +784,18 @@
+@@ -729,11 +782,18 @@
  
      @Override
      public void remove(Entity.RemovalReason entity_removalreason) {
@@ -102,7 +102,7 @@
 +    @Override
 +    public void remove(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
 +        // CraftBukkit end
-         if (!this.level().isClientSide && entity_removalreason.shouldDestroy() && this.isLeashed()) {
+         if (!this.level().isClientSide() && entity_removalreason.shouldDestroy() && this.isLeashed()) {
              this.dropLeash();
          }
  

@@ -30,5 +30,5 @@
 +            // CraftBukkit end
 +
              this.currentPhase = this.getPhase(dragoncontrollerphase);
-             if (!this.dragon.level().isClientSide) {
+             if (!this.dragon.level().isClientSide()) {
                  this.dragon.getEntityData().set(EntityEnderDragon.DATA_PHASE, dragoncontrollerphase.getId());

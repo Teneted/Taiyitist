@@ -2,13 +2,13 @@
 +++ b/net/minecraft/world/level/block/BlockCampfire.java
 @@ -113,7 +113,7 @@
      @Override
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier, boolean flag) {
          if ((Boolean) iblockdata.getValue(BlockCampfire.LIT) && entity instanceof EntityLiving) {
 -            entity.hurt(world.damageSources().campfire(), (float) this.fireDamage);
 +            entity.hurt(world.damageSources().campfire().directBlock(world, blockposition), (float) this.fireDamage); // CraftBukkit
          }
  
-         super.entityInside(iblockdata, world, blockposition, entity, insideblockeffectapplier);
+         super.entityInside(iblockdata, world, blockposition, entity, insideblockeffectapplier, flag);
 @@ -200,6 +200,11 @@
  
          if (world instanceof WorldServer worldserver) {

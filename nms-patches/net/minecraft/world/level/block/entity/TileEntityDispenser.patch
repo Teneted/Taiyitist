@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityDispenser.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityDispenser.java
-@@ -14,11 +14,47 @@
+@@ -14,12 +14,48 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -13,6 +13,7 @@
  public class TileEntityDispenser extends TileEntityLootable {
  
      public static final int CONTAINER_SIZE = 9;
+     private static final IChatBaseComponent DEFAULT_NAME = IChatBaseComponent.translatable("container.dispenser");
      private NonNullList<ItemStack> items;
  
 +    // CraftBukkit start - add fields and methods

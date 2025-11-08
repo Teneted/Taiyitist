@@ -1,20 +1,20 @@
 --- a/net/minecraft/world/level/chunk/storage/SerializableChunkData.java
 +++ b/net/minecraft/world/level/chunk/storage/SerializableChunkData.java
-@@ -73,7 +73,12 @@
+@@ -72,7 +72,12 @@
  import net.minecraft.world.ticks.TickListChunk;
  import org.slf4j.Logger;
  
--public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoordIntPair chunkPos, int minSectionY, long lastUpdateTime, long inhabitedTime, ChunkStatus chunkStatus, @Nullable BlendingData.d blendingData, @Nullable BelowZeroRetrogen belowZeroRetrogen, ChunkConverter upgradeData, @Nullable long[] carvingMask, Map<HeightMap.Type, long[]> heightmaps, IChunkAccess.b packedTicks, ShortList[] postProcessingSections, boolean lightCorrect, List<SerializableChunkData.b> sectionData, List<NBTTagCompound> entities, List<NBTTagCompound> blockEntities, NBTTagCompound structureData) {
+-public record SerializableChunkData(PalettedContainerFactory containerFactory, ChunkCoordIntPair chunkPos, int minSectionY, long lastUpdateTime, long inhabitedTime, ChunkStatus chunkStatus, @Nullable BlendingData.d blendingData, @Nullable BelowZeroRetrogen belowZeroRetrogen, ChunkConverter upgradeData, @Nullable long[] carvingMask, Map<HeightMap.Type, long[]> heightmaps, IChunkAccess.b packedTicks, ShortList[] postProcessingSections, boolean lightCorrect, List<SerializableChunkData.b> sectionData, List<NBTTagCompound> entities, List<NBTTagCompound> blockEntities, NBTTagCompound structureData) {
 +// CraftBukkit start
 +import net.minecraft.nbt.NBTBase;
 +// CraftBukkit end
 +
 +// CraftBukkit - persistentDataContainer
-+public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoordIntPair chunkPos, int minSectionY, long lastUpdateTime, long inhabitedTime, ChunkStatus chunkStatus, @Nullable BlendingData.d blendingData, @Nullable BelowZeroRetrogen belowZeroRetrogen, ChunkConverter upgradeData, @Nullable long[] carvingMask, Map<HeightMap.Type, long[]> heightmaps, IChunkAccess.b packedTicks, ShortList[] postProcessingSections, boolean lightCorrect, List<SerializableChunkData.b> sectionData, List<NBTTagCompound> entities, List<NBTTagCompound> blockEntities, NBTTagCompound structureData, @Nullable NBTBase persistentDataContainer) {
++public record SerializableChunkData(PalettedContainerFactory containerFactory, ChunkCoordIntPair chunkPos, int minSectionY, long lastUpdateTime, long inhabitedTime, ChunkStatus chunkStatus, @Nullable BlendingData.d blendingData, @Nullable BelowZeroRetrogen belowZeroRetrogen, ChunkConverter upgradeData, @Nullable long[] carvingMask, Map<HeightMap.Type, long[]> heightmaps, IChunkAccess.b packedTicks, ShortList[] postProcessingSections, boolean lightCorrect, List<SerializableChunkData.b> sectionData, List<NBTTagCompound> entities, List<NBTTagCompound> blockEntities, NBTTagCompound structureData, @Nullable NBTBase persistentDataContainer) {
  
-     public static final Codec<DataPaletteBlock<IBlockData>> BLOCK_STATE_CODEC = DataPaletteBlock.codecRW(Block.BLOCK_STATE_REGISTRY, IBlockData.CODEC, DataPaletteBlock.d.SECTION_STATES, Blocks.AIR.defaultBlockState());
      private static final Codec<List<TickListChunk<Block>>> BLOCK_TICKS_CODEC = TickListChunk.codec(BuiltInRegistries.BLOCK.byNameCodec()).listOf();
-@@ -103,9 +108,9 @@
+     private static final Codec<List<TickListChunk<FluidType>>> FLUID_TICKS_CODEC = TickListChunk.codec(BuiltInRegistries.FLUID.byNameCodec()).listOf();
+@@ -101,9 +106,9 @@
                  return new ChunkConverter(nbttagcompound1, levelheightaccessor);
              }).orElse(ChunkConverter.EMPTY);
              boolean flag = nbttagcompound.getBooleanOr("isLightOn", false);
@@ -27,27 +27,24 @@
              Map<HeightMap.Type, long[]> map = new EnumMap(HeightMap.Type.class);
  
              nbttagcompound.getCompound("Heightmaps").ifPresent((nbttagcompound1) -> {
-@@ -139,7 +144,7 @@
+@@ -136,7 +141,7 @@
+             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundOrEmpty("structures");
              NBTTagList nbttaglist2 = nbttagcompound.getListOrEmpty("sections");
              List<SerializableChunkData.b> list4 = new ArrayList(nbttaglist2.size());
-             IRegistry<BiomeBase> iregistry = iregistrycustom.lookupOrThrow(Registries.BIOME);
--            Codec<PalettedContainerRO<Holder<BiomeBase>>> codec = makeBiomeCodec(iregistry);
-+            Codec<DataPaletteBlock<Holder<BiomeBase>>> codec = makeBiomeCodecRW(iregistry); // CraftBukkit - read/write
+-            Codec<PalettedContainerRO<Holder<BiomeBase>>> codec = palettedcontainerfactory.biomeContainerCodec();
++            Codec<DataPaletteBlock<Holder<BiomeBase>>> codec = palettedcontainerfactory.biomeContainerCodecRW(); // CraftBukkit - read/write
+             Codec<DataPaletteBlock<IBlockData>> codec1 = palettedcontainerfactory.blockStatesContainerCodec();
  
              for (int i1 = 0; i1 < nbttaglist2.size(); ++i1) {
-                 Optional<NBTTagCompound> optional = nbttaglist2.getCompound(i1);
-@@ -157,8 +162,8 @@
-                         }).orElseGet(() -> {
-                             return new DataPaletteBlock(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), DataPaletteBlock.d.SECTION_STATES);
-                         });
--                        PalettedContainerRO<Holder<BiomeBase>> palettedcontainerro = (PalettedContainerRO) nbttagcompound2.getCompound("biomes").map((nbttagcompound3) -> {
--                            return (PalettedContainerRO) codec.parse(DynamicOpsNBT.INSTANCE, nbttagcompound3).promotePartial((s) -> {
-+                        DataPaletteBlock<Holder<BiomeBase>> palettedcontainerro = nbttagcompound2.getCompound("biomes").map((nbttagcompound3) -> { // CraftBukkit - read/write
-+                            return codec.parse(DynamicOpsNBT.INSTANCE, nbttagcompound3).promotePartial((s) -> { // CraftBukkit - read/write
-                                 logErrors(chunkcoordintpair, j1, s);
+@@ -163,21 +168,22 @@
                              }).getOrThrow(SerializableChunkData.a::new);
-                         }).orElseGet(() -> {
-@@ -170,14 +175,15 @@
+                         });
+                         Objects.requireNonNull(palettedcontainerfactory);
+-                        PalettedContainerRO<Holder<BiomeBase>> palettedcontainerro = (PalettedContainerRO) optional1.orElseGet(palettedcontainerfactory::createForBiomes);
++                        DataPaletteBlock<Holder<BiomeBase>> palettedcontainerro = (DataPaletteBlock) optional1.orElseGet(palettedcontainerfactory::createForBiomes); // CraftBukkit - read/write
+ 
+                         chunksection = new ChunkSection(datapaletteblock, palettedcontainerro);
+                     } else {
                          chunksection = null;
                      }
  
@@ -60,9 +57,9 @@
                  }
              }
  
--            return new SerializableChunkData(iregistry, chunkcoordintpair, levelheightaccessor.getMinSectionY(), i, j, chunkstatus, blendingdata_d, belowzeroretrogen, chunkconverter, along, map, ichunkaccess_b, ashortlist, flag, list4, list2, list3, nbttagcompound1);
+-            return new SerializableChunkData(palettedcontainerfactory, chunkcoordintpair, levelheightaccessor.getMinSectionY(), i, j, chunkstatus, blendingdata_d, belowzeroretrogen, chunkconverter, along, map, ichunkaccess_b, ashortlist, flag, list4, list2, list3, nbttagcompound1);
 +            // CraftBukkit - ChunkBukkitValues
-+            return new SerializableChunkData(iregistry, chunkcoordintpair, levelheightaccessor.getMinSectionY(), i, j, chunkstatus, blendingdata_d, belowzeroretrogen, chunkconverter, along, map, ichunkaccess_b, ashortlist, flag, list4, list2, list3, nbttagcompound1, nbttagcompound.get("ChunkBukkitValues"));
++            return new SerializableChunkData(palettedcontainerfactory, chunkcoordintpair, levelheightaccessor.getMinSectionY(), i, j, chunkstatus, blendingdata_d, belowzeroretrogen, chunkconverter, along, map, ichunkaccess_b, ashortlist, flag, list4, list2, list3, nbttagcompound1, nbttagcompound.get("ChunkBukkitValues"));
          }
      }
  
@@ -79,36 +76,23 @@
          ichunkaccess.setLightCorrect(this.lightCorrect);
          EnumSet<HeightMap.Type> enumset = EnumSet.noneOf(HeightMap.Type.class);
  
-@@ -297,6 +309,12 @@
-         return DataPaletteBlock.codecRO(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), DataPaletteBlock.d.SECTION_BIOMES, iregistry.getOrThrow(Biomes.PLAINS));
-     }
- 
-+    // CraftBukkit start - read/write
-+    private static Codec<DataPaletteBlock<Holder<BiomeBase>>> makeBiomeCodecRW(IRegistry<BiomeBase> iregistry) {
-+        return DataPaletteBlock.codecRW(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), DataPaletteBlock.d.SECTION_BIOMES, iregistry.getOrThrow(Biomes.PLAINS));
-+    }
-+    // CraftBukkit end
-+
-     public static SerializableChunkData copyOf(WorldServer worldserver, IChunkAccess ichunkaccess) {
-         if (!ichunkaccess.canBeSerialized()) {
-             throw new IllegalArgumentException("Chunk can't be serialized: " + String.valueOf(ichunkaccess));
-@@ -363,7 +381,14 @@
+@@ -359,7 +371,14 @@
              });
              NBTTagCompound nbttagcompound1 = packStructureData(StructurePieceSerializationContext.fromLevel(worldserver), chunkcoordintpair, ichunkaccess.getAllStarts(), ichunkaccess.getAllReferences());
  
--            return new SerializableChunkData(worldserver.registryAccess().lookupOrThrow(Registries.BIOME), chunkcoordintpair, ichunkaccess.getMinSectionY(), worldserver.getGameTime(), ichunkaccess.getInhabitedTime(), ichunkaccess.getPersistedStatus(), (BlendingData.d) Optionull.map(ichunkaccess.getBlendingData(), BlendingData::pack), ichunkaccess.getBelowZeroRetrogen(), ichunkaccess.getUpgradeData().copy(), along, map, ichunkaccess_b, ashortlist, ichunkaccess.isLightCorrect(), list, list2, list1, nbttagcompound1);
+-            return new SerializableChunkData(worldserver.palettedContainerFactory(), chunkcoordintpair, ichunkaccess.getMinSectionY(), worldserver.getGameTime(), ichunkaccess.getInhabitedTime(), ichunkaccess.getPersistedStatus(), (BlendingData.d) Optionull.map(ichunkaccess.getBlendingData(), BlendingData::pack), ichunkaccess.getBelowZeroRetrogen(), ichunkaccess.getUpgradeData().copy(), along, map, ichunkaccess_b, ashortlist, ichunkaccess.isLightCorrect(), list, list2, list1, nbttagcompound1);
 +            // CraftBukkit start - store chunk persistent data in nbt
 +            NBTTagCompound persistentDataContainer = null;
 +            if (!ichunkaccess.persistentDataContainer.isEmpty()) { // SPIGOT-6814: Always save PDC to account for 1.17 to 1.18 chunk upgrading.
 +                persistentDataContainer = ichunkaccess.persistentDataContainer.toTagCompound();
 +            }
 +
-+            return new SerializableChunkData(worldserver.registryAccess().lookupOrThrow(Registries.BIOME), chunkcoordintpair, ichunkaccess.getMinSectionY(), worldserver.getGameTime(), ichunkaccess.getInhabitedTime(), ichunkaccess.getPersistedStatus(), (BlendingData.d) Optionull.map(ichunkaccess.getBlendingData(), BlendingData::pack), ichunkaccess.getBelowZeroRetrogen(), ichunkaccess.getUpgradeData().copy(), along, map, ichunkaccess_b, ashortlist, ichunkaccess.isLightCorrect(), list, list2, list1, nbttagcompound1, persistentDataContainer);
++            return new SerializableChunkData(worldserver.palettedContainerFactory(), chunkcoordintpair, ichunkaccess.getMinSectionY(), worldserver.getGameTime(), ichunkaccess.getInhabitedTime(), ichunkaccess.getPersistedStatus(), (BlendingData.d) Optionull.map(ichunkaccess.getBlendingData(), BlendingData::pack), ichunkaccess.getBelowZeroRetrogen(), ichunkaccess.getUpgradeData().copy(), along, map, ichunkaccess_b, ashortlist, ichunkaccess.isLightCorrect(), list, list2, list1, nbttagcompound1, persistentDataContainer);
 +            // CraftBukkit end
          }
      }
  
-@@ -436,6 +461,11 @@
+@@ -433,6 +452,11 @@
          });
          nbttagcompound.put("Heightmaps", nbttagcompound2);
          nbttagcompound.put("structures", this.structureData);
@@ -120,7 +104,7 @@
          return nbttagcompound;
      }
  
-@@ -516,6 +546,12 @@
+@@ -513,6 +537,12 @@
                  StructureStart structurestart = StructureStart.loadStaticStart(structurepieceserializationcontext, nbttagcompound1.getCompoundOrEmpty(s), i);
  
                  if (structurestart != null) {

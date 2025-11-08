@@ -45,8 +45,8 @@
          if (!worldserver.isClientSide()) {
              BlockPosition blockposition = sourceblock.pos().relative((EnumDirection) sourceblock.state().getValue(BlockDispenser.FACING));
  
--            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearEntity(worldserver, blockposition, itemstack));
-+            this.setSuccess(tryShearBeehive(worldserver, blockposition) || tryShearEntity(worldserver, blockposition, itemstack, bukkitBlock, craftItem)); // CraftBukkit
+-            this.setSuccess(tryShearBeehive(worldserver, itemstack, blockposition) || tryShearEntity(worldserver, blockposition, itemstack));
++            this.setSuccess(tryShearBeehive(worldserver, itemstack, blockposition) || tryShearEntity(worldserver, blockposition, itemstack, bukkitBlock, craftItem)); // CraftBukkit
              if (this.isSuccess()) {
                  itemstack.hurtAndBreak(1, worldserver, (EntityPlayer) null, (item) -> {
                  });

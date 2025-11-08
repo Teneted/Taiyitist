@@ -20,7 +20,7 @@
  public class WorldDataServer implements IWorldDataServer, SaveData {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -79,6 +92,20 @@
+@@ -80,6 +93,20 @@
      private boolean wasModded;
      private final Set<String> removedFeatureFlags;
      private final CustomFunctionCallbackTimerQueue<MinecraftServer> scheduledEvents;
@@ -39,7 +39,7 @@
 +    }
 +    // CraftBukkit end
  
-     private WorldDataServer(@Nullable NBTTagCompound nbttagcompound, boolean flag, BlockPosition blockposition, float f, long i, long j, int k, int l, int i1, boolean flag1, int j1, boolean flag2, boolean flag3, boolean flag4, WorldBorder.d worldborder_d, int k1, int l1, @Nullable UUID uuid, Set<String> set, Set<String> set1, CustomFunctionCallbackTimerQueue<MinecraftServer> customfunctioncallbacktimerqueue, @Nullable NBTTagCompound nbttagcompound1, EnderDragonBattle.a enderdragonbattle_a, WorldSettings worldsettings, WorldOptions worldoptions, WorldDataServer.a worlddataserver_a, Lifecycle lifecycle) {
+     private WorldDataServer(@Nullable NBTTagCompound nbttagcompound, boolean flag, WorldData.a worlddata_a, long i, long j, int k, int l, int i1, boolean flag1, int j1, boolean flag2, boolean flag3, boolean flag4, Optional<WorldBorder.c> optional, int k1, int l1, @Nullable UUID uuid, Set<String> set, Set<String> set1, CustomFunctionCallbackTimerQueue<MinecraftServer> customfunctioncallbacktimerqueue, @Nullable NBTTagCompound nbttagcompound1, EnderDragonBattle.a enderdragonbattle_a, WorldSettings worldsettings, WorldOptions worldoptions, WorldDataServer.a worlddataserver_a, Lifecycle lifecycle) {
          this.wasModded = flag;
 @@ -116,7 +143,7 @@
  
@@ -50,8 +50,8 @@
          Codec codec = NBTTagCompound.CODEC;
  
          Objects.requireNonNull(codec);
-@@ -136,7 +163,7 @@
-         WorldBorder.d worldborder_d = WorldBorder.d.read(dynamic, WorldBorder.DEFAULT_SETTINGS);
+@@ -135,7 +162,7 @@
+         Optional optional = WorldBorder.c.CODEC.parse(dynamic.get("world_border").orElseEmptyMap()).result();
          int k1 = dynamic.get("WanderingTraderSpawnDelay").asInt(0);
          int l1 = dynamic.get("WanderingTraderSpawnChance").asInt(0);
 -        UUID uuid = (UUID) dynamic.get("WanderingTraderId").read(UUIDUtil.CODEC).result().orElse((Object) null);
@@ -59,7 +59,7 @@
          Set set = (Set) dynamic.get("ServerBrands").asStream().flatMap((dynamic1) -> {
              return dynamic1.asString().result().stream();
          }).collect(Collectors.toCollection(Sets::newLinkedHashSet));
-@@ -145,7 +172,7 @@
+@@ -144,7 +171,7 @@
          }).collect(Collectors.toSet());
          CustomFunctionCallbackTimerQueue customfunctioncallbacktimerqueue = new CustomFunctionCallbackTimerQueue(CustomFunctionCallbackTimers.SERVER_CALLBACKS, dynamic.get("ScheduledEvents").asStream());
          NBTTagCompound nbttagcompound1 = (NBTTagCompound) dynamic.get("CustomBossEvents").orElseEmptyMap().getValue();
@@ -68,7 +68,7 @@
          Logger logger = WorldDataServer.LOGGER;
  
          Objects.requireNonNull(logger);
-@@ -180,7 +207,7 @@
+@@ -179,7 +206,7 @@
          nbttagcompound.put("Version", nbttagcompound2);
          GameProfileSerializer.addCurrentDataVersion(nbttagcompound);
          DynamicOps<NBTBase> dynamicops = iregistrycustom.<NBTBase>createSerializationContext(DynamicOpsNBT.INSTANCE);
@@ -77,7 +77,7 @@
          Logger logger = WorldDataServer.LOGGER;
  
          Objects.requireNonNull(logger);
-@@ -223,11 +250,13 @@
+@@ -221,11 +248,13 @@
          nbttagcompound.putInt("WanderingTraderSpawnDelay", this.wanderingTraderSpawnDelay);
          nbttagcompound.putInt("WanderingTraderSpawnChance", this.wanderingTraderSpawnChance);
          nbttagcompound.storeNullable("WanderingTraderId", UUIDUtil.CODEC, this.wanderingTraderId);
@@ -92,7 +92,7 @@
  
          Objects.requireNonNull(nbttaglist);
          stream.forEach(nbttaglist::add);
-@@ -303,6 +332,20 @@
+@@ -295,6 +324,20 @@
  
      @Override
      public void setThundering(boolean flag) {
@@ -113,7 +113,7 @@
          this.thundering = flag;
      }
  
-@@ -323,6 +366,20 @@
+@@ -315,6 +358,20 @@
  
      @Override
      public void setRaining(boolean flag) {
@@ -134,7 +134,7 @@
          this.raining = flag;
      }
  
-@@ -389,6 +446,12 @@
+@@ -381,6 +438,12 @@
      @Override
      public void setDifficulty(EnumDifficulty enumdifficulty) {
          this.settings = this.settings.withDifficulty(enumdifficulty);
@@ -147,7 +147,7 @@
      }
  
      @Override
-@@ -525,6 +588,14 @@
+@@ -517,6 +580,14 @@
          return this.settings.copy();
      }
  

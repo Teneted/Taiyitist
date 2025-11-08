@@ -29,7 +29,7 @@
      protected int getBonemealAgeIncrease(World world) {
 @@ -159,7 +161,7 @@
      @Override
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier, boolean flag) {
          if (world instanceof WorldServer worldserver) {
 -            if (entity instanceof EntityRavager && worldserver.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
 +            if (entity instanceof EntityRavager && CraftEventFactory.callEntityChangeBlockEvent(entity, blockposition, Blocks.AIR.defaultBlockState(), !worldserver.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) { // CraftBukkit

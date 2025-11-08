@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerConnection.java
 +++ b/net/minecraft/server/network/ServerConnection.java
-@@ -103,9 +103,19 @@
+@@ -104,9 +104,19 @@
                      networkmanager.configurePacketHandler(channelpipeline);
                      networkmanager.setListenerForServerboundHandshake(new HandshakeListener(ServerConnection.this.server, networkmanager));
                  }

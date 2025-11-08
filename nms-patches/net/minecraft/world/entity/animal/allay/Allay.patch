@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/allay/Allay.java
 +++ b/net/minecraft/world/entity/animal/allay/Allay.java
-@@ -97,6 +97,7 @@
+@@ -96,6 +96,7 @@
      private float dancingAnimationTicks;
      private float spinningAnimationTicks;
      private float spinningAnimationTicks0;
@@ -8,7 +8,7 @@
  
      public Allay(EntityTypes<? extends Allay> entitytypes, World world) {
          super(entitytypes, world);
-@@ -108,6 +109,12 @@
+@@ -107,6 +108,12 @@
          this.dynamicJukeboxListener = new DynamicGameEventListener<Allay.a>(new Allay.a(this.vibrationUser.getPositionSource(), ((GameEvent) GameEvent.JUKEBOX_PLAY.value()).notificationRadius()));
      }
  
@@ -21,7 +21,7 @@
      @Override
      protected BehaviorController.b<Allay> brainProvider() {
          return BehaviorController.<Allay>provider(Allay.MEMORY_TYPES, Allay.SENSOR_TYPES);
-@@ -120,7 +127,7 @@
+@@ -119,7 +126,7 @@
  
      @Override
      public BehaviorController<Allay> getBrain() {
@@ -30,16 +30,16 @@
      }
  
      public static AttributeProvider.Builder createAttributes() {
-@@ -212,7 +219,7 @@
+@@ -211,7 +218,7 @@
      public void aiStep() {
          super.aiStep();
-         if (!this.level().isClientSide && this.isAlive() && this.tickCount % 10 == 0) {
+         if (!this.level().isClientSide() && this.isAlive() && this.tickCount % 10 == 0) {
 -            this.heal(1.0F);
 +            this.heal(1.0F, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.REGEN); // CraftBukkit
          }
  
          if (this.isDancing() && this.shouldStopDancing() && this.tickCount % 20 == 0) {
-@@ -282,7 +289,12 @@
+@@ -281,7 +288,12 @@
          ItemStack itemstack1 = this.getItemInHand(EnumHand.MAIN_HAND);
  
          if (this.isDancing() && itemstack.is(TagsItem.DUPLICATES_ALLAYS) && this.canDuplicate()) {
@@ -53,7 +53,7 @@
              this.level().broadcastEntityEvent(this, (byte) 18);
              this.level().playSound(entityhuman, (Entity) this, SoundEffects.AMETHYST_BLOCK_CHIME, SoundCategory.NEUTRAL, 2.0F, 1.0F);
              this.removeInteractionItem(entityhuman, itemstack);
-@@ -391,6 +403,7 @@
+@@ -384,6 +396,7 @@
      }
  
      private boolean shouldStopDancing() {
@@ -61,7 +61,7 @@
          return this.jukeboxPos == null || !this.jukeboxPos.closerToCenterThan(this.position(), (double) ((GameEvent) GameEvent.JUKEBOX_PLAY.value()).notificationRadius()) || !this.level().getBlockState(this.jukeboxPos).is(Blocks.JUKEBOX);
      }
  
-@@ -466,7 +479,7 @@
+@@ -459,7 +472,7 @@
          this.entityData.set(Allay.DATA_CAN_DUPLICATE, i == 0L);
      }
  
@@ -70,7 +70,7 @@
          Allay allay = EntityTypes.ALLAY.create(this.level(), EntitySpawnReason.BREEDING);
  
          if (allay != null) {
-@@ -474,9 +487,9 @@
+@@ -467,9 +480,9 @@
              allay.setPersistenceRequired();
              allay.resetDuplicationCooldown();
              this.resetDuplicationCooldown();

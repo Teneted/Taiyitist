@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntityZombieVillager.java
 +++ b/net/minecraft/world/entity/monster/EntityZombieVillager.java
-@@ -53,6 +53,14 @@
+@@ -51,6 +51,14 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -15,7 +15,7 @@
  public class EntityZombieVillager extends EntityZombie implements VillagerDataHolder {
  
      public static final DataWatcherObject<Boolean> DATA_CONVERTING_ID = DataWatcher.<Boolean>defineId(EntityZombieVillager.class, DataWatcherRegistry.BOOLEAN);
-@@ -71,6 +79,7 @@
+@@ -69,6 +77,7 @@
      @Nullable
      private MerchantRecipeList tradeOffers;
      private int villagerXp = 0;
@@ -23,10 +23,10 @@
  
      public EntityZombieVillager(EntityTypes<? extends EntityZombieVillager> entitytypes, World world) {
          super(entitytypes, world);
-@@ -98,12 +107,12 @@
+@@ -96,12 +105,12 @@
      protected void readAdditionalSaveData(ValueInput valueinput) {
          super.readAdditionalSaveData(valueinput);
-         this.entityData.set(EntityZombieVillager.DATA_VILLAGER_DATA, (VillagerData) valueinput.read("VillagerData", VillagerData.CODEC).orElseGet(EntityVillager::createDefaultVillagerData));
+         this.entityData.set(EntityZombieVillager.DATA_VILLAGER_DATA, (VillagerData) valueinput.read("VillagerData", VillagerData.CODEC).orElseGet(this::initializeVillagerData));
 -        this.tradeOffers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse((Object) null);
 -        this.gossips = (Reputation) valueinput.read("Gossips", Reputation.CODEC).orElse((Object) null);
 +        this.tradeOffers = (MerchantRecipeList) valueinput.read("Offers", MerchantRecipeList.CODEC).orElse(null); // CraftBukkit - decompile error
@@ -39,9 +39,9 @@
  
              this.startConverting(uuid, i);
          } else {
-@@ -118,6 +127,10 @@
+@@ -128,6 +137,10 @@
      public void tick() {
-         if (!this.level().isClientSide && this.isAlive() && this.isConverting()) {
+         if (!this.level().isClientSide() && this.isAlive() && this.isConverting()) {
              int i = this.getConversionProgress();
 +            // CraftBukkit start - Use wall time instead of ticks for villager conversion
 +            int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
@@ -50,7 +50,7 @@
  
              this.villagerConversionTime -= i;
              if (this.villagerConversionTime <= 0) {
-@@ -126,6 +139,7 @@
+@@ -136,6 +149,7 @@
          }
  
          super.tick();
@@ -58,7 +58,7 @@
      }
  
      @Override
-@@ -166,8 +180,10 @@
+@@ -176,8 +190,10 @@
          this.conversionStarter = uuid;
          this.villagerConversionTime = i;
          this.getEntityData().set(EntityZombieVillager.DATA_CONVERTING_ID, true);
@@ -71,7 +71,7 @@
          this.level().broadcastEntityEvent(this, (byte) 16);
      }
  
-@@ -184,7 +200,8 @@
+@@ -194,7 +210,8 @@
      }
  
      private void finishConversion(WorldServer worldserver) {
@@ -81,7 +81,7 @@
              for (EnumItemSlot enumitemslot : this.dropPreservedEquipment(worldserver, (itemstack) -> {
                  return !EnchantmentManager.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
              })) {
-@@ -214,12 +231,16 @@
+@@ -224,12 +241,16 @@
                  }
              }
  

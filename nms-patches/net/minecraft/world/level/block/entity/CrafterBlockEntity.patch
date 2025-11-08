@@ -14,7 +14,7 @@
  public class CrafterBlockEntity extends TileEntityLootable implements InventoryCrafting {
  
      public static final int CONTAINER_WIDTH = 3;
-@@ -36,6 +43,46 @@
+@@ -37,6 +44,46 @@
      private NonNullList<ItemStack> items;
      public int craftingTicksRemaining;
      protected final IContainerProperties containerData;

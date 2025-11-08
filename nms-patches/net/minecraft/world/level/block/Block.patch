@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
-@@ -384,7 +384,13 @@
+@@ -409,7 +409,13 @@
                  EntityItem entityitem = (EntityItem) supplier.get();
  
                  entityitem.setDefaultPickUpDelay();
@@ -15,7 +15,7 @@
                  return;
              }
          }
-@@ -413,7 +419,7 @@
+@@ -438,7 +444,7 @@
  
      public void playerDestroy(World world, EntityHuman entityhuman, BlockPosition blockposition, IBlockData iblockdata, @Nullable TileEntity tileentity, ItemStack itemstack) {
          entityhuman.awardStat(StatisticList.BLOCK_MINED.get(this));
@@ -24,7 +24,7 @@
          dropResources(iblockdata, world, blockposition, tileentity, entityhuman, itemstack);
      }
  
-@@ -520,7 +526,7 @@
+@@ -545,7 +551,7 @@
      }
  
      protected Function<IBlockData, VoxelShape> getShapeForEachState(Function<IBlockData, VoxelShape> function) {
@@ -33,7 +33,7 @@
  
          Objects.requireNonNull(immutablemap);
          return immutablemap::get;
-@@ -557,14 +563,22 @@
+@@ -582,14 +588,22 @@
          return this.builtInRegistryHolder;
      }
  

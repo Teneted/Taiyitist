@@ -52,7 +52,7 @@
 +    public static void updateAndAttackTarget(WorldServer worldserver, BlockPosition blockposition, IBlockData iblockdata, TileEntityConduit tileentityconduit, boolean flag, boolean damageTarget) {
 +        // CraftBukkit end
          EntityReference<EntityLiving> entityreference = updateDestroyTarget(tileentityconduit.destroyTarget, worldserver, blockposition, flag);
-         EntityLiving entityliving = (EntityLiving) EntityReference.get(entityreference, worldserver, EntityLiving.class);
+         EntityLiving entityliving = EntityReference.getLivingEntity(entityreference, worldserver);
  
 -        if (entityliving != null) {
 -            worldserver.playSound((Entity) null, entityliving.getX(), entityliving.getY(), entityliving.getZ(), SoundEffects.CONDUIT_ATTACK_TARGET, SoundCategory.BLOCKS, 1.0F, 1.0F);

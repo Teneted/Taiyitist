@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntityGhast.java
 +++ b/net/minecraft/world/entity/monster/EntityGhast.java
-@@ -491,6 +491,8 @@
+@@ -486,6 +486,8 @@
  
                          EntityLargeFireball entitylargefireball = new EntityLargeFireball(world, this.ghast, vec3d1.normalize(), this.ghast.getExplosionPower());
  

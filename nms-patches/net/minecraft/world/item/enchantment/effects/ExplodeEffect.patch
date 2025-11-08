@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/enchantment/effects/ExplodeEffect.java
 +++ b/net/minecraft/world/item/enchantment/effects/ExplodeEffect.java
-@@ -40,7 +40,7 @@
+@@ -42,7 +42,7 @@
  
      @Nullable
      private DamageSource getDamageSource(Entity entity, Vec3D vec3d) {

@@ -43,7 +43,7 @@
  
          super.stepOn(world, blockposition, iblockdata, entity);
 @@ -56,15 +74,20 @@
-         if (world.isClientSide) {
+         if (world.isClientSide()) {
              spawnParticles(world, blockposition);
          } else {
 -            interact(iblockdata, world, blockposition);

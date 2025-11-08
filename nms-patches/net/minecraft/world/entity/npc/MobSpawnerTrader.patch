@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/npc/MobSpawnerTrader.java
 +++ b/net/minecraft/world/entity/npc/MobSpawnerTrader.java
-@@ -101,7 +101,7 @@
+@@ -99,7 +99,7 @@
                      return false;
                  }
  
@@ -9,7 +9,7 @@
  
                  if (entityvillagertrader != null) {
                      for (int j = 0; j < 2; ++j) {
-@@ -109,7 +109,7 @@
+@@ -107,7 +107,7 @@
                      }
  
                      this.serverLevelData.setWanderingTraderId(entityvillagertrader.getUUID());
@@ -18,7 +18,7 @@
                      entityvillagertrader.setWanderTarget(blockposition1);
                      entityvillagertrader.setHomeTo(blockposition1, 16);
                      return true;
-@@ -124,7 +124,7 @@
+@@ -122,7 +122,7 @@
          BlockPosition blockposition = this.findSpawnPositionNear(worldserver, entityvillagertrader.blockPosition(), i);
  
          if (blockposition != null) {

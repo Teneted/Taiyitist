@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator.java
 +++ b/net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator.java
-@@ -15,6 +15,11 @@
+@@ -17,6 +17,11 @@
  import net.minecraft.world.level.block.state.properties.BlockPropertyRedstoneSide;
  import net.minecraft.world.level.block.state.properties.BlockStateEnum;
  
@@ -12,7 +12,7 @@
  public class ExperimentalRedstoneWireEvaluator extends RedstoneWireEvaluator {
  
      private final Deque<BlockPosition> wiresToTurnOff = new ArrayDeque();
-@@ -39,7 +44,16 @@
+@@ -41,7 +46,16 @@
              int j = unpackPower(i);
              IBlockData iblockdata1 = world.getBlockState(blockposition1);
  
@@ -30,7 +30,7 @@
                  int k = 2;
  
                  if (!flag || !flag1) {
-@@ -140,6 +154,7 @@
+@@ -150,6 +164,7 @@
          }
  
          int k1;

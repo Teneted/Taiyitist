@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/EntityDragonFireball.java
 +++ b/net/minecraft/world/entity/projectile/EntityDragonFireball.java
-@@ -14,6 +14,10 @@
+@@ -15,6 +15,10 @@
  import net.minecraft.world.phys.MovingObjectPositionEntity;
  import net.minecraft.world.phys.Vec3D;
  
@@ -11,7 +11,7 @@
  public class EntityDragonFireball extends EntityFireball {
  
      public static final float SPLASH_RANGE = 4.0F;
-@@ -58,7 +62,7 @@
+@@ -59,7 +63,7 @@
  
                  this.level().levelEvent(2006, this.blockPosition(), this.isSilent() ? -1 : 1);
                  this.level().addFreshEntity(entityareaeffectcloud);

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/ItemFishingRod.java
 +++ b/net/minecraft/world/item/ItemFishingRod.java
-@@ -15,6 +15,11 @@
+@@ -14,6 +14,11 @@
  import net.minecraft.world.level.World;
  import net.minecraft.world.level.gameevent.GameEvent;
  
@@ -12,7 +12,7 @@
  public class ItemFishingRod extends Item {
  
      public ItemFishingRod(Item.Info item_info) {
-@@ -35,13 +40,24 @@
+@@ -34,13 +39,24 @@
              world.playSound((Entity) null, entityhuman.getX(), entityhuman.getY(), entityhuman.getZ(), SoundEffects.FISHING_BOBBER_RETRIEVE, SoundCategory.NEUTRAL, 1.0F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
              entityhuman.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
          } else {

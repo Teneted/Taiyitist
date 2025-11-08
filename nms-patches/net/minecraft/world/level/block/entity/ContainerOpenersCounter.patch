@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
 +++ b/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
-@@ -16,6 +16,7 @@
+@@ -18,6 +18,7 @@
      private static final int CHECK_TICK_DELAY = 5;
      private int openCount;
      private double maxInteractionRange;
@@ -8,7 +8,7 @@
  
      public ContainerOpenersCounter() {}
  
-@@ -25,11 +26,36 @@
+@@ -27,11 +28,36 @@
  
      protected abstract void openerCountChanged(World world, BlockPosition blockposition, IBlockData iblockdata, int i, int j);
  
@@ -26,9 +26,9 @@
 +    }
 +    // CraftBukkit end
 +
-     protected abstract boolean isOwnContainer(EntityHuman entityhuman);
+     public abstract boolean isOwnContainer(EntityHuman entityhuman);
  
-     public void incrementOpeners(EntityHuman entityhuman, World world, BlockPosition blockposition, IBlockData iblockdata) {
+     public void incrementOpeners(EntityLiving entityliving, World world, BlockPosition blockposition, IBlockData iblockdata, double d0) {
 +        int oldPower = Math.max(0, Math.min(15, this.openCount)); // CraftBukkit - Get power before new viewer is added
          int i = this.openCount++;
  
@@ -44,11 +44,11 @@
 +
          if (i == 0) {
              this.onOpen(world, blockposition, iblockdata);
-             world.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_OPEN, blockposition);
-@@ -41,8 +67,19 @@
+             world.gameEvent(entityliving, (Holder) GameEvent.CONTAINER_OPEN, blockposition);
+@@ -43,8 +69,19 @@
      }
  
-     public void decrementOpeners(EntityHuman entityhuman, World world, BlockPosition blockposition, IBlockData iblockdata) {
+     public void decrementOpeners(EntityLiving entityliving, World world, BlockPosition blockposition, IBlockData iblockdata) {
 +        int oldPower = Math.max(0, Math.min(15, this.openCount)); // CraftBukkit - Get power before new viewer is added
          int i = this.openCount--;
  
@@ -64,8 +64,8 @@
 +
          if (this.openCount == 0) {
              this.onClose(world, blockposition, iblockdata);
-             world.gameEvent(entityhuman, (Holder) GameEvent.CONTAINER_CLOSE, blockposition);
-@@ -69,6 +106,7 @@
+             world.gameEvent(entityliving, (Holder) GameEvent.CONTAINER_CLOSE, blockposition);
+@@ -85,6 +122,7 @@
          }
  
          int i = list.size();

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityContainer.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityContainer.java
-@@ -167,4 +167,12 @@
+@@ -171,4 +171,12 @@
          valueoutput.discard("lock");
          valueoutput.discard("Items");
      }

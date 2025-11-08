@@ -12,7 +12,7 @@
 @@ -30,7 +32,17 @@
              if (entitysheep.isAlive() && !entitysheep.isSheared() && entitysheep.getColor() != this.dyeColor) {
                  entitysheep.level().playSound(entityhuman, (Entity) entitysheep, SoundEffects.DYE_USE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                 if (!entityhuman.level().isClientSide) {
+                 if (!entityhuman.level().isClientSide()) {
 -                    entitysheep.setColor(this.dyeColor);
 +                    // CraftBukkit start
 +                    byte bColor = (byte) this.dyeColor.getId();

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/creaking/Creaking.java
 +++ b/net/minecraft/world/entity/monster/creaking/Creaking.java
-@@ -207,7 +207,7 @@
+@@ -206,7 +206,7 @@
  
      @Override
      public BehaviorController<Creaking> getBrain() {
@@ -9,7 +9,7 @@
      }
  
      @Override
-@@ -330,7 +330,7 @@
+@@ -329,7 +329,7 @@
          }
  
          this.makeSound(this.getDeathSound());
@@ -18,7 +18,7 @@
      }
  
      public void creakingDeathEffects(DamageSource damagesource) {
-@@ -459,7 +459,7 @@
+@@ -458,7 +458,7 @@
  
      @Override
      protected SoundEffect getHurtSound(DamageSource damagesource) {

@@ -33,7 +33,7 @@
 @@ -99,8 +104,16 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
-         if (!this.level().isClientSide) {
+         if (!this.level().isClientSide()) {
 -            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 1.0F, false, World.a.MOB);
 -            this.discard();
 +            // CraftBukkit start

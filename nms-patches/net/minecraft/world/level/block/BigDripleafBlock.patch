@@ -23,8 +23,8 @@
  
      @Override
 @@ -180,7 +186,20 @@
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
-         if (!world.isClientSide) {
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier, boolean flag) {
+         if (!world.isClientSide()) {
              if (iblockdata.getValue(BigDripleafBlock.TILT) == Tilt.NONE && canEntityTilt(blockposition, entity) && !world.hasNeighborSignal(blockposition)) {
 -                this.setTiltAndScheduleTick(iblockdata, world, blockposition, Tilt.UNSTABLE, (SoundEffect) null);
 +                // CraftBukkit start - tilt dripleaf

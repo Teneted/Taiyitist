@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ChunkMapDistance.java
 +++ b/net/minecraft/server/level/ChunkMapDistance.java
-@@ -77,6 +77,11 @@
+@@ -78,6 +78,11 @@
          }
  
          if (!this.chunksToUpdateFutures.isEmpty()) {
@@ -12,7 +12,7 @@
              for (PlayerChunk playerchunk : this.chunksToUpdateFutures) {
                  playerchunk.updateHighestAllowedStatus(playerchunkmap);
              }
-@@ -137,6 +142,7 @@
+@@ -138,6 +143,7 @@
          ChunkCoordIntPair chunkcoordintpair = sectionposition.chunk();
          long i = chunkcoordintpair.toLong();
          ObjectSet<EntityPlayer> objectset = (ObjectSet) this.playersPerChunk.get(i);

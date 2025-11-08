@@ -1,14 +1,6 @@
 --- a/net/minecraft/world/level/border/WorldBorder.java
 +++ b/net/minecraft/world/level/border/WorldBorder.java
-@@ -32,6 +32,7 @@
-     int absoluteMaxSize = 29999984;
-     private WorldBorder.a extent = new WorldBorder.e((double) 5.999997E7F);
-     public static final WorldBorder.d DEFAULT_SETTINGS = new WorldBorder.d(0.0D, 0.0D, 0.2D, 5.0D, 5, 15, (double) 5.999997E7F, 0L, 0.0D);
-+    public net.minecraft.server.level.WorldServer world; // CraftBukkit
- 
-     public WorldBorder() {}
- 
-@@ -190,6 +191,7 @@
+@@ -190,6 +190,7 @@
      }
  
      public void addListener(IWorldBorderListener iworldborderlistener) {

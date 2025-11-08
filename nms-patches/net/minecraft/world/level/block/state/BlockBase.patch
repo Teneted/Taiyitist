@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/state/BlockBase.java
 +++ b/net/minecraft/world/level/block/state/BlockBase.java
-@@ -85,6 +85,11 @@
+@@ -84,6 +84,11 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
  import net.minecraft.world.phys.shapes.VoxelShapes;
  
@@ -12,7 +12,7 @@
  public abstract class BlockBase implements FeatureElement {
  
      protected static final EnumDirection[] UPDATE_SHAPE_ORDER = new EnumDirection[]{EnumDirection.WEST, EnumDirection.EAST, EnumDirection.NORTH, EnumDirection.SOUTH, EnumDirection.DOWN, EnumDirection.UP};
-@@ -159,6 +164,12 @@
+@@ -158,6 +163,12 @@
  
      protected void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag) {}
  
@@ -25,7 +25,7 @@
      protected void affectNeighborsAfterRemoval(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, boolean flag) {}
  
      protected void onExplosionHit(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, Explosion explosion, BiConsumer<ItemStack, BlockPosition> biconsumer) {
-@@ -170,8 +181,10 @@
+@@ -169,8 +180,10 @@
                  TileEntity tileentity = iblockdata.hasBlockEntity() ? worldserver.getBlockEntity(blockposition) : null;
                  LootParams.a lootparams_a = (new LootParams.a(worldserver)).withParameter(LootContextParameters.ORIGIN, Vec3D.atCenterOf(blockposition)).withParameter(LootContextParameters.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParameters.BLOCK_ENTITY, tileentity).withOptionalParameter(LootContextParameters.THIS_ENTITY, explosion.getDirectSourceEntity());
  
@@ -38,7 +38,7 @@
                  }
  
                  iblockdata.spawnAfterBreak(worldserver, blockposition, ItemStack.EMPTY, flag);
-@@ -1106,7 +1119,13 @@
+@@ -1108,7 +1121,13 @@
          }
  
          public void onPlace(World world, BlockPosition blockposition, IBlockData iblockdata, boolean flag) {

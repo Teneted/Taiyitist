@@ -13,7 +13,7 @@
  public class MinecartDispenseItemBehavior extends DispenseBehaviorItem {
  
      private final DispenseBehaviorItem defaultDispenseItemBehavior = new DispenseBehaviorItem();
-@@ -62,11 +68,40 @@
+@@ -62,11 +68,38 @@
          }
  
          Vec3D vec3d1 = new Vec3D(d0, d1 + d3, d2);
@@ -44,8 +44,6 @@
 +                return itemstack;
 +            }
 +        }
-+
-+        itemstack1 = CraftItemStack.asNMSCopy(event.getItem());
 +        EntityMinecartAbstract entityminecartabstract = EntityMinecartAbstract.createMinecart(worldserver, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ(), this.entityType, EntitySpawnReason.DISPENSER, itemstack1, (EntityHuman) null);
  
          if (entityminecartabstract != null) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/status/ChunkStatusTasks.java
 +++ b/net/minecraft/world/level/chunk/status/ChunkStatusTasks.java
-@@ -41,7 +41,7 @@
+@@ -42,7 +42,7 @@
      static CompletableFuture<IChunkAccess> generateStructureStarts(WorldGenContext worldgencontext, ChunkStep chunkstep, StaticCache2D<GenerationChunkHolder> staticcache2d, IChunkAccess ichunkaccess) {
          WorldServer worldserver = worldgencontext.level();
  
@@ -9,22 +9,3 @@
              worldgencontext.generator().createStructures(worldserver.registryAccess(), worldserver.getChunkSource().getGeneratorState(), worldserver.structureManager(), ichunkaccess, worldgencontext.structureManager(), worldserver.dimension());
          }
  
-@@ -178,7 +178,17 @@
- 
-     private static void postLoadProtoChunk(WorldServer worldserver, ValueInput.b valueinput_b) {
-         if (!valueinput_b.isEmpty()) {
--            worldserver.addWorldGenChunkEntities(EntityTypes.loadEntitiesRecursive(valueinput_b, worldserver, EntitySpawnReason.LOAD));
-+            // CraftBukkit start - these are spawned serialized (DefinedStructure) and we don't call an add event below at the moment due to ordering complexities
-+            worldserver.addWorldGenChunkEntities(EntityTypes.loadEntitiesRecursive(valueinput_b, worldserver, EntitySpawnReason.LOAD).filter((entity) -> {
-+                boolean needsRemoval = false;
-+                net.minecraft.server.dedicated.DedicatedServer server = worldserver.getCraftServer().getServer();
-+                if (!worldserver.getChunkSource().spawnFriendlies && (entity instanceof net.minecraft.world.entity.animal.EntityAnimal || entity instanceof net.minecraft.world.entity.animal.EntityWaterAnimal)) {
-+                    entity.discard(null); // CraftBukkit - add Bukkit remove cause
-+                    needsRemoval = true;
-+                }
-+                return !needsRemoval;
-+            }));
-+            // CraftBukkit end
-         }
- 
-     }

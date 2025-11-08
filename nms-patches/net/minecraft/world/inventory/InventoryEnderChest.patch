@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/InventoryEnderChest.java
 +++ b/net/minecraft/world/inventory/InventoryEnderChest.java
-@@ -9,13 +9,32 @@
+@@ -10,13 +10,32 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  

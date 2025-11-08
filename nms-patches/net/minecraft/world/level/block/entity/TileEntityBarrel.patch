@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityBarrel.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityBarrel.java
-@@ -22,8 +22,49 @@
+@@ -24,8 +24,49 @@
  import net.minecraft.world.level.storage.ValueInput;
  import net.minecraft.world.level.storage.ValueOutput;
  
@@ -47,6 +47,6 @@
 +        maxStack = i;
 +    }
 +    // CraftBukkit end
+     private static final IChatBaseComponent DEFAULT_NAME = IChatBaseComponent.translatable("container.barrel");
      private NonNullList<ItemStack> items;
      public final ContainerOpenersCounter openersCounter;
- 

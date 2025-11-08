@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/EntityLightning.java
 +++ b/net/minecraft/world/entity/EntityLightning.java
-@@ -30,6 +30,11 @@
+@@ -29,6 +29,11 @@
  import net.minecraft.world.phys.AxisAlignedBB;
  import net.minecraft.world.phys.Vec3D;
  

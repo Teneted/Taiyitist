@@ -17,7 +17,7 @@
 @@ -30,27 +37,47 @@
              EntityHuman entityhuman = itemactioncontext.getPlayer();
  
-             if (!world.isClientSide && entityhuman != null) {
+             if (!world.isClientSide() && entityhuman != null) {
 -                return bindPlayerMobs(entityhuman, world, blockposition);
 +                return bindPlayerMobs(entityhuman, world, blockposition, itemactioncontext.getHand()); // CraftBukkit - Pass hand
              }

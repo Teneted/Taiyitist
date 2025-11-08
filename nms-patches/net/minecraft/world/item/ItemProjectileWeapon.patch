@@ -26,6 +26,6 @@
 +                    }
 +                }
 +                // CraftBukkit end
-                 itemstack.hurtAndBreak(this.getDurabilityUse(itemstack1), entityliving, EntityLiving.getSlotForHand(enumhand));
+                 itemstack.hurtAndBreak(this.getDurabilityUse(itemstack1), entityliving, enumhand.asEquipmentSlot());
                  if (itemstack.isEmpty()) {
                      break;

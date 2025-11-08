@@ -1,19 +1,15 @@
 --- a/net/minecraft/world/entity/decoration/EntityItemFrame.java
 +++ b/net/minecraft/world/entity/decoration/EntityItemFrame.java
-@@ -107,6 +107,12 @@
+@@ -115,7 +115,7 @@
+         return this.createBoundingBox(this.pos, this.getDirection(), false);
+     }
  
-     @Override
-     protected AxisAlignedBB calculateBoundingBox(BlockPosition blockposition, EnumDirection enumdirection) {
-+        // CraftBukkit start - break out BB calc into own method
-+        return calculateBoundingBoxStatic(blockposition, enumdirection);
-+    }
-+
-+    public static AxisAlignedBB calculateBoundingBoxStatic(BlockPosition blockposition, EnumDirection enumdirection) {
-+        // CraftBukkit end
+-    private AxisAlignedBB createBoundingBox(BlockPosition blockposition, EnumDirection enumdirection, boolean flag) {
++    public static AxisAlignedBB createBoundingBox(BlockPosition blockposition, EnumDirection enumdirection, boolean flag) { // CraftBukkit - static
          float f = 0.46875F;
          Vec3D vec3d = Vec3D.atCenterOf(blockposition).relative(enumdirection, -0.46875D);
-         EnumDirection.EnumAxis enumdirection_enumaxis = enumdirection.getAxis();
-@@ -171,6 +177,11 @@
+         float f1 = flag ? 1.0F : 0.75F;
+@@ -182,6 +182,11 @@
              if (this.isInvulnerableToBase(damagesource)) {
                  return false;
              } else if (this.shouldDamageDropItem(damagesource)) {
@@ -25,7 +21,7 @@
                  this.dropItem(worldserver, damagesource.getEntity(), false);
                  this.gameEvent(GameEvent.BLOCK_CHANGE, damagesource.getEntity());
                  this.playSound(this.getRemoveItemSound(), 1.0F, 1.0F);
-@@ -283,13 +294,19 @@
+@@ -294,13 +299,19 @@
      }
  
      public void setItem(ItemStack itemstack, boolean flag) {

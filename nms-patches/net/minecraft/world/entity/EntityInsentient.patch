@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/EntityInsentient.java
 +++ b/net/minecraft/world/entity/EntityInsentient.java
-@@ -82,6 +82,23 @@
+@@ -90,6 +90,23 @@
  import net.minecraft.world.phys.Vec3D;
  import net.minecraft.world.ticks.ContainerSingleItem;
  
@@ -24,7 +24,7 @@
  public abstract class EntityInsentient extends EntityLiving implements EquipmentUser, Leashable, Targeting {
  
      private static final DataWatcherObject<Byte> DATA_MOB_FLAGS_ID = DataWatcher.<Byte>defineId(EntityInsentient.class, DataWatcherRegistry.BYTE);
-@@ -129,6 +146,8 @@
+@@ -139,6 +156,8 @@
      private BlockPosition homePosition;
      private int homeRadius;
  
@@ -33,7 +33,7 @@
      protected EntityInsentient(EntityTypes<? extends EntityInsentient> entitytypes, World world) {
          super(entitytypes, world);
          this.dropChances = DropChances.DEFAULT;
-@@ -152,6 +171,12 @@
+@@ -162,6 +181,12 @@
  
      }
  
@@ -46,7 +46,7 @@
      protected void registerGoals() {}
  
      public static AttributeProvider.Builder createMobAttributes() {
-@@ -256,11 +281,42 @@
+@@ -266,11 +291,42 @@
  
      @Nullable
      protected final EntityLiving getTargetFromBrain() {
@@ -90,7 +90,7 @@
      }
  
      @Override
-@@ -382,6 +438,12 @@
+@@ -392,6 +448,12 @@
          return null;
      }
  
@@ -103,7 +103,7 @@
      @Override
      protected void addAdditionalSaveData(ValueOutput valueoutput) {
          super.addAdditionalSaveData(valueoutput);
-@@ -409,13 +471,23 @@
+@@ -419,13 +481,23 @@
              valueoutput.putBoolean("NoAI", this.isNoAi());
          }
  
@@ -129,7 +129,7 @@
          this.dropChances = (DropChances) valueinput.read("drop_chances", DropChances.CODEC).orElse(DropChances.DEFAULT);
          this.readLeashData(valueinput);
          this.homeRadius = valueinput.getIntOr("home_radius", -1);
-@@ -427,6 +499,9 @@
+@@ -437,6 +509,9 @@
          this.lootTable = valueinput.<ResourceKey<LootTable>>read("DeathLootTable", LootTable.KEY_CODEC);
          this.lootTableSeed = valueinput.getLongOr("DeathLootTableSeed", 0L);
          this.setNoAi(valueinput.getBooleanOr("NoAI", false));
@@ -139,7 +139,7 @@
      }
  
      @Override
-@@ -501,20 +576,26 @@
+@@ -511,20 +586,26 @@
  
      protected void pickUpItem(WorldServer worldserver, EntityItem entityitem) {
          ItemStack itemstack = entityitem.getItem();
@@ -168,7 +168,7 @@
          EnumItemSlot enumitemslot = this.getEquipmentSlotForItem(itemstack);
  
          if (!this.isEquippableInSlot(itemstack, enumitemslot)) {
-@@ -529,11 +610,19 @@
+@@ -539,11 +620,19 @@
                  flag = itemstack1.isEmpty();
              }
  
@@ -189,16 +189,16 @@
                  }
  
                  ItemStack itemstack2 = enumitemslot.limit(itemstack);
-@@ -645,7 +734,7 @@
+@@ -651,7 +740,7 @@
      @Override
      public void checkDespawn() {
-         if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+         if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL && !this.getType().isAllowedInPeaceful()) {
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
              Entity entity = this.level().getNearestPlayer(this, -1.0D);
  
-@@ -655,14 +744,14 @@
+@@ -661,14 +750,14 @@
                  int j = i * i;
  
                  if (d0 > (double) j && this.removeWhenFarAway(d0)) {
@@ -215,7 +215,7 @@
                  } else if (d0 < (double) l) {
                      this.noActionTime = 0;
                  }
-@@ -676,6 +765,7 @@
+@@ -682,6 +771,7 @@
      @Override
      protected final void serverAiStep() {
          ++this.noActionTime;
@@ -223,7 +223,7 @@
          GameProfilerFiller gameprofilerfiller = Profiler.get();
  
          gameprofilerfiller.push("sensing");
-@@ -860,6 +950,51 @@
+@@ -861,6 +951,51 @@
              public boolean stillValid(EntityHuman entityhuman) {
                  return entityhuman.getVehicle() == EntityInsentient.this || entityhuman.canInteractWithEntity((Entity) EntityInsentient.this, 4.0D);
              }
@@ -275,7 +275,7 @@
          };
      }
  
-@@ -1151,7 +1286,7 @@
+@@ -1154,7 +1289,7 @@
          if (itemstack.getItem() instanceof ItemMonsterEgg) {
              if (this.level() instanceof WorldServer) {
                  ItemMonsterEgg itemmonsteregg = (ItemMonsterEgg) itemstack.getItem();
@@ -284,7 +284,7 @@
  
                  optional.ifPresent((entityinsentient) -> {
                      this.onOffspringSpawnedFromEgg(entityhuman, entityinsentient);
-@@ -1208,6 +1343,13 @@
+@@ -1227,6 +1362,13 @@
  
      @Nullable
      public <T extends EntityInsentient> T convertTo(EntityTypes<T> entitytypes, ConversionParams conversionparams, EntitySpawnReason entityspawnreason, ConversionParams.a<T> conversionparams_a) {
@@ -298,7 +298,7 @@
          if (this.isRemoved()) {
              return null;
          } else {
-@@ -1220,14 +1362,26 @@
+@@ -1239,14 +1381,26 @@
                  conversionparams_a.finalizeConversion(t0);
                  World world = this.level();
  
@@ -327,7 +327,7 @@
                  }
  
                  return t0;
-@@ -1237,7 +1391,14 @@
+@@ -1256,7 +1410,14 @@
  
      @Nullable
      public <T extends EntityInsentient> T convertTo(EntityTypes<T> entitytypes, ConversionParams conversionparams, ConversionParams.a<T> conversionparams_a) {
@@ -343,15 +343,15 @@
      }
  
      @Nullable
-@@ -1282,6 +1443,7 @@
-         boolean flag1 = super.startRiding(entity, flag);
+@@ -1301,6 +1462,7 @@
+         boolean flag2 = super.startRiding(entity, flag, flag1);
  
-         if (flag1 && this.isLeashed()) {
+         if (flag2 && this.isLeashed()) {
 +            this.level().getCraftServer().getPluginManager().callEvent(new EntityUnleashEvent(this.getBukkitEntity(), UnleashReason.UNKNOWN)); // CraftBukkit
              this.dropLeash();
          }
  
-@@ -1366,7 +1528,7 @@
+@@ -1385,7 +1547,7 @@
              if (f1 > 0.0F && entity instanceof EntityLiving) {
                  EntityLiving entityliving = (EntityLiving) entity;
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ai/behavior/BehaviorMakeLove.java
 +++ b/net/minecraft/world/entity/ai/behavior/BehaviorMakeLove.java
-@@ -18,6 +18,11 @@
+@@ -17,6 +17,11 @@
  import net.minecraft.world.entity.npc.EntityVillager;
  import net.minecraft.world.level.pathfinder.PathEntity;
  
@@ -12,7 +12,7 @@
  public class BehaviorMakeLove extends Behavior<EntityVillager> {
  
      private long birthTimestamp;
-@@ -114,11 +119,17 @@
+@@ -113,11 +118,17 @@
          if (entityvillager2 == null) {
              return Optional.empty();
          } else {

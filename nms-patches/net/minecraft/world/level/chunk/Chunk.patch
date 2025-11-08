@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/Chunk.java
 +++ b/net/minecraft/world/level/chunk/Chunk.java
-@@ -80,7 +80,7 @@
+@@ -87,7 +87,7 @@
      };
      private final Map<BlockPosition, Chunk.d> tickersInLevel;
      public boolean loaded;
@@ -9,7 +9,7 @@
      @Nullable
      private Supplier<FullChunkStatus> fullStatus;
      @Nullable
-@@ -99,7 +99,7 @@
+@@ -106,7 +106,7 @@
          this.tickersInLevel = Maps.newHashMap();
          this.unsavedListener = (chunkcoordintpair1) -> {
          };
@@ -18,7 +18,7 @@
          this.gameEventListenerRegistrySections = new Int2ObjectOpenHashMap();
  
          for (HeightMap.Type heightmap_type : HeightMap.Type.values()) {
-@@ -113,6 +113,11 @@
+@@ -120,6 +120,11 @@
          this.fluidTicks = levelchunkticks1;
      }
  
@@ -30,7 +30,7 @@
      public Chunk(WorldServer worldserver, ProtoChunk protochunk, @Nullable Chunk.c chunk_c) {
          this(worldserver, protochunk.getPos(), protochunk.getUpgradeData(), protochunk.unpackBlockTicks(), protochunk.unpackFluidTicks(), protochunk.getInhabitedTime(), protochunk.getSections(), chunk_c, protochunk.getBlendingData());
          if (!Collections.disjoint(protochunk.pendingBlockEntities.keySet(), protochunk.blockEntities.keySet())) {
-@@ -141,6 +146,10 @@
+@@ -148,6 +153,10 @@
          this.skyLightSources = protochunk.skyLightSources;
          this.setLightCorrect(protochunk.isLightCorrect());
          this.markUnsaved();
@@ -41,17 +41,17 @@
      }
  
      public void setUnsavedListener(Chunk.e chunk_e) {
-@@ -334,7 +343,8 @@
+@@ -341,7 +350,8 @@
                  if (!chunksection.getBlockState(k, l, i1).is(block)) {
                      return null;
                  } else {
--                    if (!this.level.isClientSide && (i & 512) == 0) {
+-                    if (!this.level.isClientSide() && (i & 512) == 0) {
 +                    // CraftBukkit - Don't place while processing the BlockPlaceEvent, unless it's a BlockContainer. Prevents blocks such as TNT from activating when cancelled.
-+                    if (!this.level.isClientSide && (i & 512) == 0 && (!this.level.captureBlockStates || block instanceof net.minecraft.world.level.block.BlockTileEntity)) {
++                    if (!this.level.isClientSide() && (i & 512) == 0 && (!this.level.captureBlockStates || block instanceof net.minecraft.world.level.block.BlockTileEntity)) {
                          iblockdata.onPlace(this.level, blockposition, iblockdata1, flag3);
                      }
  
-@@ -385,7 +395,12 @@
+@@ -392,7 +402,12 @@
  
      @Nullable
      public TileEntity getBlockEntity(BlockPosition blockposition, Chunk.EnumTileEntityState chunk_enumtileentitystate) {
@@ -65,7 +65,7 @@
  
          if (tileentity == null) {
              NBTTagCompound nbttagcompound = (NBTTagCompound) this.pendingBlockEntities.remove(blockposition);
-@@ -458,6 +473,7 @@
+@@ -465,6 +480,7 @@
  
          if (!iblockdata.hasBlockEntity()) {
              Chunk.LOGGER.warn("Trying to set block entity {} at position {}, but state {} does not allow it", new Object[]{tileentity, blockposition, iblockdata});
@@ -73,7 +73,7 @@
          } else {
              IBlockData iblockdata1 = tileentity.getBlockState();
  
-@@ -512,6 +528,12 @@
+@@ -519,6 +535,12 @@
          if (this.isInLevel()) {
              TileEntity tileentity = (TileEntity) this.blockEntities.remove(blockposition);
  
@@ -86,7 +86,7 @@
              if (tileentity != null) {
                  World world = this.level;
  
-@@ -565,6 +587,57 @@
+@@ -573,6 +595,57 @@
  
      }
  
@@ -144,7 +144,7 @@
      public boolean isEmpty() {
          return false;
      }
-@@ -744,7 +817,7 @@
+@@ -781,7 +854,7 @@
  
      private <T extends TileEntity> void updateBlockEntityTicker(T t0) {
          IBlockData iblockdata = t0.getBlockState();
@@ -153,7 +153,7 @@
  
          if (blockentityticker == null) {
              this.removeBlockEntityTicker(t0.getBlockPos());
-@@ -786,7 +859,7 @@
+@@ -823,7 +896,7 @@
          private boolean loggedInvalidBlockState;
  
          a(final TileEntity tileentity, final BlockEntityTicker blockentityticker) {

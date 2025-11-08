@@ -15,7 +15,7 @@
  public class CommandTeleport {
  
      private static final SimpleCommandExceptionType INVALID_POSITION = new SimpleCommandExceptionType(IChatBaseComponent.translatable("commands.teleport.invalidPosition"));
-@@ -156,7 +164,30 @@
+@@ -129,7 +137,30 @@
              float f4 = MathHelper.wrapDegrees(f2);
              float f5 = MathHelper.wrapDegrees(f3);
  

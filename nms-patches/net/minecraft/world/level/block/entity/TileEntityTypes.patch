@@ -1,15 +1,15 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityTypes.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityTypes.java
-@@ -68,7 +68,7 @@
-     public static final TileEntityTypes<VaultBlockEntity> VAULT = register("vault", VaultBlockEntity::new, Blocks.VAULT);
+@@ -70,7 +70,7 @@
      public static final TileEntityTypes<TestBlockEntity> TEST_BLOCK = register("test_block", TestBlockEntity::new, Blocks.TEST_BLOCK);
      public static final TileEntityTypes<TestInstanceBlockEntity> TEST_INSTANCE_BLOCK = register("test_instance_block", TestInstanceBlockEntity::new, Blocks.TEST_INSTANCE_BLOCK);
+     public static final TileEntityTypes<CopperGolemStatueBlockEntity> COPPER_GOLEM_STATUE = register("copper_golem_statue", CopperGolemStatueBlockEntity::new, Blocks.COPPER_GOLEM_STATUE, Blocks.EXPOSED_COPPER_GOLEM_STATUE, Blocks.WEATHERED_COPPER_GOLEM_STATUE, Blocks.OXIDIZED_COPPER_GOLEM_STATUE, Blocks.WAXED_COPPER_GOLEM_STATUE, Blocks.WAXED_EXPOSED_COPPER_GOLEM_STATUE, Blocks.WAXED_WEATHERED_COPPER_GOLEM_STATUE, Blocks.WAXED_OXIDIZED_COPPER_GOLEM_STATUE);
 -    private static final Set<TileEntityTypes<?>> OP_ONLY_CUSTOM_DATA = Set.of(TileEntityTypes.COMMAND_BLOCK, TileEntityTypes.LECTERN, TileEntityTypes.SIGN, TileEntityTypes.HANGING_SIGN, TileEntityTypes.MOB_SPAWNER, TileEntityTypes.TRIAL_SPAWNER);
 +    private static final Set<TileEntityTypes<?>> OP_ONLY_CUSTOM_DATA = Set.of(TileEntityTypes.COMMAND_BLOCK, TileEntityTypes.LECTERN, TileEntityTypes.SIGN, TileEntityTypes.HANGING_SIGN, TileEntityTypes.MOB_SPAWNER, TileEntityTypes.TRIAL_SPAWNER, TileEntityTypes.CHEST); // CraftBukkit
      private final TileEntityTypes.a<? extends T> factory;
      private final Set<Block> validBlocks;
      private final Holder.c<TileEntityTypes<?>> builtInRegistryHolder;
-@@ -84,7 +84,7 @@
+@@ -86,7 +86,7 @@
          }
  
          SystemUtils.fetchChoiceType(DataConverterTypes.BLOCK_ENTITY, s);

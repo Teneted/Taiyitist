@@ -12,7 +12,7 @@
  
      private static final double SPEED = 0.15D;
 @@ -59,8 +63,21 @@
-         this.finalTarget = new EntityReference<Entity>(entity);
+         this.finalTarget = EntityReference.of(entity);
          this.currentMoveDirection = EnumDirection.UP;
          this.selectNextMoveDirection(enumdirection_enumaxis, entity);
 +        projectileSource = (org.bukkit.entity.LivingEntity) entityliving.getBukkitEntity(); // CraftBukkit
@@ -24,7 +24,7 @@
 +    }
 +
 +    public void setTarget(Entity e) {
-+        this.finalTarget = (e != null) ? new EntityReference<>(e) : null;
++        this.finalTarget = (e != null) ? EntityReference.of(e) : null;
 +        this.currentMoveDirection = EnumDirection.UP;
 +        this.selectNextMoveDirection(EnumDirection.EnumAxis.X, e);
 +    }

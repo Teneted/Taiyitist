@@ -1,6 +1,6 @@
 --- a/net/minecraft/util/datafix/DataConverterRegistry.java
 +++ b/net/minecraft/util/datafix/DataConverterRegistry.java
-@@ -557,6 +557,20 @@
+@@ -566,6 +566,20 @@
          datafixerbuilder.addFixer(new DataConverterItemFrame(schema44, false));
          Schema schema45 = datafixerbuilder.addSchema(1458, V1458::new);
  
@@ -21,7 +21,7 @@
          datafixerbuilder.addFixer(new DataConverterCustomNameEntity(schema45));
          datafixerbuilder.addFixer(new DataConverterCustomNameItem(schema45));
          datafixerbuilder.addFixer(new DataConverterCustomNameTile(schema45));
-@@ -621,7 +635,7 @@
+@@ -630,7 +644,7 @@
                  Type<?> type = this.getInputSchema().getType(DataConverterTypes.ENTITY);
                  OpticFinder<String> opticfinder = DSL.fieldFinder("id", DataConverterSchemaNamed.namespacedString());
                  OpticFinder<?> opticfinder1 = type.findField("CustomName");
@@ -30,7 +30,7 @@
  
                  return this.fixTypeEverywhereTyped("Command block minecart custom name fix", type, (typed) -> {
                      String s = (String) typed.getOptional(opticfinder).orElse("");
-@@ -830,7 +844,8 @@
+@@ -839,7 +853,8 @@
          datafixerbuilder.addFixer(new DataConverterAddChoices(schema111, "Added Zoglin", DataConverterTypes.ENTITY));
          Schema schema112 = datafixerbuilder.addSchema(2523, DataConverterRegistry.SAME_NAMESPACED);
  
@@ -40,7 +40,7 @@
          Schema schema113 = datafixerbuilder.addSchema(2527, DataConverterRegistry.SAME_NAMESPACED);
  
          datafixerbuilder.addFixer(new DataConverterBitStorageAlign(schema113));
-@@ -896,12 +911,14 @@
+@@ -905,12 +920,14 @@
          datafixerbuilder.addFixer(new DataConverterAddChoices(schema132, "Added Glow Squid", DataConverterTypes.ENTITY));
          datafixerbuilder.addFixer(new DataConverterAddChoices(schema132, "Added Glow Item Frame", DataConverterTypes.ENTITY));
          Schema schema133 = datafixerbuilder.addSchema(2690, DataConverterRegistry.SAME_NAMESPACED);
@@ -57,7 +57,7 @@
  
          datafixerbuilder.addFixer(DataConverterItemName.create(schema134, "Rename copper item suffixes", createRenamer(immutablemap1)));
          datafixerbuilder.addFixer(DataConverterBlockRename.create(schema134, "Rename copper blocks suffixes", createRenamer(immutablemap1)));
-@@ -909,7 +926,8 @@
+@@ -918,7 +935,8 @@
  
          datafixerbuilder.addFixer(new AddFlagIfNotPresentFix(schema135, DataConverterTypes.WORLD_GEN_SETTINGS, "has_increased_height_already", false));
          Schema schema136 = datafixerbuilder.addSchema(2696, DataConverterRegistry.SAME_NAMESPACED);
@@ -67,7 +67,7 @@
  
          datafixerbuilder.addFixer(DataConverterItemName.create(schema136, "Renamed grimstone block items to deepslate", createRenamer(immutablemap2)));
          datafixerbuilder.addFixer(DataConverterBlockRename.create(schema136, "Renamed grimstone blocks to deepslate", createRenamer(immutablemap2)));
-@@ -996,10 +1014,11 @@
+@@ -1005,10 +1023,11 @@
          datafixerbuilder.addFixer(new DataConverterAddChoices(schema161, "Added Allay", DataConverterTypes.ENTITY));
          Schema schema162 = datafixerbuilder.addSchema(3084, DataConverterRegistry.SAME_NAMESPACED);
  
@@ -81,7 +81,7 @@
              int2objectopenhashmap1.defaultReturnValue("minecraft:tabby");
              int2objectopenhashmap1.put(0, "minecraft:tabby");
              int2objectopenhashmap1.put(1, "minecraft:black");
-@@ -1016,7 +1035,8 @@
+@@ -1025,7 +1044,8 @@
  
          Objects.requireNonNull(int2objectopenhashmap);
          datafixerbuilder.addFixer(new EntityVariantFix(schema163, "Change cat variant type", typereference, "minecraft:cat", "CatType", int2objectopenhashmap::get));

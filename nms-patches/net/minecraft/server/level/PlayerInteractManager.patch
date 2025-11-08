@@ -1,7 +1,7 @@
 --- a/net/minecraft/server/level/PlayerInteractManager.java
 +++ b/net/minecraft/server/level/PlayerInteractManager.java
-@@ -26,6 +26,28 @@
- import net.minecraft.world.phys.Vec3D;
+@@ -31,6 +31,28 @@
+ import net.minecraft.world.phys.shapes.VoxelShape;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
@@ -28,8 +28,8 @@
 +
  public class PlayerInteractManager {
  
-     private static final Logger LOGGER = LogUtils.getLogger();
-@@ -56,9 +78,16 @@
+     private static final double FLIGHT_DISABLE_RANGE = 1.0D;
+@@ -62,6 +84,13 @@
          if (enumgamemode == this.gameModeForPlayer) {
              return false;
          } else {
@@ -40,14 +40,19 @@
 +                return false;
 +            }
 +            // CraftBukkit end
-             this.setGameModeForPlayer(enumgamemode, this.previousGameModeForPlayer);
+             PlayerAbilities playerabilities = this.player.getAbilities();
+ 
+             this.setGameModeForPlayer(enumgamemode, this.gameModeForPlayer);
+@@ -70,7 +99,7 @@
+             }
+ 
              this.player.onUpdateAbilities();
 -            this.level.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.a.UPDATE_GAME_MODE, this.player));
 +            this.level.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.a.UPDATE_GAME_MODE, this.player), this.player); // CraftBukkit
              this.level.updateSleepingPlayerList();
              if (enumgamemode == EnumGamemode.CREATIVE) {
                  this.player.resetCurrentImpulseContext();
-@@ -92,7 +121,7 @@
+@@ -112,7 +141,7 @@
      }
  
      public void tick() {
@@ -56,7 +61,7 @@
          if (this.hasDelayedDestroy) {
              IBlockData iblockdata = this.level.getBlockState(this.delayedDestroyPos);
  
-@@ -144,10 +173,36 @@
+@@ -169,10 +198,36 @@
          } else {
              if (packetplayinblockdig_enumplayerdigtype == PacketPlayInBlockDig.EnumPlayerDigType.START_DESTROY_BLOCK) {
                  if (!this.level.mayInteract(this.player, blockposition)) {
@@ -93,7 +98,7 @@
  
                  if (this.player.getAbilities().instabuild) {
                      this.destroyAndAck(blockposition, j, "creative destroy");
-@@ -164,7 +219,19 @@
+@@ -189,7 +244,19 @@
                  float f = 1.0F;
                  IBlockData iblockdata = this.level.getBlockState(blockposition);
  
@@ -114,7 +119,7 @@
                      EnchantmentManager.onHitBlock(this.level, this.player.getMainHandItem(), this.player, this.player, EnumItemSlot.MAINHAND, Vec3D.atCenterOf(blockposition), iblockdata, (item) -> {
                          this.player.onEquippedItemBroken(item, EnumItemSlot.MAINHAND);
                      });
-@@ -172,6 +239,26 @@
+@@ -197,6 +264,26 @@
                      f = iblockdata.getDestroyProgress(this.player, this.player.level(), blockposition);
                  }
  
@@ -141,7 +146,7 @@
                  if (!iblockdata.isAir() && f >= 1.0F) {
                      this.destroyAndAck(blockposition, j, "insta mine");
                  } else {
-@@ -216,20 +303,22 @@
+@@ -241,20 +328,22 @@
              } else if (packetplayinblockdig_enumplayerdigtype == PacketPlayInBlockDig.EnumPlayerDigType.ABORT_DESTROY_BLOCK) {
                  this.isDestroyingBlock = false;
                  if (!Objects.equals(this.destroyPos, blockposition)) {
@@ -166,7 +171,7 @@
              this.debugLogging(blockposition, true, i, s);
          } else {
              this.player.connection.send(new PacketPlayOutBlockChange(blockposition, this.level.getBlockState(blockposition)));
-@@ -239,11 +328,74 @@
+@@ -264,11 +353,74 @@
      }
  
      public boolean destroyBlock(BlockPosition blockposition) {
@@ -242,7 +247,7 @@
              TileEntity tileentity = this.level.getBlockEntity(blockposition);
              Block block = iblockdata.getBlock();
  
-@@ -253,6 +405,10 @@
+@@ -278,6 +430,10 @@
              } else if (this.player.blockActionRestricted(this.level, blockposition, this.gameModeForPlayer)) {
                  return false;
              } else {
@@ -253,7 +258,7 @@
                  IBlockData iblockdata1 = block.playerWillDestroy(this.level, blockposition, iblockdata, this.player);
                  boolean flag = this.level.removeBlock(blockposition, false);
  
-@@ -261,19 +417,32 @@
+@@ -290,19 +446,32 @@
                  }
  
                  if (this.player.preventsBlockDrops()) {
@@ -289,7 +294,7 @@
              }
          }
      }
-@@ -319,14 +488,53 @@
+@@ -348,14 +517,53 @@
          }
      }
  
@@ -343,7 +348,7 @@
  
              if (itileinventory != null) {
                  entityplayer.openMenu(itileinventory);
-@@ -357,7 +565,7 @@
+@@ -386,7 +594,7 @@
                  }
              }
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ChiseledBookShelfBlockEntity.java
-@@ -23,6 +23,13 @@
+@@ -22,6 +22,13 @@
  import net.minecraft.world.level.storage.ValueOutput;
  import org.slf4j.Logger;
  
@@ -11,10 +11,10 @@
 +import org.bukkit.entity.HumanEntity;
 +// CraftBukkit end
 +
- public class ChiseledBookShelfBlockEntity extends TileEntity implements IInventory {
+ public class ChiseledBookShelfBlockEntity extends TileEntity implements ListBackedContainer {
  
      public static final int MAX_BOOKS_IN_STORAGE = 6;
-@@ -30,6 +37,41 @@
+@@ -29,6 +36,41 @@
      private static final int DEFAULT_LAST_INTERACTED_SLOT = -1;
      private final NonNullList<ItemStack> items;
      public int lastInteractedSlot;
@@ -56,25 +56,7 @@
  
      public ChiseledBookShelfBlockEntity(BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.CHISELED_BOOKSHELF, blockposition, iblockdata);
-@@ -101,7 +143,7 @@
- 
-         this.items.set(i, ItemStack.EMPTY);
-         if (!itemstack.isEmpty()) {
--            this.updateState(i);
-+            if (level != null) this.updateState(i); // CraftBukkit - SPIGOT-7381: check for null world
-         }
- 
-         return itemstack;
-@@ -116,7 +158,7 @@
-     public void setItem(int i, ItemStack itemstack) {
-         if (itemstack.is(TagsItem.BOOKSHELF_BOOKS)) {
-             this.items.set(i, itemstack);
--            this.updateState(i);
-+            if (level != null) this.updateState(i); // CraftBukkit - SPIGOT-7381: check for null world
-         } else if (itemstack.isEmpty()) {
-             this.removeItem(i, 1);
-         }
-@@ -132,7 +174,7 @@
+@@ -72,7 +114,7 @@
  
      @Override
      public int getMaxStackSize() {
@@ -83,3 +65,21 @@
      }
  
      @Override
+@@ -86,7 +128,7 @@
+ 
+         this.getItems().set(i, ItemStack.EMPTY);
+         if (!itemstack.isEmpty()) {
+-            this.updateState(i);
++            if (level != null) this.updateState(i); // CraftBukkit - SPIGOT-7381: check for null world
+         }
+ 
+         return itemstack;
+@@ -96,7 +138,7 @@
+     public void setItem(int i, ItemStack itemstack) {
+         if (this.acceptsItemType(itemstack)) {
+             this.getItems().set(i, itemstack);
+-            this.updateState(i);
++            if (level != null) this.updateState(i); // CraftBukkit - SPIGOT-7381: check for null world
+         } else if (itemstack.isEmpty()) {
+             this.removeItem(i, this.getMaxStackSize());
+         }
