@@ -127,6 +127,9 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Overwrite
     public String runCommand(String command) {
         RconConsoleSource rconConsoleSource1 = rconConsoleSource.get();
+        if (rconConsoleSource1 == null) {
+            System.out.println("rconConsoleSource is null, could not perform Rcon Command");
+        }
         rconConsoleSource1.prepareForCommand();
         this.executeBlocking(() -> {
             CommandSourceStack wrapper = rconConsoleSource1.createCommandSourceStack();
