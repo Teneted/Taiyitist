@@ -1,4 +1,7 @@
-archivesBaseName = project.archives_base_name + "-bootstrap"
+base {
+    archivesName = project.archives_base_name + "-bootstrap"
+}
+
 version = getSubprojectVersion(project)
 
 processResources {

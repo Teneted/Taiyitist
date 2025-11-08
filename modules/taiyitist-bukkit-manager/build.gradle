@@ -1,5 +1,8 @@
-archivesBaseName = project.archives_base_name + "-bukkit-manager"
 version = getSubprojectVersion(project)
+
+base {
+    archivesName = project.archives_base_name + "-bukkit-manager"
+}
 
 moduleDependencies(project, [
         "taiyitist-server"
