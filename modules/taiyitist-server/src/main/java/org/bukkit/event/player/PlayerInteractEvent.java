@@ -159,9 +159,10 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Returns the clicked block
+     * Returns the block that was interacted with, even if the interaction was
+     * {@link Action#PHYSICAL} rather than clicking on the block.
      *
-     * @return Block returns the block clicked with this item.
+     * @return Block returns the block interacted with.
      */
     @Nullable
     public Block getClickedBlock() {
@@ -169,9 +170,9 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Returns the face of the block that was clicked
+     * Returns the face of the block that was interacted with.
      *
-     * @return BlockFace returns the face of the block that was clicked
+     * @return BlockFace returns the face of the block that was interacted with
      */
     @NotNull
     public BlockFace getBlockFace() {
@@ -180,7 +181,7 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancellable {
 
     /**
      * This controls the action to take with the block (if any) that was
-     * clicked on. This event gets processed for all blocks, but most don't
+     * interacted with. This event gets processed for all blocks, but most don't
      * have a default action
      *
      * @return the action to take with the interacted block

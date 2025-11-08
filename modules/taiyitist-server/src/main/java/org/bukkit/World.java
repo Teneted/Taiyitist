@@ -1583,7 +1583,8 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
      * or not.
      *
      * @return true if the world's spawn area will be kept loaded into memory.
-     * @deprecated use {@link GameRule#SPAWN_CHUNK_RADIUS} for finer control
+     * @deprecated the concept of spawn chunks has been removed, use
+     * {@link #isChunkForceLoaded(int, int)} for finer control
      */
     @Deprecated(since = "1.20.5")
     public boolean getKeepSpawnInMemory();
@@ -1594,7 +1595,8 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
      *
      * @param keepLoaded if true then the world's spawn area will be kept
      *     loaded into memory.
-     * @deprecated use {@link GameRule#SPAWN_CHUNK_RADIUS} for finer control
+     * @deprecated the concept of spawn chunks has been removed, use
+     * {@link #setChunkForceLoaded(int, int, boolean)} for finer control
      */
     @Deprecated(since = "1.20.5")
     public void setKeepSpawnInMemory(boolean keepLoaded);
@@ -2827,44 +2829,6 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
      */
     @Nullable
     StructureSearchResult locateNearestStructure(@NotNull Location origin, @NotNull Structure structure, int radius, boolean findUnexplored);
-
-    // Spigot start
-    public class Spigot {
-
-        /**
-         * Strikes lightning at the given {@link Location} and possibly without sound
-         *
-         * @param loc The location to strike lightning
-         * @param isSilent Whether this strike makes no sound
-         * @return The lightning entity.
-         * @deprecated sound is now client side and cannot be removed
-         * @see World#strikeLightning(org.bukkit.Location)
-         */
-        @NotNull
-        @Deprecated(since = "1.20.4")
-        public LightningStrike strikeLightning(@NotNull Location loc, boolean isSilent) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Strikes lightning at the given {@link Location} without doing damage and possibly without sound
-         *
-         * @param loc The location to strike lightning
-         * @param isSilent Whether this strike makes no sound
-         * @return The lightning entity.
-         * @deprecated sound is now client side and cannot be removed
-         * @see World#strikeLightningEffect(org.bukkit.Location)
-         */
-        @NotNull
-        @Deprecated(since = "1.20.4")
-        public LightningStrike strikeLightningEffect(@NotNull Location loc, boolean isSilent) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
-    @NotNull
-    Spigot spigot();
-    // Spigot end
 
     /**
      * Find the closest nearby location with a biome matching the provided

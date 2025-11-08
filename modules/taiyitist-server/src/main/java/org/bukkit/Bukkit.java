@@ -14,9 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-
-import com.taiyitistmc.TaiyitistMCStart;
-import com.taiyitistmc.TaiyitistMod;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.data.BlockData;
@@ -61,7 +58,6 @@ import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -100,7 +96,7 @@ public final class Bukkit {
         }
 
         Bukkit.server = server;
-        server.getLogger().info("This server is running " + getName() + " version " + TaiyitistMCStart.class.getPackage().getSpecificationVersion() + " (Implementing API version " + getBukkitVersion() + ")");
+        server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ")");
     }
 
     /**
@@ -315,6 +311,17 @@ public final class Bukkit {
     @NotNull
     public static ServerTickManager getServerTickManager() {
         return server.getServerTickManager();
+    }
+
+    /**
+     * Gets the code of conducts enabled on the server. The returned map is a
+     * map of string language codes (eg, en_us) to codes of conducts.
+     *
+     * @return the codes of conduct or empty if none
+     */
+    @NotNull
+    public static Map<String, String> getCodeOfConducts() {
+        return server.getCodeOfConducts();
     }
 
     /**
@@ -872,7 +879,6 @@ public final class Bukkit {
      */
     public static void reload() {
         server.reload();
-        org.spigotmc.CustomTimingsHandler.reload(); // Spigot
     }
 
     /**
@@ -1722,7 +1728,6 @@ public final class Bukkit {
      * @return the server's links
      */
     @NotNull
-    @ApiStatus.Experimental
     public static ServerLinks getServerLinks() {
         return server.getServerLinks();
     }
@@ -2192,10 +2197,5 @@ public final class Bukkit {
     @NotNull
     public static UnsafeValues getUnsafe() {
         return server.getUnsafe();
-    }
-
-    @NotNull
-    public static Server.Spigot spigot() {
-        return server.spigot();
     }
 }

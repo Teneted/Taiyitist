@@ -1,13 +1,11 @@
 package org.bukkit;
 
 import org.bukkit.registry.RegistryAware;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a song which may play in a Jukebox.
  */
-@ApiStatus.Experimental
 public interface JukeboxSong extends Keyed, Translatable, RegistryAware {
 
     public static final JukeboxSong THIRTEEN = get("13");

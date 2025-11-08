@@ -404,6 +404,18 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> SMOOTH_SANDSTONE = getItemType("smooth_sandstone");
     ItemType.Typed<ItemMeta> SMOOTH_STONE = getItemType("smooth_stone");
     ItemType.Typed<ItemMeta> BRICKS = getItemType("bricks");
+    ItemType.Typed<ItemMeta> ACACIA_SHELF = getItemType("acacia_shelf");
+    ItemType.Typed<ItemMeta> BAMBOO_SHELF = getItemType("bamboo_shelf");
+    ItemType.Typed<ItemMeta> BIRCH_SHELF = getItemType("birch_shelf");
+    ItemType.Typed<ItemMeta> CHERRY_SHELF = getItemType("cherry_shelf");
+    ItemType.Typed<ItemMeta> CRIMSON_SHELF = getItemType("crimson_shelf");
+    ItemType.Typed<ItemMeta> DARK_OAK_SHELF = getItemType("dark_oak_shelf");
+    ItemType.Typed<ItemMeta> JUNGLE_SHELF = getItemType("jungle_shelf");
+    ItemType.Typed<ItemMeta> MANGROVE_SHELF = getItemType("mangrove_shelf");
+    ItemType.Typed<ItemMeta> OAK_SHELF = getItemType("oak_shelf");
+    ItemType.Typed<ItemMeta> PALE_OAK_SHELF = getItemType("pale_oak_shelf");
+    ItemType.Typed<ItemMeta> SPRUCE_SHELF = getItemType("spruce_shelf");
+    ItemType.Typed<ItemMeta> WARPED_SHELF = getItemType("warped_shelf");
     ItemType.Typed<ItemMeta> BOOKSHELF = getItemType("bookshelf");
     /**
      * ItemMeta: {@link BlockStateMeta}
@@ -416,6 +428,7 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> MOSSY_COBBLESTONE = getItemType("mossy_cobblestone");
     ItemType.Typed<ItemMeta> OBSIDIAN = getItemType("obsidian");
     ItemType.Typed<ItemMeta> TORCH = getItemType("torch");
+    ItemType.Typed<ItemMeta> COPPER_TORCH = getItemType("copper_torch");
     ItemType.Typed<ItemMeta> END_ROD = getItemType("end_rod");
     ItemType.Typed<ItemMeta> CHORUS_PLANT = getItemType("chorus_plant");
     ItemType.Typed<ItemMeta> CHORUS_FLOWER = getItemType("chorus_flower");
@@ -498,7 +511,9 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> RED_MUSHROOM_BLOCK = getItemType("red_mushroom_block");
     ItemType.Typed<ItemMeta> MUSHROOM_STEM = getItemType("mushroom_stem");
     ItemType.Typed<ItemMeta> IRON_BARS = getItemType("iron_bars");
-    ItemType.Typed<ItemMeta> CHAIN = getItemType("chain");
+    ItemType.Typed<ItemMeta> COPPER_BARS = getItemType("copper_bars");
+    ItemType.Typed<ItemMeta> IRON_CHAIN = getItemType("iron_chain");
+    ItemType.Typed<ItemMeta> COPPER_CHAIN = getItemType("copper_chain");
     ItemType.Typed<ItemMeta> GLASS_PANE = getItemType("glass_pane");
     ItemType.Typed<ItemMeta> MELON = getItemType("melon");
     ItemType.Typed<ItemMeta> VINE = getItemType("vine");
@@ -915,6 +930,13 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> TARGET = getItemType("target");
     ItemType.Typed<ItemMeta> LEVER = getItemType("lever");
     ItemType.Typed<ItemMeta> LIGHTNING_ROD = getItemType("lightning_rod");
+    ItemType.Typed<ItemMeta> EXPOSED_LIGHTNING_ROD = getItemType("exposed_lightning_rod");
+    ItemType.Typed<ItemMeta> WEATHERED_LIGHTNING_ROD = getItemType("weathered_lightning_rod");
+    ItemType.Typed<ItemMeta> OXIDIZED_LIGHTNING_ROD = getItemType("oxidized_lightning_rod");
+    ItemType.Typed<ItemMeta> WAXED_LIGHTNING_ROD = getItemType("waxed_lightning_rod");
+    ItemType.Typed<ItemMeta> WAXED_EXPOSED_LIGHTNING_ROD = getItemType("waxed_exposed_lightning_rod");
+    ItemType.Typed<ItemMeta> WAXED_WEATHERED_LIGHTNING_ROD = getItemType("waxed_weathered_lightning_rod");
+    ItemType.Typed<ItemMeta> WAXED_OXIDIZED_LIGHTNING_ROD = getItemType("waxed_oxidized_lightning_rod");
     /**
      * ItemMeta: {@link BlockStateMeta}
      */
@@ -1120,6 +1142,11 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> WOODEN_PICKAXE = getItemType("wooden_pickaxe");
     ItemType.Typed<ItemMeta> WOODEN_AXE = getItemType("wooden_axe");
     ItemType.Typed<ItemMeta> WOODEN_HOE = getItemType("wooden_hoe");
+    ItemType.Typed<ItemMeta> COPPER_SWORD = getItemType("copper_sword");
+    ItemType.Typed<ItemMeta> COPPER_SHOVEL = getItemType("copper_shovel");
+    ItemType.Typed<ItemMeta> COPPER_PICKAXE = getItemType("copper_pickaxe");
+    ItemType.Typed<ItemMeta> COPPER_AXE = getItemType("copper_axe");
+    ItemType.Typed<ItemMeta> COPPER_HOE = getItemType("copper_hoe");
     ItemType.Typed<ItemMeta> STONE_SWORD = getItemType("stone_sword");
     ItemType.Typed<ItemMeta> STONE_SHOVEL = getItemType("stone_shovel");
     ItemType.Typed<ItemMeta> STONE_PICKAXE = getItemType("stone_pickaxe");
@@ -1169,6 +1196,22 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
      * ItemMeta: {@link ColorableArmorMeta}
      */
     ItemType.Typed<ColorableArmorMeta> LEATHER_BOOTS = getItemType("leather_boots");
+    /**
+     * ItemMeta: {@link ArmorMeta}
+     */
+    ItemType.Typed<ArmorMeta> COPPER_HELMET = getItemType("copper_helmet");
+    /**
+     * ItemMeta: {@link ArmorMeta}
+     */
+    ItemType.Typed<ArmorMeta> COPPER_CHESTPLATE = getItemType("copper_chestplate");
+    /**
+     * ItemMeta: {@link ArmorMeta}
+     */
+    ItemType.Typed<ArmorMeta> COPPER_LEGGINGS = getItemType("copper_leggings");
+    /**
+     * ItemMeta: {@link ArmorMeta}
+     */
+    ItemType.Typed<ArmorMeta> COPPER_BOOTS = getItemType("copper_boots");
     /**
      * ItemMeta: {@link ArmorMeta}
      */
@@ -1596,6 +1639,10 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     /**
      * ItemMeta: {@link SpawnEggMeta}
      */
+    ItemType.Typed<SpawnEggMeta> COPPER_GOLEM_SPAWN_EGG = getItemType("copper_golem_spawn_egg");
+    /**
+     * ItemMeta: {@link SpawnEggMeta}
+     */
     ItemType.Typed<SpawnEggMeta> COW_SPAWN_EGG = getItemType("cow_spawn_egg");
     /**
      * ItemMeta: {@link SpawnEggMeta}
@@ -1943,6 +1990,7 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> RABBIT_FOOT = getItemType("rabbit_foot");
     ItemType.Typed<ItemMeta> RABBIT_HIDE = getItemType("rabbit_hide");
     ItemType.Typed<ItemMeta> ARMOR_STAND = getItemType("armor_stand");
+    ItemType.Typed<ItemMeta> COPPER_HORSE_ARMOR = getItemType("copper_horse_armor");
     ItemType.Typed<ItemMeta> IRON_HORSE_ARMOR = getItemType("iron_horse_armor");
     ItemType.Typed<ItemMeta> GOLDEN_HORSE_ARMOR = getItemType("golden_horse_armor");
     ItemType.Typed<ItemMeta> DIAMOND_HORSE_ARMOR = getItemType("diamond_horse_armor");
@@ -2048,6 +2096,7 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> TOTEM_OF_UNDYING = getItemType("totem_of_undying");
     ItemType.Typed<ItemMeta> SHULKER_SHELL = getItemType("shulker_shell");
     ItemType.Typed<ItemMeta> IRON_NUGGET = getItemType("iron_nugget");
+    ItemType.Typed<ItemMeta> COPPER_NUGGET = getItemType("copper_nugget");
     /**
      * ItemMeta: {@link KnowledgeBookMeta}
      */
@@ -2124,6 +2173,7 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
      */
     ItemType.Typed<BlockStateMeta> BELL = getItemType("bell");
     ItemType.Typed<ItemMeta> LANTERN = getItemType("lantern");
+    ItemType.Typed<ItemMeta> COPPER_LANTERN = getItemType("copper_lantern");
     ItemType.Typed<ItemMeta> SOUL_LANTERN = getItemType("soul_lantern");
     ItemType.Typed<ItemMeta> SWEET_BERRIES = getItemType("sweet_berries");
     ItemType.Typed<ItemMeta> GLOW_BERRIES = getItemType("glow_berries");
@@ -2248,6 +2298,22 @@ public interface ItemType extends Keyed, Translatable, RegistryAware {
     ItemType.Typed<ItemMeta> WAXED_EXPOSED_COPPER_BULB = getItemType("waxed_exposed_copper_bulb");
     ItemType.Typed<ItemMeta> WAXED_WEATHERED_COPPER_BULB = getItemType("waxed_weathered_copper_bulb");
     ItemType.Typed<ItemMeta> WAXED_OXIDIZED_COPPER_BULB = getItemType("waxed_oxidized_copper_bulb");
+    ItemType.Typed<ItemMeta> COPPER_CHEST = getItemType("copper_chest");
+    ItemType.Typed<ItemMeta> EXPOSED_COPPER_CHEST = getItemType("exposed_copper_chest");
+    ItemType.Typed<ItemMeta> WEATHERED_COPPER_CHEST = getItemType("weathered_copper_chest");
+    ItemType.Typed<ItemMeta> OXIDIZED_COPPER_CHEST = getItemType("oxidized_copper_chest");
+    ItemType.Typed<ItemMeta> WAXED_COPPER_CHEST = getItemType("waxed_copper_chest");
+    ItemType.Typed<ItemMeta> WAXED_EXPOSED_COPPER_CHEST = getItemType("waxed_exposed_copper_chest");
+    ItemType.Typed<ItemMeta> WAXED_WEATHERED_COPPER_CHEST = getItemType("waxed_weathered_copper_chest");
+    ItemType.Typed<ItemMeta> WAXED_OXIDIZED_COPPER_CHEST = getItemType("waxed_oxidized_copper_chest");
+    ItemType.Typed<ItemMeta> COPPER_GOLEM_STATUE = getItemType("copper_golem_statue");
+    ItemType.Typed<ItemMeta> EXPOSED_COPPER_GOLEM_STATUE = getItemType("exposed_copper_golem_statue");
+    ItemType.Typed<ItemMeta> WEATHERED_COPPER_GOLEM_STATUE = getItemType("weathered_copper_golem_statue");
+    ItemType.Typed<ItemMeta> OXIDIZED_COPPER_GOLEM_STATUE = getItemType("oxidized_copper_golem_statue");
+    ItemType.Typed<ItemMeta> WAXED_COPPER_GOLEM_STATUE = getItemType("waxed_copper_golem_statue");
+    ItemType.Typed<ItemMeta> WAXED_EXPOSED_COPPER_GOLEM_STATUE = getItemType("waxed_exposed_copper_golem_statue");
+    ItemType.Typed<ItemMeta> WAXED_WEATHERED_COPPER_GOLEM_STATUE = getItemType("waxed_weathered_copper_golem_statue");
+    ItemType.Typed<ItemMeta> WAXED_OXIDIZED_COPPER_GOLEM_STATUE = getItemType("waxed_oxidized_copper_golem_statue");
     /**
      * ItemMeta: {@link BlockStateMeta}
      */

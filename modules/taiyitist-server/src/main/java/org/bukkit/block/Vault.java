@@ -4,14 +4,12 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootTable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of a vault.
  */
-@ApiStatus.Experimental
 public interface Vault extends TileState {
 
     /**

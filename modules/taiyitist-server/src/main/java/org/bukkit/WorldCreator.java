@@ -22,7 +22,6 @@ public class WorldCreator {
     private boolean generateStructures = true;
     private String generatorSettings = "";
     private boolean hardcore = false;
-    private boolean keepSpawnInMemory = true;
 
     /**
      * Creates an empty WorldCreationOptions for the given world name
@@ -53,7 +52,6 @@ public class WorldCreator {
         type = world.getWorldType();
         generateStructures = world.canGenerateStructures();
         hardcore = world.isHardcore();
-        keepSpawnInMemory = world.getKeepSpawnInMemory();
 
         return this;
     }
@@ -76,7 +74,6 @@ public class WorldCreator {
         generateStructures = creator.generateStructures();
         generatorSettings = creator.generatorSettings();
         hardcore = creator.hardcore();
-        keepSpawnInMemory = creator.keepSpawnInMemory();
 
         return this;
     }
@@ -400,11 +397,12 @@ public class WorldCreator {
      *
      * @param keepSpawnInMemory Whether the spawn chunks will be kept loaded
      * @return This object, for chaining
+     * @deprecated the concept of spawn chunks has been removed, use
+     * {@link World#setChunkForceLoaded(int, int, boolean)} for finer control
      */
     @NotNull
+    @Deprecated(since = "1.21.9")
     public WorldCreator keepSpawnInMemory(boolean keepSpawnInMemory) {
-        this.keepSpawnInMemory = keepSpawnInMemory;
-
         return this;
     }
 
@@ -412,9 +410,12 @@ public class WorldCreator {
      * Gets whether or not the spawn chunks will be kept loaded.
      *
      * @return True if the spawn chunks will be kept loaded
+     * @deprecated the concept of spawn chunks has been removed, use
+     * {@link World#isChunkForceLoaded(int, int)} for finer control
      */
+    @Deprecated(since = "1.21.9")
     public boolean keepSpawnInMemory() {
-        return keepSpawnInMemory;
+        return false;
     }
 
     /**

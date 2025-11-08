@@ -45,6 +45,7 @@ import org.bukkit.block.data.type.Cocoa;
 import org.bukkit.block.data.type.CommandBlock;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.CopperBulb;
+import org.bukkit.block.data.type.CopperGolemStatue;
 import org.bukkit.block.data.type.CoralWallFan;
 import org.bukkit.block.data.type.Crafter;
 import org.bukkit.block.data.type.CreakingHeart;
@@ -98,6 +99,7 @@ import org.bukkit.block.data.type.SculkSensor;
 import org.bukkit.block.data.type.SculkShrieker;
 import org.bukkit.block.data.type.SculkVein;
 import org.bukkit.block.data.type.SeaPickle;
+import org.bukkit.block.data.type.Shelf;
 import org.bukkit.block.data.type.Sign;
 import org.bukkit.block.data.type.Skull;
 import org.bukkit.block.data.type.Slab;
@@ -187,673 +189,721 @@ public interface BlockType extends Keyed, Translatable, RegistryAware {
     }
 
     //<editor-fold desc="BlockTypes" defaultstate="collapsed">
-    Typed<BlockData> AIR = getBlockType("air");
-    Typed<BlockData> STONE = getBlockType("stone");
-    Typed<BlockData> GRANITE = getBlockType("granite");
-    Typed<BlockData> POLISHED_GRANITE = getBlockType("polished_granite");
-    Typed<BlockData> DIORITE = getBlockType("diorite");
-    Typed<BlockData> POLISHED_DIORITE = getBlockType("polished_diorite");
-    Typed<BlockData> ANDESITE = getBlockType("andesite");
-    Typed<BlockData> POLISHED_ANDESITE = getBlockType("polished_andesite");
+    BlockType.Typed<BlockData> AIR = getBlockType("air");
+    BlockType.Typed<BlockData> STONE = getBlockType("stone");
+    BlockType.Typed<BlockData> GRANITE = getBlockType("granite");
+    BlockType.Typed<BlockData> POLISHED_GRANITE = getBlockType("polished_granite");
+    BlockType.Typed<BlockData> DIORITE = getBlockType("diorite");
+    BlockType.Typed<BlockData> POLISHED_DIORITE = getBlockType("polished_diorite");
+    BlockType.Typed<BlockData> ANDESITE = getBlockType("andesite");
+    BlockType.Typed<BlockData> POLISHED_ANDESITE = getBlockType("polished_andesite");
     /**
      * BlockData: {@link Snowable}
      */
-    Typed<Snowable> GRASS_BLOCK = getBlockType("grass_block");
-    Typed<BlockData> DIRT = getBlockType("dirt");
-    Typed<BlockData> COARSE_DIRT = getBlockType("coarse_dirt");
+    BlockType.Typed<Snowable> GRASS_BLOCK = getBlockType("grass_block");
+    BlockType.Typed<BlockData> DIRT = getBlockType("dirt");
+    BlockType.Typed<BlockData> COARSE_DIRT = getBlockType("coarse_dirt");
     /**
      * BlockData: {@link Snowable}
      */
-    Typed<Snowable> PODZOL = getBlockType("podzol");
-    Typed<BlockData> COBBLESTONE = getBlockType("cobblestone");
-    Typed<BlockData> OAK_PLANKS = getBlockType("oak_planks");
-    Typed<BlockData> SPRUCE_PLANKS = getBlockType("spruce_planks");
-    Typed<BlockData> BIRCH_PLANKS = getBlockType("birch_planks");
-    Typed<BlockData> JUNGLE_PLANKS = getBlockType("jungle_planks");
-    Typed<BlockData> ACACIA_PLANKS = getBlockType("acacia_planks");
-    Typed<BlockData> CHERRY_PLANKS = getBlockType("cherry_planks");
-    Typed<BlockData> DARK_OAK_PLANKS = getBlockType("dark_oak_planks");
-    Typed<BlockData> PALE_OAK_PLANKS = getBlockType("pale_oak_planks");
-    Typed<BlockData> MANGROVE_PLANKS = getBlockType("mangrove_planks");
-    Typed<BlockData> BAMBOO_PLANKS = getBlockType("bamboo_planks");
-    Typed<BlockData> BAMBOO_MOSAIC = getBlockType("bamboo_mosaic");
+    BlockType.Typed<Snowable> PODZOL = getBlockType("podzol");
+    BlockType.Typed<BlockData> COBBLESTONE = getBlockType("cobblestone");
+    BlockType.Typed<BlockData> OAK_PLANKS = getBlockType("oak_planks");
+    BlockType.Typed<BlockData> SPRUCE_PLANKS = getBlockType("spruce_planks");
+    BlockType.Typed<BlockData> BIRCH_PLANKS = getBlockType("birch_planks");
+    BlockType.Typed<BlockData> JUNGLE_PLANKS = getBlockType("jungle_planks");
+    BlockType.Typed<BlockData> ACACIA_PLANKS = getBlockType("acacia_planks");
+    BlockType.Typed<BlockData> CHERRY_PLANKS = getBlockType("cherry_planks");
+    BlockType.Typed<BlockData> DARK_OAK_PLANKS = getBlockType("dark_oak_planks");
+    BlockType.Typed<BlockData> PALE_OAK_PLANKS = getBlockType("pale_oak_planks");
+    BlockType.Typed<BlockData> MANGROVE_PLANKS = getBlockType("mangrove_planks");
+    BlockType.Typed<BlockData> BAMBOO_PLANKS = getBlockType("bamboo_planks");
+    BlockType.Typed<BlockData> BAMBOO_MOSAIC = getBlockType("bamboo_mosaic");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> OAK_SAPLING = getBlockType("oak_sapling");
+    BlockType.Typed<Sapling> OAK_SAPLING = getBlockType("oak_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> SPRUCE_SAPLING = getBlockType("spruce_sapling");
+    BlockType.Typed<Sapling> SPRUCE_SAPLING = getBlockType("spruce_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> BIRCH_SAPLING = getBlockType("birch_sapling");
+    BlockType.Typed<Sapling> BIRCH_SAPLING = getBlockType("birch_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> JUNGLE_SAPLING = getBlockType("jungle_sapling");
+    BlockType.Typed<Sapling> JUNGLE_SAPLING = getBlockType("jungle_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> ACACIA_SAPLING = getBlockType("acacia_sapling");
+    BlockType.Typed<Sapling> ACACIA_SAPLING = getBlockType("acacia_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> CHERRY_SAPLING = getBlockType("cherry_sapling");
+    BlockType.Typed<Sapling> CHERRY_SAPLING = getBlockType("cherry_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> DARK_OAK_SAPLING = getBlockType("dark_oak_sapling");
+    BlockType.Typed<Sapling> DARK_OAK_SAPLING = getBlockType("dark_oak_sapling");
     /**
      * BlockData: {@link Sapling}
      */
-    Typed<Sapling> PALE_OAK_SAPLING = getBlockType("pale_oak_sapling");
+    BlockType.Typed<Sapling> PALE_OAK_SAPLING = getBlockType("pale_oak_sapling");
     /**
      * BlockData: {@link MangrovePropagule}
      */
-    Typed<MangrovePropagule> MANGROVE_PROPAGULE = getBlockType("mangrove_propagule");
-    Typed<BlockData> BEDROCK = getBlockType("bedrock");
+    BlockType.Typed<MangrovePropagule> MANGROVE_PROPAGULE = getBlockType("mangrove_propagule");
+    BlockType.Typed<BlockData> BEDROCK = getBlockType("bedrock");
     /**
      * BlockData: {@link Levelled}
      */
-    Typed<Levelled> WATER = getBlockType("water");
+    BlockType.Typed<Levelled> WATER = getBlockType("water");
     /**
      * BlockData: {@link Levelled}
      */
-    Typed<Levelled> LAVA = getBlockType("lava");
-    Typed<BlockData> SAND = getBlockType("sand");
+    BlockType.Typed<Levelled> LAVA = getBlockType("lava");
+    BlockType.Typed<BlockData> SAND = getBlockType("sand");
     /**
      * BlockData: {@link Brushable}
      */
-    Typed<Brushable> SUSPICIOUS_SAND = getBlockType("suspicious_sand");
-    Typed<BlockData> RED_SAND = getBlockType("red_sand");
-    Typed<BlockData> GRAVEL = getBlockType("gravel");
+    BlockType.Typed<Brushable> SUSPICIOUS_SAND = getBlockType("suspicious_sand");
+    BlockType.Typed<BlockData> RED_SAND = getBlockType("red_sand");
+    BlockType.Typed<BlockData> GRAVEL = getBlockType("gravel");
     /**
      * BlockData: {@link Brushable}
      */
-    Typed<Brushable> SUSPICIOUS_GRAVEL = getBlockType("suspicious_gravel");
-    Typed<BlockData> GOLD_ORE = getBlockType("gold_ore");
-    Typed<BlockData> DEEPSLATE_GOLD_ORE = getBlockType("deepslate_gold_ore");
-    Typed<BlockData> IRON_ORE = getBlockType("iron_ore");
-    Typed<BlockData> DEEPSLATE_IRON_ORE = getBlockType("deepslate_iron_ore");
-    Typed<BlockData> COAL_ORE = getBlockType("coal_ore");
-    Typed<BlockData> DEEPSLATE_COAL_ORE = getBlockType("deepslate_coal_ore");
-    Typed<BlockData> NETHER_GOLD_ORE = getBlockType("nether_gold_ore");
+    BlockType.Typed<Brushable> SUSPICIOUS_GRAVEL = getBlockType("suspicious_gravel");
+    BlockType.Typed<BlockData> GOLD_ORE = getBlockType("gold_ore");
+    BlockType.Typed<BlockData> DEEPSLATE_GOLD_ORE = getBlockType("deepslate_gold_ore");
+    BlockType.Typed<BlockData> IRON_ORE = getBlockType("iron_ore");
+    BlockType.Typed<BlockData> DEEPSLATE_IRON_ORE = getBlockType("deepslate_iron_ore");
+    BlockType.Typed<BlockData> COAL_ORE = getBlockType("coal_ore");
+    BlockType.Typed<BlockData> DEEPSLATE_COAL_ORE = getBlockType("deepslate_coal_ore");
+    BlockType.Typed<BlockData> NETHER_GOLD_ORE = getBlockType("nether_gold_ore");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> OAK_LOG = getBlockType("oak_log");
+    BlockType.Typed<Orientable> OAK_LOG = getBlockType("oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> SPRUCE_LOG = getBlockType("spruce_log");
+    BlockType.Typed<Orientable> SPRUCE_LOG = getBlockType("spruce_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> BIRCH_LOG = getBlockType("birch_log");
+    BlockType.Typed<Orientable> BIRCH_LOG = getBlockType("birch_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> JUNGLE_LOG = getBlockType("jungle_log");
+    BlockType.Typed<Orientable> JUNGLE_LOG = getBlockType("jungle_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> ACACIA_LOG = getBlockType("acacia_log");
+    BlockType.Typed<Orientable> ACACIA_LOG = getBlockType("acacia_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> CHERRY_LOG = getBlockType("cherry_log");
+    BlockType.Typed<Orientable> CHERRY_LOG = getBlockType("cherry_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> DARK_OAK_LOG = getBlockType("dark_oak_log");
+    BlockType.Typed<Orientable> DARK_OAK_LOG = getBlockType("dark_oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> PALE_OAK_LOG = getBlockType("pale_oak_log");
+    BlockType.Typed<Orientable> PALE_OAK_LOG = getBlockType("pale_oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> MANGROVE_LOG = getBlockType("mangrove_log");
+    BlockType.Typed<Orientable> MANGROVE_LOG = getBlockType("mangrove_log");
     /**
      * BlockData: {@link Waterlogged}
      */
-    Typed<Waterlogged> MANGROVE_ROOTS = getBlockType("mangrove_roots");
+    BlockType.Typed<Waterlogged> MANGROVE_ROOTS = getBlockType("mangrove_roots");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> MUDDY_MANGROVE_ROOTS = getBlockType("muddy_mangrove_roots");
+    BlockType.Typed<Orientable> MUDDY_MANGROVE_ROOTS = getBlockType("muddy_mangrove_roots");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> BAMBOO_BLOCK = getBlockType("bamboo_block");
+    BlockType.Typed<Orientable> BAMBOO_BLOCK = getBlockType("bamboo_block");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_SPRUCE_LOG = getBlockType("stripped_spruce_log");
+    BlockType.Typed<Orientable> STRIPPED_SPRUCE_LOG = getBlockType("stripped_spruce_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_BIRCH_LOG = getBlockType("stripped_birch_log");
+    BlockType.Typed<Orientable> STRIPPED_BIRCH_LOG = getBlockType("stripped_birch_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_JUNGLE_LOG = getBlockType("stripped_jungle_log");
+    BlockType.Typed<Orientable> STRIPPED_JUNGLE_LOG = getBlockType("stripped_jungle_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_ACACIA_LOG = getBlockType("stripped_acacia_log");
+    BlockType.Typed<Orientable> STRIPPED_ACACIA_LOG = getBlockType("stripped_acacia_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_CHERRY_LOG = getBlockType("stripped_cherry_log");
+    BlockType.Typed<Orientable> STRIPPED_CHERRY_LOG = getBlockType("stripped_cherry_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_DARK_OAK_LOG = getBlockType("stripped_dark_oak_log");
+    BlockType.Typed<Orientable> STRIPPED_DARK_OAK_LOG = getBlockType("stripped_dark_oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_PALE_OAK_LOG = getBlockType("stripped_pale_oak_log");
+    BlockType.Typed<Orientable> STRIPPED_PALE_OAK_LOG = getBlockType("stripped_pale_oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_OAK_LOG = getBlockType("stripped_oak_log");
+    BlockType.Typed<Orientable> STRIPPED_OAK_LOG = getBlockType("stripped_oak_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_MANGROVE_LOG = getBlockType("stripped_mangrove_log");
+    BlockType.Typed<Orientable> STRIPPED_MANGROVE_LOG = getBlockType("stripped_mangrove_log");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_BAMBOO_BLOCK = getBlockType("stripped_bamboo_block");
+    BlockType.Typed<Orientable> STRIPPED_BAMBOO_BLOCK = getBlockType("stripped_bamboo_block");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> OAK_WOOD = getBlockType("oak_wood");
+    BlockType.Typed<Orientable> OAK_WOOD = getBlockType("oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> SPRUCE_WOOD = getBlockType("spruce_wood");
+    BlockType.Typed<Orientable> SPRUCE_WOOD = getBlockType("spruce_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> BIRCH_WOOD = getBlockType("birch_wood");
+    BlockType.Typed<Orientable> BIRCH_WOOD = getBlockType("birch_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> JUNGLE_WOOD = getBlockType("jungle_wood");
+    BlockType.Typed<Orientable> JUNGLE_WOOD = getBlockType("jungle_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> ACACIA_WOOD = getBlockType("acacia_wood");
+    BlockType.Typed<Orientable> ACACIA_WOOD = getBlockType("acacia_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> CHERRY_WOOD = getBlockType("cherry_wood");
+    BlockType.Typed<Orientable> CHERRY_WOOD = getBlockType("cherry_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> DARK_OAK_WOOD = getBlockType("dark_oak_wood");
+    BlockType.Typed<Orientable> DARK_OAK_WOOD = getBlockType("dark_oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> PALE_OAK_WOOD = getBlockType("pale_oak_wood");
+    BlockType.Typed<Orientable> PALE_OAK_WOOD = getBlockType("pale_oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> MANGROVE_WOOD = getBlockType("mangrove_wood");
+    BlockType.Typed<Orientable> MANGROVE_WOOD = getBlockType("mangrove_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_OAK_WOOD = getBlockType("stripped_oak_wood");
+    BlockType.Typed<Orientable> STRIPPED_OAK_WOOD = getBlockType("stripped_oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_SPRUCE_WOOD = getBlockType("stripped_spruce_wood");
+    BlockType.Typed<Orientable> STRIPPED_SPRUCE_WOOD = getBlockType("stripped_spruce_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_BIRCH_WOOD = getBlockType("stripped_birch_wood");
+    BlockType.Typed<Orientable> STRIPPED_BIRCH_WOOD = getBlockType("stripped_birch_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_JUNGLE_WOOD = getBlockType("stripped_jungle_wood");
+    BlockType.Typed<Orientable> STRIPPED_JUNGLE_WOOD = getBlockType("stripped_jungle_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_ACACIA_WOOD = getBlockType("stripped_acacia_wood");
+    BlockType.Typed<Orientable> STRIPPED_ACACIA_WOOD = getBlockType("stripped_acacia_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_CHERRY_WOOD = getBlockType("stripped_cherry_wood");
+    BlockType.Typed<Orientable> STRIPPED_CHERRY_WOOD = getBlockType("stripped_cherry_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_DARK_OAK_WOOD = getBlockType("stripped_dark_oak_wood");
+    BlockType.Typed<Orientable> STRIPPED_DARK_OAK_WOOD = getBlockType("stripped_dark_oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_PALE_OAK_WOOD = getBlockType("stripped_pale_oak_wood");
+    BlockType.Typed<Orientable> STRIPPED_PALE_OAK_WOOD = getBlockType("stripped_pale_oak_wood");
     /**
      * BlockData: {@link Orientable}
      */
-    Typed<Orientable> STRIPPED_MANGROVE_WOOD = getBlockType("stripped_mangrove_wood");
+    BlockType.Typed<Orientable> STRIPPED_MANGROVE_WOOD = getBlockType("stripped_mangrove_wood");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> OAK_LEAVES = getBlockType("oak_leaves");
+    BlockType.Typed<Leaves> OAK_LEAVES = getBlockType("oak_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> SPRUCE_LEAVES = getBlockType("spruce_leaves");
+    BlockType.Typed<Leaves> SPRUCE_LEAVES = getBlockType("spruce_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> BIRCH_LEAVES = getBlockType("birch_leaves");
+    BlockType.Typed<Leaves> BIRCH_LEAVES = getBlockType("birch_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> JUNGLE_LEAVES = getBlockType("jungle_leaves");
+    BlockType.Typed<Leaves> JUNGLE_LEAVES = getBlockType("jungle_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> ACACIA_LEAVES = getBlockType("acacia_leaves");
+    BlockType.Typed<Leaves> ACACIA_LEAVES = getBlockType("acacia_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> CHERRY_LEAVES = getBlockType("cherry_leaves");
+    BlockType.Typed<Leaves> CHERRY_LEAVES = getBlockType("cherry_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> DARK_OAK_LEAVES = getBlockType("dark_oak_leaves");
+    BlockType.Typed<Leaves> DARK_OAK_LEAVES = getBlockType("dark_oak_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> PALE_OAK_LEAVES = getBlockType("pale_oak_leaves");
+    BlockType.Typed<Leaves> PALE_OAK_LEAVES = getBlockType("pale_oak_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> MANGROVE_LEAVES = getBlockType("mangrove_leaves");
+    BlockType.Typed<Leaves> MANGROVE_LEAVES = getBlockType("mangrove_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> AZALEA_LEAVES = getBlockType("azalea_leaves");
+    BlockType.Typed<Leaves> AZALEA_LEAVES = getBlockType("azalea_leaves");
     /**
      * BlockData: {@link Leaves}
      */
-    Typed<Leaves> FLOWERING_AZALEA_LEAVES = getBlockType("flowering_azalea_leaves");
-    Typed<BlockData> SPONGE = getBlockType("sponge");
-    Typed<BlockData> WET_SPONGE = getBlockType("wet_sponge");
-    Typed<BlockData> GLASS = getBlockType("glass");
-    Typed<BlockData> LAPIS_ORE = getBlockType("lapis_ore");
-    Typed<BlockData> DEEPSLATE_LAPIS_ORE = getBlockType("deepslate_lapis_ore");
-    Typed<BlockData> LAPIS_BLOCK = getBlockType("lapis_block");
+    BlockType.Typed<Leaves> FLOWERING_AZALEA_LEAVES = getBlockType("flowering_azalea_leaves");
+    BlockType.Typed<BlockData> SPONGE = getBlockType("sponge");
+    BlockType.Typed<BlockData> WET_SPONGE = getBlockType("wet_sponge");
+    BlockType.Typed<BlockData> GLASS = getBlockType("glass");
+    BlockType.Typed<BlockData> LAPIS_ORE = getBlockType("lapis_ore");
+    BlockType.Typed<BlockData> DEEPSLATE_LAPIS_ORE = getBlockType("deepslate_lapis_ore");
+    BlockType.Typed<BlockData> LAPIS_BLOCK = getBlockType("lapis_block");
     /**
      * BlockData: {@link Dispenser}
      */
-    Typed<Dispenser> DISPENSER = getBlockType("dispenser");
-    Typed<BlockData> SANDSTONE = getBlockType("sandstone");
-    Typed<BlockData> CHISELED_SANDSTONE = getBlockType("chiseled_sandstone");
-    Typed<BlockData> CUT_SANDSTONE = getBlockType("cut_sandstone");
+    BlockType.Typed<Dispenser> DISPENSER = getBlockType("dispenser");
+    BlockType.Typed<BlockData> SANDSTONE = getBlockType("sandstone");
+    BlockType.Typed<BlockData> CHISELED_SANDSTONE = getBlockType("chiseled_sandstone");
+    BlockType.Typed<BlockData> CUT_SANDSTONE = getBlockType("cut_sandstone");
     /**
      * BlockData: {@link NoteBlock}
      */
-    Typed<NoteBlock> NOTE_BLOCK = getBlockType("note_block");
+    BlockType.Typed<NoteBlock> NOTE_BLOCK = getBlockType("note_block");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> WHITE_BED = getBlockType("white_bed");
+    BlockType.Typed<Bed> WHITE_BED = getBlockType("white_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> ORANGE_BED = getBlockType("orange_bed");
+    BlockType.Typed<Bed> ORANGE_BED = getBlockType("orange_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> MAGENTA_BED = getBlockType("magenta_bed");
+    BlockType.Typed<Bed> MAGENTA_BED = getBlockType("magenta_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> LIGHT_BLUE_BED = getBlockType("light_blue_bed");
+    BlockType.Typed<Bed> LIGHT_BLUE_BED = getBlockType("light_blue_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> YELLOW_BED = getBlockType("yellow_bed");
+    BlockType.Typed<Bed> YELLOW_BED = getBlockType("yellow_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> LIME_BED = getBlockType("lime_bed");
+    BlockType.Typed<Bed> LIME_BED = getBlockType("lime_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> PINK_BED = getBlockType("pink_bed");
+    BlockType.Typed<Bed> PINK_BED = getBlockType("pink_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> GRAY_BED = getBlockType("gray_bed");
+    BlockType.Typed<Bed> GRAY_BED = getBlockType("gray_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> LIGHT_GRAY_BED = getBlockType("light_gray_bed");
+    BlockType.Typed<Bed> LIGHT_GRAY_BED = getBlockType("light_gray_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> CYAN_BED = getBlockType("cyan_bed");
+    BlockType.Typed<Bed> CYAN_BED = getBlockType("cyan_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> PURPLE_BED = getBlockType("purple_bed");
+    BlockType.Typed<Bed> PURPLE_BED = getBlockType("purple_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> BLUE_BED = getBlockType("blue_bed");
+    BlockType.Typed<Bed> BLUE_BED = getBlockType("blue_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> BROWN_BED = getBlockType("brown_bed");
+    BlockType.Typed<Bed> BROWN_BED = getBlockType("brown_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> GREEN_BED = getBlockType("green_bed");
+    BlockType.Typed<Bed> GREEN_BED = getBlockType("green_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> RED_BED = getBlockType("red_bed");
+    BlockType.Typed<Bed> RED_BED = getBlockType("red_bed");
     /**
      * BlockData: {@link Bed}
      */
-    Typed<Bed> BLACK_BED = getBlockType("black_bed");
+    BlockType.Typed<Bed> BLACK_BED = getBlockType("black_bed");
     /**
      * BlockData: {@link RedstoneRail}
      */
-    Typed<RedstoneRail> POWERED_RAIL = getBlockType("powered_rail");
+    BlockType.Typed<RedstoneRail> POWERED_RAIL = getBlockType("powered_rail");
     /**
      * BlockData: {@link RedstoneRail}
      */
-    Typed<RedstoneRail> DETECTOR_RAIL = getBlockType("detector_rail");
+    BlockType.Typed<RedstoneRail> DETECTOR_RAIL = getBlockType("detector_rail");
     /**
      * BlockData: {@link Piston}
      */
-    Typed<Piston> STICKY_PISTON = getBlockType("sticky_piston");
-    Typed<BlockData> COBWEB = getBlockType("cobweb");
-    Typed<BlockData> SHORT_GRASS = getBlockType("short_grass");
-    Typed<BlockData> FERN = getBlockType("fern");
-    Typed<BlockData> DEAD_BUSH = getBlockType("dead_bush");
-    Typed<BlockData> BUSH = getBlockType("bush");
-    Typed<BlockData> SHORT_DRY_GRASS = getBlockType("short_dry_grass");
-    Typed<BlockData> TALL_DRY_GRASS = getBlockType("tall_dry_grass");
-    Typed<BlockData> SEAGRASS = getBlockType("seagrass");
+    BlockType.Typed<Piston> STICKY_PISTON = getBlockType("sticky_piston");
+    BlockType.Typed<BlockData> COBWEB = getBlockType("cobweb");
+    BlockType.Typed<BlockData> SHORT_GRASS = getBlockType("short_grass");
+    BlockType.Typed<BlockData> FERN = getBlockType("fern");
+    BlockType.Typed<BlockData> DEAD_BUSH = getBlockType("dead_bush");
+    BlockType.Typed<BlockData> BUSH = getBlockType("bush");
+    BlockType.Typed<BlockData> SHORT_DRY_GRASS = getBlockType("short_dry_grass");
+    BlockType.Typed<BlockData> TALL_DRY_GRASS = getBlockType("tall_dry_grass");
+    BlockType.Typed<BlockData> SEAGRASS = getBlockType("seagrass");
     /**
      * BlockData: {@link Bisected}
      */
-    Typed<Bisected> TALL_SEAGRASS = getBlockType("tall_seagrass");
+    BlockType.Typed<Bisected> TALL_SEAGRASS = getBlockType("tall_seagrass");
     /**
      * BlockData: {@link Piston}
      */
-    Typed<Piston> PISTON = getBlockType("piston");
+    BlockType.Typed<Piston> PISTON = getBlockType("piston");
     /**
      * BlockData: {@link PistonHead}
      */
-    Typed<PistonHead> PISTON_HEAD = getBlockType("piston_head");
-    Typed<BlockData> WHITE_WOOL = getBlockType("white_wool");
-    Typed<BlockData> ORANGE_WOOL = getBlockType("orange_wool");
-    Typed<BlockData> MAGENTA_WOOL = getBlockType("magenta_wool");
-    Typed<BlockData> LIGHT_BLUE_WOOL = getBlockType("light_blue_wool");
-    Typed<BlockData> YELLOW_WOOL = getBlockType("yellow_wool");
-    Typed<BlockData> LIME_WOOL = getBlockType("lime_wool");
-    Typed<BlockData> PINK_WOOL = getBlockType("pink_wool");
-    Typed<BlockData> GRAY_WOOL = getBlockType("gray_wool");
-    Typed<BlockData> LIGHT_GRAY_WOOL = getBlockType("light_gray_wool");
-    Typed<BlockData> CYAN_WOOL = getBlockType("cyan_wool");
-    Typed<BlockData> PURPLE_WOOL = getBlockType("purple_wool");
-    Typed<BlockData> BLUE_WOOL = getBlockType("blue_wool");
-    Typed<BlockData> BROWN_WOOL = getBlockType("brown_wool");
-    Typed<BlockData> GREEN_WOOL = getBlockType("green_wool");
-    Typed<BlockData> RED_WOOL = getBlockType("red_wool");
-    Typed<BlockData> BLACK_WOOL = getBlockType("black_wool");
+    BlockType.Typed<PistonHead> PISTON_HEAD = getBlockType("piston_head");
+    BlockType.Typed<BlockData> WHITE_WOOL = getBlockType("white_wool");
+    BlockType.Typed<BlockData> ORANGE_WOOL = getBlockType("orange_wool");
+    BlockType.Typed<BlockData> MAGENTA_WOOL = getBlockType("magenta_wool");
+    BlockType.Typed<BlockData> LIGHT_BLUE_WOOL = getBlockType("light_blue_wool");
+    BlockType.Typed<BlockData> YELLOW_WOOL = getBlockType("yellow_wool");
+    BlockType.Typed<BlockData> LIME_WOOL = getBlockType("lime_wool");
+    BlockType.Typed<BlockData> PINK_WOOL = getBlockType("pink_wool");
+    BlockType.Typed<BlockData> GRAY_WOOL = getBlockType("gray_wool");
+    BlockType.Typed<BlockData> LIGHT_GRAY_WOOL = getBlockType("light_gray_wool");
+    BlockType.Typed<BlockData> CYAN_WOOL = getBlockType("cyan_wool");
+    BlockType.Typed<BlockData> PURPLE_WOOL = getBlockType("purple_wool");
+    BlockType.Typed<BlockData> BLUE_WOOL = getBlockType("blue_wool");
+    BlockType.Typed<BlockData> BROWN_WOOL = getBlockType("brown_wool");
+    BlockType.Typed<BlockData> GREEN_WOOL = getBlockType("green_wool");
+    BlockType.Typed<BlockData> RED_WOOL = getBlockType("red_wool");
+    BlockType.Typed<BlockData> BLACK_WOOL = getBlockType("black_wool");
     /**
      * BlockData: {@link TechnicalPiston}
      */
-    Typed<TechnicalPiston> MOVING_PISTON = getBlockType("moving_piston");
-    Typed<BlockData> DANDELION = getBlockType("dandelion");
-    Typed<BlockData> TORCHFLOWER = getBlockType("torchflower");
-    Typed<BlockData> POPPY = getBlockType("poppy");
-    Typed<BlockData> BLUE_ORCHID = getBlockType("blue_orchid");
-    Typed<BlockData> ALLIUM = getBlockType("allium");
-    Typed<BlockData> AZURE_BLUET = getBlockType("azure_bluet");
-    Typed<BlockData> RED_TULIP = getBlockType("red_tulip");
-    Typed<BlockData> ORANGE_TULIP = getBlockType("orange_tulip");
-    Typed<BlockData> WHITE_TULIP = getBlockType("white_tulip");
-    Typed<BlockData> PINK_TULIP = getBlockType("pink_tulip");
-    Typed<BlockData> OXEYE_DAISY = getBlockType("oxeye_daisy");
-    Typed<BlockData> CORNFLOWER = getBlockType("cornflower");
-    Typed<BlockData> WITHER_ROSE = getBlockType("wither_rose");
-    Typed<BlockData> LILY_OF_THE_VALLEY = getBlockType("lily_of_the_valley");
-    Typed<BlockData> BROWN_MUSHROOM = getBlockType("brown_mushroom");
-    Typed<BlockData> RED_MUSHROOM = getBlockType("red_mushroom");
-    Typed<BlockData> GOLD_BLOCK = getBlockType("gold_block");
-    Typed<BlockData> IRON_BLOCK = getBlockType("iron_block");
-    Typed<BlockData> BRICKS = getBlockType("bricks");
+    BlockType.Typed<TechnicalPiston> MOVING_PISTON = getBlockType("moving_piston");
+    BlockType.Typed<BlockData> DANDELION = getBlockType("dandelion");
+    BlockType.Typed<BlockData> TORCHFLOWER = getBlockType("torchflower");
+    BlockType.Typed<BlockData> POPPY = getBlockType("poppy");
+    BlockType.Typed<BlockData> BLUE_ORCHID = getBlockType("blue_orchid");
+    BlockType.Typed<BlockData> ALLIUM = getBlockType("allium");
+    BlockType.Typed<BlockData> AZURE_BLUET = getBlockType("azure_bluet");
+    BlockType.Typed<BlockData> RED_TULIP = getBlockType("red_tulip");
+    BlockType.Typed<BlockData> ORANGE_TULIP = getBlockType("orange_tulip");
+    BlockType.Typed<BlockData> WHITE_TULIP = getBlockType("white_tulip");
+    BlockType.Typed<BlockData> PINK_TULIP = getBlockType("pink_tulip");
+    BlockType.Typed<BlockData> OXEYE_DAISY = getBlockType("oxeye_daisy");
+    BlockType.Typed<BlockData> CORNFLOWER = getBlockType("cornflower");
+    BlockType.Typed<BlockData> WITHER_ROSE = getBlockType("wither_rose");
+    BlockType.Typed<BlockData> LILY_OF_THE_VALLEY = getBlockType("lily_of_the_valley");
+    BlockType.Typed<BlockData> BROWN_MUSHROOM = getBlockType("brown_mushroom");
+    BlockType.Typed<BlockData> RED_MUSHROOM = getBlockType("red_mushroom");
+    BlockType.Typed<BlockData> GOLD_BLOCK = getBlockType("gold_block");
+    BlockType.Typed<BlockData> IRON_BLOCK = getBlockType("iron_block");
+    BlockType.Typed<BlockData> BRICKS = getBlockType("bricks");
     /**
      * BlockData: {@link TNT}
      */
-    Typed<TNT> TNT = getBlockType("tnt");
-    Typed<BlockData> BOOKSHELF = getBlockType("bookshelf");
+    BlockType.Typed<TNT> TNT = getBlockType("tnt");
+    BlockType.Typed<BlockData> BOOKSHELF = getBlockType("bookshelf");
     /**
      * BlockData: {@link ChiseledBookshelf}
      */
-    Typed<ChiseledBookshelf> CHISELED_BOOKSHELF = getBlockType("chiseled_bookshelf");
-    Typed<BlockData> MOSSY_COBBLESTONE = getBlockType("mossy_cobblestone");
-    Typed<BlockData> OBSIDIAN = getBlockType("obsidian");
-    Typed<BlockData> TORCH = getBlockType("torch");
+    BlockType.Typed<ChiseledBookshelf> CHISELED_BOOKSHELF = getBlockType("chiseled_bookshelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> ACACIA_SHELF = getBlockType("acacia_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> BAMBOO_SHELF = getBlockType("bamboo_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> BIRCH_SHELF = getBlockType("birch_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> CHERRY_SHELF = getBlockType("cherry_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> CRIMSON_SHELF = getBlockType("crimson_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> DARK_OAK_SHELF = getBlockType("dark_oak_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> JUNGLE_SHELF = getBlockType("jungle_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> MANGROVE_SHELF = getBlockType("mangrove_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> OAK_SHELF = getBlockType("oak_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> PALE_OAK_SHELF = getBlockType("pale_oak_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> SPRUCE_SHELF = getBlockType("spruce_shelf");
+    /**
+     * BlockData: {@link Shelf}
+     */
+    BlockType.Typed<Shelf> WARPED_SHELF = getBlockType("warped_shelf");
+    BlockType.Typed<BlockData> MOSSY_COBBLESTONE = getBlockType("mossy_cobblestone");
+    BlockType.Typed<BlockData> OBSIDIAN = getBlockType("obsidian");
+    BlockType.Typed<BlockData> TORCH = getBlockType("torch");
     /**
      * BlockData: {@link Directional}
      */
-    Typed<Directional> WALL_TORCH = getBlockType("wall_torch");
+    BlockType.Typed<Directional> WALL_TORCH = getBlockType("wall_torch");
     /**
      * BlockData: {@link Fire}
      */
-    Typed<Fire> FIRE = getBlockType("fire");
-    Typed<BlockData> SOUL_FIRE = getBlockType("soul_fire");
-    Typed<BlockData> SPAWNER = getBlockType("spawner");
+    BlockType.Typed<Fire> FIRE = getBlockType("fire");
+    BlockType.Typed<BlockData> SOUL_FIRE = getBlockType("soul_fire");
+    BlockType.Typed<BlockData> SPAWNER = getBlockType("spawner");
     /**
      * BlockData: {@link Fire}
      */
-    Typed<CreakingHeart> CREAKING_HEART = getBlockType("creaking_heart");
+    BlockType.Typed<CreakingHeart> CREAKING_HEART = getBlockType("creaking_heart");
     /**
      * BlockData: {@link Stairs}
      */
-    Typed<Stairs> OAK_STAIRS = getBlockType("oak_stairs");
+    BlockType.Typed<Stairs> OAK_STAIRS = getBlockType("oak_stairs");
     /**
      * BlockData: {@link Chest}
      */
-    Typed<Chest> CHEST = getBlockType("chest");
+    BlockType.Typed<Chest> CHEST = getBlockType("chest");
     /**
      * BlockData: {@link RedstoneWire}
      */
-    Typed<RedstoneWire> REDSTONE_WIRE = getBlockType("redstone_wire");
-    Typed<BlockData> DIAMOND_ORE = getBlockType("diamond_ore");
-    Typed<BlockData> DEEPSLATE_DIAMOND_ORE = getBlockType("deepslate_diamond_ore");
-    Typed<BlockData> DIAMOND_BLOCK = getBlockType("diamond_block");
-    Typed<BlockData> CRAFTING_TABLE = getBlockType("crafting_table");
+    BlockType.Typed<RedstoneWire> REDSTONE_WIRE = getBlockType("redstone_wire");
+    BlockType.Typed<BlockData> DIAMOND_ORE = getBlockType("diamond_ore");
+    BlockType.Typed<BlockData> DEEPSLATE_DIAMOND_ORE = getBlockType("deepslate_diamond_ore");
+    BlockType.Typed<BlockData> DIAMOND_BLOCK = getBlockType("diamond_block");
+    BlockType.Typed<BlockData> CRAFTING_TABLE = getBlockType("crafting_table");
     /**
      * BlockData: {@link Ageable}
      */
-    Typed<Ageable> WHEAT = getBlockType("wheat");
+    BlockType.Typed<Ageable> WHEAT = getBlockType("wheat");
     /**
      * BlockData: {@link Farmland}
      */
-    Typed<Farmland> FARMLAND = getBlockType("farmland");
+    BlockType.Typed<Farmland> FARMLAND = getBlockType("farmland");
     /**
      * BlockData: {@link Furnace}
      */
-    Typed<Furnace> FURNACE = getBlockType("furnace");
+    BlockType.Typed<Furnace> FURNACE = getBlockType("furnace");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> OAK_SIGN = getBlockType("oak_sign");
+    BlockType.Typed<Sign> OAK_SIGN = getBlockType("oak_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> SPRUCE_SIGN = getBlockType("spruce_sign");
+    BlockType.Typed<Sign> SPRUCE_SIGN = getBlockType("spruce_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> BIRCH_SIGN = getBlockType("birch_sign");
+    BlockType.Typed<Sign> BIRCH_SIGN = getBlockType("birch_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> ACACIA_SIGN = getBlockType("acacia_sign");
+    BlockType.Typed<Sign> ACACIA_SIGN = getBlockType("acacia_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> CHERRY_SIGN = getBlockType("cherry_sign");
+    BlockType.Typed<Sign> CHERRY_SIGN = getBlockType("cherry_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> JUNGLE_SIGN = getBlockType("jungle_sign");
+    BlockType.Typed<Sign> JUNGLE_SIGN = getBlockType("jungle_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> DARK_OAK_SIGN = getBlockType("dark_oak_sign");
+    BlockType.Typed<Sign> DARK_OAK_SIGN = getBlockType("dark_oak_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> PALE_OAK_SIGN = getBlockType("pale_oak_sign");
+    BlockType.Typed<Sign> PALE_OAK_SIGN = getBlockType("pale_oak_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> MANGROVE_SIGN = getBlockType("mangrove_sign");
+    BlockType.Typed<Sign> MANGROVE_SIGN = getBlockType("mangrove_sign");
     /**
      * BlockData: {@link Sign}
      */
-    Typed<Sign> BAMBOO_SIGN = getBlockType("bamboo_sign");
+    BlockType.Typed<Sign> BAMBOO_SIGN = getBlockType("bamboo_sign");
     /**
      * BlockData: {@link Door}
      */
-    Typed<Door> OAK_DOOR = getBlockType("oak_door");
+    BlockType.Typed<Door> OAK_DOOR = getBlockType("oak_door");
     /**
      * BlockData: {@link Ladder}
      */
-    Typed<Ladder> LADDER = getBlockType("ladder");
+    BlockType.Typed<Ladder> LADDER = getBlockType("ladder");
     /**
      * BlockData: {@link Rail}
      */
-    Typed<Rail> RAIL = getBlockType("rail");
+    BlockType.Typed<Rail> RAIL = getBlockType("rail");
     /**
      * BlockData: {@link Stairs}
      */
-    Typed<Stairs> COBBLESTONE_STAIRS = getBlockType("cobblestone_stairs");
+    BlockType.Typed<Stairs> COBBLESTONE_STAIRS = getBlockType("cobblestone_stairs");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> OAK_WALL_SIGN = getBlockType("oak_wall_sign");
+    BlockType.Typed<WallSign> OAK_WALL_SIGN = getBlockType("oak_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> SPRUCE_WALL_SIGN = getBlockType("spruce_wall_sign");
+    BlockType.Typed<WallSign> SPRUCE_WALL_SIGN = getBlockType("spruce_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> BIRCH_WALL_SIGN = getBlockType("birch_wall_sign");
+    BlockType.Typed<WallSign> BIRCH_WALL_SIGN = getBlockType("birch_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> ACACIA_WALL_SIGN = getBlockType("acacia_wall_sign");
+    BlockType.Typed<WallSign> ACACIA_WALL_SIGN = getBlockType("acacia_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> CHERRY_WALL_SIGN = getBlockType("cherry_wall_sign");
+    BlockType.Typed<WallSign> CHERRY_WALL_SIGN = getBlockType("cherry_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> JUNGLE_WALL_SIGN = getBlockType("jungle_wall_sign");
+    BlockType.Typed<WallSign> JUNGLE_WALL_SIGN = getBlockType("jungle_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> DARK_OAK_WALL_SIGN = getBlockType("dark_oak_wall_sign");
+    BlockType.Typed<WallSign> DARK_OAK_WALL_SIGN = getBlockType("dark_oak_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> PALE_OAK_WALL_SIGN = getBlockType("pale_oak_wall_sign");
+    BlockType.Typed<WallSign> PALE_OAK_WALL_SIGN = getBlockType("pale_oak_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> MANGROVE_WALL_SIGN = getBlockType("mangrove_wall_sign");
+    BlockType.Typed<WallSign> MANGROVE_WALL_SIGN = getBlockType("mangrove_wall_sign");
     /**
      * BlockData: {@link WallSign}
      */
-    Typed<WallSign> BAMBOO_WALL_SIGN = getBlockType("bamboo_wall_sign");
+    BlockType.Typed<WallSign> BAMBOO_WALL_SIGN = getBlockType("bamboo_wall_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> OAK_HANGING_SIGN = getBlockType("oak_hanging_sign");
+    BlockType.Typed<HangingSign> OAK_HANGING_SIGN = getBlockType("oak_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> SPRUCE_HANGING_SIGN = getBlockType("spruce_hanging_sign");
+    BlockType.Typed<HangingSign> SPRUCE_HANGING_SIGN = getBlockType("spruce_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> BIRCH_HANGING_SIGN = getBlockType("birch_hanging_sign");
+    BlockType.Typed<HangingSign> BIRCH_HANGING_SIGN = getBlockType("birch_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> ACACIA_HANGING_SIGN = getBlockType("acacia_hanging_sign");
+    BlockType.Typed<HangingSign> ACACIA_HANGING_SIGN = getBlockType("acacia_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> CHERRY_HANGING_SIGN = getBlockType("cherry_hanging_sign");
+    BlockType.Typed<HangingSign> CHERRY_HANGING_SIGN = getBlockType("cherry_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> JUNGLE_HANGING_SIGN = getBlockType("jungle_hanging_sign");
+    BlockType.Typed<HangingSign> JUNGLE_HANGING_SIGN = getBlockType("jungle_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> DARK_OAK_HANGING_SIGN = getBlockType("dark_oak_hanging_sign");
+    BlockType.Typed<HangingSign> DARK_OAK_HANGING_SIGN = getBlockType("dark_oak_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> PALE_OAK_HANGING_SIGN = getBlockType("pale_oak_hanging_sign");
+    BlockType.Typed<HangingSign> PALE_OAK_HANGING_SIGN = getBlockType("pale_oak_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> CRIMSON_HANGING_SIGN = getBlockType("crimson_hanging_sign");
+    BlockType.Typed<HangingSign> CRIMSON_HANGING_SIGN = getBlockType("crimson_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> WARPED_HANGING_SIGN = getBlockType("warped_hanging_sign");
+    BlockType.Typed<HangingSign> WARPED_HANGING_SIGN = getBlockType("warped_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> MANGROVE_HANGING_SIGN = getBlockType("mangrove_hanging_sign");
+    BlockType.Typed<HangingSign> MANGROVE_HANGING_SIGN = getBlockType("mangrove_hanging_sign");
     /**
      * BlockData: {@link HangingSign}
      */
-    Typed<HangingSign> BAMBOO_HANGING_SIGN = getBlockType("bamboo_hanging_sign");
+    BlockType.Typed<HangingSign> BAMBOO_HANGING_SIGN = getBlockType("bamboo_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
-    Typed<WallHangingSign> OAK_WALL_HANGING_SIGN = getBlockType("oak_wall_hanging_sign");
+    BlockType.Typed<WallHangingSign> OAK_WALL_HANGING_SIGN = getBlockType("oak_wall_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
-    Typed<WallHangingSign> SPRUCE_WALL_HANGING_SIGN = getBlockType("spruce_wall_hanging_sign");
+    BlockType.Typed<WallHangingSign> SPRUCE_WALL_HANGING_SIGN = getBlockType("spruce_wall_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
-    Typed<WallHangingSign> BIRCH_WALL_HANGING_SIGN = getBlockType("birch_wall_hanging_sign");
+    BlockType.Typed<WallHangingSign> BIRCH_WALL_HANGING_SIGN = getBlockType("birch_wall_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
-    Typed<WallHangingSign> ACACIA_WALL_HANGING_SIGN = getBlockType("acacia_wall_hanging_sign");
+    BlockType.Typed<WallHangingSign> ACACIA_WALL_HANGING_SIGN = getBlockType("acacia_wall_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
-    Typed<WallHangingSign> CHERRY_WALL_HANGING_SIGN = getBlockType("cherry_wall_hanging_sign");
+    BlockType.Typed<WallHangingSign> CHERRY_WALL_HANGING_SIGN = getBlockType("cherry_wall_hanging_sign");
     /**
      * BlockData: {@link WallHangingSign}
      */
@@ -994,6 +1044,11 @@ public interface BlockType extends Keyed, Translatable, RegistryAware {
      * BlockData: {@link Directional}
      */
     BlockType.Typed<Directional> SOUL_WALL_TORCH = getBlockType("soul_wall_torch");
+    BlockType.Typed<BlockData> COPPER_TORCH = getBlockType("copper_torch");
+    /**
+     * BlockData: {@link Directional}
+     */
+    BlockType.Typed<Directional> COPPER_WALL_TORCH = getBlockType("copper_wall_torch");
     BlockType.Typed<BlockData> GLOWSTONE = getBlockType("glowstone");
     /**
      * BlockData: {@link Orientable}
@@ -1100,9 +1155,73 @@ public interface BlockType extends Keyed, Translatable, RegistryAware {
      */
     BlockType.Typed<Fence> IRON_BARS = getBlockType("iron_bars");
     /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> COPPER_BARS = getBlockType("copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> EXPOSED_COPPER_BARS = getBlockType("exposed_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> WEATHERED_COPPER_BARS = getBlockType("weathered_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> OXIDIZED_COPPER_BARS = getBlockType("oxidized_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> WAXED_COPPER_BARS = getBlockType("waxed_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> WAXED_EXPOSED_COPPER_BARS = getBlockType("waxed_exposed_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> WAXED_WEATHERED_COPPER_BARS = getBlockType("waxed_weathered_copper_bars");
+    /**
+     * BlockData: {@link Fence}
+     */
+    BlockType.Typed<Fence> WAXED_OXIDIZED_COPPER_BARS = getBlockType("waxed_oxidized_copper_bars");
+    /**
      * BlockData: {@link Chain}
      */
-    BlockType.Typed<Chain> CHAIN = getBlockType("chain");
+    BlockType.Typed<Chain> IRON_CHAIN = getBlockType("iron_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> COPPER_CHAIN = getBlockType("copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> EXPOSED_COPPER_CHAIN = getBlockType("exposed_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> WEATHERED_COPPER_CHAIN = getBlockType("weathered_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> OXIDIZED_COPPER_CHAIN = getBlockType("oxidized_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> WAXED_COPPER_CHAIN = getBlockType("waxed_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> WAXED_EXPOSED_COPPER_CHAIN = getBlockType("waxed_exposed_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> WAXED_WEATHERED_COPPER_CHAIN = getBlockType("waxed_weathered_copper_chain");
+    /**
+     * BlockData: {@link Chain}
+     */
+    BlockType.Typed<Chain> WAXED_OXIDIZED_COPPER_CHAIN = getBlockType("waxed_oxidized_copper_chain");
     /**
      * BlockData: {@link Fence}
      */
@@ -2597,6 +2716,38 @@ public interface BlockType extends Keyed, Translatable, RegistryAware {
      */
     BlockType.Typed<Lantern> SOUL_LANTERN = getBlockType("soul_lantern");
     /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> COPPER_LANTERN = getBlockType("copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> EXPOSED_COPPER_LANTERN = getBlockType("exposed_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> WEATHERED_COPPER_LANTERN = getBlockType("weathered_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> OXIDIZED_COPPER_LANTERN = getBlockType("oxidized_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> WAXED_COPPER_LANTERN = getBlockType("waxed_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> WAXED_EXPOSED_COPPER_LANTERN = getBlockType("waxed_exposed_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> WAXED_WEATHERED_COPPER_LANTERN = getBlockType("waxed_weathered_copper_lantern");
+    /**
+     * BlockData: {@link Lantern}
+     */
+    BlockType.Typed<Lantern> WAXED_OXIDIZED_COPPER_LANTERN = getBlockType("waxed_oxidized_copper_lantern");
+    /**
      * BlockData: {@link Campfire}
      */
     BlockType.Typed<Campfire> CAMPFIRE = getBlockType("campfire");
@@ -3275,9 +3426,101 @@ public interface BlockType extends Keyed, Translatable, RegistryAware {
      */
     BlockType.Typed<CopperBulb> WAXED_OXIDIZED_COPPER_BULB = getBlockType("waxed_oxidized_copper_bulb");
     /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> COPPER_CHEST = getBlockType("copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> EXPOSED_COPPER_CHEST = getBlockType("exposed_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> WEATHERED_COPPER_CHEST = getBlockType("weathered_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> OXIDIZED_COPPER_CHEST = getBlockType("oxidized_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> WAXED_COPPER_CHEST = getBlockType("waxed_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> WAXED_EXPOSED_COPPER_CHEST = getBlockType("waxed_exposed_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> WAXED_WEATHERED_COPPER_CHEST = getBlockType("waxed_weathered_copper_chest");
+    /**
+     * BlockData: {@link Chest}
+     */
+    BlockType.Typed<Chest> WAXED_OXIDIZED_COPPER_CHEST = getBlockType("waxed_oxidized_copper_chest");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> COPPER_GOLEM_STATUE = getBlockType("copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> EXPOSED_COPPER_GOLEM_STATUE = getBlockType("exposed_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> WEATHERED_COPPER_GOLEM_STATUE = getBlockType("weathered_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> OXIDIZED_COPPER_GOLEM_STATUE = getBlockType("oxidized_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> WAXED_COPPER_GOLEM_STATUE = getBlockType("waxed_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> WAXED_EXPOSED_COPPER_GOLEM_STATUE = getBlockType("waxed_exposed_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> WAXED_WEATHERED_COPPER_GOLEM_STATUE = getBlockType("waxed_weathered_copper_golem_statue");
+    /**
+     * BlockData: {@link CopperGolemStatue}
+     */
+    BlockType.Typed<CopperGolemStatue> WAXED_OXIDIZED_COPPER_GOLEM_STATUE = getBlockType("waxed_oxidized_copper_golem_statue");
+    /**
      * BlockData: {@link LightningRod}
      */
     BlockType.Typed<LightningRod> LIGHTNING_ROD = getBlockType("lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> EXPOSED_LIGHTNING_ROD = getBlockType("exposed_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> WEATHERED_LIGHTNING_ROD = getBlockType("weathered_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> OXIDIZED_LIGHTNING_ROD = getBlockType("oxidized_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> WAXED_LIGHTNING_ROD = getBlockType("waxed_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> WAXED_EXPOSED_LIGHTNING_ROD = getBlockType("waxed_exposed_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> WAXED_WEATHERED_LIGHTNING_ROD = getBlockType("waxed_weathered_lightning_rod");
+    /**
+     * BlockData: {@link LightningRod}
+     */
+    BlockType.Typed<LightningRod> WAXED_OXIDIZED_LIGHTNING_ROD = getBlockType("waxed_oxidized_lightning_rod");
     /**
      * BlockData: {@link PointedDripstone}
      */

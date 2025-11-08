@@ -6,6 +6,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.model.PlayerModelPart;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -58,6 +59,14 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder 
      */
     @NotNull
     public MainHand getMainHand();
+
+    /**
+     * Gets whether a part of the player model is shown.
+     *
+     * @param part model part
+     * @return if it is shown
+     */
+    public boolean isModelPartShown(@NotNull PlayerModelPart part);
 
     /**
      * If the player currently has an inventory window open, this method will

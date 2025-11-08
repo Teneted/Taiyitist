@@ -4,13 +4,11 @@ import java.util.Collection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.spawner.TrialSpawnerConfiguration;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a captured state of a trial spawner.
  */
-@ApiStatus.Experimental
 public interface TrialSpawner extends TileState {
 
     /**

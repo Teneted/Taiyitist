@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.bukkit.Server;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,24 @@ public interface PlayerProfile extends Cloneable, ConfigurationSerializable {
      * textures
      */
     void setTextures(@Nullable PlayerTextures textures);
+
+    /**
+     * Gets the {@link PlayerSkinPatch} of this profile.
+     *
+     * @return the skin patch, not <code>null</code>
+     */
+    @NotNull
+    @ApiStatus.Experimental
+    PlayerSkinPatch getSkinPatch();
+
+    /**
+     * Copies the given patch.
+     *
+     * @param patch the patch to copy, or <code>null</code> to clear the
+     * patch
+     */
+    @ApiStatus.Experimental
+    void setSkinPatch(@Nullable PlayerSkinPatch patch);
 
     /**
      * Checks whether this profile is complete.

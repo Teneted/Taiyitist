@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a boat entity.
  */
-public interface Boat extends Vehicle {
+public interface Boat extends Leashable, Vehicle {
 
     /**
      * Gets the wood type of the boat.

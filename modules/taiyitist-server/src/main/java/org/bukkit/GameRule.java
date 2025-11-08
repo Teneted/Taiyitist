@@ -3,6 +3,7 @@ package org.bukkit;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class GameRule<T> {
 
-    private static Map<String, GameRule<?>> gameRules = new HashMap<>();
+    private static final Map<String, GameRule<?>> gameRules = new HashMap<>();
     // Boolean rules
     /**
      * Toggles the announcing of advancements.
@@ -233,6 +234,33 @@ public final class GameRule<T> {
      * Whether the locator bar is enabled.
      */
     public static final GameRule<Boolean> LOCATOR_BAR = new GameRule<>("locatorBar", Boolean.class);
+    /**
+     * Whether PvP is enabled.
+     */
+    public static final GameRule<Boolean> PVP = new GameRule<>("pvp", Boolean.class);
+    /**
+     * Whether nether portals can be used to enter the nether.
+     */
+    public static final GameRule<Boolean> ALLOW_ENTERING_NETHER_USING_PORTALS = new GameRule<>("allowEnteringNetherUsingPortals", Boolean.class);
+    /**
+     * Whether monsters will spawn.
+     */
+    public static final GameRule<Boolean> SPAWN_MONSTERS = new GameRule<>("spawnMonsters", Boolean.class);
+    /**
+     * Whether command blocks are enabled.
+     */
+    public static final GameRule<Boolean> COMMAND_BLOCKS_ENABLED = new GameRule<>("commandBlocksEnabled", Boolean.class);
+    /**
+     * Whether command blocks are enabled.
+     *
+     * @deprecated use {@link #COMMAND_BLOCKS_ENABLED}
+     */
+    @Deprecated(since = "1.21.9")
+    public static final GameRule<Boolean> ENABLE_COMMAND_BLOCKS = COMMAND_BLOCKS_ENABLED;
+    /**
+     * Whether spawner blocks are enabled.
+     */
+    public static final GameRule<Boolean> SPAWNER_BLOCKS_ENABLED = new GameRule<>("spawnerBlocksEnabled", Boolean.class);
 
     // Numerical rules
     /**
@@ -302,11 +330,6 @@ public final class GameRule<T> {
      */
     public static final GameRule<Integer> MINECART_MAX_SPEED = new GameRule<>("minecartMaxSpeed", Integer.class);
 
-    /**
-     * The number of chunks around spawn which will be kept loaded at all times.
-     */
-    public static final GameRule<Integer> SPAWN_CHUNK_RADIUS = new GameRule<>("spawnChunkRadius", Integer.class);
-
     // All GameRules instantiated above this for organizational purposes
     private final String name;
     private final Class<T> type;
@@ -338,6 +361,14 @@ public final class GameRule<T> {
     @NotNull
     public Class<T> getType() {
         return type;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.name);
+        hash = 59 * hash + Objects.hashCode(this.type);
+        return hash;
     }
 
     @Override

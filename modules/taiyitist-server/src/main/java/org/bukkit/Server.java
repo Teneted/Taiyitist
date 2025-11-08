@@ -59,7 +59,6 @@ import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -258,6 +257,15 @@ public interface Server extends PluginMessageRecipient {
      */
     @NotNull
     public ServerTickManager getServerTickManager();
+
+    /**
+     * Gets the code of conducts enabled on the server. The returned map is a
+     * map of string language codes (eg, en_us) to codes of conducts.
+     *
+     * @return the codes of conduct or empty if none
+     */
+    @NotNull
+    public Map<String, String> getCodeOfConducts();
 
     /**
      * Gets the resource pack configured to be sent to clients by the server.
@@ -1460,7 +1468,6 @@ public interface Server extends PluginMessageRecipient {
      * @return the server's links
      */
     @NotNull
-    @ApiStatus.Experimental
     ServerLinks getServerLinks();
 
     /**
@@ -1864,42 +1871,4 @@ public interface Server extends PluginMessageRecipient {
     @Deprecated(since = "1.7.2")
     @NotNull
     UnsafeValues getUnsafe();
-
-    // Spigot start
-    public class Spigot {
-
-        @NotNull
-        public org.bukkit.configuration.file.YamlConfiguration getConfig() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Restart the server. If the server administrator has not configured restarting, the server will stop.
-         */
-        public void restart() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Sends the component to the player
-         *
-         * @param component the components to send
-         */
-        public void broadcast(@NotNull net.md_5.bungee.api.chat.BaseComponent component) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Sends an array of components as a single message to the player
-         *
-         * @param components the components to send
-         */
-        public void broadcast(@NotNull net.md_5.bungee.api.chat.BaseComponent... components) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
-    @NotNull
-    Spigot spigot();
-    // Spigot end
 }
