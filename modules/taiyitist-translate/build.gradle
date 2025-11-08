@@ -1,5 +1,8 @@
-archivesName = project.archives_base_name + "-translate"
 version = getSubprojectVersion(project)
+
+base {
+    archivesName = project.archives_base_name + "-translate"
+}
 
 moduleDependencies(project, [
         "taiyitist-server"
