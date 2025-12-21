@@ -1,6 +1,6 @@
 package org.spigotmc;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

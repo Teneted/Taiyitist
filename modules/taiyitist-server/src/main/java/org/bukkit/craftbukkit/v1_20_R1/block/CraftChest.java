@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1.block;
 
-import com.taiyitistmc.bukkit.DoubleChestInventory;
+import org.celestial_artistry.taiyitist.bukkit.DoubleChestInventory;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.Blocks;

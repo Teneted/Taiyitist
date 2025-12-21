@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.v1_20_R1.entity;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
-import com.taiyitistmc.api.ServerAPI;
+import org.celestial_artistry.taiyitist.api.ServerAPI;
 import java.util.Set;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import org.bukkit.boss.BossBar;

@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.v1_20_R1.map;
 
 import com.google.common.base.Preconditions;
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

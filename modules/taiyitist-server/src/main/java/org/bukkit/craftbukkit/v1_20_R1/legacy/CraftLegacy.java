@@ -1,8 +1,8 @@
 package org.bukkit.craftbukkit.v1_20_R1.legacy;
 
 import com.google.common.base.Preconditions;
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.fabric.BukkitRegistry;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.fabric.BukkitRegistry;
 import com.mojang.serialization.Dynamic;
 import java.util.Arrays;
 import java.util.HashMap;

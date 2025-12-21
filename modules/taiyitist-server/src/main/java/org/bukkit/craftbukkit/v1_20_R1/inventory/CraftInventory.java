@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.v1_20_R1.inventory;
 
 import com.google.common.base.Preconditions;
-import com.taiyitistmc.bukkit.BannerLecternInventory;
+import org.celestial_artistry.taiyitist.bukkit.BannerLecternInventory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;

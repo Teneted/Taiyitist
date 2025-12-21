@@ -1,8 +1,8 @@
 package org.spigotmc;
 
 import com.google.common.base.Throwables;
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.config.TaiyitistConfig;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.config.TaiyitistConfig;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

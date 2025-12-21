@@ -9,8 +9,8 @@
     "TaiyitistMC Dev Team"
   ],
   "contact": {
-    "homepage": "https://github.com/TaiyitistMC/taiyitist",
-    "sources": "https://github.com/TaiyitistMC/taiyitist"
+    "homepage": "https://github.com/CelestialArtistry/taiyitist",
+    "sources": "https://github.com/CelestialArtistry/taiyitist"
   },
   "depends": {
     "fabricloader": ">=0.16.9",

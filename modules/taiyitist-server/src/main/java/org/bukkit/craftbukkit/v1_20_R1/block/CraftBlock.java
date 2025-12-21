@@ -1,10 +1,10 @@
 package org.bukkit.craftbukkit.v1_20_R1.block;
 
 import com.google.common.base.Preconditions;
-import com.taiyitistmc.bukkit.BukkitFieldHooks;
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import com.taiyitistmc.bukkit.CraftCustomContainer;
-import com.taiyitistmc.fabric.BukkitRegistry;
+import org.celestial_artistry.taiyitist.bukkit.BukkitFieldHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.CraftCustomContainer;
+import org.celestial_artistry.taiyitist.fabric.BukkitRegistry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

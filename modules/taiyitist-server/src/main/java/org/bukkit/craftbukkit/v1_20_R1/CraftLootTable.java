@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.v1_20_R1;
 
 import com.google.common.base.Preconditions;
-import com.taiyitistmc.bukkit.BukkitFieldHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitFieldHooks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

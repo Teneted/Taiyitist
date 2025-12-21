@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.v1_20_R1.ban;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
 import com.mojang.authlib.GameProfile;
 import java.time.Duration;
 import java.time.Instant;

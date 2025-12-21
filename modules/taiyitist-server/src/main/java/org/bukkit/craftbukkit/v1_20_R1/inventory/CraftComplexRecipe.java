@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1.inventory;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import org.bukkit.NamespacedKey;

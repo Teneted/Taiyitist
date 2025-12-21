@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
+import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
