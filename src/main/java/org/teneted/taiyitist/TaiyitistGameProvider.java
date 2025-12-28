@@ -61,7 +61,7 @@ public class TaiyitistGameProvider extends MinecraftGameProvider {
             var field = launcher.getClass().getDeclaredField("unlocked");
             field.setAccessible(true);
             field.set(launcher, true);
-            var ctor = launcher.loadIntoTarget("org.celestial_artistry.taiyitist.boot.FabricBootstrap").getConstructor();
+            var ctor = launcher.loadIntoTarget("org.teneted.taiyitist.boot.FabricBootstrap").getConstructor();
             ((Consumer<FabricLauncher>) ctor.newInstance()).accept(launcher);
         } catch (Exception e) {
             throw new RuntimeException(e);
