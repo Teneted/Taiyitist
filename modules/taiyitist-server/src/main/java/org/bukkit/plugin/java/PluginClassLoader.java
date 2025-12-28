@@ -25,11 +25,11 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 
-import org.celestial_artistry.taiyitist.bukkit.remapping.ClassLoaderRemapper;
-import org.celestial_artistry.taiyitist.bukkit.remapping.RemappingClassLoader;
-import org.celestial_artistry.taiyitist.bukkit.remapping.TaiyitistRemapConfig;
-import org.celestial_artistry.taiyitist.bukkit.remapping.TaiyitistRemapper;
-import org.celestial_artistry.taiyitist.bukkit.remapping.patcher.fix.PluginPropertiesManager;
+import org.teneted.taiyitist.bukkit.remapping.ClassLoaderRemapper;
+import org.teneted.taiyitist.bukkit.remapping.RemappingClassLoader;
+import org.teneted.taiyitist.bukkit.remapping.TaiyitistRemapConfig;
+import org.teneted.taiyitist.bukkit.remapping.TaiyitistRemapper;
+import org.teneted.taiyitist.bukkit.remapping.patcher.fix.PluginPropertiesManager;
 import io.izzel.tools.product.Product2;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidPluginException;

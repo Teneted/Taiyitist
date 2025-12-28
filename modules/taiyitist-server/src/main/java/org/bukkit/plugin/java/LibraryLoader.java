@@ -1,9 +1,9 @@
 package org.bukkit.plugin.java;
 
-import org.celestial_artistry.taiyitist.TaiyitistMCStart;
-import org.celestial_artistry.taiyitist.bukkit.PluginsLibrarySource;
-import org.celestial_artistry.taiyitist.bukkit.remapping.generated.RemappingURLClassLoader;
-import org.celestial_artistry.taiyitist.util.I18n;
+import org.teneted.taiyitist.TaiyitistMCStart;
+import org.teneted.taiyitist.bukkit.PluginsLibrarySource;
+import org.teneted.taiyitist.bukkit.remapping.generated.RemappingURLClassLoader;
+import org.teneted.taiyitist.util.I18n;
 import com.mohistmc.mjson.Json;
 import com.mohistmc.tools.ConnectionUtil;
 import java.io.BufferedReader;

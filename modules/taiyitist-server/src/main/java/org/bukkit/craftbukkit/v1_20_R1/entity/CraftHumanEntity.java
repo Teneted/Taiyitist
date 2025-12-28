@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.v1_20_R1.entity;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import org.celestial_artistry.taiyitist.bukkit.BukkitSnapshotCaptures;
+import org.teneted.taiyitist.bukkit.BukkitSnapshotCaptures;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

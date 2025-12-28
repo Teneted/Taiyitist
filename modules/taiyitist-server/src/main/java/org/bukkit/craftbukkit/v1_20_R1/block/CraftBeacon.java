@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1.block;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 import java.util.ArrayList;
 import java.util.Collection;
 import net.minecraft.world.LockCode;

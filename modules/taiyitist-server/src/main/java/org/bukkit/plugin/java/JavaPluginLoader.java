@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.celestial_artistry.taiyitist.bukkit.remapping.Unsafe;
+import org.teneted.taiyitist.bukkit.remapping.Unsafe;
 import org.bukkit.Server;
 import org.bukkit.Warning;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

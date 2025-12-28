@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "plugin": "org.celestial_artistry.taiyitist.mixin.TaiyitistMixinPlugin",
-  "package": "org.celestial_artistry.taiyitist.mixin",
+  "plugin": "org.teneted.taiyitist.mixin.TaiyitistMixinPlugin",
+  "package": "org.teneted.taiyitist.mixin",
   "compatibilityLevel": "JAVA_21",
   "overwrites": {
     "conformVisibility": true

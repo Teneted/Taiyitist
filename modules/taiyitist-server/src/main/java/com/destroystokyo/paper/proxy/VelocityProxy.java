@@ -1,7 +1,7 @@
 package com.destroystokyo.paper.proxy;
 
 import com.google.common.net.InetAddresses;
-import org.celestial_artistry.taiyitist.config.TaiyitistConfig;
+import org.teneted.taiyitist.config.TaiyitistConfig;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import java.net.InetAddress;

@@ -1,6 +1,6 @@
 package org.spigotmc;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitFieldHooks;
+import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;

@@ -1,8 +1,8 @@
 package org.bukkit.craftbukkit.v1_20_R1.entity;
 
 import com.google.common.base.Preconditions;
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
-import org.celestial_artistry.taiyitist.fabric.BukkitRegistry;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.fabric.BukkitRegistry;
 import java.util.Locale;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;

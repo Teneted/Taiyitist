@@ -1,6 +1,6 @@
 package org.spigotmc;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class AsyncCatcher
 {

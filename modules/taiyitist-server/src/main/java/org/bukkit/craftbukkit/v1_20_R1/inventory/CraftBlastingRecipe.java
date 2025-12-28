@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1.inventory;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;

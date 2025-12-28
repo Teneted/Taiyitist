@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.v1_20_R1.util;
 
-import org.celestial_artistry.taiyitist.fabric.BukkitRegistry;
+import org.teneted.taiyitist.fabric.BukkitRegistry;
 import net.minecraft.world.entity.MobCategory;
 import org.bukkit.entity.SpawnCategory;
 

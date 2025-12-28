@@ -1,6 +1,6 @@
 package org.spigotmc;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 import java.io.File;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;

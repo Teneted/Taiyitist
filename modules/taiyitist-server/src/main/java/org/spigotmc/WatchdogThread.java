@@ -1,7 +1,7 @@
 package org.spigotmc;
 
-import org.celestial_artistry.taiyitist.bukkit.BukkitMethodHooks;
-import org.celestial_artistry.taiyitist.config.TaiyitistConfig;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.config.TaiyitistConfig;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
