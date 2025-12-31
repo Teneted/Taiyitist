@@ -49,7 +49,7 @@ public class TaiyitistRemapper {
             } else {
                 DUMP = null;
             }
-            SWITCH_TABLE_FIXER = (Function<byte[], byte[]>) Class.forName("com.taiyitistmc.asm.SwitchTableFixer").getField("INSTANCE").get(null);
+            SWITCH_TABLE_FIXER = (Function<byte[], byte[]>) Class.forName("org.teneted.taiyitist.asm.SwitchTableFixer").getField("INSTANCE").get(null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
