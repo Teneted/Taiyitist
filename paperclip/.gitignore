@@ -1,0 +1,45 @@
+# IntelliJ
+.idea/
+out/
+
+*.ipr
+*.iws
+*.iml
+
+# Eclipse
+.metadata
+.project
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.externalToolBuilders/
+*.launch
+.factorypath
+.apt_generated/
+
+# macOS
+.DS_Store
+
+# Windows
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+# Folder config file
+[Dd]esktop.ini
+*.lnk
+
+# Gradle
+.gradle
+**/build/
+.gradletasknamecache
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.ja

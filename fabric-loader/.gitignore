@@ -1,0 +1,28 @@
+# Ignore everything
+/*
+
+# Folders
+!/gradle
+!/src
+!/.github
+
+# Files
+!/.gitattributes
+!/.gitignore
+!/.editorconfig
+!/build.gradle
+!/checkstyle.xml
+!/gradle.properties
+!/gradlew
+!/gradlew.bat
+!/HEADER
+!/LICENSE
+!/README.md
+!/settings.gradle
+!/proguard.conf
+
+!/minecraft
+!/junit
+
+# MacOS junk files
+.DS_Store

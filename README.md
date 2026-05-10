@@ -1,67 +1,103 @@
-<div align="center">
-<img src="src/main/resources/assets/taiyitist/logo.png" alt="logo">
-  <h1>Taiyitist 1.21.1</h1>
+Paper [![Version](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fartifactory.papermc.io%2Fartifactory%2Funiverse%2Fio%2Fpapermc%2Fpaper%2Fpaper-api%2Fmaven-metadata.xml&strategy=highestVersion&filter=26.1*&label=version&color=%23344ceb
+)](https://papermc.io/downloads/paper)
+[![Paper Build Status](https://img.shields.io/github/actions/workflow/status/PaperMC/Paper/build.yml?branch=main)](https://github.com/PaperMC/Paper/actions)
+[![Discord](https://img.shields.io/discord/289587909051416579.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/papermc)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/papermc?label=GitHub%20Sponsors)](https://github.com/sponsors/PaperMC)
+[![Open Collective](https://img.shields.io/opencollective/all/papermc?label=OpenCollective%20Sponsors)](https://opencollective.com/papermc)
+===========
 
-### The Bukkit/Spigot/Paper API implementation for Fabric
-### The project is no longer a Fabric mod, but a standalone program
-[![](https://img.shields.io/github/stars/TaiyitistMC/Taiyitist.svg?label=Stars&logo=github)](https://github.com/TaiyitistMC/Taiyitist/stargazers)
-[![](https://img.shields.io/badge/JDK-21.0.3-brightgreen.svg?colorB=469C00&logo=java)](https://www.azul.com/downloads/?version=java-21-lts#zulu)
-[![](https://img.shields.io/badge/Gradle-8.13-brightgreen.svg?colorB=469C00&logo=gradle)](https://docs.gradle.org/8.13/release-notes.html)
-</div>
+The most widely used, high-performance Minecraft server that aims to fix gameplay and mechanics inconsistencies.
 
-| Version | Support     | Stability | Mod compatibility | Plugin compatibility |
-|---------|-------------|-----------|-------------------|----------------------| 
-| 1.21.7  | Active      | Poor      | Poor              | Poor                 |
-| 1.21.1  | Active      | Poor      | Poor              | Poor                 |
-| 1.20.1  | Active      | Good      | Good              | Good                 |
 
-## Notice
-- Fabric + Bukkit is more vanilla-like than Forge + Bukkit
-- Fabric API uses mixins to change minecraft indirectly
-- Taiyitist also use mixins to hook Bukkit api as a fabric mod
-- There's a little breaking changes
-- This version of Taiyitist 1.21.1, supports MC version 1.21.1
+**Support and Project Discussion:**
+- [Our forums](https://forums.papermc.io/) or [Discord](https://discord.gg/papermc)
 
-## Tips
-- If you want to try a different Fabric + Bukkit hybrid server, you can try CardBoard
-- It is implements bukkit api by itself,and the author is a pioneer to try a new way to implements Fabric + Bukkit
-- Taiyitist is different with Cardboard,you can also try Cardboard as an alternative choice if you want
+How To (Server Admins)
+------
+Paperclip is a jar file that you can download and run just like a normal jar file.
 
-### Running?
-It could be compilable and running, but the compatibility with plugins is poor.
+Download Paper from our [downloads page](https://papermc.io/downloads/paper).
 
-### NMS Support
-We do support using Spigot's net.minecraft.server classes. Classes and Fields will automatically remap to their intermediary counterparts in runtime, but it will not change plugins at all,
-so don't worried about the plugin files will be changed to unsafe
+Run the Paperclip jar directly from your server. Just like old times
 
-## Usage
-- Download Taiyitist.
-- Launch with command java -jar taiyitist-launcher-version.jar
+* Documentation on using Paper: [docs.papermc.io](https://docs.papermc.io)
+* For a sneak peek at upcoming features, [see here](https://github.com/PaperMC/Paper/projects)
 
-## Discord
-- [https://discord.gg/stTgbjkJ](https://discord.gg/DeJUD3tEHu)
+How To (Plugin Developers)
+------
+* See our API [here](paper-api)
+* See upcoming, pending, and recently added API [here](https://github.com/orgs/PaperMC/projects/2/views/4)
+* Paper API javadocs here: [papermc.io/javadocs](https://papermc.io/javadocs/)
+#### Repository (for paper-api)
+See [the docs](https://docs.papermc.io/paper/dev/project-setup/#adding-paper-as-a-dependency) for more details.
+##### Gradle
+```kotlin
+repositories {
+    maven {
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
+}
 
-## Developer Support
-- Download the dev lib jar from GitHub actions.
-- Use Fabric Official Template [**Fabric Example Mod**](https://github.com/FabricMC/fabric-example-mod.git).
-- Using Mojang Official Mappings in your build.gradle
-- Create a directory called lib in your root dir.
-- Add dependencies of Taiyitist, such as compileOnly(fileTree("lib/taiyitist-version-dev.jar"))
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+}
 
-## Upstream Projects
-- [**Bukkit**](https://hub.spigotmc.org/stash/scm/spigot/bukkit.git) - Plugin support.
-- [**CraftBukkit**](https://hub.spigotmc.org/stash/scm/spigot/craftbukkit.git) - Plugin support.
-- [**Spigot**](https://hub.spigotmc.org/stash/scm/spigot/spigot.git) - Plugin support.
-- [**Paper**](https://github.com/PaperMC/Paper.git) - Plugin support.
-- [**Arclight**](https://github.com/IzzelAliz/Arclight.git) - Some code.
-- [**Mohist**](https://github.com/MohistMC/Mohist.git) - Some code.
-- [**StackDeobfuscator**](https://github.com/booky10/StackDeobfuscator) - auto deobfuscate logger crash
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+}
+```
+##### Maven
 
-## Special Thanks To:
-![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
+```xml
+<repository>
+    <id>papermc</id>
+    <url>https://repo.papermc.io/repository/maven-public/</url>
+</repository>
+```
 
-[YourKit](http://www.yourkit.com/), makers of the outstanding java profiler, support open source projects of all kinds with their full-featured [Java](https://www.yourkit.com/java/profiler/index.jsp) and [.NET](https://www.yourkit.com/.net/profiler/index.jsp) application profilers. We thank them for granting Mohist an OSS license so that we can make our software the best it can be.
+```xml
+<dependency>
+    <groupId>io.papermc.paper</groupId>
+    <artifactId>paper-api</artifactId>
+    <version>[26.1.2.build,)</version>
+    <scope>provided</scope>
+</dependency>
+```
 
-[<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="100">](https://www.jetbrains.com)
+How To (Compiling Jar From Source)
+------
+To compile Paper, you need JDK 25 and an internet connection.
+
+Clone this repo, run `./gradlew applyPatches`, then `./gradlew createPaperclipJar` from your terminal. You can find the compiled jar in the `paper-server/build/libs` directory.
+
+To get a full list of tasks, run `./gradlew tasks`.
+
+How To (Pull Request)
+------
+See [Contributing](CONTRIBUTING.md)
+
+Old Versions (1.21.3 and below)
+------
+For branches of versions 1.8-1.21.3, please see our [archive repository](https://github.com/PaperMC/Paper-archive).
+
+Support Us
+------
+First of all, thank you for considering helping out, we really appreciate that!
+
+PaperMC has various recurring expenses, mostly related to infrastructure. Paper uses [Open Collective](https://opencollective.com/) via the [Open Source Collective fiscal host](https://opencollective.com/opensource) to manage expenses. Open Collective allows us to be extremely transparent, so you can always see how your donations are used. You can read more about financially supporting PaperMC [on our website](https://papermc.io/sponsors).
+
+You can find our collective [here](https://opencollective.com/papermc), or you can donate via GitHub Sponsors [here](https://github.com/sponsors/PaperMC), which will also go towards the collective.
+
+Special Thanks To:
+-------------
+
+[![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/)
+
+[YourKit](https://www.yourkit.com/), makers of the outstanding java profiler, support open source projects of all kinds with their full featured [Java](https://www.yourkit.com/java/profiler) and [.NET](https://www.yourkit.com/.net/profiler) application profilers. We thank them for granting Paper an OSS license so that we can make our software the best it can be.
+
+[<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="150">](https://www.jetbrains.com)
 
 [JetBrains](https://www.jetbrains.com/), creators of the IntelliJ IDEA, supports Paper with one of their [Open Source Licenses](https://www.jetbrains.com/opensource/). IntelliJ IDEA is the recommended IDE for working with Paper, and most of the Paper team uses it.
+
+All our sponsors!  
+[![Sponsor Image](https://raw.githubusercontent.com/PaperMC/papermc.io/data/sponsors.png)](https://papermc.io/sponsors)

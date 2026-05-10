@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/inventory/ItemCombinerMenu.java
++++ b/net/minecraft/world/inventory/ItemCombinerMenu.java
+@@ -54,15 +_,15 @@
+     }
+ 
+     private void createInputSlots(final ItemCombinerMenuSlotDefinition itemInputSlots) {
+-        for (final ItemCombinerMenuSlotDefinition.SlotDefinition slot : itemInputSlots.getSlots()) {
+-            this.addSlot(new Slot(this.inputSlots, slot.slotIndex(), slot.x(), slot.y()) {
++        for (final ItemCombinerMenuSlotDefinition.SlotDefinition slotDefinition1 : itemInputSlots.getSlots()) {
++            this.addSlot(new Slot(this.inputSlots, slotDefinition1.slotIndex(), slotDefinition1.x(), slotDefinition1.y()) {
+                 {
+                     Objects.requireNonNull(ItemCombinerMenu.this);
+                 }
+ 
+                 @Override
+                 public boolean mayPlace(final ItemStack itemStack) {
+-                    return slot.mayPlace().test(itemStack);
++                    return slotDefinition1.mayPlace().test(itemStack);
+                 }
+             });
+         }
