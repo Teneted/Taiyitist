@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity;
+package org.teneted.taiyitist.injection.world.entity.monster.piglin;
 
 import java.util.Set;
 import net.minecraft.world.item.Item;

@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity.npc;
+package org.teneted.taiyitist.injection.world.entity.npc.villager;
 
 public interface InjectionVillager {
 

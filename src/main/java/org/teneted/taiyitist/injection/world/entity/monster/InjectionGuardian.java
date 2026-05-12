@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity;
+package org.teneted.taiyitist.injection.world.entity.monster;
 
 import net.minecraft.world.entity.monster.Guardian;
 

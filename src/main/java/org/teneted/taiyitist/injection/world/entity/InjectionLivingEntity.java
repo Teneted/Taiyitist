@@ -1,6 +1,5 @@
 package org.teneted.taiyitist.injection.world.entity;
 
-import com.taiyitistmc.bukkit.ProcessableEffect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,7 @@ import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.ProcessableEffect;
 
 public interface InjectionLivingEntity extends InjectionEntity {
 
