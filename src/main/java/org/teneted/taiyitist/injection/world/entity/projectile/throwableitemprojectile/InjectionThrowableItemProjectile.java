@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity.projectile;
+package org.teneted.taiyitist.injection.world.entity.projectile.throwableitemprojectile;
 
 import net.minecraft.world.item.Item;
 

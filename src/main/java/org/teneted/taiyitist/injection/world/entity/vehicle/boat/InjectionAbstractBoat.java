@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity.vehicle;
+package org.teneted.taiyitist.injection.world.entity.vehicle.boat;
 
 public interface InjectionAbstractBoat {
 

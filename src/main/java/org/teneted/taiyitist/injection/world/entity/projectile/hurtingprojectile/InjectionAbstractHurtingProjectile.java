@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity.projectile;
+package org.teneted.taiyitist.injection.world.entity.projectile.hurtingprojectile;
 
 public interface InjectionAbstractHurtingProjectile {
 

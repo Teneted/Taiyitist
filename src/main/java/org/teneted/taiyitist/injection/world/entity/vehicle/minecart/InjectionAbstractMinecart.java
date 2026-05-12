@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.entity.vehicle;
+package org.teneted.taiyitist.injection.world.entity.vehicle.minecart;
 
 import org.bukkit.util.Vector;
 
