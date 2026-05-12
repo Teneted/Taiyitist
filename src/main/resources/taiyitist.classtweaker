@@ -675,10 +675,10 @@ transitive-inject-interface net/minecraft/world/entity/vehicle/minecart/Minecart
 transitive-inject-interface net/minecraft/world/entity/vehicle/minecart/AbstractMinecart org/teneted/taiyitist/injection/world/entity/vehicle/minecart/InjectionAbstractMinecart
 transitive-inject-interface net/minecraft/world/entity/vehicle/boat/AbstractBoat org/teneted/taiyitist/injection/world/entity/vehicle/boat/InjectionAbstractBoat
 transitive-inject-interface net/minecraft/world/food/FoodData org/teneted/taiyitist/injection/world/entity/food/InjectionFoodData
-transitive-inject-interface net/minecraft/world/inventory/LecternMenu org/teneted/taiyitist/injection/world/entity/inventory/InjectionLecternMenu
-transitive-inject-interface net/minecraft/world/inventory/AnvilMenu org/teneted/taiyitist/injection/world/entity/inventory/InjectionAnvilMenu
-transitive-inject-interface net/minecraft/world/inventory/AbstractContainerMenu org/teneted/taiyitist/injection/world/entity/inventory/InjectionAbstractContainerMenu
-transitive-inject-interface net/minecraft/world/inventory/ContainerLevelAccess org/teneted/taiyitist/injection/world/entity/inventory/InjectionContainerLevelAccess
+transitive-inject-interface net/minecraft/world/inventory/LecternMenu org/teneted/taiyitist/injection/world/inventory/InjectionLecternMenu
+transitive-inject-interface net/minecraft/world/inventory/AnvilMenu org/teneted/taiyitist/injection/world/inventory/InjectionAnvilMenu
+transitive-inject-interface net/minecraft/world/inventory/AbstractContainerMenu org/teneted/taiyitist/injection/world/inventory/InjectionAbstractContainerMenu
+transitive-inject-interface net/minecraft/world/inventory/ContainerLevelAccess org/teneted/taiyitist/injection/world/inventory/InjectionContainerLevelAccess
 transitive-inject-interface net/minecraft/world/inventory/TransientCraftingContainer org/teneted/taiyitist/injection/world/entity/inventory/InjectionTransientCraftingContainer
 transitive-inject-interface net/minecraft/world/item/ItemStack org/teneted/taiyitist/injection/world/item/InjectionItemStack
 transitive-inject-interface net/minecraft/world/item/component/ConsumableListener org/teneted/taiyitist/injection/world/item/component/InjectionConsumableListener
@@ -698,3 +698,4 @@ transitive-inject-interface net/minecraft/world/level/BlockGetter org/teneted/ta
 transitive-inject-interface net/minecraft/world/level/TicketStorage org/teneted/taiyitist/injection/world/level/InjectionTicketStorage
 transitive-inject-interface net/minecraft/world/level/Explosion org/teneted/taiyitist/injection/world/level/InjectionExplosion
 transitive-inject-interface net/minecraft/world/level/LevelAccessor org/teneted/taiyitist/injection/world/level/InjectionLevelAccessor
+transitive-inject-interface net/minecraft/world/level/dimension/end/EnderDragonFight org/teneted/taiyitist/injection/world/level/dimension/end/InjectionEndDragonFight

@@ -15,6 +15,7 @@ import org.bukkit.BanEntry;
 import org.bukkit.ban.ProfileBanList;
 import org.bukkit.craftbukkit.profile.CraftPlayerProfile;
 import org.bukkit.profile.PlayerProfile;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftProfileBanList implements ProfileBanList {
     private final UserBanList list;
@@ -161,10 +162,10 @@ public class CraftProfileBanList implements ProfileBanList {
     }
 
     static NameAndId getProfileByUUID(UUID uuid) {
-        return (MinecraftServer.getServer() != null) ? MinecraftServer.getServer().services().nameToIdCache().get(uuid).orElse(null) : null;
+        return (BukkitMethodHooks.getServer() != null) ? BukkitMethodHooks.getServer().services().nameToIdCache().get(uuid).orElse(null) : null;
     }
 
     static NameAndId getProfileByName(String name) {
-        return (MinecraftServer.getServer() != null) ? MinecraftServer.getServer().services().nameToIdCache().get(name).orElse(null) : null;
+        return (BukkitMethodHooks.getServer() != null) ? BukkitMethodHooks.getServer().services().nameToIdCache().get(name).orElse(null) : null;
     }
 }

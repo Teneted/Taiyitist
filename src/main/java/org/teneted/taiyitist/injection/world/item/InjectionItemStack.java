@@ -1,5 +1,6 @@
 package org.teneted.taiyitist.injection.world.item;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.world.item.Item;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public interface InjectionItemStack {
 
     @Deprecated
-    default void setItem(Item item) {
+    default void setItem(Holder.Reference<Item> item) {
         throw new IllegalStateException("Not implemented");
     }
 

@@ -66,10 +66,10 @@
     "world.entity.npc.villager.MixinVillager",
     "world.entity.player.MixinInventory",
     "world.entity.player.MixinPlayer",
-    "world.entity.projectile.hurtingprojectile.MixinAbstractHurtingProjectile",
     "world.entity.projectile.MixinFishingHook",
     "world.entity.projectile.MixinProjectile",
     "world.entity.projectile.MixinShulkerBullet",
+    "world.entity.projectile.hurtingprojectile.MixinAbstractHurtingProjectile",
     "world.entity.projectile.throwableitemprojectile.MixinThrowableItemProjectile",
     "world.entity.raid.MixinRaid",
     "world.entity.vehicle.boat.MixinAbstractBoat",
@@ -98,7 +98,8 @@
     "world.level.MixinLevelAccessor",
     "world.level.MixinLevelWriter",
     "world.level.MixinServerLevelAccessor",
-    "world.level.MixinTicketStorage"
+    "world.level.MixinTicketStorage",
+    "world.level.dimension.end.MixinEndDragonFight"
   ],
   "injectors": {
     "defaultRequire": 1

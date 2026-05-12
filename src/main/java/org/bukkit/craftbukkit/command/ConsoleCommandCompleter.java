@@ -34,7 +34,7 @@ public class ConsoleCommandCompleter implements Completer {
                 return tabEvent.isCancelled() ? Collections.EMPTY_LIST : tabEvent.getCompletions();
             }
         };
-        server.getServer().processQueue.add(waitable);
+        server.getServer().bridge$processQueue().add(waitable);
         try {
             List<String> offers = waitable.get();
             if (offers == null) {
