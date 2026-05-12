@@ -1,6 +1,5 @@
 package org.teneted.taiyitist.injection.world.level;
 
-import com.taiyitistmc.config.TaiyitistWorldConfig;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
@@ -143,14 +142,6 @@ public interface InjectionLevel {
     }
 
     default void taiyitist$setSpigotConfig(SpigotWorldConfig spigotWorldConfig) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default TaiyitistWorldConfig bridge$bannerConfig() {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default void taiyitist$setBannerConfig(TaiyitistWorldConfig taiyitistWorldConfig) {
         throw new IllegalStateException("Not implemented");
     }
 
