@@ -1,0 +1,14 @@
+package org.teneted.taiyitist.injection.world.level.block.entity;
+
+import org.bukkit.potion.PotionEffect;
+
+public interface InjectionBeaconBlockEntity {
+
+    default PotionEffect getPrimaryEffect() {
+        return null;
+    }
+
+    default PotionEffect getSecondaryEffect() {
+        return null;
+    }
+}

@@ -601,3 +601,38 @@ transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedDa
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData scale B
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData trackingPosition Z
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData unlimitedTracking Z
+
+transitive-inject-interface net/minecraft/advancements/AdvancementHolder org/teneted/taiyitist/injection/advancements/InjectionAdvancementHolder
+transitive-inject-interface net/minecraft/commands/Commands org/teneted/taiyitist/injection/commands/InjectionCommands
+transitive-inject-interface net/minecraft/commands/CommandSource org/teneted/taiyitist/injection/commands/InjectionCommandSource
+transitive-inject-interface net/minecraft/commands/CommandSourceStack org/teneted/taiyitist/injection/commands/InjectionCommandSourceStack
+transitive-inject-interface net/minecraft/commands/arguments/EntityArgument org/teneted/taiyitist/injection/commands/InjectionEntityArgument
+transitive-inject-interface net/minecraft/commands/arguments/selector/EntitySelectorParser org/teneted/taiyitist/injection/commands/InjectionEntitySelectorParser
+transitive-inject-interface net/minecraft/network/protocol/common/custom/DiscardedPayload org/teneted/taiyitist/injection/network/InjectionDiscardedPayload
+transitive-inject-interface net/minecraft/network/syncher/SynchedEntityData org/teneted/taiyitist/injection/network/syncher/InjectionSynchedEntityData
+transitive-inject-interface net/minecraft/network/protocol/game/ServerboundUseItemOnPacket org/teneted/taiyitist/injection/network/protocol/game/InjectionServerboundUseItemOnPacket
+transitive-inject-interface net/minecraft/network/protocol/game/ServerboundUseItemPacket org/teneted/taiyitist/injection/network/protocol/game/InjectionServerboundUseItemPacket
+transitive-inject-interface net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket org/teneted/taiyitist/injection/network/protocol/game/InjectionClientboundSectionBlocksUpdatePacket
+transitive-inject-interface net/minecraft/network/Connection org/teneted/taiyitist/injection/network/InjectionConnection
+transitive-inject-interface net/minecraft/core/component/DataComponentPatch org/teneted/taiyitist/injection/network/chat/InjectionDataComponentPatch
+transitive-inject-interface net/minecraft/network/chat/TextColor org/teneted/taiyitist/injection/network/chat/InjectionTextColor
+transitive-inject-interface net/minecraft/network/chat/Component org/teneted/taiyitist/injection/network/chat/InjectionComponent
+transitive-inject-interface net/minecraft/server/MinecraftServer org/teneted/taiyitist/injection/server/InjectionMinecraftServer
+transitive-inject-interface net/minecraft/server/bossevents/CustomBossEvent org/teneted/taiyitist/injection/server/bossevents/InjectionCustomBossEvent
+transitive-inject-interface net/minecraft/server/level/ChunkHolder org/teneted/taiyitist/injection/server/level/InjectionChunkHolder
+transitive-inject-interface net/minecraft/server/level/ServerLevel org/teneted/taiyitist/injection/server/level/InjectionServerLevel
+transitive-inject-interface net/minecraft/server/level/ServerChunkCache org/teneted/taiyitist/injection/server/level/InjectionServerChunkCache
+transitive-inject-interface net/minecraft/server/level/ServerPlayerGameMode org/teneted/taiyitist/injection/server/level/InjectionServerPlayerGameMode
+transitive-inject-interface net/minecraft/server/level/ChunkMap org/teneted/taiyitist/injection/server/level/InjectionChunkMap
+transitive-inject-interface net/minecraft/server/level/ServerEntity org/teneted/taiyitist/injection/server/level/InjectionServerEntity
+transitive-inject-interface net/minecraft/server/level/DistanceManager org/teneted/taiyitist/injection/server/level/InjectionDistanceManager
+transitive-inject-interface net/minecraft/server/level/ServerPlayer org/teneted/taiyitist/injection/server/level/InjectionServerPlayer
+transitive-inject-interface net/minecraft/server/network/ServerLoginPacketListenerImpl org/teneted/taiyitist/injection/server/network/InjectionServerLoginPacketListenerImpl
+transitive-inject-interface net/minecraft/server/network/ServerConnectionListener org/teneted/taiyitist/injection/server/network/InjectionServerConnectionListener
+transitive-inject-interface net/minecraft/server/network/ServerGamePacketListenerImpl org/teneted/taiyitist/injection/server/network/InjectionServerGamePacketListenerImpl
+transitive-inject-interface net/minecraft/server/network/ServerCommonPacketListenerImpl org/teneted/taiyitist/injection/server/network/InjectionServerCommonPacketListenerImpl
+transitive-inject-interface net/minecraft/server/players/BanListEntry org/teneted/taiyitist/injection/server/players/InjectionBanListEntry
+transitive-inject-interface net/minecraft/server/players/PlayerList org/teneted/taiyitist/injection/server/players/InjectionPlayerList
+transitive-inject-interface net/minecraft/server/players/StoredUserList org/teneted/taiyitist/injection/server/players/InjectionStoredUserList
+transitive-inject-interface net/minecraft/server/rcon/RconConsoleSource org/teneted/taiyitist/injection/server/rcon/InjectionRconConsoleSource
+transitive-inject-interface net/minecraft/util/TickThrottler org/teneted/taiyitist/injection/util/InjectionTickThrottler

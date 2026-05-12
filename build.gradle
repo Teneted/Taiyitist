@@ -26,7 +26,15 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	
+
+	implementation(include("org.yaml:snakeyaml:2.6"))
+	compileOnly(include("org.apache.maven:maven-resolver-provider:3.9.14"))
+	compileOnly(include("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.27"))
+	compileOnly(include("org.apache.maven.resolver:maven-resolver-transport-http:1.9.27"))
+
+	implementation(include("org.jline:jline:3.30.4"))
+	implementation(include("org.apache.logging.log4j:log4j-iostreams:2.25.2"))
+	implementation(include("commons-lang:commons-lang:2.6"))
 }
 
 processResources {
@@ -40,6 +48,8 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+	options.encoding = 'UTF-8'
+	options.warnings = false
 }
 
 java {
