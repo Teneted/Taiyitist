@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "taiyitist-mod",
+	"id": "taiyitist",
 	"version": "${version}",
 	"name": "Taiyitist Mod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
@@ -12,7 +12,7 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/taiyitist-mod/icon.png",
+	"icon": "assets/taiyitistd/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -20,8 +20,9 @@
 		]
 	},
 	"mixins": [
-		"taiyitist-mod.mixins.json"
+		"taiyitist.mixins.json"
 	],
+	"accessWidener": "taiyitist.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.19.2",
 		"minecraft": "~26.1.2",

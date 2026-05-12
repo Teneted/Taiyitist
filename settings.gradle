@@ -9,5 +9,4 @@ pluginManagement {
 	}
 }
 
-// Should match your modid
-rootProject.name = 'taiyitist-mod'
+rootProject.name = 'taiyitist'
