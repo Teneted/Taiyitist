@@ -1,52 +1,40 @@
+# gradle
+
 .gradle/
 build/
+out/
+classes/
 
-# Eclipse stuff
-.classpath
-.project
-.settings/
+# eclipse
 
-# VSCode stuff
-.vscode/
+*.launch
 
-# netbeans
-nbproject/
-nbactions.xml
+# idea
 
-# vim
-.*.sw[a-p]
-
-# various other potential build files
-bin/
-dist/
-manifest.mf
-__pycache__/
-
-# Mac filesystem dust
-.DS_Store/
-.DS_Store
-
-# intellij
+.idea/
 *.iml
 *.ipr
 *.iws
-.idea/
-out/
 
-# JetBrains Fleet
-.fleet/
+# vscode
 
-# Linux temp files
-*~
+.settings/
+.vscode/
+bin/
+.classpath
+.project
 
-# other stuff
+# macos
+
+*.DS_Store
+
+# fabric
+
 run/
-logs/
 
-!gradle/wrapper/gradle-wrapper.jar
+# java
 
-test-plugin.settings.gradle.kts
-paper-generator.settings.gradle.kts
-
-# Don't track patched vanilla submodules
-paper-server/src/minecraft/
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
