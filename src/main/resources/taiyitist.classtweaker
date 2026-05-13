@@ -716,6 +716,7 @@ transitive-inject-interface net/minecraft/world/level/block/entity/FurnaceBlockE
 transitive-inject-interface net/minecraft/world/level/block/entity/BeaconBlockEntity org/teneted/taiyitist/injection/world/level/block/entity/InjectionBeaconBlockEntity
 transitive-inject-interface net/minecraft/world/level/block/entity/BeehiveBlockEntity org/teneted/taiyitist/injection/world/level/block/entity/InjectionBeehiveBlockEntity
 transitive-inject-interface net/minecraft/world/level/block/entity/BlockEntity org/teneted/taiyitist/injection/world/level/block/entity/InjectionBlockEntity
+transitive-inject-interface net/minecraft/world/level/block/entity/JukeboxBlockEntity org/teneted/taiyitist/injection/world/level/block/entity/InjectionJukeboxBlockEntity
 transitive-inject-interface net/minecraft/world/level/border/WorldBorder org/teneted/taiyitist/injection/world/level/border/InjectionWorldBorder
 transitive-inject-interface net/minecraft/world/level/chunk/LevelChunkSection org/teneted/taiyitist/injection/world/level/chunk/InjectionLevelChunkSection
 transitive-inject-interface net/minecraft/world/level/chunk/ChunkGenerator org/teneted/taiyitist/injection/world/level/chunk/InjectionChunkGenerator
@@ -725,6 +726,7 @@ transitive-inject-interface net/minecraft/world/level/chunk/ChunkAccess org/tene
 transitive-inject-interface net/minecraft/world/level/entity/EntityAccess org/teneted/taiyitist/injection/world/level/entity/InjectionEntityAccess
 transitive-inject-interface net/minecraft/world/level/entity/PersistentEntitySectionManager org/teneted/taiyitist/injection/world/level/entity/InjectionPersistentEntitySectionManager
 transitive-inject-interface net/minecraft/world/level/portal/PortalForcer org/teneted/taiyitist/injection/world/level/portal/InjectionPortalForcer
+transitive-inject-interface net/minecraft/world/level/portal/TeleportTransition org/teneted/taiyitist/injection/world/level/portal/InjectionTeleportTransition
 transitive-inject-interface net/minecraft/world/level/saveddata/maps/MapItemSavedData org/teneted/taiyitist/injection/world/level/saveddata/maps/InjectionMapItemSavedData
 transitive-inject-interface net/minecraft/world/level/NaturalSpawner$SpawnState org/teneted/taiyitist/injection/world/level/spawner/InjectionSpawnState
 transitive-inject-interface net/minecraft/world/level/levelgen/FlatLevelSource org/teneted/taiyitist/injection/world/level/levelgen/InjectionFlatLevelSource
@@ -742,4 +744,6 @@ transitive-inject-interface net/minecraft/server/level/Ticket org/teneted/taiyit
 transitive-inject-interface net/minecraft/world/clock/ServerClockManager org/teneted/taiyitist/injection/world/clock/InjectionServerClockManager
 transitive-inject-interface net/minecraft/world/entity/animal/equine/Llama org/teneted/taiyitist/injection/world/entity/animal/equine/InjectionLlama
 transitive-inject-interface net/minecraft/world/inventory/MerchantMenu org/teneted/taiyitist/injection/world/inventory/InjectionMerchantMenu
+transitive-inject-interface net/minecraft/world/entity/player/Player$BedSleepingProblem org/teneted/taiyitist/injection/world/entity/player/InjectionPlayer_BedSleepingProblem
+transitive-inject-interface net/minecraft/world/entity/ai/gossip/GossipContainer org/teneted/taiyitist/injection/world/entity/ai/gossip/InjectionGossipContainer
 transitive-extend-enum net/minecraft/world/level/Level$ExplosionInteraction STANDARD

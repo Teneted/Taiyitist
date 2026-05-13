@@ -2,9 +2,11 @@
   "required": true,
   "package": "org.teneted.taiyitist.mixin",
   "compatibilityLevel": "JAVA_25",
+  "plugin": "org.teneted.taiyitist.mixin.TaiyitistMixinPlugin",
   "mixins": [
     "MixinCrashReport",
     "advancements.MixinAdvancementHolder",
+    "advancements.MixinAdvancementTree",
     "commands.MixinCommands",
     "commands.MixinCommandSource",
     "commands.MixinCommandSourceStack",
@@ -54,6 +56,7 @@
     "world.entity.MixinLivingEntity",
     "world.entity.MixinMob",
     "world.entity.MixinNeutralMob",
+    "world.entity.ai.gossip.MixinGossipContainer",
     "world.entity.animal.MixinAnimal",
     "world.entity.animal.allay.MixinAllay",
     "world.entity.animal.equine.MixinAbstractHorse",
@@ -69,6 +72,7 @@
     "world.entity.npc.villager.MixinVillager",
     "world.entity.player.MixinInventory",
     "world.entity.player.MixinPlayer",
+    "world.entity.player.MixinPlayer_BedSleepingProblem",
     "world.entity.projectile.MixinFishingHook",
     "world.entity.projectile.MixinProjectile",
     "world.entity.projectile.MixinShulkerBullet",
@@ -104,6 +108,7 @@
     "world.level.MixinLevelWriter",
     "world.level.MixinServerLevelAccessor",
     "world.level.MixinTicketStorage",
+    "world.level.block.MixinAbstractCandleBlock",
     "world.level.block.MixinBaseFireBlock",
     "world.level.block.MixinBlock",
     "world.level.block.MixinChestBlock",
@@ -133,6 +138,7 @@
     "world.level.levelgen.structure.templatesystem.MixinStructureTemplate",
     "world.level.levelgen.structure.templatesystem.MixinStructureTemplateManager",
     "world.level.portal.MixinPortalForcer",
+    "world.level.portal.MixinTeleportTransition",
     "world.level.saveddata.maps.MixinMapItemSavedData",
     "world.level.spawner.MixinSpawnState",
     "world.level.storage.MixinDerivedLevelData",
@@ -143,9 +149,12 @@
     "world.level.storage.loot.MixinLootTable"
   ],
   "injectors": {
+    "maxShiftBy": 2,
     "defaultRequire": 1
   },
   "overwrites": {
-    "requireAnnotations": true
-	}
+    "conformVisibility": true,
+    "requireAnnotations": false
+  },
+  "mixinPriority": 500
 }

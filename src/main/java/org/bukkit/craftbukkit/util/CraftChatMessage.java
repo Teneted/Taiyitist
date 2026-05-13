@@ -280,7 +280,7 @@ public final class CraftChatMessage {
         StringBuilder out = new StringBuilder();
 
         boolean hadFormat = false;
-        for (Component c : component) {
+        for (Component c : list(component)) {
             Style modi = c.getStyle();
             TextColor color = modi.getColor();
             if (c.getContents() != PlainTextContents.EMPTY || color != null) {
@@ -325,6 +325,16 @@ public final class CraftChatMessage {
             });
         }
         return out.toString();
+    }
+
+    public static ArrayList<Component> list(Component txt) {
+        ArrayList<Component> arr = new ArrayList<>();
+        if (!arr.contains(txt))
+            arr.add(txt);
+        for (Component tx : txt.getSiblings()) {
+            arr.addAll(list(tx) );
+        }
+        return arr;
     }
 
     public static Component fixComponent(MutableComponent component) {

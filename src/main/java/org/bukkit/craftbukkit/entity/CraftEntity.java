@@ -207,7 +207,9 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         if (location.getWorld() != null && !location.getWorld().equals(getWorld())) {
             // Prevent teleportation to an other world during world generation
             Preconditions.checkState(!entity.bridge$generation(), "Cannot teleport entity to an other world during world generation");
-            entity.teleport(new TeleportTransition(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3.ZERO, location.getPitch(), location.getYaw(), Set.of(), TeleportTransition.DO_NOTHING, TeleportCause.PLUGIN));
+            var transition = new TeleportTransition(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3.ZERO, location.getPitch(), location.getYaw(), Set.of(), TeleportTransition.DO_NOTHING/*, TeleportCause.PLUGIN*/);
+            transition.taiyitist$setTeleportCause(TeleportCause.PLUGIN);
+            entity.teleport(transition);
             return true;
         }
 

@@ -199,12 +199,12 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
 
     @Override
     public void setGossipDecayTime(long ticks) {
-        getHandle().gossipDecayInterval = ticks;
+        getHandle().taiyitist$setGossipDecayInterval(ticks);
     }
 
     @Override
     public long getGossipDecayTime() {
-        return getHandle().gossipDecayInterval;
+        return getHandle().bridge$gossipDecayInterval();
     }
 
     public static class CraftType extends CraftOldEnumRegistryItem<Type, VillagerType> implements Type {
