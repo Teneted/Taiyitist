@@ -1,10 +1,9 @@
 package org.spigotmc;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class TicksPerSecondCommand extends Command {
    public TicksPerSecondCommand(String name) {

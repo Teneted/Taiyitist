@@ -269,6 +269,7 @@ import org.bukkit.structure.StructureManager;
 import org.bukkit.util.StringUtil;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.jline.terminal.Terminal;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -385,7 +386,7 @@ public final class CraftServer implements Server {
         ignoreVanillaPermissions = commandsConfiguration.getBoolean("ignore-vanilla-permissions");
         pluginManager.useTimings(configuration.getBoolean("settings.plugin-profiling"));
         overrideSpawnLimits();
-        console.autosavePeriod = configuration.getInt("ticks-per.autosave");
+        console.taiyitist$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
         TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
@@ -404,11 +405,11 @@ public final class CraftServer implements Server {
     }
 
     private File getConfigFile() {
-        return (File) console.options.valueOf("bukkit-settings");
+        return (File) console.bridge$options().valueOf("bukkit-settings");
     }
 
     private File getCommandsConfigFile() {
-        return (File) console.options.valueOf("commands-settings");
+        return (File) console.bridge$options().valueOf("commands-settings");
     }
 
     private void overrideSpawnLimits() {
@@ -465,7 +466,7 @@ public final class CraftServer implements Server {
     public void loadPlugins() {
         pluginManager.registerInterface(JavaPluginLoader.class);
 
-        File pluginFolder = (File) console.options.valueOf("plugins");
+        File pluginFolder = (File) console.bridge$options().valueOf("plugins");
 
         if (pluginFolder.exists()) {
             Plugin[] plugins = pluginManager.loadPlugins(pluginFolder);
@@ -514,7 +515,7 @@ public final class CraftServer implements Server {
     }
 
     private void setVanillaCommands() {
-        Commands dispatcher = console.vanillaCommandDispatcher;
+        Commands dispatcher = console.bridge$getVanillaCommands();
 
         // Build a list of all Vanilla commands and create wrappers
         for (CommandNode<CommandSourceStack> cmd : dispatcher.getDispatcher().getRoot().getChildren()) {
@@ -810,7 +811,7 @@ public final class CraftServer implements Server {
 
     @Override
     public File getUpdateFolderFile() {
-        return new File((File) console.options.valueOf("plugins"), this.configuration.getString("settings.update-folder", "update"));
+        return new File((File) console.bridge$options().valueOf("plugins"), this.configuration.getString("settings.update-folder", "update"));
     }
 
     @Override
@@ -930,7 +931,7 @@ public final class CraftServer implements Server {
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());
         commandsConfiguration = YamlConfiguration.loadConfiguration(getCommandsConfigFile());
 
-        console.settings = new DedicatedServerSettings(console.options);
+        console.settings = new DedicatedServerSettings(console.bridge$options());
         DedicatedServerProperties config = console.settings.getProperties();
 
         overrideSpawnLimits();
@@ -938,7 +939,7 @@ public final class CraftServer implements Server {
         TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
         printSaveWarning = false;
-        console.autosavePeriod = configuration.getInt("ticks-per.autosave");
+        console.taiyitist$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
         loadIcon();
         loadCompatibilities();
         CraftMagicNumbers.INSTANCE.getCommodore().updateReroute(activeCompatibilities::contains);
@@ -955,15 +956,15 @@ public final class CraftServer implements Server {
         }
 
         for (ServerLevel world : console.getAllLevels()) {
-            world.serverLevelData.setDifficulty(config.difficulty.get());
+            world.bridge$serverLevelDataCB().setDifficulty(config.difficulty.get());
 
             for (SpawnCategory spawnCategory : SpawnCategory.values()) {
                 if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
                     long ticksPerCategorySpawn = this.getTicksPerSpawns(spawnCategory);
                     if (ticksPerCategorySpawn < 0) {
-                        world.ticksPerSpawnCategory.put(spawnCategory, CraftSpawnCategory.getDefaultTicksPerSpawn(spawnCategory));
+                        world.bridge$ticksPerSpawnCategory().put(spawnCategory, CraftSpawnCategory.getDefaultTicksPerSpawn(spawnCategory));
                     } else {
-                        world.ticksPerSpawnCategory.put(spawnCategory, ticksPerCategorySpawn);
+                        world.bridge$ticksPerSpawnCategory().put(spawnCategory, ticksPerCategorySpawn);
                     }
                 }
             }
@@ -1003,7 +1004,7 @@ public final class CraftServer implements Server {
 
     @Override
     public void reloadData() {
-        ReloadCommand.reload(console);
+        BukkitMethodHooks.reload(console);
     }
 
     private void loadIcon() {
@@ -1166,7 +1167,7 @@ public final class CraftServer implements Server {
         boolean hardcore = creator.hardcore();
 
         LevelDataAndDimensions.WorldDataAndGenSettings dataAndSettings;
-        WorldLoader.DataLoadContext worldloader_dataloadcontext = console.worldLoader;
+        WorldLoader.DataLoadContext worldloader_dataloadcontext = console.bridge$worldLoader();
         RegistryAccess.Frozen registryaccess_frozen = worldloader_dataloadcontext.datapackDimensions();
         net.minecraft.core.Registry<LevelStem> registry = registryaccess_frozen.lookupOrThrow(Registries.LEVEL_STEM);
         if (dynamic != null) {
@@ -1194,12 +1195,12 @@ public final class CraftServer implements Server {
         }
         registry = registryaccess_frozen.lookupOrThrow(Registries.LEVEL_STEM);
         PrimaryLevelData serverleveldata = (PrimaryLevelData) dataAndSettings.data();
-        serverleveldata.customDimensions = registry;
+        serverleveldata.taiyitist$setCustomDimensions(registry);
         serverleveldata.checkName(name);
         serverleveldata.setModdedInfo(console.getServerModName(), console.getModdedStatus().shouldReportAsModified());
 
-        if (console.options.has("forceUpgrade")) {
-            net.minecraft.server.Main.forceUpgrade(worldSession, DataFixers.getDataFixer(), console.options.has("eraseCache"), () -> true, registryaccess_frozen, console.options.has("recreateRegionFiles"));
+        if (console.bridge$options().has("forceUpgrade")) {
+            net.minecraft.server.Main.forceUpgrade(worldSession, DataFixers.getDataFixer(), console.bridge$options().has("eraseCache"), () -> true, registryaccess_frozen, console.bridge$options().has("recreateRegionFiles"));
         }
         SavedDataStorage dimensiondatastorage = new SavedDataStorage(worldSession.getLevelPath(LevelResource.DATA), console.getFixerUpper(), console.registryAccess());
 
@@ -1281,7 +1282,7 @@ public final class CraftServer implements Server {
 
             handle.getChunkSource().close(save);
             handle.entityManager.close(save); // SPIGOT-6722: close entityManager
-            handle.storageSource.close();
+            handle.bridge$convertable().close();
         } catch (Exception ex) {
             getLogger().log(Level.SEVERE, null, ex);
         }
@@ -1332,7 +1333,8 @@ public final class CraftServer implements Server {
     }
 
     public Terminal getTerminal() {
-        return console.terminal;
+       // return console.terminal;
+        return null;//Taiyitist disable
     }
 
     @Override
@@ -1735,7 +1737,7 @@ public final class CraftServer implements Server {
         if (mapitemsaveddata == null) {
             return null;
         }
-        return mapitemsaveddata.mapView;
+        return mapitemsaveddata.bridge$mapView();
     }
 
     @Override
@@ -1746,7 +1748,7 @@ public final class CraftServer implements Server {
         // creates a new map at world spawn with the scale of 3, with out tracking position and unlimited tracking
         BlockPos spawn = minecraftWorld.getRespawnData().pos();
         MapId newId = MapItem.createNewSavedData(minecraftWorld, spawn.getX(), spawn.getZ(), 3, false, false, minecraftWorld.dimension());
-        return minecraftWorld.getMapData(newId).mapView;
+        return minecraftWorld.getMapData(newId).bridge$mapView();
     }
 
     @Override
@@ -1979,7 +1981,7 @@ public final class CraftServer implements Server {
 
     @Override
     public ConsoleCommandSender getConsoleSender() {
-        return console.console;
+        return console.bridge$console();
     }
 
     public EntityMetadataStore getEntityMetadata() {
@@ -2243,7 +2245,7 @@ public final class CraftServer implements Server {
     }
 
     public void checkSaveState() {
-        if (this.playerCommandState || this.printSaveWarning || this.console.autosavePeriod <= 0) {
+        if (this.playerCommandState || this.printSaveWarning || this.console.bridge$autosavePeriod() <= 0) {
             return;
         }
         this.printSaveWarning = true;

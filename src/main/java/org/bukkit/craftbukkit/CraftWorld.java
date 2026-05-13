@@ -150,6 +150,8 @@ import org.bukkit.util.StructureSearchResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftWorld extends CraftRegionAccessor implements World {
     public static final int CUSTOM_DIMENSION_OFFSET = 10;
@@ -281,7 +283,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public boolean unloadChunkRequest(int x, int z) {
         if (isChunkLoaded(x, z)) {
-            world.getChunkSource().removeTicketWithRadius(TicketType.PLUGIN, new ChunkPos(x, z), 1);
+            world.getChunkSource().removeTicketWithRadius(BukkitFieldHooks.pluginTicketType(), new ChunkPos(x, z), 1);
         }
 
         return true;
@@ -390,7 +392,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         }
 
         if (chunk instanceof net.minecraft.world.level.chunk.LevelChunk) {
-            world.getChunkSource().addTicketWithRadius(TicketType.PLUGIN, new ChunkPos(x, z), 1);
+            world.getChunkSource().addTicketWithRadius(BukkitFieldHooks.pluginTicketType(), new ChunkPos(x, z), 1);
             return true;
         }
 
@@ -418,7 +420,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
         TicketStorage chunkDistanceManager = this.world.getChunkSource().ticketStorage;
 
-        if (chunkDistanceManager.addTicket(ChunkPos.pack(x, z), Ticket.of(TicketType.PLUGIN_TICKET, ChunkMap.FORCED_TICKET_LEVEL, plugin))) { // keep in-line with force loading, add at level 31
+        if (chunkDistanceManager.addTicket(ChunkPos.pack(x, z), BukkitMethodHooks.of(BukkitFieldHooks.pluginTicket(), ChunkMap.FORCED_TICKET_LEVEL, plugin))) { // keep in-line with force loading, add at level 31
             this.getChunkAt(x, z); // ensure loaded
             return true;
         }
@@ -431,7 +433,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkNotNull(plugin, "null plugin");
 
         TicketStorage chunkDistanceManager = this.world.getChunkSource().ticketStorage;
-        return chunkDistanceManager.removeTicket(ChunkPos.pack(x, z), Ticket.of(TicketType.PLUGIN_TICKET, ChunkMap.FORCED_TICKET_LEVEL, plugin)); // keep in-line with force loading, remove at level 31
+        return chunkDistanceManager.removeTicket(ChunkPos.pack(x, z), BukkitMethodHooks.of(BukkitFieldHooks.pluginTicket(), ChunkMap.FORCED_TICKET_LEVEL, plugin)); // keep in-line with force loading, remove at level 31
     }
 
     @Override
@@ -439,7 +441,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkNotNull(plugin, "null plugin");
 
         TicketStorage chunkDistanceManager = this.world.getChunkSource().ticketStorage;
-        chunkDistanceManager.removeTicketIf((ticket, i) -> ticket.getType() == TicketType.PLUGIN_TICKET && Objects.equals(ticket.key, plugin), null);
+        chunkDistanceManager.removeTicketIf((ticket, i) -> ticket.getType() == BukkitFieldHooks.pluginTicket() && Objects.equals(ticket.key, plugin), null);
     }
 
     @Override
@@ -453,7 +455,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
         ImmutableList.Builder<Plugin> ret = ImmutableList.builder();
         for (Ticket ticket : tickets) {
-            if (ticket.getType() == TicketType.PLUGIN_TICKET) {
+            if (ticket.getType() == BukkitFieldHooks.pluginTicket()) {
                 ret.add((Plugin) ticket.key);
             }
         }
@@ -472,7 +474,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
             Chunk chunk = null;
             for (Ticket ticket : tickets) {
-                if (ticket.getType() != TicketType.PLUGIN_TICKET) {
+                if (ticket.getType() != BukkitFieldHooks.pluginTicket()) {
                     continue;
                 }
 
@@ -624,13 +626,13 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        world.captureTreeGeneration = true;
-        world.captureBlockStates = true;
+        world.taiyitist$setCaptureTreeGeneration(true);
+        world.taiyitist$setCaptureBlockStates(true);
         boolean grownTree = generateTree(loc, type);
-        world.captureBlockStates = false;
-        world.captureTreeGeneration = false;
+        world.taiyitist$setCaptureBlockStates(false);
+        world.taiyitist$setCaptureTreeGeneration(false);
         if (grownTree) { // Copy block data to delegate
-            for (BlockState blockstate : world.capturedBlockStates.values()) {
+            for (BlockState blockstate : world.bridge$capturedBlockStates().values()) {
                 BlockPos position = ((CraftBlockState) blockstate).getPosition();
                 net.minecraft.world.level.block.state.BlockState oldBlock = world.getBlockState(position);
                 int flag = ((CraftBlockState) blockstate).getFlag();
@@ -638,10 +640,10 @@ public class CraftWorld extends CraftRegionAccessor implements World {
                 net.minecraft.world.level.block.state.BlockState newBlock = world.getBlockState(position);
                 world.notifyAndUpdatePhysics(position, null, oldBlock, newBlock, newBlock, flag, 512);
             }
-            world.capturedBlockStates.clear();
+            world.bridge$capturedBlockStates().clear();
             return true;
         } else {
-            world.capturedBlockStates.clear();
+            world.bridge$capturedBlockStates().clear();
             return false;
         }
     }
@@ -653,7 +655,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public UUID getUID() {
-        return world.uuid;
+        return world.bridge$uuid();
     }
 
     @Override
@@ -1235,7 +1237,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkArgument(material != null, "Material cannot be null");
         Preconditions.checkArgument(material.isBlock(), "Material.%s must be a block", material);
 
-        FallingBlockEntity entity = FallingBlockEntity.fall(world, BlockPos.containing(location.getX(), location.getY(), location.getZ()), CraftBlockType.bukkitToMinecraft(material).defaultBlockState(), SpawnReason.CUSTOM);
+        FallingBlockEntity entity = BukkitMethodHooks.fall(world, BlockPos.containing(location.getX(), location.getY(), location.getZ()), CraftBlockType.bukkitToMinecraft(material).defaultBlockState(), SpawnReason.CUSTOM);
         return (FallingBlock) entity.getBukkitEntity();
     }
 
@@ -1244,7 +1246,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(data != null, "BlockData cannot be null");
 
-        FallingBlockEntity entity = FallingBlockEntity.fall(world, BlockPos.containing(location.getX(), location.getY(), location.getZ()), ((CraftBlockData) data).getState(), SpawnReason.CUSTOM);
+        FallingBlockEntity entity = BukkitMethodHooks.fall(world, BlockPos.containing(location.getX(), location.getY(), location.getZ()), ((CraftBlockData) data).getState(), SpawnReason.CUSTOM);
         return (FallingBlock) entity.getBukkitEntity();
     }
 
@@ -1358,7 +1360,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public File getWorldFolder() {
-        return world.storageSource.getLevelPath(LevelResource.ROOT).toFile().getParentFile();
+        return world.bridge$convertable().getLevelPath(LevelResource.ROOT).toFile().getParentFile();
     }
 
     @Override
@@ -1398,7 +1400,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setHardcore(boolean hardcore) {
-        world.serverLevelData.settings.difficultySettings().hardcore = hardcore;
+        world.bridge$serverLevelDataCB().settings.difficultySettings().hardcore = hardcore;
     }
 
     @Override
@@ -1478,7 +1480,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkArgument(spawnCategory != null, "SpawnCategory cannot be null");
         Preconditions.checkArgument(CraftSpawnCategory.isValidForLimits(spawnCategory), "SpawnCategory.%s are not supported", spawnCategory);
 
-        world.ticksPerSpawnCategory.put(spawnCategory, (long) ticksPerCategorySpawn);
+        world.bridge$ticksPerSpawnCategory().put(spawnCategory, (long) ticksPerCategorySpawn);
     }
 
     @Override
@@ -1486,7 +1488,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkArgument(spawnCategory != null, "SpawnCategory cannot be null");
         Preconditions.checkArgument(CraftSpawnCategory.isValidForLimits(spawnCategory), "SpawnCategory.%s are not supported", spawnCategory);
 
-        return world.ticksPerSpawnCategory.getLong(spawnCategory);
+        return world.bridge$ticksPerSpawnCategory().getLong(spawnCategory);
     }
 
     @Override

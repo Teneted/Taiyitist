@@ -10,6 +10,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.commands.ReloadCommand;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.Ticket;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.decoration.painting.Painting;
@@ -42,6 +44,7 @@ public class BukkitMethodHooks {
     private static final MethodHandle applyBonemeal;
     private static final MethodHandle reload;
     private static final MethodHandle updateAndAttackTarget;
+    private static final MethodHandle ofTicket;
 
     static {
         try {
@@ -69,6 +72,8 @@ public class BukkitMethodHooks {
             reload = MethodHandles.lookup().unreflect(reloadMethod);
             var updateAndAttackTargetMethod = ConduitBlockEntity.class.getDeclaredMethod("updateAndAttackTarget", ServerLevel.class, BlockPos.class, BlockState.class, ConduitBlockEntity.class, boolean.class, boolean.class);
             updateAndAttackTarget = MethodHandles.lookup().unreflect(updateAndAttackTargetMethod);
+            var ofTicketMethod = Ticket.class.getDeclaredMethod("of", TicketType.class, int.class, Object.class);
+            ofTicket = MethodHandles.lookup().unreflect(ofTicketMethod);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -164,7 +169,15 @@ public class BukkitMethodHooks {
 
     public static void updateAndAttackTarget(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, ConduitBlockEntity conduitBlockEntity, boolean bl, boolean damageTarget) {
         try {
-            updateAndAttackTarget.invokeWithArguments(serverLevel, blockPos, blockState ,conduitBlockEntity, bl, damageTarget);
+            updateAndAttackTarget.invokeWithArguments(serverLevel, blockPos, blockState, conduitBlockEntity, bl, damageTarget);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void of(TicketType tickettype, int i, Object key) {
+        try {
+            ofTicket.invokeWithArguments(tickettype, i, key);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

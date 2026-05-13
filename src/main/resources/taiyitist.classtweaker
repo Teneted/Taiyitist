@@ -601,6 +601,8 @@ transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedDa
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData scale B
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData trackingPosition Z
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData unlimitedTracking Z
+transitive-accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+transitive-accessible method net/minecraft/server/level/ServerLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
 
 transitive-inject-interface net/minecraft/advancements/AdvancementHolder org/teneted/taiyitist/injection/advancements/InjectionAdvancementHolder
 transitive-inject-interface net/minecraft/commands/Commands org/teneted/taiyitist/injection/commands/InjectionCommands

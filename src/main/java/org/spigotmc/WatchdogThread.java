@@ -6,9 +6,8 @@ import java.lang.management.ThreadInfo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class WatchdogThread extends Thread {
    private static WatchdogThread instance;

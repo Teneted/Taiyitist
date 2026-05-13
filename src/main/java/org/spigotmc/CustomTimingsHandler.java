@@ -72,7 +72,7 @@ public class CustomTimingsHandler {
                 timings.reset();
             }
         }
-        TimingsCommand.timingStart = System.nanoTime();
+        //TimingsCommand.timingStart = System.nanoTime();// Taiyitist disable
     }
 
     /**

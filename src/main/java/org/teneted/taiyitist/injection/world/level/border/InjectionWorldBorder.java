@@ -11,4 +11,8 @@ public interface InjectionWorldBorder {
     default void taiyitist$setWorld(Level world) {
         throw new IllegalStateException("Not implemented");
     }
+
+    default void applyInitialSettings(long gameTime, boolean b){
+        throw new IllegalStateException("Not implemented");
+    }
 }

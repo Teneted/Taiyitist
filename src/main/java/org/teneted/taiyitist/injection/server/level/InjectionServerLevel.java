@@ -1,5 +1,6 @@
 package org.teneted.taiyitist.injection.server.level;
 
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import org.teneted.taiyitist.injection.world.level.InjectionLevel;
 import java.util.UUID;
 import net.minecraft.core.particles.ParticleOptions;
@@ -66,6 +67,10 @@ public interface InjectionServerLevel extends InjectionLevel {
     }
 
     default void sendParticlesSource(ServerPlayer serverPlayer, ParticleOptions particleParam, boolean force, boolean b, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default WorldGenSettings getWorldGenSettings() {
         throw new IllegalStateException("Not implemented");
     }
 }

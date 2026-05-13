@@ -1,6 +1,5 @@
 package org.spigotmc;
 
-import com.taiyitistmc.bukkit.BukkitFieldHooks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
@@ -10,26 +9,25 @@ import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.animal.Animal;
 
 import net.minecraft.world.entity.animal.sheep.Sheep;
-import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Slime;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
-import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.bukkit.craftbukkit.SpigotTimings;
-import org.bukkit.craftbukkit.SpigotTimings;
+import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
 
 public class ActivationRange
 {
@@ -93,7 +91,7 @@ public class ActivationRange
               || entity instanceof PrimedTnt
               || entity instanceof EndCrystal
               || entity instanceof FireworkRocketEntity
-              || entity instanceof ThrownTrident )
+              || entity instanceof ThrownTrident)
       {
          return true;
       }
@@ -109,7 +107,7 @@ public class ActivationRange
     */
    public static void activateEntities(Level world)
    {
-      SpigotTimings.entityActivationCheckTimer.startTiming();
+      //SpigotTimings.entityActivationCheckTimer.startTiming();
       final int miscActivationRange = world.bridge$spigotConfig().miscActivationRange;
       final int raiderActivationRange = world.bridge$spigotConfig().raiderActivationRange;
       final int animalActivationRange = world.bridge$spigotConfig().animalActivationRange;
@@ -136,7 +134,6 @@ public class ActivationRange
 
          world.getEntities().get(ActivationRange.maxBB, ActivationRange::activateEntity);
       }
-      SpigotTimings.entityActivationCheckTimer.stopTiming();
    }
 
    /**
@@ -174,7 +171,7 @@ public class ActivationRange
       {
          return true;
       }
-      if ( !( entity instanceof AbstractArrow ) )
+      if ( !( entity instanceof AbstractArrow) )
       {
          if ( !entity.onGround() || !entity.passengers.isEmpty() || entity.isPassenger() )
          {
@@ -231,10 +228,8 @@ public class ActivationRange
     */
    public static boolean checkIfActive(Entity entity)
    {
-      SpigotTimings.checkIfActiveTimer.startTiming();
       // Never safe to skip fireworks or entities not yet added to chunk
       if ( entity instanceof FireworkRocketEntity ) {
-         SpigotTimings.checkIfActiveTimer.stopTiming();
          return true;
       }
 
@@ -258,7 +253,6 @@ public class ActivationRange
       {
          isActive = false;
       }
-      SpigotTimings.checkIfActiveTimer.stopTiming();
       return isActive;
    }
 }

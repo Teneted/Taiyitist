@@ -60,7 +60,7 @@ public class CraftChunk implements Chunk {
     private static final byte[] EMPTY_LIGHT = new byte[2048];
 
     public CraftChunk(net.minecraft.world.level.chunk.LevelChunk levelchunk) {
-        worldServer = levelchunk.level;
+        worldServer = levelchunk.taiyitist$r();
         x = levelchunk.getPos().x();
         z = levelchunk.getPos().z();
     }
@@ -352,7 +352,7 @@ public class CraftChunk implements Chunk {
 
     @Override
     public PersistentDataContainer getPersistentDataContainer() {
-        return getHandle(ChunkStatus.STRUCTURE_STARTS).persistentDataContainer;
+        return getHandle(ChunkStatus.STRUCTURE_STARTS).bridge$persistentDataContainer();
     }
 
     @Override

@@ -3,13 +3,11 @@ package org.spigotmc;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Locale;
-
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class RestartCommand extends Command {
    public static boolean restarting;

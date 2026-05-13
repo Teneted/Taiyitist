@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -63,6 +64,10 @@ public interface InjectionPlayerList {
     }
 
     default void reloadRecipes() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    default ServerStatsCounter getPlayerStats(NameAndId profile) {
         throw new IllegalStateException("Not implemented");
     }
 }

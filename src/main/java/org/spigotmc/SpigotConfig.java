@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +27,7 @@ import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class SpigotConfig
 {
@@ -232,7 +232,7 @@ public class SpigotConfig
    }
 
    public static boolean disableStatSaving;
-   public static Map<ResourceLocation, Integer> forcedStats = new HashMap<>();
+   public static Map<Identifier, Integer> forcedStats = new HashMap<>();
    private static void stats()
    {
       disableStatSaving = getBoolean( "stats.disable-saving", false );
@@ -248,7 +248,7 @@ public class SpigotConfig
          {
             try
             {
-               ResourceLocation key = ResourceLocation.parse( name );
+               Identifier key = Identifier.parse( name );
                if ( BuiltInRegistries.CUSTOM_STAT.get( key ) == null )
                {
                   Bukkit.getLogger().log(Level.WARNING, "Ignoring non existent stats.forced-stats " + name);

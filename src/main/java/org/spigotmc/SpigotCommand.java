@@ -3,12 +3,12 @@ package org.spigotmc;
 import java.io.File;
 import java.util.Iterator;
 
-import com.taiyitistmc.bukkit.BukkitMethodHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class SpigotCommand extends Command {
    public SpigotCommand(String name) {
