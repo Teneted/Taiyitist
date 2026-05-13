@@ -1,6 +1,7 @@
 package org.teneted.taiyitist.injection.server.level;
 
 import net.minecraft.util.BlockUtil;
+import net.minecraft.world.entity.item.ItemEntity;
 import org.teneted.taiyitist.injection.world.entity.player.InjectionPlayer;
 import com.mojang.datafixers.util.Either;
 import java.util.Optional;
@@ -241,5 +242,9 @@ public interface InjectionServerPlayer extends InjectionPlayer {
 
     default void resendItemInHarnds() {
         throw new IllegalStateException("Not implemented");
+    }
+
+    default ItemEntity dropItem(boolean dropAll) {
+        throw new AssertionError("Not implemented");
     }
 }

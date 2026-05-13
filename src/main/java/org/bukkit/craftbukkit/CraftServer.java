@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -43,6 +44,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -83,6 +85,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.village.VillageSiege;
 import net.minecraft.world.entity.npc.CatSpawner;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTraderSpawner;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.CraftingMenu;
@@ -269,6 +272,7 @@ import org.bukkit.structure.StructureManager;
 import org.bukkit.util.StringUtil;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.jline.terminal.Terminal;
+import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
 import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -388,7 +392,7 @@ public final class CraftServer implements Server {
         overrideSpawnLimits();
         console.taiyitist$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
-        TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
+        BukkitFieldHooks.setPluginTimeout(configuration.getInt("chunk-gc.period-in-ticks"));
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
         loadIcon();
         loadCompatibilities();
@@ -525,7 +529,7 @@ public final class CraftServer implements Server {
 
     public void syncCommands() {
         // Clear existing commands
-        Commands dispatcher = console.resources.managers().commands = new Commands();
+        Commands dispatcher = console.resources.managers().commands = new Commands(Commands.CommandSelection.ALL, CommandBuildContext.simple(console.registryAccess(), FeatureFlagSet.of()));
 
         // Register all commands, vanilla ones will be using the old dispatcher references
         for (Map.Entry<String, Command> entry : commandMap.getKnownCommands().entrySet()) {
@@ -931,12 +935,11 @@ public final class CraftServer implements Server {
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());
         commandsConfiguration = YamlConfiguration.loadConfiguration(getCommandsConfigFile());
 
-        console.settings = new DedicatedServerSettings(console.bridge$options());
         DedicatedServerProperties config = console.settings.getProperties();
 
         overrideSpawnLimits();
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
-        TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
+        BukkitFieldHooks.setPluginTimeout(configuration.getInt("chunk-gc.period-in-ticks"));
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
         printSaveWarning = false;
         console.taiyitist$setAutosavePeriod(configuration.getInt("ticks-per.autosave"));
@@ -1225,8 +1228,12 @@ public final class CraftServer implements Server {
         }
 
         ServerLevel internal = (ServerLevel) new ServerLevel(console, console.executor, worldSession, serverleveldata, worldKey, levelstem,
-                serverleveldata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, dimensiondatastorage, dataAndSettings.genSettings(), creator.environment(), generator, biomeProvider);
-
+                serverleveldata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true/*, dimensiondatastorage, dataAndSettings.genSettings(), creator.environment(), generator, biomeProvider*/);
+        internal.taiyitist$setSavedDataStorage(dimensiondatastorage);
+        internal.taiyitist$setWorldGenSettings(dataAndSettings.genSettings());
+        internal.taiyitist$setEnvironment(creator.environment());
+        internal.taiyitist$setGenerator(generator);
+        internal.taiyitist$setBiomeProvider(biomeProvider);
         if (!(worlds.containsKey(name.toLowerCase(Locale.ROOT)))) {
             return null;
         }

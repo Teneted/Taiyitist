@@ -327,14 +327,14 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         if (getHandle().containerMenu == formerContainer) {
             return null;
         }
-        getHandle().containerMenu.checkReachable = false;
+        getHandle().containerMenu.taiyitist$setCheckReachable(false);
         return getHandle().containerMenu.getBukkitView();
     }
 
     private static void openCustomInventory(Inventory inventory, ServerPlayer player, MenuType<?> windowType) {
         if (player.connection == null) return;
         Preconditions.checkArgument(windowType != null, "Unknown windowType");
-        AbstractContainerMenu abstractcontainermenu = new CraftContainer(inventory, player, player.nextContainerCounter());
+        AbstractContainerMenu abstractcontainermenu = new CraftContainer(inventory, player, player.nextContainerCounterInt());
 
         abstractcontainermenu = CraftEventFactory.callInventoryOpenEvent(player, abstractcontainermenu);
         if (abstractcontainermenu == null) return;
@@ -359,7 +359,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         }
         getHandle().openMenu(Blocks.CRAFTING_TABLE.defaultBlockState().getMenuProvider(getHandle().level(), CraftLocation.toBlockPosition(location)));
         if (force) {
-            getHandle().containerMenu.checkReachable = false;
+            getHandle().containerMenu.taiyitist$setCheckReachable(false);
         }
         return getHandle().containerMenu.getBukkitView();
     }
@@ -381,7 +381,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         getHandle().openMenu(Blocks.ENCHANTING_TABLE.defaultBlockState().getMenuProvider(getHandle().level(), pos));
 
         if (force) {
-            getHandle().containerMenu.checkReachable = false;
+            getHandle().containerMenu.taiyitist$setCheckReachable(false);
         }
         return getHandle().containerMenu.getBukkitView();
     }
@@ -400,7 +400,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         if (inventory instanceof CraftInventoryView) {
             abstractcontainermenu = ((CraftInventoryView) inventory).getHandle();
         } else {
-            abstractcontainermenu = new CraftContainer(inventory, this.getHandle(), player.nextContainerCounter());
+            abstractcontainermenu = new CraftContainer(inventory, this.getHandle(), player.nextContainerCounterInt());
         }
 
         // Trigger an INVENTORY_OPEN event
@@ -685,32 +685,32 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public int getSaturatedRegenRate() {
-        return getHandle().getFoodData().saturatedRegenRate;
+        return getHandle().getFoodData().bridge$saturatedRegenRate();
     }
 
     @Override
     public void setSaturatedRegenRate(int i) {
-        getHandle().getFoodData().saturatedRegenRate = i;
+        getHandle().getFoodData().taiyitist$setSaturatedRegenRate(i);
     }
 
     @Override
     public int getUnsaturatedRegenRate() {
-        return getHandle().getFoodData().unsaturatedRegenRate;
+        return getHandle().getFoodData().bridge$unsaturatedRegenRate();
     }
 
     @Override
     public void setUnsaturatedRegenRate(int i) {
-        getHandle().getFoodData().unsaturatedRegenRate = i;
+        getHandle().getFoodData().taiyitist$setUnsaturatedRegenRate(i);
     }
 
     @Override
     public int getStarvationRate() {
-        return getHandle().getFoodData().starvationRate;
+        return getHandle().getFoodData().bridge$starvationRate();
     }
 
     @Override
     public void setStarvationRate(int i) {
-        getHandle().getFoodData().starvationRate = i;
+        getHandle().getFoodData().taiyitist$setStarvationRate(i);
     }
 
     @Override

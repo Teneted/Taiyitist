@@ -31,6 +31,14 @@ public interface InjectionEntity extends InjectionEntityAccess {
         throw new IllegalStateException("Not implemented");
     }
 
+    default int bridge$invulnerableDuration() {
+        throw new AssertionError("Not implemented");
+    }
+
+    default void taiyitist$setInvulnerableDuration(int invulnerableDuration) {
+        throw new AssertionError("Not implemented");
+    }
+
     default void taiyitist$setBukkitEntity(CraftEntity bukkitEntity) {
         throw new IllegalStateException("Not implemented");
     }

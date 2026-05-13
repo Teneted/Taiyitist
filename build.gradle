@@ -50,6 +50,7 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
 	options.encoding = 'UTF-8'
 	options.warnings = false
+	options.compilerArgs << "-Xlint:-removal" << "-Xlint:-deprecation" << "-Xlint:-dep-ann" << "-Xlint:-varargs" << "-Xdiags:verbose"
 }
 
 java {

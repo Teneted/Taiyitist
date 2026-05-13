@@ -218,6 +218,7 @@ import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.entity.minecart.SpawnerMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.util.Vector;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public final class CraftEntityTypes {
 
@@ -547,8 +548,8 @@ public final class CraftEntityTypes {
                 if (nmsBlock.isSolid() || DiodeBlock.isDiode(nmsBlock)) {
                     boolean taken = false;
                     AABB bb = (ItemFrame.class.isAssignableFrom(clazz))
-                            ? net.minecraft.world.entity.decoration.ItemFrame.createBoundingBox(pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), false)
-                            : net.minecraft.world.entity.decoration.painting.Painting.calculateBoundingBoxStatic(pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height);
+                            ? BukkitMethodHooks.calculateBoundingBoxStaticItemFrame(pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), false)
+                            : BukkitMethodHooks.calculateBoundingBoxStaticPainting(pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height);
                     List<net.minecraft.world.entity.Entity> list = spawnData.world().getEntities(null, bb);
                     for (Iterator<net.minecraft.world.entity.Entity> it = list.iterator(); !taken && it.hasNext(); ) {
                         net.minecraft.world.entity.Entity e = it.next();

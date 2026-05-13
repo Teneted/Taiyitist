@@ -317,7 +317,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public boolean isTransferred() {
-        return getHandle().transferCookieConnection.isTransferred();
+        return getHandle().bridge$transferCookieConnection().isTransferred();
     }
 
     @Override
@@ -328,7 +328,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         Identifier nms = CraftNamespacedKey.toMinecraft(key);
         requestedCookies.add(new CookieFuture(nms, future));
 
-        getHandle().transferCookieConnection.sendPacket(new ClientboundCookieRequestPacket(nms));
+        getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundCookieRequestPacket(nms));
 
         return future;
     }
@@ -338,17 +338,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         Preconditions.checkArgument(key != null, "Cookie key cannot be null");
         Preconditions.checkArgument(value != null, "Cookie value cannot be null");
         Preconditions.checkArgument(value.length <= 5120, "Cookie value too large, must be smaller than 5120 bytes");
-        Preconditions.checkState(getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.CONFIGURATION || getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only store cookie in CONFIGURATION or PLAY protocol.");
+        Preconditions.checkState(getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.CONFIGURATION || getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only store cookie in CONFIGURATION or PLAY protocol.");
 
-        getHandle().transferCookieConnection.sendPacket(new ClientboundStoreCookiePacket(CraftNamespacedKey.toMinecraft(key), value));
+        getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundStoreCookiePacket(CraftNamespacedKey.toMinecraft(key), value));
     }
 
     @Override
     public void transfer(String host, int port) {
         Preconditions.checkArgument(host != null, "Host cannot be null");
-        Preconditions.checkState(getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.CONFIGURATION || getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only transfer in CONFIGURATION or PLAY protocol.");
+        Preconditions.checkState(getHandle().bridge$transferCookieConnection().getProtocol() == ConnectionProtocol.CONFIGURATION || getHandle().transferCookieConnection.getProtocol() == ConnectionProtocol.PLAY, "Can only transfer in CONFIGURATION or PLAY protocol.");
 
-        getHandle().transferCookieConnection.sendPacket(new ClientboundTransferPacket(host, port));
+        getHandle().bridge$transferCookieConnection().sendPacket(new ClientboundTransferPacket(host, port));
     }
 
     @Override
@@ -406,17 +406,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public String getDisplayName() {
-        return getHandle().displayName;
+        return getHandle().bridge$displayName();
     }
 
     @Override
     public void setDisplayName(final String name) {
-        getHandle().displayName = name == null ? getName() : name;
+        getHandle().taiyitist$setDisplayName(name == null ? getName() : name);
     }
 
     @Override
     public String getPlayerListName() {
-        return getHandle().listName == null ? getName() : CraftChatMessage.fromComponent(getHandle().listName);
+        return getHandle().bridge$listName() == null ? getName() : CraftChatMessage.fromComponent(getHandle().bridge$listName());
     }
 
     @Override
@@ -424,7 +424,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (name == null) {
             name = getName();
         }
-        getHandle().listName = name.equals(getName()) ? null : CraftChatMessage.fromStringOrNull(name);
+        getHandle().taiyitist$setListName(name.equals(getName()) ? null : CraftChatMessage.fromStringOrNull(name));
         for (ServerPlayer player : (List<ServerPlayer>) server.getHandle().players) {
             if (player.getBukkitEntity().canSee(this)) {
                 player.connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, getHandle()));
@@ -434,14 +434,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public int getPlayerListOrder() {
-        return getHandle().listOrder;
+        return getHandle().bridge$listOrder();
     }
 
     @Override
     public void setPlayerListOrder(int order) {
         Preconditions.checkArgument(order >= 0, "order cannot be negative");
 
-        getHandle().listOrder = order;
+        getHandle().taiyitist$setListOrder(order);
     }
 
     private Component playerListHeader;
@@ -505,7 +505,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void kickPlayer(String message) {
-        getHandle().transferCookieConnection.kickPlayer(CraftChatMessage.fromStringOrEmpty(message, true));
+        getHandle().bridge$transferCookieConnection().kickPlayer(CraftChatMessage.fromStringOrEmpty(message, true));
     }
 
     @Override
@@ -520,7 +520,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public Location getCompassTarget() {
-        return getHandle().compassTarget;
+        return getHandle().bridge$compassTarget();
     }
 
     @Override
@@ -1149,13 +1149,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void setSleepingIgnored(boolean isSleeping) {
-        getHandle().fauxSleeping = isSleeping;
+        getHandle().taiyitist$setFauxSleeping(isSleeping);
         ((CraftWorld) getWorld()).getHandle().updateSleepingPlayerList();
     }
 
     @Override
     public boolean isSleepingIgnored() {
-        return getHandle().fauxSleeping;
+        return getHandle().bridge$fauxSleeping();
     }
 
     @Override
@@ -1330,13 +1330,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void setPlayerTime(long time, boolean relative) {
-        getHandle().timeOffset = time;
-        getHandle().relativeTime = relative;
+        getHandle().taiyitist$setTimeOffset(time);
+        getHandle().taiyitist$setRelativeTime(relative);
     }
 
     @Override
     public long getPlayerTimeOffset() {
-        return getHandle().timeOffset;
+        return getHandle().bridge$timeOffset();
     }
 
     @Override
@@ -1346,7 +1346,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public boolean isPlayerTimeRelative() {
-        return getHandle().relativeTime;
+        return getHandle().bridge$relativeTime();
     }
 
     @Override
@@ -1603,7 +1603,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         // Remove the hidden entity from this player user list, if they're on it
         if (other instanceof ServerPlayer) {
             ServerPlayer otherPlayer = (ServerPlayer) other;
-            if (otherPlayer.sentListPacket) {
+            if (otherPlayer.bridge$sentListPacket()) {
                 getHandle().connection.send(new ClientboundPlayerInfoRemovePacket(List.of(otherPlayer.getUUID())));
             }
         }
@@ -1787,22 +1787,22 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             lastKnownName = data.getStringOr("lastKnownName", "");
 
             ServerPlayer handle = getHandle();
-            handle.newExp = data.getIntOr("newExp", handle.newExp);
-            handle.newTotalExp = data.getIntOr("newTotalExp", handle.newTotalExp);
-            handle.newLevel = data.getIntOr("newLevel", handle.newLevel);
-            handle.expToDrop = data.getIntOr("expToDrop", handle.expToDrop);
-            handle.keepLevel = data.getBooleanOr("keepLevel", handle.keepLevel);
+            handle.taiyitist$setNewExp(data.getIntOr("newExp", handle.bridge$newExp()));
+            handle.taiyitist$setNewTotalExp(data.getIntOr("newTotalExp", handle.bridge$newTotalExp()));
+            handle.taiyitist$setNewLevel(data.getIntOr("newLevel", handle.bridge$newLevel()));
+            handle.taiyitist$setExpToDrop(data.getIntOr("expToDrop", handle.bridge$expToDrop()));
+            handle.taiyitist$setKeepLevel(data.getBooleanOr("keepLevel", handle.bridge$keepLevel()));
         });
     }
 
     public void setExtraData(ValueOutput valueoutput) {
         ValueOutput data = valueoutput.child("bukkit");
         ServerPlayer handle = getHandle();
-        data.putInt("newExp", handle.newExp);
-        data.putInt("newTotalExp", handle.newTotalExp);
-        data.putInt("newLevel", handle.newLevel);
-        data.putInt("expToDrop", handle.expToDrop);
-        data.putBoolean("keepLevel", handle.keepLevel);
+        data.putInt("newExp", handle.bridge$newExp());
+        data.putInt("newTotalExp", handle.bridge$newTotalExp());
+        data.putInt("newLevel", handle.bridge$newLevel());
+        data.putInt("expToDrop", handle.bridge$expToDrop());
+        data.putBoolean("keepLevel", handle.bridge$keepLevel());
         data.putLong("firstPlayed", getFirstPlayed());
         data.putLong("lastPlayed", System.currentTimeMillis());
         data.putString("lastKnownName", handle.getScoreboardName());
@@ -2150,7 +2150,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
         getHandle().getEntityData().set(net.minecraft.world.entity.LivingEntity.DATA_HEALTH_ID, (float) getScaledHealth());
 
-        getHandle().maxHealthCache = getMaxHealth();
+        getHandle().taiyitist$setMaxHealthCache(getMaxHealth());
     }
 
     @Override

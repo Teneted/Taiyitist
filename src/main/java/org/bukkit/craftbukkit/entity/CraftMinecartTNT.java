@@ -17,12 +17,12 @@ public final class CraftMinecartTNT extends CraftMinecart implements ExplosiveMi
 
     @Override
     public boolean isIncendiary() {
-        return getHandle().isIncendiary;
+        return getHandle().bridge$isIncendiary();
     }
 
     @Override
     public void setIsIncendiary(boolean isIncendiary) {
-        getHandle().isIncendiary = isIncendiary;
+        getHandle().taiyitist$setIsIncendiary(isIncendiary);
     }
 
     @Override

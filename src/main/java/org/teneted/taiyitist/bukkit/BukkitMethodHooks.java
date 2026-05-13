@@ -54,7 +54,7 @@ public class BukkitMethodHooks {
             defaultRegistryAccess = MethodHandles.lookup().unreflect(defaultRegistryAccessMethod);
             var cbServerMethod = MinecraftServer.class.getDeclaredMethod("getServer");
             cbServer = MethodHandles.lookup().unreflect(cbServerMethod);
-            var calculateBoundingBoxStaticItemFrameMethod = ItemFrame.class.getDeclaredMethod("calculateBoundingBoxStatic", BlockPos.class, Direction.class);
+            var calculateBoundingBoxStaticItemFrameMethod = ItemFrame.class.getDeclaredMethod("calculateBoundingBoxStatic", BlockPos.class, Direction.class, boolean.class);
             calculateBoundingBoxStaticItemFrame = MethodHandles.lookup().unreflect(calculateBoundingBoxStaticItemFrameMethod);
             var calculateBoundingBoxStaticPaintingMethod = Painting.class.getDeclaredMethod("calculateBoundingBoxStatic", BlockPos.class, Direction.class, int.class, int.class);
             calculateBoundingBoxStaticPainting = MethodHandles.lookup().unreflect(calculateBoundingBoxStaticPaintingMethod);
@@ -103,7 +103,7 @@ public class BukkitMethodHooks {
         }
     }
 
-    public static AABB calculateBoundingBoxStaticItemFrame(BlockPos blockposition, Direction enumdirection) {
+    public static AABB calculateBoundingBoxStaticItemFrame(BlockPos blockposition, Direction enumdirection, boolean checked) {
         try {
             return (AABB) calculateBoundingBoxStaticItemFrame.invokeWithArguments(blockposition, enumdirection);
         } catch (Throwable e) {
@@ -175,9 +175,9 @@ public class BukkitMethodHooks {
         }
     }
 
-    public static void of(TicketType tickettype, int i, Object key) {
+    public static Ticket of(TicketType tickettype, int i, Object key) {
         try {
-            ofTicket.invokeWithArguments(tickettype, i, key);
+            return (Ticket) ofTicket.invokeWithArguments(tickettype, i, key);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

@@ -1,4 +1,4 @@
-classTweaker  v1  official
+classTweaker  v2  official
 transitive-accessible class net/minecraft/server/MinecraftServer$ReloadableResources
 transitive-accessible class net/minecraft/server/dedicated/DedicatedServerProperties$WorldDimensionData
 transitive-accessible class net/minecraft/server/level/ChunkMap$TrackedEntity
@@ -608,7 +608,7 @@ transitive-inject-interface net/minecraft/advancements/AdvancementHolder org/ten
 transitive-inject-interface net/minecraft/commands/Commands org/teneted/taiyitist/injection/commands/InjectionCommands
 transitive-inject-interface net/minecraft/commands/CommandSource org/teneted/taiyitist/injection/commands/InjectionCommandSource
 transitive-inject-interface net/minecraft/commands/CommandSourceStack org/teneted/taiyitist/injection/commands/InjectionCommandSourceStack
-transitive-inject-interface net/minecraft/commands/arguments/EntityArgument org/teneted/taiyitist/injection/commands/InjectionEntityArgument
+transitive-inject-interface net/minecraft/commands/arguments/EntityArgument org/teneted/taiyitist/injection/commands/arguments/InjectionEntityArgument
 transitive-inject-interface net/minecraft/commands/arguments/selector/EntitySelectorParser org/teneted/taiyitist/injection/commands/InjectionEntitySelectorParser
 transitive-inject-interface net/minecraft/network/protocol/common/custom/DiscardedPayload org/teneted/taiyitist/injection/network/InjectionDiscardedPayload
 transitive-inject-interface net/minecraft/network/syncher/SynchedEntityData org/teneted/taiyitist/injection/network/syncher/InjectionSynchedEntityData
@@ -653,7 +653,6 @@ transitive-inject-interface net/minecraft/world/entity/Mob org/teneted/taiyitist
 transitive-inject-interface net/minecraft/world/entity/LivingEntity org/teneted/taiyitist/injection/world/entity/InjectionLivingEntity
 transitive-inject-interface net/minecraft/world/entity/EntityType org/teneted/taiyitist/injection/world/entity/InjectionEntityType
 transitive-inject-interface net/minecraft/world/entity/NeutralMob org/teneted/taiyitist/injection/world/entity/InjectionNeutralMob
-transitive-inject-interface net/minecraft/world/entity/Entity org/teneted/taiyitist/injection/world/entity/InjectionPrimedTnt
 transitive-inject-interface net/minecraft/world/entity/monster/piglin/Piglin org/teneted/taiyitist/injection/world/entity/monster/piglin/InjectionPiglin
 transitive-inject-interface net/minecraft/world/entity/animal/Animal org/teneted/taiyitist/injection/world/entity/animal/InjectionAnimal
 transitive-inject-interface net/minecraft/world/entity/animal/equine/AbstractHorse org/teneted/taiyitist/injection/world/entity/animal/equine/InjectionAbstractHorse
@@ -662,10 +661,10 @@ transitive-inject-interface net/minecraft/world/entity/boss/enderdragon/phases/E
 transitive-inject-interface net/minecraft/world/entity/decoration/ArmorStand org/teneted/taiyitist/injection/world/entity/decoration/InjectionArmorStand
 transitive-inject-interface net/minecraft/world/entity/decoration/ItemFrame org/teneted/taiyitist/injection/world/entity/decoration/InjectionItemFrame
 transitive-inject-interface net/minecraft/world/entity/item/PrimedTnt org/teneted/taiyitist/injection/world/entity/item/InjectionPrimedTnt
-transitive-inject-interface net/minecraft/world/entity/monster/Slime org/teneted/taiyitist/injection/world/entity/item/InjectionSlime
-transitive-inject-interface net/minecraft/world/entity/monster/Creeper org/teneted/taiyitist/injection/world/entity/item/InjectionCreeper
-transitive-inject-interface net/minecraft/world/entity/monster/Guardian org/teneted/taiyitist/injection/world/entity/item/InjectionGuardian
-transitive-inject-interface net/minecraft/world/entity/npc/villager/Villager org/teneted/taiyitist/injection/world/entity/item/InjectionVillager
+transitive-inject-interface net/minecraft/world/entity/monster/Slime org/teneted/taiyitist/injection/world/entity/monster/InjectionSlime
+transitive-inject-interface net/minecraft/world/entity/monster/Creeper org/teneted/taiyitist/injection/world/entity/monster/InjectionCreeper
+transitive-inject-interface net/minecraft/world/entity/monster/Guardian org/teneted/taiyitist/injection/world/entity/monster/InjectionGuardian
+transitive-inject-interface net/minecraft/world/entity/npc/villager/Villager org/teneted/taiyitist/injection/world/npc/villager/InjectionVillager
 transitive-inject-interface net/minecraft/world/entity/player/Player org/teneted/taiyitist/injection/world/entity/player/InjectionPlayer
 transitive-inject-interface net/minecraft/world/entity/player/Inventory org/teneted/taiyitist/injection/world/entity/player/InjectionInventory
 transitive-inject-interface net/minecraft/world/entity/projectile/Projectile org/teneted/taiyitist/injection/world/entity/projectile/InjectionProjectile
@@ -676,7 +675,7 @@ transitive-inject-interface net/minecraft/world/entity/raid/Raid org/teneted/tai
 transitive-inject-interface net/minecraft/world/entity/vehicle/minecart/MinecartTNT org/teneted/taiyitist/injection/world/entity/vehicle/minecart/InjectionMinecartTNT
 transitive-inject-interface net/minecraft/world/entity/vehicle/minecart/AbstractMinecart org/teneted/taiyitist/injection/world/entity/vehicle/minecart/InjectionAbstractMinecart
 transitive-inject-interface net/minecraft/world/entity/vehicle/boat/AbstractBoat org/teneted/taiyitist/injection/world/entity/vehicle/boat/InjectionAbstractBoat
-transitive-inject-interface net/minecraft/world/food/FoodData org/teneted/taiyitist/injection/world/entity/food/InjectionFoodData
+transitive-inject-interface net/minecraft/world/food/FoodData org/teneted/taiyitist/injection/world/food/InjectionFoodData
 transitive-inject-interface net/minecraft/world/inventory/LecternMenu org/teneted/taiyitist/injection/world/inventory/InjectionLecternMenu
 transitive-inject-interface net/minecraft/world/inventory/AnvilMenu org/teneted/taiyitist/injection/world/inventory/InjectionAnvilMenu
 transitive-inject-interface net/minecraft/world/inventory/AbstractContainerMenu org/teneted/taiyitist/injection/world/inventory/InjectionAbstractContainerMenu
@@ -736,3 +735,8 @@ transitive-inject-interface net/minecraft/world/level/storage/PrimaryLevelData o
 transitive-inject-interface net/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess org/teneted/taiyitist/injection/world/level/storage/InjectionLevelStorageAccess
 transitive-inject-interface net/minecraft/world/level/storage/PlayerDataStorage org/teneted/taiyitist/injection/world/level/storage/InjectionPlayerDataStorage
 transitive-inject-interface net/minecraft/world/level/storage/loot/LootTable org/teneted/taiyitist/injection/world/level/storage/loot/InjectionLootTable
+transitive-inject-interface net/minecraft/world/level/gamerules/GameRules org/teneted/taiyitist/injection/world/level/gamerules/InjectionGameRules
+transitive-inject-interface net/minecraft/server/level/Ticket org/teneted/taiyitist/injection/server/level/InjectionTicket
+transitive-inject-interface net/minecraft/world/clock/ServerClockManager org/teneted/taiyitist/injection/world/clock/InjectionServerClockManager
+transitive-inject-interface net/minecraft/world/entity/animal/equine/Llama org/teneted/taiyitist/injection/world/entity/animal/equine/InjectionLlama
+transitive-extend-enum net/minecraft/world/level/Level$ExplosionInteraction STANDARD

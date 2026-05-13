@@ -22,7 +22,7 @@ public class CraftCreeper extends CraftMonster implements Creeper {
         CreeperPowerEvent.PowerCause cause = powered ? CreeperPowerEvent.PowerCause.SET_ON : CreeperPowerEvent.PowerCause.SET_OFF;
 
         // only call event when we are not in world generation
-        if (getHandle().generation || !callPowerEvent(cause)) {
+        if (getHandle().bridge$generation() || !callPowerEvent(cause)) {
             getHandle().setPowered(powered);
         }
     }
@@ -89,7 +89,7 @@ public class CraftCreeper extends CraftMonster implements Creeper {
 
     @Override
     public Entity getIgniter() {
-        return (getHandle().entityIgniter != null) ? getHandle().entityIgniter.getBukkitEntity() : null;
+        return (getHandle().bridge$entityIgniter() != null) ? getHandle().bridge$entityIgniter().getBukkitEntity() : null;
     }
 
     @Override

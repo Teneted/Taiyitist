@@ -206,7 +206,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         // Let the server handle cross world teleports
         if (location.getWorld() != null && !location.getWorld().equals(getWorld())) {
             // Prevent teleportation to an other world during world generation
-            Preconditions.checkState(!entity.generation, "Cannot teleport entity to an other world during world generation");
+            Preconditions.checkState(!entity.bridge$generation(), "Cannot teleport entity to an other world during world generation");
             entity.teleport(new TeleportTransition(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3.ZERO, location.getPitch(), location.getYaw(), Set.of(), TeleportTransition.DO_NOTHING, TeleportCause.PLUGIN));
             return true;
         }
@@ -231,7 +231,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public List<org.bukkit.entity.Entity> getNearbyEntities(double x, double y, double z) {
-        Preconditions.checkState(!entity.generation, "Cannot get nearby entities during world generation");
+        Preconditions.checkState(!entity.bridge$generation(), "Cannot get nearby entities during world generation");
 
         List<Entity> notchEntityList = entity.level().getEntities(entity, entity.getBoundingBox().inflate(x, y, z), Predicates.alwaysTrue());
         List<org.bukkit.entity.Entity> bukkitEntityList = new java.util.ArrayList<org.bukkit.entity.Entity>(notchEntityList.size());
@@ -296,8 +296,8 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public void remove() {
-        entity.pluginRemoved = true;
-        entity.discard(getHandle().generation ? null : EntityRemoveEvent.Cause.PLUGIN);
+        entity.taiyitist$setPluginRemoved(true);
+        entity.discard(getHandle().bridge$generation() ? null : EntityRemoveEvent.Cause.PLUGIN);
     }
 
     @Override
@@ -307,7 +307,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public boolean isValid() {
-        return entity.isAlive() && entity.valid && entity.isChunkLoaded() && isInWorld();
+        return entity.isAlive() && entity.bridge$valid() && entity.isChunkLoaded() && isInWorld();
     }
 
     @Override
@@ -317,12 +317,12 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public boolean isPersistent() {
-        return entity.persist;
+        return entity.bridge$persist();
     }
 
     @Override
     public void setPersistent(boolean persistent) {
-        entity.persist = persistent;
+        entity.taiyitist$setPersist(persistent);
     }
 
     public Vector getMomentum() {
@@ -433,7 +433,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     @Override
     public void playEffect(EntityEffect type) {
         Preconditions.checkArgument(type != null, "Type cannot be null");
-        Preconditions.checkState(!entity.generation, "Cannot play effect during world generation");
+        Preconditions.checkState(!entity.bridge$generation(), "Cannot play effect during world generation");
 
         if (type.getApplicable().isInstance(this)) {
             this.getHandle().level().broadcastEntityEvent(getHandle(), type.getData());
@@ -560,7 +560,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public void setVisibleByDefault(boolean visible) {
-        if (getHandle().visibleByDefault != visible) {
+        if (getHandle().bridge$visibleByDefault() != visible) {
             if (visible) {
                 // Making visible by default, reset and show to all players
                 for (Player player : server.getOnlinePlayers()) {
@@ -573,18 +573,18 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
                 }
             }
 
-            getHandle().visibleByDefault = visible;
+            getHandle().taiyitist$setVisibleByDefault(visible);
         }
     }
 
     @Override
     public boolean isVisibleByDefault() {
-        return getHandle().visibleByDefault;
+        return getHandle().bridge$visibleByDefault();
     }
 
     @Override
     public Set<Player> getTrackedBy() {
-        Preconditions.checkState(!entity.generation, "Cannot get tracking players during world generation");
+        Preconditions.checkState(!entity.bridge$generation(), "Cannot get tracking players during world generation");
         ImmutableSet.Builder<Player> players = ImmutableSet.builder();
 
         ServerLevel world = ((CraftWorld) getWorld()).getHandle();
@@ -782,7 +782,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public boolean isInWorld() {
-        return getHandle().inWorld;
+        return getHandle().bridge$inWorld();
     }
 
     @Override

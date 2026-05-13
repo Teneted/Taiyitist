@@ -60,6 +60,8 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftBlock implements Block {
     private final net.minecraft.world.level.LevelAccessor world;
@@ -469,15 +471,15 @@ public class CraftBlock implements Block {
         UseOnContext context = new UseOnContext(world, null, InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(), new BlockHitResult(Vec3.ZERO, direction, getPosition(), false));
 
         // SPIGOT-6895: Call StructureGrowEvent and BlockFertilizeEvent
-        world.captureTreeGeneration = true;
-        InteractionResult result = BoneMealItem.applyBonemeal(context);
-        world.captureTreeGeneration = false;
+        world.taiyitist$setCaptureTreeGeneration(true);
+        InteractionResult result = BukkitMethodHooks.applyBonemeal(context);
+        world.taiyitist$setCaptureTreeGeneration(false);
 
-        if (world.capturedBlockStates.size() > 0) {
-            TreeType treeType = SaplingBlock.treeType;
-            SaplingBlock.treeType = null;
-            List<BlockState> blocks = new ArrayList<>(world.capturedBlockStates.values());
-            world.capturedBlockStates.clear();
+        if (world.bridge$capturedBlockStates().size() > 0) {
+            TreeType treeType = BukkitFieldHooks.treeType();
+            BukkitFieldHooks.setTreeType(null);
+            List<BlockState> blocks = new ArrayList<>(world.bridge$capturedBlockStates().values());
+            world.bridge$capturedBlockStates().clear();
             StructureGrowEvent structureEvent = null;
 
             if (treeType != null) {

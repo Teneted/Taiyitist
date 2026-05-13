@@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.profile.CraftPlayerProfile;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implements Skull {
 
@@ -64,7 +65,7 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
             return false;
         }
 
-        NameAndId profile = MinecraftServer.getServer().services().nameToIdCache().get(name).orElse(null);
+        NameAndId profile = BukkitMethodHooks.getServer().services().nameToIdCache().get(name).orElse(null);
         if (profile == null) {
             return false;
         }

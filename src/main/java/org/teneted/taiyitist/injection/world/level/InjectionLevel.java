@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CapturedBlockState;
@@ -35,6 +37,22 @@ public interface InjectionLevel {
 
     default org.bukkit.World.Environment bridge$environment() {
         throw new IllegalStateException("Not implemented");
+    }
+
+    default SavedDataStorage bridge$savedDataStorage() {
+        throw new AssertionError("Not implemented");
+    }
+
+    default WorldGenSettings bridge$worldGenSettings() {
+        throw new AssertionError("Not implemented");
+    }
+
+    default void taiyitist$setSavedDataStorage(SavedDataStorage savedDataStorage) {
+        throw new AssertionError("Not implemented");
+    }
+
+    default void taiyitist$setWorldGenSettings(WorldGenSettings worldGenSettings) {
+        throw new AssertionError("Not implemented");
     }
 
     default void taiyitist$setEnvironment(org.bukkit.World.Environment environment) {

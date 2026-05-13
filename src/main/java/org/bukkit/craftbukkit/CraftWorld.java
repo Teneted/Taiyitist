@@ -441,7 +441,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Preconditions.checkNotNull(plugin, "null plugin");
 
         TicketStorage chunkDistanceManager = this.world.getChunkSource().ticketStorage;
-        chunkDistanceManager.removeTicketIf((ticket, i) -> ticket.getType() == BukkitFieldHooks.pluginTicket() && Objects.equals(ticket.key, plugin), null);
+        chunkDistanceManager.removeTicketIf((ticket, i) -> ticket.getType() == BukkitFieldHooks.pluginTicket() && Objects.equals(ticket.bridge$key(), plugin), null);
     }
 
     @Override
@@ -456,7 +456,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         ImmutableList.Builder<Plugin> ret = ImmutableList.builder();
         for (Ticket ticket : tickets) {
             if (ticket.getType() == BukkitFieldHooks.pluginTicket()) {
-                ret.add((Plugin) ticket.key);
+                ret.add((Plugin) ticket.bridge$key());
             }
         }
 
@@ -482,7 +482,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
                     chunk = this.getChunkAt(ChunkPos.getX(chunkKey), ChunkPos.getZ(chunkKey));
                 }
 
-                ret.computeIfAbsent((Plugin) ticket.key, (key) -> ImmutableList.builder()).add(chunk);
+                ret.computeIfAbsent((Plugin) ticket.bridge$key(), (key) -> ImmutableList.builder()).add(chunk);
             }
         }
 
@@ -726,7 +726,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         }
 
         net.minecraft.world.entity.Entity entity = (source == null) ? null : ((CraftEntity) source).getHandle();
-        return !world.explode0(entity, Explosion.getDefaultDamageSource(world, entity), null, x, y, z, power, setFire, explosionType, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, net.minecraft.world.level.Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES, SoundEvents.GENERIC_EXPLODE).wasCanceled;
+        return !world.explode0(entity, Explosion.getDefaultDamageSource(world, entity), null, x, y, z, power, setFire, explosionType, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, net.minecraft.world.level.Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES, SoundEvents.GENERIC_EXPLODE).bridge$wasCanceled();
     }
 
     @Override
@@ -1080,7 +1080,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setDifficulty(Difficulty difficulty) {
-        this.getHandle().serverLevelData.setDifficulty(net.minecraft.world.Difficulty.byId(difficulty.getValue()));
+        this.getHandle().bridge$serverLevelDataCB().setDifficulty(net.minecraft.world.Difficulty.byId(difficulty.getValue()));
     }
 
     @Override
