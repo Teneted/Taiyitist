@@ -3,7 +3,7 @@ package org.teneted.taiyitist.injection.world.level.block.entity;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 
 public interface InjectionAbstractFurnaceBlockEntity {
 
-    default Object2IntOpenHashMap<ResourceLocation> getRecipesUsed() {
+    default Object2IntOpenHashMap<Identifier> getRecipesUsed() {
         throw new IllegalStateException("Not implemented");
     }
 

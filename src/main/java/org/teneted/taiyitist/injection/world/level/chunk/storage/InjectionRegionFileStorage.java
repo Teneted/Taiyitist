@@ -1,4 +1,4 @@
-package org.teneted.taiyitist.injection.world.level.chunk;
+package org.teneted.taiyitist.injection.world.level.chunk.storage;
 
 import java.io.IOException;
 import net.minecraft.world.level.ChunkPos;
