@@ -1,6 +1,8 @@
 package org.teneted.taiyitist.injection.world.level.saveddata.maps;
 
 import java.util.UUID;
+
+import net.minecraft.world.level.saveddata.maps.MapId;
 import org.bukkit.craftbukkit.map.CraftMapView;
 
 public interface InjectionMapItemSavedData {
@@ -17,11 +19,11 @@ public interface InjectionMapItemSavedData {
         throw new IllegalStateException("Not implemented");
     }
 
-    default String bridge$id() {
+    default MapId bridge$id() {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void taiyitist$setId(String id) {
+    default void taiyitist$setId(MapId id) {
         throw new IllegalStateException("Not implemented");
     }
 }

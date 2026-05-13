@@ -1,6 +1,6 @@
 package org.teneted.taiyitist.injection.world.entity.monster;
 
-import org.bukkit.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public interface InjectionCreeper {
 

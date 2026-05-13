@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftStonecuttingRecipe extends StonecuttingRecipe implements CraftRecipe {
     public CraftStonecuttingRecipe(NamespacedKey key, ItemStack result, RecipeChoice source) {
@@ -25,6 +26,6 @@ public class CraftStonecuttingRecipe extends StonecuttingRecipe implements Craft
     public void addToCraftingManager() {
         ItemStack result = this.getResult();
 
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.StonecutterRecipe(getCommon(), toNMS(this.getInputChoice(), true), CraftItemStack.asNMSTemplate(result))));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.StonecutterRecipe(getCommon(), toNMS(this.getInputChoice(), true), CraftItemStack.asNMSTemplate(result))));
     }
 }

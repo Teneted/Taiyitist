@@ -173,9 +173,10 @@ public class CraftContainer extends AbstractContainerMenu {
             case BLAST_FURNACE:
                 delegate = new BlastFurnaceMenu(windowId, bottom, top, new SimpleContainerData(4));
                 break;
+                /*
             case LECTERN:
-                delegate = new LecternMenu(windowId, top, new SimpleContainerData(1), bottom);
-                break;
+                delegate = new LecternMenu(windowId/*, top, new SimpleContainerData(1), bottom*///);// Taiyitist -TODO fixme
+                /*break;*/
             case SMOKER:
                 delegate = new SmokerMenu(windowId, bottom, top, new SimpleContainerData(4));
                 break;

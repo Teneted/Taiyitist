@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.TransmuteRecipe;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftTransmuteRecipe extends TransmuteRecipe implements CraftRecipe {
 
@@ -26,7 +27,7 @@ public class CraftTransmuteRecipe extends TransmuteRecipe implements CraftRecipe
 
     @Override
     public void addToCraftingManager() {
-        MinecraftServer.getServer().getRecipeManager().addRecipe(
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(
                 new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()),
                         new net.minecraft.world.item.crafting.TransmuteRecipe(getCommon(),
                                 CraftRecipe.getBook(this),

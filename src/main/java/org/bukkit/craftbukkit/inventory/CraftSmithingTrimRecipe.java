@@ -7,6 +7,7 @@ import org.bukkit.craftbukkit.inventory.trim.CraftTrimPattern;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingTrimRecipe;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftSmithingTrimRecipe extends SmithingTrimRecipe implements CraftRecipe {
 
@@ -24,6 +25,6 @@ public class CraftSmithingTrimRecipe extends SmithingTrimRecipe implements Craft
 
     @Override
     public void addToCraftingManager() {
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTrimRecipe(getCommon(), toNMS(this.getTemplate(), false), toNMS(this.getBase(), false), toNMS(this.getAddition(), false), CraftTrimPattern.bukkitToMinecraftHolder(TrimPattern.BOLT))));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTrimRecipe(getCommon(), toNMS(this.getTemplate(), false), toNMS(this.getBase(), false), toNMS(this.getAddition(), false), CraftTrimPattern.bukkitToMinecraftHolder(TrimPattern.BOLT))));
     }
 }

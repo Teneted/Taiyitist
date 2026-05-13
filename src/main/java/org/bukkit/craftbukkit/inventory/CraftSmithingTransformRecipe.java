@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingTransformRecipe;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftSmithingTransformRecipe extends SmithingTransformRecipe implements CraftRecipe {
     public CraftSmithingTransformRecipe(NamespacedKey key, ItemStack result, RecipeChoice template, RecipeChoice base, RecipeChoice addition) {
@@ -24,6 +25,6 @@ public class CraftSmithingTransformRecipe extends SmithingTransformRecipe implem
     public void addToCraftingManager() {
         ItemStack result = this.getResult();
 
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTransformRecipe(getCommon(), toNMSOptional(this.getTemplate(), false), toNMS(this.getBase(), false), toNMSOptional(this.getAddition(), false), CraftItemStack.asNMSTemplate(result))));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTransformRecipe(getCommon(), toNMSOptional(this.getTemplate(), false), toNMS(this.getBase(), false), toNMSOptional(this.getAddition(), false), CraftItemStack.asNMSTemplate(result))));
     }
 }

@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ImbueRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftImbueRecipe extends ImbueRecipe implements CraftRecipe {
 
@@ -25,7 +26,7 @@ public class CraftImbueRecipe extends ImbueRecipe implements CraftRecipe {
 
     @Override
     public void addToCraftingManager() {
-        MinecraftServer.getServer().getRecipeManager().addRecipe(
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(
                 new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()),
                         new net.minecraft.world.item.crafting.ImbueRecipe(getCommon(),
                                 CraftRecipe.getBook(this),

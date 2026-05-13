@@ -69,6 +69,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public final class CraftBlockStates {
 
@@ -453,7 +454,7 @@ public final class CraftBlockStates {
 
     @Deprecated
     public static BlockState getBlockState(BlockPos blockPosition, Material material, @Nullable CompoundTag blockEntityTag) {
-        return getBlockState(MinecraftServer.getDefaultRegistryAccess(), blockPosition, material, blockEntityTag);
+        return getBlockState(BukkitMethodHooks.getDefaultRegistryAccess(), blockPosition, material, blockEntityTag);
     }
 
     public static BlockState getBlockState(LevelReader world, BlockPos blockPosition, Material material, @Nullable CompoundTag blockEntityTag) {
@@ -468,7 +469,7 @@ public final class CraftBlockStates {
 
     @Deprecated
     public static BlockState getBlockState(net.minecraft.world.level.block.state.BlockState blockData, @Nullable CompoundTag blockEntityTag) {
-        return getBlockState(MinecraftServer.getDefaultRegistryAccess(), BlockPos.ZERO, blockData, blockEntityTag);
+        return getBlockState(BukkitMethodHooks.getDefaultRegistryAccess(), BlockPos.ZERO, blockData, blockEntityTag);
     }
 
     public static BlockState getBlockState(LevelReader world, BlockPos blockPosition, net.minecraft.world.level.block.state.BlockState blockData, @Nullable CompoundTag blockEntityTag) {

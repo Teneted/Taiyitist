@@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockState implements TileState {
 
@@ -53,7 +54,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
 
     protected RegistryAccess getRegistryAccess() {
         LevelAccessor worldHandle = getWorldHandle();
-        return (worldHandle != null) ? worldHandle.registryAccess() : MinecraftServer.getDefaultRegistryAccess();
+        return (worldHandle != null) ? worldHandle.registryAccess() : BukkitMethodHooks.getDefaultRegistryAccess();
     }
 
     private T createSnapshot(T tileEntity) {
@@ -190,7 +191,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
 
     @Override
     public PersistentDataContainer getPersistentDataContainer() {
-        return this.getSnapshot().persistentDataContainer;
+        return this.getSnapshot().bridge$persistentDataContainer();
     }
 
     @Nullable

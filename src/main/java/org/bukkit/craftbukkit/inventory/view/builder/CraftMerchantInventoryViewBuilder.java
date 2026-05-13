@@ -50,12 +50,12 @@ public class CraftMerchantInventoryViewBuilder<V extends InventoryView> extends 
 
         final MerchantMenu container;
         if (this.merchant == null) {
-            container = new MerchantMenu(serverPlayer.nextContainerCounter(), serverPlayer.getInventory(), new CraftMerchantCustom(title).getMerchant());
+            container = new MerchantMenu(serverPlayer.nextContainerCounterInt(), serverPlayer.getInventory(), new CraftMerchantCustom(title).getMerchant());
         } else {
-            container = new MerchantMenu(serverPlayer.nextContainerCounter(), serverPlayer.getInventory(), this.merchant);
+            container = new MerchantMenu(serverPlayer.nextContainerCounterInt(), serverPlayer.getInventory(), this.merchant);
         }
 
-        container.checkReachable = super.checkReachable;
+        container.taiyitist$setCheckReachable(super.checkReachable);
         container.setTitle(CraftChatMessage.fromString(title)[0]);
         return (V) container.getBukkitView();
     }

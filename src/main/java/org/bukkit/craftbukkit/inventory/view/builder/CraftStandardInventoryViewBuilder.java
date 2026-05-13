@@ -14,7 +14,7 @@ public class CraftStandardInventoryViewBuilder<V extends InventoryView> extends 
 
     @Override
     protected AbstractContainerMenu buildContainer(final ServerPlayer player) {
-        return super.handle.create(player.nextContainerCounter(), player.getInventory());
+        return super.handle.create(player.nextContainerCounterInt(), player.getInventory());
     }
 
     @Override

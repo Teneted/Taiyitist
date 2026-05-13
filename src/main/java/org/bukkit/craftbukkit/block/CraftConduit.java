@@ -14,6 +14,7 @@ import org.bukkit.block.Conduit;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.BoundingBox;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> implements Conduit {
 
@@ -75,7 +76,7 @@ public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> impl
     public int getRange() {
         ensureNoWorldGeneration();
         ConduitBlockEntity conduit = (ConduitBlockEntity) getTileEntityFromWorld();
-        return (conduit != null) ? ConduitBlockEntity.getRange(conduit.effectBlocks) : 0;
+        return (conduit != null) ? BukkitMethodHooks.getRange(conduit.effectBlocks) : 0;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> impl
             conduit.destroyTarget = EntityReference.of(newTarget);
         }
 
-        ConduitBlockEntity.updateAndAttackTarget((ServerLevel) conduit.getLevel(), getPosition(), data, conduit, conduit.effectBlocks.size() >= 42, false);
+        BukkitMethodHooks.updateAndAttackTarget((ServerLevel) conduit.getLevel(), getPosition(), data, conduit, conduit.effectBlocks.size() >= 42, false);
         return true;
     }
 

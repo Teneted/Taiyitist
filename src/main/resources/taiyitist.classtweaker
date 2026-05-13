@@ -603,6 +603,8 @@ transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedDa
 transitive-mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData unlimitedTracking Z
 transitive-accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
 transitive-accessible method net/minecraft/server/level/ServerLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+transitive-accessible field net/minecraft/world/level/levelgen/structure/StructurePiece SHAPE_CHECK_BLOCKS Ljava/util/Set;
+transitive-accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructurePlaceSettings palette I
 
 transitive-inject-interface net/minecraft/advancements/AdvancementHolder org/teneted/taiyitist/injection/advancements/InjectionAdvancementHolder
 transitive-inject-interface net/minecraft/commands/Commands org/teneted/taiyitist/injection/commands/InjectionCommands
@@ -616,7 +618,7 @@ transitive-inject-interface net/minecraft/network/protocol/game/ServerboundUseIt
 transitive-inject-interface net/minecraft/network/protocol/game/ServerboundUseItemPacket org/teneted/taiyitist/injection/network/protocol/game/InjectionServerboundUseItemPacket
 transitive-inject-interface net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket org/teneted/taiyitist/injection/network/protocol/game/InjectionClientboundSectionBlocksUpdatePacket
 transitive-inject-interface net/minecraft/network/Connection org/teneted/taiyitist/injection/network/InjectionConnection
-transitive-inject-interface net/minecraft/core/component/DataComponentPatch org/teneted/taiyitist/injection/network/chat/InjectionDataComponentPatch
+transitive-inject-interface net/minecraft/core/component/DataComponentPatch$Builder org/teneted/taiyitist/injection/network/chat/InjectionDataComponentPatch_Builder
 transitive-inject-interface net/minecraft/network/chat/TextColor org/teneted/taiyitist/injection/network/chat/InjectionTextColor
 transitive-inject-interface net/minecraft/network/chat/Component org/teneted/taiyitist/injection/network/chat/InjectionComponent
 transitive-inject-interface net/minecraft/server/MinecraftServer org/teneted/taiyitist/injection/server/InjectionMinecraftServer
@@ -664,7 +666,7 @@ transitive-inject-interface net/minecraft/world/entity/item/PrimedTnt org/tenete
 transitive-inject-interface net/minecraft/world/entity/monster/Slime org/teneted/taiyitist/injection/world/entity/monster/InjectionSlime
 transitive-inject-interface net/minecraft/world/entity/monster/Creeper org/teneted/taiyitist/injection/world/entity/monster/InjectionCreeper
 transitive-inject-interface net/minecraft/world/entity/monster/Guardian org/teneted/taiyitist/injection/world/entity/monster/InjectionGuardian
-transitive-inject-interface net/minecraft/world/entity/npc/villager/Villager org/teneted/taiyitist/injection/world/npc/villager/InjectionVillager
+transitive-inject-interface net/minecraft/world/entity/npc/villager/Villager org/teneted/taiyitist/injection/world/entity/npc/villager/InjectionVillager
 transitive-inject-interface net/minecraft/world/entity/player/Player org/teneted/taiyitist/injection/world/entity/player/InjectionPlayer
 transitive-inject-interface net/minecraft/world/entity/player/Inventory org/teneted/taiyitist/injection/world/entity/player/InjectionInventory
 transitive-inject-interface net/minecraft/world/entity/projectile/Projectile org/teneted/taiyitist/injection/world/entity/projectile/InjectionProjectile
@@ -739,4 +741,5 @@ transitive-inject-interface net/minecraft/world/level/gamerules/GameRules org/te
 transitive-inject-interface net/minecraft/server/level/Ticket org/teneted/taiyitist/injection/server/level/InjectionTicket
 transitive-inject-interface net/minecraft/world/clock/ServerClockManager org/teneted/taiyitist/injection/world/clock/InjectionServerClockManager
 transitive-inject-interface net/minecraft/world/entity/animal/equine/Llama org/teneted/taiyitist/injection/world/entity/animal/equine/InjectionLlama
+transitive-inject-interface net/minecraft/world/inventory/MerchantMenu org/teneted/taiyitist/injection/world/inventory/InjectionMerchantMenu
 transitive-extend-enum net/minecraft/world/level/Level$ExplosionInteraction STANDARD

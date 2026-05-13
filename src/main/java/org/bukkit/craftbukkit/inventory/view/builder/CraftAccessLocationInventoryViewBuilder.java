@@ -26,7 +26,7 @@ public class CraftAccessLocationInventoryViewBuilder<V extends InventoryView> ex
             access = ContainerLevelAccess.create(super.world, super.position);
         }
 
-        return this.containerBuilder.build(player.nextContainerCounter(), player.getInventory(), access);
+        return this.containerBuilder.build(player.nextContainerCounterInt(), player.getInventory(), access);
     }
 
     @Override

@@ -30,6 +30,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public final class CraftChatMessage {
 
@@ -211,7 +212,7 @@ public final class CraftChatMessage {
     }
 
     public static String toJSON(Component component) {
-        return ChatSerializer.toJson(component, MinecraftServer.getDefaultRegistryAccess());
+        return ChatSerializer.toJson(component, BukkitMethodHooks.getDefaultRegistryAccess());
     }
 
     public static String toJSONOrNull(Component component) {
@@ -222,7 +223,7 @@ public final class CraftChatMessage {
     public static Component fromJSON(String jsonMessage) throws JsonParseException {
         // Note: This also parses plain Strings to text components.
         // Note: An empty message (empty, or only consisting of whitespace) results in null rather than a parse exception.
-        return ChatSerializer.fromJson(jsonMessage, MinecraftServer.getDefaultRegistryAccess());
+        return ChatSerializer.fromJson(jsonMessage, BukkitMethodHooks.getDefaultRegistryAccess());
     }
 
     public static Component fromJSONOrNull(String jsonMessage) {
@@ -284,8 +285,8 @@ public final class CraftChatMessage {
             TextColor color = modi.getColor();
             if (c.getContents() != PlainTextContents.EMPTY || color != null) {
                 if (color != null) {
-                    if (color.format != null) {
-                        out.append(color.format);
+                    if (color.bridge$format() != null) {
+                        out.append(color.bridge$format());
                     } else {
                         out.append(ChatColor.COLOR_CHAR).append("x");
                         for (char magic : color.serialize().substring(1).toCharArray()) {

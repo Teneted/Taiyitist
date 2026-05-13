@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftFurnaceRecipe extends FurnaceRecipe implements CraftRecipe {
     public CraftFurnaceRecipe(NamespacedKey key, ItemStack result, RecipeChoice source, float experience, int cookingTime) {
@@ -26,6 +27,6 @@ public class CraftFurnaceRecipe extends FurnaceRecipe implements CraftRecipe {
     public void addToCraftingManager() {
         ItemStack result = this.getResult();
 
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmeltingRecipe(getCommon(), CraftRecipe.getBook(this), toNMS(this.getInputChoice(), true), CraftItemStack.asNMSTemplate(result), getExperience(), getCookingTime())));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmeltingRecipe(getCommon(), CraftRecipe.getBook(this), toNMS(this.getInputChoice(), true), CraftItemStack.asNMSTemplate(result), getExperience(), getCookingTime())));
     }
 }

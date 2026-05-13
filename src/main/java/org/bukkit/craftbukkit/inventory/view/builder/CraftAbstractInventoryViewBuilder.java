@@ -36,7 +36,7 @@ public abstract class CraftAbstractInventoryViewBuilder<V extends InventoryView>
         Preconditions.checkArgument(craftHuman.getHandle() instanceof ServerPlayer, "The given player must be an EntityPlayer");
         final ServerPlayer serverPlayer = (ServerPlayer) craftHuman.getHandle();
         final AbstractContainerMenu abstractcontainermenu = buildContainer(serverPlayer);
-        abstractcontainermenu.checkReachable = this.checkReachable;
+        abstractcontainermenu.taiyitist$setCheckReachable(this.checkReachable);
         abstractcontainermenu.setTitle(CraftChatMessage.fromString(title)[0]);
         return (V) abstractcontainermenu.getBukkitView();
     }

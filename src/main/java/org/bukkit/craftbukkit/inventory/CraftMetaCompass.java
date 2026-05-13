@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.inventory.meta.CompassMeta;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 @DelegateDeserialization(SerializableMeta.class)
 public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
@@ -121,7 +122,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
         if (lodestoneWorld == null) {
             return null;
         }
-        ServerLevel worldServer = MinecraftServer.getServer().getLevel(lodestoneWorld);
+        ServerLevel worldServer = BukkitMethodHooks.getServer().getLevel(lodestoneWorld);
         World world = worldServer != null ? worldServer.getWorld() : null;
         return new Location(world, lodestoneX, lodestoneY, lodestoneZ); // world may be null here, if the referenced world is not loaded
     }

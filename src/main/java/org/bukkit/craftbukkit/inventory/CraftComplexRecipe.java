@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ComplexRecipe;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftComplexRecipe extends CraftingRecipe implements CraftRecipe, ComplexRecipe {
 
@@ -19,6 +20,6 @@ public class CraftComplexRecipe extends CraftingRecipe implements CraftRecipe, C
 
     @Override
     public void addToCraftingManager() {
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), recipe));
+        BukkitMethodHooks.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), recipe));
     }
 }

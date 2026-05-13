@@ -31,6 +31,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 /**
  * This class may seem unnecessarily slow and complicated/repetitive however it
@@ -265,7 +266,7 @@ public final class CraftLegacy {
 
     static {
         System.err.println("Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!");
-        if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isDebugging()) {
+        if (BukkitMethodHooks.getServer() != null && BukkitMethodHooks.getServer().isDebugging()) {
             new Exception().printStackTrace();
         }
 

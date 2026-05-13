@@ -20,7 +20,9 @@ import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.BoneMealItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
@@ -45,7 +47,7 @@ public class BukkitMethodHooks {
     private static final MethodHandle reload;
     private static final MethodHandle updateAndAttackTarget;
     private static final MethodHandle ofTicket;
-
+    private static final MethodHandle ofStacks;
     static {
         try {
             var convertVillagerToZombieVillagerMethod = Zombie.class.getDeclaredMethod("convertVillagerToZombieVillager", ServerLevel.class, Villager.class, BlockPos.class, boolean.class, EntityTransformEvent.TransformReason.class, CreatureSpawnEvent.SpawnReason.class);
@@ -74,6 +76,8 @@ public class BukkitMethodHooks {
             updateAndAttackTarget = MethodHandles.lookup().unreflect(updateAndAttackTargetMethod);
             var ofTicketMethod = Ticket.class.getDeclaredMethod("of", TicketType.class, int.class, Object.class);
             ofTicket = MethodHandles.lookup().unreflect(ofTicketMethod);
+            var ofStacksMethod = Ingredient.class.getDeclaredMethod("ofStacks", List.class);
+            ofStacks = MethodHandles.lookup().unreflect(ofStacksMethod);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -178,6 +182,14 @@ public class BukkitMethodHooks {
     public static Ticket of(TicketType tickettype, int i, Object key) {
         try {
             return (Ticket) ofTicket.invokeWithArguments(tickettype, i, key);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Ingredient ofStacks(List<ItemStack> stacks) {
+        try {
+            return (Ingredient) ofStacks.invokeWithArguments(stacks);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

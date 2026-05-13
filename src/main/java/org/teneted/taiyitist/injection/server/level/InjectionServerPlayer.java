@@ -1,5 +1,6 @@
 package org.teneted.taiyitist.injection.server.level;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.BlockUtil;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.teneted.taiyitist.injection.world.entity.player.InjectionPlayer;
@@ -180,11 +181,11 @@ public interface InjectionServerPlayer extends InjectionPlayer {
         throw new IllegalStateException("Not implemented");
     }
 
-    default void setRespawnPosition(ResourceKey<Level> resourcekey, @Nullable BlockPos blockposition, float f, boolean flag, boolean flag1, PlayerSpawnChangeEvent.Cause cause) {
+    default void setRespawnPosition(ServerPlayer.@Nullable RespawnConfig respawnConfig, boolean showMessage, PlayerSpawnChangeEvent.Cause cause) {
         throw new IllegalStateException("Not implemented");
     }
 
-    default long getPlayerTime() {
+    default long getPlayerTime(long totalTicks) {
         throw new IllegalStateException("Not implemented");
     }
 

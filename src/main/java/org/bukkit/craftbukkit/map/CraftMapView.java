@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public final class CraftMapView implements MapView {
 
@@ -31,7 +32,7 @@ public final class CraftMapView implements MapView {
 
     @Override
     public int getId() {
-        return worldMap.id.id();
+        return worldMap.bridge$id().id();
     }
 
     @Override
@@ -52,14 +53,14 @@ public final class CraftMapView implements MapView {
     @Override
     public World getWorld() {
         ResourceKey<net.minecraft.world.level.Level> dimension = worldMap.dimension;
-        ServerLevel world = MinecraftServer.getServer().getLevel(dimension);
+        ServerLevel world = BukkitMethodHooks.getServer().getLevel(dimension);
 
         if (world != null) {
             return world.getWorld();
         }
 
-        if (worldMap.uniqueId != null) {
-            return Bukkit.getServer().getWorld(worldMap.uniqueId);
+        if (worldMap.bridge$uniqueId() != null) {
+            return Bukkit.getServer().getWorld(worldMap.bridge$uniqueId());
         }
         return null;
     }
@@ -67,7 +68,7 @@ public final class CraftMapView implements MapView {
     @Override
     public void setWorld(World world) {
         worldMap.dimension = ((CraftWorld) world).getHandle().dimension();
-        worldMap.uniqueId = world.getUID();
+        worldMap.taiyitist$setUniqueId(world.getUID());
     }
 
     @Override

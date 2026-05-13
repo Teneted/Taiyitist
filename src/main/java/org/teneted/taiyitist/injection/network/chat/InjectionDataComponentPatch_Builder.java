@@ -3,7 +3,7 @@ package org.teneted.taiyitist.injection.network.chat;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 
-public interface InjectionDataComponentPatch {
+public interface InjectionDataComponentPatch_Builder {
 
     default void copy(DataComponentPatch orig) {
         throw new IllegalStateException("Not implemented");

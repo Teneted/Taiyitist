@@ -37,46 +37,46 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
 
     @Override
     public double getMaxSpeed() {
-        return getHandle().maxSpeed;
+        return getHandle().bridge$maxSpeed();
     }
 
     @Override
     public void setMaxSpeed(double speed) {
         if (speed >= 0D) {
-            getHandle().maxSpeed = speed;
+            getHandle().taiyitist$setMaxSpeed(speed);
         }
     }
 
     @Override
     public double getOccupiedDeceleration() {
-        return getHandle().occupiedDeceleration;
+        return getHandle().bridge$occupiedDeceleration();
     }
 
     @Override
     public void setOccupiedDeceleration(double speed) {
         if (speed >= 0D) {
-            getHandle().occupiedDeceleration = speed;
+            getHandle().taiyitist$setOccupiedDeceleration(speed);
         }
     }
 
     @Override
     public double getUnoccupiedDeceleration() {
-        return getHandle().unoccupiedDeceleration;
+        return getHandle().bridge$unoccupiedDeceleration();
     }
 
     @Override
     public void setUnoccupiedDeceleration(double speed) {
-        getHandle().unoccupiedDeceleration = speed;
+        getHandle().taiyitist$setUnoccupiedDeceleration(speed);
     }
 
     @Override
     public boolean getWorkOnLand() {
-        return getHandle().landBoats;
+        return getHandle().bridge$landBoats();
     }
 
     @Override
     public void setWorkOnLand(boolean workOnLand) {
-        getHandle().landBoats = workOnLand;
+        getHandle().taiyitist$setLandBoats(workOnLand);
     }
 
     @Override
@@ -105,7 +105,7 @@ public abstract class CraftBoat extends CraftVehicle implements Boat {
 
     @Override
     public boolean setLeashHolder(Entity holder) {
-        if (getHandle().generation) {
+        if (getHandle().bridge$generation()) {
             return false;
         }
 

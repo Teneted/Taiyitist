@@ -16,6 +16,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public interface CraftRecipe extends Recipe {
 
@@ -33,7 +34,7 @@ public interface CraftRecipe extends Recipe {
         } else if (bukkit instanceof RecipeChoice.MaterialChoice) {
             stack = Ingredient.of(((RecipeChoice.MaterialChoice) bukkit).getChoices().stream().map((mat) -> CraftItemType.bukkitToMinecraft(mat)));
         } else if (bukkit instanceof RecipeChoice.ExactChoice) {
-            stack = Ingredient.ofStacks(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> CraftItemStack.asNMSCopy(mat)).toList());
+            stack = BukkitMethodHooks.ofStacks(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> CraftItemStack.asNMSCopy(mat)).toList());
         } else {
             throw new IllegalArgumentException("Unknown recipe stack instance " + bukkit);
         }
@@ -54,7 +55,7 @@ public interface CraftRecipe extends Recipe {
             return null;
         }
 
-        if (list.isExact()) {
+        if (list.bridge$exact()) {
             List<org.bukkit.inventory.ItemStack> choices = new ArrayList<>(list.itemStacks().size());
             for (net.minecraft.world.item.ItemStack i : list.itemStacks()) {
                 choices.add(CraftItemStack.asBukkitCopy(i));

@@ -61,7 +61,7 @@ public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow
 
     @Override
     public ProjectileSource getShooter() {
-        return getHandle().projectileSource;
+        return getHandle().bridge$projectileSource();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().projectileSource = shooter;
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override

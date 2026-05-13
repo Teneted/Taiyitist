@@ -38,7 +38,7 @@ public class CraftBlockEntityInventoryViewBuilder<V extends InventoryView> exten
             return buildFakeTile(player);
         }
 
-        final AbstractContainerMenu atBlock = container.createMenu(player.nextContainerCounter(), player.getInventory(), player);
+        final AbstractContainerMenu atBlock = container.createMenu(player.nextContainerCounterInt(), player.getInventory(), player);
         if (atBlock.getType() != super.handle) {
             return buildFakeTile(player);
         }
@@ -48,13 +48,13 @@ public class CraftBlockEntityInventoryViewBuilder<V extends InventoryView> exten
 
     private AbstractContainerMenu buildFakeTile(ServerPlayer player) {
         if (this.builder == null) {
-            return handle.create(player.nextContainerCounter(), player.getInventory());
+            return handle.create(player.nextContainerCounterInt(), player.getInventory());
         }
         final MenuProvider inventory = this.builder.build(this.position, this.block.defaultBlockState());
         if (inventory instanceof BlockEntity tile) {
             tile.setLevel(this.world);
         }
-        return inventory.createMenu(player.nextContainerCounter(), player.getInventory(), player);
+        return inventory.createMenu(player.nextContainerCounterInt(), player.getInventory(), player);
     }
 
     @Override

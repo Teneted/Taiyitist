@@ -36,6 +36,7 @@ import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> implements ItemType.Typed<M> {
 
@@ -165,7 +166,7 @@ public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> i
 
     @Override
     public boolean isFuel() {
-        return MinecraftServer.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack(getHandle()));
+        return BukkitMethodHooks.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack(getHandle()));
     }
 
     @Override

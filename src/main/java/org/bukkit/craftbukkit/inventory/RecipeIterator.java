@@ -6,12 +6,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.bukkit.inventory.Recipe;
+import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
 
 public class RecipeIterator implements Iterator<Recipe> {
     private final Iterator<Map.Entry<RecipeType<?>, RecipeHolder<?>>> recipes;
 
     public RecipeIterator() {
-        this.recipes = MinecraftServer.getServer().getRecipeManager().recipes.byType.entries().iterator();
+        this.recipes = BukkitMethodHooks.getServer().getRecipeManager().recipes.byType.entries().iterator();
     }
 
     @Override

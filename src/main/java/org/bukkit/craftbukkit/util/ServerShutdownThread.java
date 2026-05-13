@@ -15,7 +15,7 @@ public class ServerShutdownThread extends Thread {
             server.close();
         } finally {
             try {
-                server.terminal.close();
+                //server.terminal.close();
             } catch (Exception e) {
             }
         }

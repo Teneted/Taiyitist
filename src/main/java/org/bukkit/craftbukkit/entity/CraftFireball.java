@@ -16,27 +16,27 @@ public class CraftFireball extends CraftProjectile implements Fireball {
 
     @Override
     public float getYield() {
-        return getHandle().bukkitYield;
+        return getHandle().bridge$bukkitYield();
     }
 
     @Override
     public boolean isIncendiary() {
-        return getHandle().isIncendiary;
+        return getHandle().bridge$isIncendiary();
     }
 
     @Override
     public void setIsIncendiary(boolean isIncendiary) {
-        getHandle().isIncendiary = isIncendiary;
+        getHandle().taiyitist$setIsIncendiary(isIncendiary);
     }
 
     @Override
     public void setYield(float yield) {
-        getHandle().bukkitYield = yield;
+        getHandle().taiyitist$setBukkitYield(yield);
     }
 
     @Override
     public ProjectileSource getShooter() {
-        return getHandle().projectileSource;
+        return getHandle().bridge$projectileSource();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CraftFireball extends CraftProjectile implements Fireball {
         } else {
             getHandle().setOwner(null);
         }
-        getHandle().projectileSource = shooter;
+        getHandle().taiyitist$setProjectileSource(shooter);
     }
 
     @Override
