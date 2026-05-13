@@ -9,11 +9,7 @@ public interface InjectionCommandSourceStack {
         throw new IllegalStateException("Not implemented");
     }
 
-    default boolean hasPermission(int i, String bukkitPermission) {
-        throw new IllegalStateException("Not implemented");
-    }
-
-    default org.bukkit.command.CommandSender taiyitist$getBukkitSender() {
+    default org.bukkit.command.CommandSender getBukkitSender() {
         throw new IllegalStateException("Not implemented");
     }
 

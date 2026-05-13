@@ -611,7 +611,7 @@ transitive-inject-interface net/minecraft/commands/Commands org/teneted/taiyitis
 transitive-inject-interface net/minecraft/commands/CommandSource org/teneted/taiyitist/injection/commands/InjectionCommandSource
 transitive-inject-interface net/minecraft/commands/CommandSourceStack org/teneted/taiyitist/injection/commands/InjectionCommandSourceStack
 transitive-inject-interface net/minecraft/commands/arguments/EntityArgument org/teneted/taiyitist/injection/commands/arguments/InjectionEntityArgument
-transitive-inject-interface net/minecraft/commands/arguments/selector/EntitySelectorParser org/teneted/taiyitist/injection/commands/InjectionEntitySelectorParser
+transitive-inject-interface net/minecraft/commands/arguments/selector/EntitySelectorParser org/teneted/taiyitist/injection/commands/arguments/selector/InjectionEntitySelectorParser
 transitive-inject-interface net/minecraft/network/protocol/common/custom/DiscardedPayload org/teneted/taiyitist/injection/network/InjectionDiscardedPayload
 transitive-inject-interface net/minecraft/network/syncher/SynchedEntityData org/teneted/taiyitist/injection/network/syncher/InjectionSynchedEntityData
 transitive-inject-interface net/minecraft/network/protocol/game/ServerboundUseItemOnPacket org/teneted/taiyitist/injection/network/protocol/game/InjectionServerboundUseItemOnPacket

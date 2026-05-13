@@ -70,6 +70,8 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+	exclude 'net/minecraft/commands'
+	exclude 'net/minecraft/commands/**.class'
 	exclude 'net/minecraft/world/level/block/ChestBlock.class'
 	exclude 'net/minecraft/world/level/block/entity/LecternBlockEntity.class'
 }
