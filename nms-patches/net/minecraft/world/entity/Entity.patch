@@ -43,61 +43,6 @@
 +// CraftBukkit end
 +
  public abstract class Entity implements Nameable, EntityAccess, ScoreHolder, SyncedDataHolder, DataComponentGetter, ItemOwner, SlotProvider, DebugValueSource, TypedInstance<EntityType<?>> {
- 
-+    // CraftBukkit start
-+    private static final int CURRENT_LEVEL = 2;
-+    static boolean isLevelAtLeast(ValueInput tag, int level) {
-+        int updateLevel = tag.getIntOr("Bukkit.updateLevel", -1);
-+        return updateLevel != -1 && tag.getIntOr("Bukkit.updateLevel", -1) >= level;
-+    }
-+
-+    private CraftEntity bukkitEntity;
-+
-+    public CraftEntity getBukkitEntity() {
-+        if (bukkitEntity == null) {
-+            bukkitEntity = CraftEntity.getEntity(level.getCraftServer(), this);
-+        }
-+        return bukkitEntity;
-+    }
-+
-+    // CraftBukkit - SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
-+    public int getDefaultMaxAirSupply() {
-+        return TOTAL_AIR_SUPPLY;
-+    }
-+    // CraftBukkit end
-+
-     private static final Logger LOGGER = LogUtils.getLogger();
-     public static final String TAG_ID = "id";
-     public static final String TAG_UUID = "UUID";
-@@ -294,6 +354,30 @@
-     private final LongSet visitedBlocks;
-     private final InsideBlockEffectApplier.StepBasedCollector insideEffectCollector;
-     private CustomData customData;
-+    // CraftBukkit start
-+    public boolean forceDrops;
-+    public boolean persist = true;
-+    public boolean visibleByDefault = true;
-+    public boolean valid;
-+    public boolean inWorld = false;
-+    public boolean generation;
-+    public int maxAirTicks = getDefaultMaxAirSupply(); // CraftBukkit - SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
-+    public org.bukkit.projectiles.ProjectileSource projectileSource; // For projectiles only
-+    public boolean lastDamageCancelled; // SPIGOT-5339, SPIGOT-6252, SPIGOT-6777: Keep track if the event was canceled
-+    public boolean persistentInvisibility = false;
-+    public BlockPos lastLavaContact;
-+    // Marks an entity, that it was removed by a plugin via Entity#remove
-+    // Main use case currently is for SPIGOT-7487, preventing dropping of leash when leash is removed
-+    public boolean pluginRemoved = false;
-+
-+    public float getBukkitYaw() {
-+        return this.yRot;
-+    }
-+
-+    public boolean isChunkLoaded() {
-+        return level.hasChunk((int) Math.floor(this.getX()) >> 4, (int) Math.floor(this.getZ()) >> 4);
-+    }
-+    // CraftBukkit end
- 
      public Entity(EntityType<?> type, Level level) {
          this.id = Entity.ENTITY_COUNTER.incrementAndGet();
 @@ -420,12 +504,18 @@
@@ -124,17 +69,6 @@
 @@ -434,6 +524,16 @@
          return this.entityData;
      }
- 
-+    // CraftBukkit start
-+    public void refreshEntityData(ServerPlayer to) {
-+        List<SynchedEntityData.DataValue<?>> list = this.getEntityData().getNonDefaultValues();
-+
-+        if (list != null) {
-+            to.connection.send(new ClientboundSetEntityDataPacket(this.getId(), list));
-+        }
-+    }
-+    // CraftBukkit end
-+
      public boolean equals(Object obj) {
          return obj instanceof Entity ? ((Entity) obj).id == this.id : false;
      }
@@ -153,22 +87,6 @@
      }
  
      public void onClientRemoval() {}
-@@ -451,6 +557,12 @@
-     public void onRemoval(Entity.RemovalReason reason) {}
- 
-     public void setPose(Pose pose) {
-+        // CraftBukkit start
-+        if (pose == this.getPose()) {
-+            return;
-+        }
-+        this.level.getCraftServer().getPluginManager().callEvent(new EntityPoseChangeEvent(this.getBukkitEntity(), org.bukkit.entity.Pose.values()[pose.ordinal()]));
-+        // CraftBukkit end
-         this.entityData.set(Entity.DATA_POSE, pose);
-     }
- 
-@@ -475,6 +587,33 @@
-     }
- 
      protected void setRot(float yRot, float xRot) {
 +        // CraftBukkit start - yaw was sometimes set to NaN, so we need to set it back to 0
 +        if (Float.isNaN(yRot)) {

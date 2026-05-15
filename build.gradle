@@ -7,11 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	maven { url = 'https://maven.izzel.io/releases' }
 }
 
 loom {
@@ -35,6 +31,11 @@ dependencies {
 	implementation(include("org.jline:jline:3.30.4"))
 	implementation(include("org.apache.logging.log4j:log4j-iostreams:2.25.2"))
 	implementation(include("commons-lang:commons-lang:2.6"))
+
+
+	//class modify
+	implementation(include("io.izzel.arclight:mixin-tools:1.2.6")) { transitive = false }
+	annotationProcessor("io.izzel.arclight:mixin-tools:1.2.6") { transitive = false }
 }
 
 processResources {
