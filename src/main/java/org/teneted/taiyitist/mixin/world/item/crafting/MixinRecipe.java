@@ -5,5 +5,5 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.world.item.crafting.InjectionRecipe;
 
 @Mixin(Recipe.class)
-public class MixinRecipe implements InjectionRecipe {
+public interface MixinRecipe extends InjectionRecipe {
 }

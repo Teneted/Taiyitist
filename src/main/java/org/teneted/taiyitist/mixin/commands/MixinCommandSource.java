@@ -7,10 +7,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.commands.InjectionCommandSource;
 
 @Mixin(CommandSource.class)
-public class MixinCommandSource implements InjectionCommandSource {
+public interface MixinCommandSource extends InjectionCommandSource {
 
     @Override
-    public CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
+    default CommandSender taiyitist$getBukkitSender(CommandSourceStack wrapper) {
         return this.taiyitist$getBukkitSender(wrapper);
     }
 }

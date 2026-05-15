@@ -1,18 +1,14 @@
 package org.teneted.taiyitist.bukkit;
 
-
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.util.Unit;
-import net.minecraft.world.entity.ai.village.ReputationEventType;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import org.bukkit.TreeType;
-import org.bukkit.plugin.Plugin;
 
 public class BukkitFieldHooks {
 
@@ -23,7 +19,6 @@ public class BukkitFieldHooks {
     private static final VarHandle pluginTicketType;
     private static final VarHandle openSign;
     private static final VarHandle pluginTimeout;
-    private static final VarHandle byID;
 
     static {
         try {
@@ -41,8 +36,6 @@ public class BukkitFieldHooks {
             pluginTimeout = MethodHandles.lookup().unreflectVarHandle(pluginTimeoutField);
             var openSignField = SignItem.class.getDeclaredField("openSign");
             openSign = MethodHandles.lookup().unreflectVarHandle(openSignField);
-            var byIDField = ReputationEventType.class.getDeclaredField("BY_ID");
-            byID = MethodHandles.lookup().unreflectVarHandle(byIDField);
         } catch (Throwable t) {
             throw new ExceptionInInitializerError(t);
         }
@@ -94,9 +87,5 @@ public class BukkitFieldHooks {
 
     public static void setPluginTimeout(long newPluginTimeout) {
         pluginTimeout.set(newPluginTimeout);
-    }
-
-    public static java.util.Map<String, ReputationEventType> byID() {
-        return (java.util.Map<String, ReputationEventType>) byID.get();
     }
 }

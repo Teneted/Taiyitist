@@ -5,5 +5,5 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.world.level.InjectionBlockGetter;
 
 @Mixin(BlockGetter.class)
-public class MixinBlockGetter implements InjectionBlockGetter {
+public interface MixinBlockGetter extends InjectionBlockGetter {
 }

@@ -1,6 +1,5 @@
 package org.teneted.taiyitist.mixin;
 
-import io.izzel.arclight.mixin.MixinTools;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -66,6 +65,5 @@ public class TaiyitistMixinPlugin implements IMixinConfigPlugin {
         for (var processor : this.postProcessors) {
             processor.accept(targetClassName, targetClass, mixinInfo);
         }
-        MixinTools.onPostMixin(targetClass);
     }
 }

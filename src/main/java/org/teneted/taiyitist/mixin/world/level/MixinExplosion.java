@@ -5,5 +5,5 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.world.level.InjectionExplosion;
 
 @Mixin(Explosion.class)
-public class MixinExplosion implements InjectionExplosion {
+public interface MixinExplosion extends InjectionExplosion {
 }

@@ -3,13 +3,9 @@ package org.teneted.taiyitist.mixin.server;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.datafixers.DataFixer;
-import io.izzel.arclight.mixin.Decorate;
-import io.izzel.arclight.mixin.DecorationOps;
-import io.izzel.arclight.mixin.Local;
 
 import java.lang.management.ManagementFactory;
 import java.net.Proxy;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -203,7 +199,14 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
     @Shadow protected  static void setInitialSpawn(ServerLevel level, ServerLevelData levelData, boolean spawnBonusChest, boolean isDebug, LevelLoadListener levelLoadListener){
     }
 
-    @Shadow@Final public LevelLoadListener levelLoadListener;@Shadow public abstract int getAbsoluteMaxWorldSize();@Shadow protected abstract void updateEffectiveRespawnData();@Shadow public abstract Iterable<ServerLevel> getAllLevels();@Shadow private PlayerList playerList;@Inject(method = "<init>", at = @At("RETURN"))
+    @Shadow
+    @Final public LevelLoadListener levelLoadListener;
+    @Shadow public abstract int getAbsoluteMaxWorldSize();
+    @Shadow protected abstract void updateEffectiveRespawnData();
+    @Shadow public abstract Iterable<ServerLevel> getAllLevels();
+    @Shadow private PlayerList playerList;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
     private void taiyitist$loadOptions(Thread serverThread, LevelStorageSource.LevelStorageAccess storageSource, PackRepository packRepository, WorldStem worldStem, Optional gameRules, Proxy proxy, DataFixer fixerUpper, Services services, LevelLoadListener levelLoadListener, boolean propagatesCrashes, CallbackInfo ci) {
         OVERLOADED_THRESHOLD_NANOS = 30L * TimeUtil.NANOSECONDS_PER_SECOND / 20L; // CraftBukkit
         String[] arguments = ManagementFactory.getRuntimeMXBean().getInputArguments().toArray(new String[0]);
@@ -226,31 +229,6 @@ public abstract class MixinMinecraftServer extends ReentrantBlockableEventLoop<T
         if (this.server != null) {
             this.server.disablePlugins();
         }
-    }
-
-    @Decorate(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;"))
-    private ServerStatus taiyitist$initTickParam(MinecraftServer instance, @Local(allocate = "tickSection") long tickSection, @Local(allocate = "tickCount") long tickCount) throws Throwable {
-        var serverStatus = (ServerStatus) DecorationOps.callsite().invoke(instance);
-        Arrays.fill(recentTps, 20);
-        tickSection = Util.getMillis();
-        tickCount = 1;
-        DecorationOps.blackhole().invoke(tickSection, tickCount);
-        return serverStatus;
-    }
-
-    @Decorate(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;startMeasuringTaskExecutionTime()V"))
-    private void taiyitist$updateTickParam(MinecraftServer instance, @Local(allocate = "tickSection") long tickSection, @Local(allocate = "tickCount") long tickCount) throws Throwable {
-        if (tickCount++ % SAMPLE_INTERVAL == 0) {
-            long curTime = Util.getMillis();
-            double currentTps = 1E3 / (curTime - tickSection) * SAMPLE_INTERVAL;
-            recentTps[0] = calcTps(recentTps[0], 0.92, currentTps); // 1/exp(5sec/1min)
-            recentTps[1] = calcTps(recentTps[1], 0.9835, currentTps); // 1/exp(5sec/5min)
-            recentTps[2] = calcTps(recentTps[2], 0.9945, currentTps); // 1/exp(5sec/15min)
-            tickSection = curTime;
-        }
-        DecorationOps.blackhole().invoke(tickSection, tickCount);
-        currentTick = (int) (System.currentTimeMillis() / 50);
-        DecorationOps.callsite().invoke(instance);
     }
 
     @WrapWithCondition(method = "runServer", at = @At(value = "INVOKE", remap = false, target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))

@@ -5,5 +5,5 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.world.item.trading.InjectionMerchant;
 
 @Mixin(Merchant.class)
-public class MixinMerchant implements InjectionMerchant {
+public interface MixinMerchant extends InjectionMerchant {
 }

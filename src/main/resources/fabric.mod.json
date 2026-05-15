@@ -15,7 +15,7 @@
 	"icon": "assets/taiyitist/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"server": [
 			"org.teneted.taiyitist.TaiyitistMod"
 		]
 	},

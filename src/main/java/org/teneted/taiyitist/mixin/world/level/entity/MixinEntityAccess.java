@@ -5,5 +5,5 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.teneted.taiyitist.injection.world.level.entity.InjectionEntityAccess;
 
 @Mixin(EntityAccess.class)
-public class MixinEntityAccess implements InjectionEntityAccess {
+public interface MixinEntityAccess extends InjectionEntityAccess {
 }

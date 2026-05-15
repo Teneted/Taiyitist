@@ -280,6 +280,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 public final class CraftServer implements Server {
+    private final String serverName = "Taiyitist";
     private final String serverVersion;
     private final String bukkitVersion = Versioning.getBukkitVersion();
     private final Logger logger = Logger.getLogger("Minecraft");
@@ -580,12 +581,12 @@ public final class CraftServer implements Server {
 
     @Override
     public String getName() {
-        return console.getServerModName();
+        return serverName;
     }
 
     @Override
     public String getVersion() {
-        return serverVersion + " (MC: " + console.getServerVersion() + ")";
+        return "CraftServer{" + "serverName=" + this.serverName + ",serverVersion=" + this.serverVersion + ",minecraftVersion=" + this.console.getServerVersion() + '}';
     }
 
     @Override

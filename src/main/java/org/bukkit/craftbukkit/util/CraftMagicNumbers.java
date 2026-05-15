@@ -77,6 +77,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.potion.PotionType;
 import org.teneted.taiyitist.bukkit.BukkitFieldHooks;
 import org.teneted.taiyitist.bukkit.BukkitMethodHooks;
+import org.teneted.taiyitist.bukkit.ReputationEventTypeAddon;
 
 @SuppressWarnings("deprecation")
 public final class CraftMagicNumbers implements UnsafeValues {
@@ -435,7 +436,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
 
     @Override
     public Villager.ReputationEvent createReputationEvent(String key) {
-        return Optional.ofNullable(BukkitFieldHooks.byID().get(key)).map(CraftVillager.CraftReputationEvent::new)
+        return Optional.ofNullable(ReputationEventTypeAddon.BY_ID.get(key)).map(CraftVillager.CraftReputationEvent::new)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid ReputationEvent key: " + key));
     }
 
